@@ -1,0 +1,327 @@
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FiArrowLeft, FiSave, FiInfo, FiImage, FiSearch, FiGlobe 
+} from 'react-icons/fi';
+import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
+
+const TABS = [
+  { id: 'basic', label: 'Basic Info', icon: FiInfo },
+  { id: 'media', label: 'Brand Identity', icon: FiImage },
+  { id: 'info', label: 'Brand Details', icon: FiGlobe },
+  { id: 'seo', label: 'SEO', icon: FiSearch }
+];
+
+export default function BrandEditor() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const isNew = id === 'new';
+
+  const [activeTab, setActiveTab] = useState('basic');
+  const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    slug: '',
+    description: '',
+    status: 'draft',
+    featured: false,
+    website: '',
+    country: '',
+    foundedYear: '',
+    brandStory: '',
+    seoTitle: '',
+    seoDescription: ''
+  });
+
+  useEffect(() => {
+    if (!isNew) {
+      setFormData({
+        name: 'Aurelia Signature',
+        slug: 'aurelia-signature',
+        description: 'Our in-house premium collection featuring the finest materials.',
+        status: 'published',
+        featured: true,
+        website: 'https://aurelia.com',
+        country: 'Italy',
+        foundedYear: '2015',
+        brandStory: 'Born from a desire to create uncompromising luxury furniture...',
+        seoTitle: 'Aurelia Signature | Premium Furniture',
+        seoDescription: 'Discover Aurelia Signature.'
+      });
+    }
+  }, [id, isNew]);
+
+  const handleSave = () => {
+    setIsSaving(true);
+    setTimeout(() => {
+      setIsSaving(false);
+      navigate('/admin/catalog/brands');
+    }, 800);
+  };
+
+  return (
+    <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-[#F7F5F2]">
+      <header className="shrink-0 bg-white border-b border-stone-200 px-6 py-4 flex items-center justify-between z-10">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => navigate('/admin/catalog/brands')}
+            className="p-2 -ml-2 text-stone-400 hover:text-stone-900 transition-colors rounded-lg hover:bg-stone-50"
+          >
+            <FiArrowLeft size={20} />
+          </button>
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="font-serif font-bold text-xl text-stone-900">
+                {isNew ? 'Create Brand' : formData.name}
+              </h1>
+              {!isNew && <CatalogStatusBadge status={formData.status} />}
+            </div>
+            <p className="text-xs text-stone-500 font-mono mt-1">
+              {isNew ? 'New Brand' : `Slug: /${formData.slug}`}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <select 
+            value={formData.status}
+            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
+            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-900"
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+          <button 
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex items-center gap-2 px-6 py-2 bg-stone-900 text-white rounded-lg text-sm font-semibold hover:bg-stone-800 transition-colors shadow-sm disabled:opacity-50"
+          >
+            {isSaving ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <FiSave size={16} />
+            )}
+            {isSaving ? 'Saving...' : 'Save Brand'}
+          </button>
+        </div>
+      </header>
+
+      <div className="flex flex-1 overflow-hidden">
+        <nav className="w-64 shrink-0 bg-white border-r border-stone-200 overflow-y-auto py-6">
+          <ul className="space-y-1 px-4">
+            {TABS.map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <li key={tab.id}>
+                  <button
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      isActive 
+                        ? 'bg-amber-50 text-amber-900' 
+                        : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                    }`}
+                  >
+                    <Icon size={18} className={isActive ? 'text-amber-600' : 'text-stone-400'} />
+                    {tab.label}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        <main className="flex-1 overflow-y-auto p-8">
+          <div className="max-w-3xl mx-auto pb-24">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="bg-white rounded-xl border border-stone-200 shadow-sm p-8"
+              >
+                {activeTab === 'basic' && (
+                  <div className="space-y-6">
+                    <div>
+                      <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">Basic Information</h2>
+                      <p className="text-sm text-stone-500">Core details for this brand.</p>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Brand Name</label>
+                        <input 
+                          type="text" 
+                          value={formData.name}
+                          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                          className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">URL Slug</label>
+                        <input 
+                          type="text" 
+                          value={formData.slug}
+                          onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                          className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-mono text-stone-900"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Short Description</label>
+                        <textarea 
+                          rows={3}
+                          value={formData.description}
+                          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                          className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm text-stone-900 resize-none"
+                        />
+                      </div>
+
+                      <div className="pt-4 border-t border-stone-100 flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-bold text-stone-900">Featured Brand</p>
+                          <p className="text-xs text-stone-500">Highlight this brand on the homepage.</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer"
+                            checked={formData.featured}
+                            onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
+                          />
+                          <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-stone-900 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-stone-900"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'media' && (
+                  <div className="space-y-6">
+                    <div>
+                      <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">Brand Identity</h2>
+                      <p className="text-sm text-stone-500">Visual assets used for the brand.</p>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="flex gap-6 items-start">
+                        <div className="w-1/3">
+                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Brand Logo</label>
+                          <div className="border-2 border-dashed border-stone-300 rounded-xl bg-stone-50 p-6 flex flex-col items-center justify-center text-center hover:bg-stone-100 transition-all cursor-pointer aspect-square">
+                            <FiImage size={24} className="text-stone-400 mb-2" />
+                            <h3 className="text-sm font-bold text-stone-900">Upload Logo</h3>
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Brand Banner</label>
+                          <div className="border-2 border-dashed border-stone-300 rounded-xl bg-stone-50 p-6 flex flex-col items-center justify-center text-center hover:bg-stone-100 transition-all cursor-pointer h-full min-h-[160px]">
+                            <FiImage size={24} className="text-stone-400 mb-2" />
+                            <h3 className="text-sm font-bold text-stone-900">Upload Banner</h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'info' && (
+                  <div className="space-y-6">
+                    <div>
+                      <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">Brand Details</h2>
+                      <p className="text-sm text-stone-500">Additional info and brand story.</p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Website</label>
+                          <input 
+                            type="text" 
+                            value={formData.website}
+                            onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                            className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
+                            placeholder="https://"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Country of Origin</label>
+                          <input 
+                            type="text" 
+                            value={formData.country}
+                            onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+                            className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Founded Year</label>
+                          <input 
+                            type="text" 
+                            value={formData.foundedYear}
+                            onChange={(e) => setFormData(prev => ({ ...prev, foundedYear: e.target.value }))}
+                            className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Brand Story</label>
+                        <textarea 
+                          rows={6}
+                          value={formData.brandStory}
+                          onChange={(e) => setFormData(prev => ({ ...prev, brandStory: e.target.value }))}
+                          className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm text-stone-900 resize-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'seo' && (
+                  <div className="space-y-6">
+                    <div>
+                      <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">SEO Settings</h2>
+                      <p className="text-sm text-stone-500">Configure search engine visibility.</p>
+                    </div>
+
+                    <div className="p-4 bg-stone-50 border border-stone-200 rounded-lg mb-6">
+                      <p className="text-xs text-blue-800 mb-1 font-medium">{`https://aurelia.com/brands/${formData.slug}`}</p>
+                      <p className="text-lg text-blue-600 font-semibold mb-1">{formData.seoTitle || formData.name}</p>
+                      <p className="text-sm text-stone-600 line-clamp-2">{formData.seoDescription || formData.description}</p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">SEO Title</label>
+                        <input 
+                          type="text" 
+                          value={formData.seoTitle}
+                          onChange={(e) => setFormData(prev => ({ ...prev, seoTitle: e.target.value }))}
+                          className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">SEO Description</label>
+                        <textarea 
+                          rows={3}
+                          value={formData.seoDescription}
+                          onChange={(e) => setFormData(prev => ({ ...prev, seoDescription: e.target.value }))}
+                          className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm text-stone-900 resize-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}

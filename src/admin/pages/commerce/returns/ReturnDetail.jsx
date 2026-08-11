@@ -1,0 +1,173 @@
+import React from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { FiArrowLeft, FiBox, FiCheckCircle, FiXCircle, FiTruck, FiSearch, FiDollarSign } from 'react-icons/fi';
+import { useReturns } from '../../../context/ReturnContext';
+import ReturnTimeline from '../../../components/returns/ReturnTimeline';
+import PickupManager from '../../../components/returns/PickupManager';
+import InspectionWorkspace from '../../../components/returns/InspectionWorkspace';
+
+export default function ReturnDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { getReturn, updateReturnStatus } = useReturns();
+  const returnReq = getReturn(id);
+
+  if (!returnReq) {
+    return (
+      <div className="p-8 text-center">
+        <h2 className="text-xl font-bold text-gray-900">Return request not found</h2>
+        <button onClick={() => navigate('/admin/returns')} className="text-blue-600 hover:underline mt-2">Return to list</button>
+      </div>
+    );
+  }
+
+  // Centralized transition logic
+  const getAvailableActions = (currentStatus) => {
+    switch (currentStatus) {
+      case 'Requested': return ['Under Review', 'Approved', 'Rejected'];
+      case 'Under Review': return ['Approved', 'Rejected'];
+      case 'Approved': return ['Pickup Scheduled', 'Cancelled'];
+      case 'Pickup Scheduled': return ['In Transit'];
+      case 'In Transit': return ['Received'];
+      case 'Received': return ['Inspection Pending'];
+      case 'Inspection Pending': return []; // Needs inspection completion action
+      case 'Inspection Completed': return ['Resolution Pending'];
+      case 'Resolution Pending': return ['Refund Pending', 'Exchange Pending', 'Completed'];
+      case 'Refund Pending': return ['Completed'];
+      case 'Exchange Pending': return ['Completed'];
+      default: return [];
+    }
+  };
+
+  const availableActions = getAvailableActions(returnReq.status);
+
+  const handleStatusChange = (newStatus) => {
+    updateReturnStatus(id, newStatus, `Manual status update to ${newStatus}`);
+  };
+
+  return (
+    <div className="space-y-6 max-w-6xl mx-auto pb-12">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Link to="/admin/returns" className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <FiArrowLeft size={20} className="text-gray-600" />
+          </Link>
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">{returnReq.id}</h1>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800`}>
+                {returnReq.status}
+              </span>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">Order: <Link to={`/admin/orders/${returnReq.orderId}`} className="text-blue-600 hover:underline">{returnReq.orderId}</Link></p>
+          </div>
+        </div>
+        
+        <div className="flex gap-2 items-center flex-wrap">
+          {availableActions.map(action => (
+             <button 
+                key={action}
+                onClick={() => handleStatusChange(action)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  action === 'Approved' ? 'bg-green-600 text-white hover:bg-green-700' :
+                  action === 'Rejected' ? 'bg-red-600 text-white hover:bg-red-700' :
+                  'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                }`}
+             >
+                {action}
+             </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          {/* Customer & Product Info */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2"><FiBox /> Return Items</h2>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {returnReq.items.map(item => (
+                <div key={item.id} className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="font-medium text-gray-900">{item.name}</h3>
+                      <p className="text-sm text-gray-500">SKU: {item.productId} • Qty: {item.quantity}</p>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-2">
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase font-semibold">Return Reason</p>
+                      <p className="text-sm font-medium text-gray-900">{item.reason}</p>
+                    </div>
+                    <div>
+                       <p className="text-xs text-gray-500 uppercase font-semibold">Reported Condition</p>
+                       <p className="text-sm font-medium text-gray-900">{item.condition}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Reverse Logistics / Pickup */}
+          {(returnReq.status === 'Approved' || returnReq.status === 'Pickup Scheduled' || returnReq.pickup) && (
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><FiTruck /> Reverse Logistics</h2>
+              <PickupManager returnReq={returnReq} />
+            </div>
+          )}
+
+          {/* Inspection Workspace */}
+          {(returnReq.status === 'Inspection Pending' || returnReq.inspection) && (
+             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+               <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><FiSearch /> Product Inspection</h2>
+               <InspectionWorkspace returnReq={returnReq} />
+             </div>
+          )}
+
+           {/* Resolution Prep */}
+           {returnReq.status === 'Resolution Pending' && (
+             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+               <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><FiDollarSign /> Resolution Actions</h2>
+               <div className="flex gap-4">
+                 <button className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                   Initiate Refund Placeholder
+                 </button>
+                 <button className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+                   Process Exchange Placeholder
+                 </button>
+               </div>
+             </div>
+           )}
+
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Customer Details</h2>
+            <div className="space-y-1">
+              <p className="font-medium text-gray-900">{returnReq.customer.name}</p>
+              <p className="text-sm text-gray-600">{returnReq.customer.email}</p>
+            </div>
+          </div>
+
+          {/* Timeline */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+             <h2 className="text-lg font-bold text-gray-900 mb-6">Return Timeline</h2>
+             <ReturnTimeline events={returnReq.timeline} />
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
