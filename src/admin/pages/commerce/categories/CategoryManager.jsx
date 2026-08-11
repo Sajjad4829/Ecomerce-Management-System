@@ -1,69 +1,37 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CatalogToolbar from '../../../components/commerce/shared/CatalogToolbar';
 import CatalogFilters from '../../../components/commerce/shared/CatalogFilters';
 import BulkCatalogBar from '../../../components/commerce/shared/BulkCatalogBar';
 import CategoryTree from '../../../components/commerce/categories/CategoryTree';
+import CategoryGrid from '../../../components/commerce/categories/CategoryGrid';
 import CategoryPreview from '../../../components/commerce/categories/CategoryPreview';
+import { useCategories } from '../../../context/commerce/CategoryContext';
+import { useProducts } from '../../../context/commerce/ProductContext';
 
 export default function CategoryManager() {
   const navigate = useNavigate();
+  const { categories, getCategoryTree, bulkUpdateStatus, bulkSetFeatured, bulkDelete } = useCategories();
+  const { products } = useProducts();
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState('list');
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [previewCategory, setPreviewCategory] = useState(null);
 
-  // Mock taxonomy data
-  const [categories, setCategories] = useState([
-    {
-      id: 'cat-1',
-      name: 'Furniture',
-      slug: 'furniture',
-      status: 'published',
-      featured: true,
-      productCount: 142,
-      updatedAt: '2026-08-08',
-      image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400',
-      children: [
-        {
-          id: 'cat-1-1',
-          name: 'Living Room',
-          slug: 'living-room',
-          status: 'published',
-          featured: false,
-          productCount: 64,
-          updatedAt: '2026-08-07',
-          children: [
-            { id: 'cat-1-1-1', name: 'Sofas', slug: 'sofas', status: 'published', productCount: 24, featured: false, updatedAt: '2026-08-06', children: [] },
-            { id: 'cat-1-1-2', name: 'Coffee Tables', slug: 'coffee-tables', status: 'published', productCount: 18, featured: false, updatedAt: '2026-08-05', children: [] }
-          ]
-        },
-        {
-          id: 'cat-1-2',
-          name: 'Bedroom',
-          slug: 'bedroom',
-          status: 'published',
-          featured: false,
-          productCount: 42,
-          updatedAt: '2026-08-07',
-          children: [
-            { id: 'cat-1-2-1', name: 'Beds', slug: 'beds', status: 'published', productCount: 12, featured: true, updatedAt: '2026-08-06', children: [] }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'cat-2',
-      name: 'Lighting',
-      slug: 'lighting',
-      status: 'published',
-      featured: true,
-      productCount: 45,
-      updatedAt: '2026-08-08',
-      image: 'https://images.unsplash.com/photo-1513506003901-1e6a229e9d15?auto=format&fit=crop&q=80&w=400',
-      children: []
-    }
-  ]);
+  // Dynamically augment categories with live product counts
+  const categoriesWithCounts = useMemo(() => {
+    return categories.map(c => ({
+      ...c,
+      productCount: products.filter(p => p.categoryId === c.id).length
+    }));
+  }, [categories, products]);
+
+  // Build the tree from the augmented categories
+  const categoryTree = useMemo(() => {
+    return getCategoryTree(categoriesWithCounts);
+  }, [getCategoryTree, categoriesWithCounts]);
 
   const handleSelectOne = (id, checked) => {
     if (checked) setSelectedCategories(prev => [...prev, id]);
@@ -81,7 +49,7 @@ export default function CategoryManager() {
 
   const handleSelectAll = (checked) => {
     if (checked) {
-      setSelectedCategories(flattenCategories(categories).map(c => c.id));
+      setSelectedCategories(categories.map(c => c.id));
     } else {
       setSelectedCategories([]);
     }
@@ -117,22 +85,34 @@ export default function CategoryManager() {
           <CatalogToolbar 
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
             onToggleFilters={() => setShowFilters(!showFilters)}
             onCreate={() => navigate('/admin/catalog/categories/new')}
             showFilters={showFilters}
             createLabel="Create Category"
           />
 
-          <CategoryTree 
-            categories={categories}
-            setCategories={setCategories}
-            searchQuery={searchQuery}
-            selectedCategories={selectedCategories}
-            onSelectAll={handleSelectAll}
-            onSelectOne={handleSelectOne}
-            onEdit={(id) => navigate(`/admin/catalog/categories/${id}`)}
-            onPreview={(c) => setPreviewCategory(c)}
-          />
+          {viewMode === 'list' ? (
+            <CategoryTree 
+              categories={categoryTree}
+              searchQuery={searchQuery}
+              selectedCategories={selectedCategories}
+              onSelectAll={handleSelectAll}
+              onSelectOne={handleSelectOne}
+              onEdit={(id) => navigate(`/admin/catalog/categories/${id}`)}
+              onPreview={(c) => setPreviewCategory(c)}
+            />
+          ) : (
+            <CategoryGrid 
+              categories={categoryTree}
+              searchQuery={searchQuery}
+              selectedCategories={selectedCategories}
+              onSelectOne={handleSelectOne}
+              onEdit={(id) => navigate(`/admin/catalog/categories/${id}`)}
+              onPreview={(c) => setPreviewCategory(c)}
+            />
+          )}
         </div>
       </div>
 
@@ -140,6 +120,20 @@ export default function CategoryManager() {
       <BulkCatalogBar 
         selectedCount={selectedCategories.length} 
         onClear={() => setSelectedCategories([])} 
+        onAction={(action) => {
+          try {
+            if (action === 'delete') {
+              bulkDelete(selectedCategories, products);
+              setSelectedCategories([]);
+            } else if (action === 'publish') {
+              bulkUpdateStatus(selectedCategories, 'published');
+            } else if (action === 'draft') {
+              bulkUpdateStatus(selectedCategories, 'draft');
+            }
+          } catch (error) {
+            alert(error.message); // Will replace with toast later
+          }
+        }}
       />
 
       {/* Preview Drawer */}

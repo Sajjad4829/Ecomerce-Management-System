@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiArrowLeft, FiSave, FiInfo, FiImage, FiSearch, FiLayers, FiCalendar 
-} from 'react-icons/fi';
+import { FiArrowLeft, FiSave, FiInfo, FiImage, FiSearch, FiLayers, FiCalendar, FiEye } from 'react-icons/fi';
 import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
 import CollectionRuleBuilder from '../../../components/commerce/collections/CollectionRuleBuilder';
+import ManualProductSelector from '../../../components/commerce/collections/ManualProductSelector';
+import { useCollections, generateSlug } from '../../../context/commerce/CollectionContext';
+import CollectionPreview from '../../../components/commerce/collections/CollectionPreview';
 
 const TABS = [
   { id: 'basic', label: 'Basic Info', icon: FiInfo },
@@ -20,8 +21,11 @@ export default function CollectionEditor() {
   const navigate = useNavigate();
   const isNew = id === 'new';
 
+  const { collections, updateCollection, addCollection } = useCollections();
+  
   const [activeTab, setActiveTab] = useState('basic');
   const [isSaving, setIsSaving] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -32,29 +36,67 @@ export default function CollectionEditor() {
     startDate: '',
     endDate: '',
     seoTitle: '',
-    seoDescription: ''
+    seoDescription: '',
+    productIds: [],
+    rules: [],
+    matchMode: 'all',
+    image: '',
+    bannerImage: ''
   });
 
   useEffect(() => {
     if (!isNew) {
-      setFormData({
-        name: 'The Sanctuary Collection',
-        slug: 'the-sanctuary',
-        description: 'A curated selection of minimalist, calming furniture for the modern home.',
-        type: 'automatic',
-        status: 'published',
-        featured: true,
-        startDate: '2026-01-01',
-        endDate: '',
-        seoTitle: 'The Sanctuary Collection | Aurelia',
-        seoDescription: 'Discover the Sanctuary Collection. Minimalist premium furniture.'
-      });
+      const existing = collections.find(c => c.id === id);
+      if (existing) {
+        setFormData({
+          name: existing.name || '',
+          slug: existing.slug || '',
+          description: existing.description || '',
+          type: existing.type || 'manual',
+          status: existing.status || 'draft',
+          featured: existing.featured || false,
+          startDate: existing.startAt || '',
+          endDate: existing.endAt || '',
+          seoTitle: existing.seo?.metaTitle || '',
+          seoDescription: existing.seo?.metaDescription || '',
+          productIds: existing.productIds || [],
+          rules: existing.rules || [],
+          matchMode: existing.matchMode || 'all',
+          image: existing.image || '',
+          bannerImage: existing.bannerImage || ''
+        });
+      }
     }
-  }, [id, isNew]);
+  }, [id, isNew, collections]);
 
   const handleSave = () => {
     setIsSaving(true);
     setTimeout(() => {
+      const dataToSave = {
+        name: formData.name,
+        slug: formData.slug || generateSlug(formData.name),
+        description: formData.description,
+        type: formData.type,
+        status: formData.status,
+        featured: formData.featured,
+        startAt: formData.startDate,
+        endAt: formData.endDate,
+        productIds: formData.productIds,
+        rules: formData.rules,
+        matchMode: formData.matchMode,
+        image: formData.image,
+        bannerImage: formData.bannerImage,
+        seo: {
+          metaTitle: formData.seoTitle,
+          metaDescription: formData.seoDescription
+        }
+      };
+
+      if (isNew) {
+        addCollection(dataToSave);
+      } else {
+        updateCollection(id, dataToSave);
+      }
       setIsSaving(false);
       navigate('/admin/catalog/collections');
     }, 800);
@@ -84,6 +126,12 @@ export default function CollectionEditor() {
         </div>
 
         <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setShowPreview(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-lg text-sm font-semibold hover:bg-stone-50 transition-colors shadow-sm"
+          >
+            <FiEye size={16} /> Live Preview
+          </button>
           <select 
             value={formData.status}
             onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
@@ -211,27 +259,42 @@ export default function CollectionEditor() {
 
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Hero Image (Desktop)</label>
-                        <div className="border-2 border-dashed border-stone-300 rounded-xl bg-stone-50 p-12 flex flex-col items-center justify-center text-center hover:bg-stone-100 transition-all cursor-pointer aspect-[21/9]">
-                          <FiImage size={32} className="text-stone-400 mb-4" />
-                          <h3 className="text-sm font-bold text-stone-900">Upload Hero Image</h3>
+                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Hero / Banner Image URL</label>
+                        <div className="flex items-center gap-4">
+                          {formData.bannerImage ? (
+                            <img src={formData.bannerImage} alt="Banner" className="w-32 h-20 object-cover rounded-lg border border-stone-200" />
+                          ) : (
+                            <div className="w-32 h-20 bg-stone-100 rounded-lg border border-stone-200 flex items-center justify-center">
+                              <FiImage className="text-stone-400" />
+                            </div>
+                          )}
+                          <input 
+                            type="text" 
+                            value={formData.bannerImage}
+                            onChange={(e) => setFormData(prev => ({ ...prev, bannerImage: e.target.value }))}
+                            placeholder="https://images.unsplash.com/..."
+                            className="flex-1 px-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stone-900"
+                          />
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-6">
-                        <div>
-                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Hero Image (Mobile)</label>
-                          <div className="border-2 border-dashed border-stone-300 rounded-xl bg-stone-50 p-8 flex flex-col items-center justify-center text-center hover:bg-stone-100 transition-all cursor-pointer aspect-[3/4]">
-                            <FiImage size={24} className="text-stone-400 mb-2" />
-                            <h3 className="text-sm font-bold text-stone-900">Upload Mobile</h3>
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Thumbnail</label>
-                          <div className="border-2 border-dashed border-stone-300 rounded-xl bg-stone-50 p-8 flex flex-col items-center justify-center text-center hover:bg-stone-100 transition-all cursor-pointer aspect-square">
-                            <FiImage size={24} className="text-stone-400 mb-2" />
-                            <h3 className="text-sm font-bold text-stone-900">Upload Thumbnail</h3>
-                          </div>
+                      <div>
+                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Thumbnail / Cover Image URL</label>
+                        <div className="flex items-center gap-4">
+                          {formData.image ? (
+                            <img src={formData.image} alt="Cover" className="w-20 h-20 object-cover rounded-lg border border-stone-200" />
+                          ) : (
+                            <div className="w-20 h-20 bg-stone-100 rounded-lg border border-stone-200 flex items-center justify-center">
+                              <FiImage className="text-stone-400" />
+                            </div>
+                          )}
+                          <input 
+                            type="text" 
+                            value={formData.image}
+                            onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
+                            placeholder="https://images.unsplash.com/..."
+                            className="flex-1 px-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stone-900"
+                          />
                         </div>
                       </div>
                     </div>
@@ -277,15 +340,17 @@ export default function CollectionEditor() {
 
                       <div className="pt-6">
                         {formData.type === 'automatic' ? (
-                          <CollectionRuleBuilder />
+                          <CollectionRuleBuilder 
+                            rules={formData.rules}
+                            onChangeRules={(rules) => setFormData(prev => ({ ...prev, rules }))}
+                            matchMode={formData.matchMode}
+                            onChangeMatchMode={(matchMode) => setFormData(prev => ({ ...prev, matchMode }))}
+                          />
                         ) : (
-                          <div className="border border-stone-200 rounded-xl p-8 text-center bg-stone-50">
-                            <h3 className="font-bold text-stone-900 mb-2">Manual Selection</h3>
-                            <p className="text-sm text-stone-500 mb-4">Search and add products to this collection.</p>
-                            <button className="px-4 py-2 bg-stone-900 text-white text-sm font-semibold rounded-lg hover:bg-stone-800 transition-colors">
-                              Browse Products
-                            </button>
-                          </div>
+                          <ManualProductSelector 
+                            selectedProductIds={formData.productIds}
+                            onChange={(productIds) => setFormData(prev => ({ ...prev, productIds }))}
+                          />
                         )}
                       </div>
                     </div>
@@ -363,6 +428,12 @@ export default function CollectionEditor() {
           </div>
         </main>
       </div>
+
+      <CollectionPreview 
+        collection={{ ...formData, id: isNew ? 'preview' : id }}
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+      />
     </div>
   );
 }

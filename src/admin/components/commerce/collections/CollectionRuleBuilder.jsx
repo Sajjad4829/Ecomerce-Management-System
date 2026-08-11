@@ -1,18 +1,20 @@
-import { useState } from 'react';
 import { FiPlus, FiTrash2 } from 'react-icons/fi';
 
-export default function CollectionRuleBuilder() {
-  const [logic, setLogic] = useState('all');
-  const [rules, setRules] = useState([
-    { id: 1, field: 'category', operator: 'equals', value: 'Seating' }
-  ]);
-
+export default function CollectionRuleBuilder({ rules, onChangeRules, matchMode, onChangeMatchMode }) {
   const addRule = () => {
-    setRules([...rules, { id: Date.now(), field: 'price', operator: 'greater_than', value: '' }]);
+    onChangeRules([...rules, { id: Date.now(), field: 'price', operator: 'greaterThan', value: '' }]);
   };
 
-  const removeRule = (id) => {
-    setRules(rules.filter(r => r.id !== id));
+  const removeRule = (index) => {
+    const newRules = [...rules];
+    newRules.splice(index, 1);
+    onChangeRules(newRules);
+  };
+
+  const updateRule = (index, field, value) => {
+    const newRules = [...rules];
+    newRules[index] = { ...newRules[index], [field]: value };
+    onChangeRules(newRules);
   };
 
   return (
@@ -22,8 +24,8 @@ export default function CollectionRuleBuilder() {
         <label className="flex items-center gap-2 cursor-pointer">
           <input 
             type="radio" 
-            checked={logic === 'all'} 
-            onChange={() => setLogic('all')}
+            checked={matchMode === 'all'} 
+            onChange={() => onChangeMatchMode('all')}
             className="text-stone-900 focus:ring-stone-900"
           />
           <span className="text-sm text-stone-700">All conditions (AND)</span>
@@ -31,8 +33,8 @@ export default function CollectionRuleBuilder() {
         <label className="flex items-center gap-2 cursor-pointer">
           <input 
             type="radio" 
-            checked={logic === 'any'} 
-            onChange={() => setLogic('any')}
+            checked={matchMode === 'any'} 
+            onChange={() => onChangeMatchMode('any')}
             className="text-stone-900 focus:ring-stone-900"
           />
           <span className="text-sm text-stone-700">Any condition (OR)</span>
@@ -41,39 +43,41 @@ export default function CollectionRuleBuilder() {
 
       <div className="space-y-3">
         {rules.map((rule, index) => (
-          <div key={rule.id} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center p-4 bg-white border border-stone-200 rounded-lg shadow-sm">
+          <div key={rule.id || index} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center p-4 bg-white border border-stone-200 rounded-lg shadow-sm">
             <select 
               className="w-full sm:w-auto px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
-              defaultValue={rule.field}
+              value={rule.field}
+              onChange={(e) => updateRule(index, 'field', e.target.value)}
             >
-              <option value="title">Product Title</option>
+              <option value="name">Product Name</option>
               <option value="category">Category</option>
               <option value="brand">Brand</option>
               <option value="price">Price</option>
-              <option value="tag">Tag</option>
-              <option value="inventory">Inventory Stock</option>
+              <option value="stock">Inventory Stock</option>
             </select>
 
             <select 
               className="w-full sm:w-auto px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
-              defaultValue={rule.operator}
+              value={rule.operator}
+              onChange={(e) => updateRule(index, 'operator', e.target.value)}
             >
               <option value="equals">is equal to</option>
-              <option value="not_equals">is not equal to</option>
+              <option value="notEquals">is not equal to</option>
               <option value="contains">contains</option>
-              <option value="greater_than">is greater than</option>
-              <option value="less_than">is less than</option>
+              <option value="greaterThan">is greater than</option>
+              <option value="lessThan">is less than</option>
             </select>
 
             <input 
               type="text" 
               placeholder="Value..."
-              defaultValue={rule.value}
+              value={rule.value}
+              onChange={(e) => updateRule(index, 'value', e.target.value)}
               className="w-full flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
             />
 
             <button 
-              onClick={() => removeRule(rule.id)}
+              onClick={() => removeRule(index)}
               className="p-2 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0"
             >
               <FiTrash2 size={16} />

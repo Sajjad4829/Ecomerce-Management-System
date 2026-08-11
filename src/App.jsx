@@ -4,6 +4,7 @@ import { CommerceProvider } from './storefront/context/CommerceContext';
 import { AdminRoute } from './auth/components/AdminRoute';
 import { CustomerRoute } from './auth/components/CustomerRoute';
 import AdminLayout from './admin/layouts/AdminLayout';
+import { ToastProvider } from './components/ui/Toast/ToastContext';
 
 import { MediaProvider } from "./admin/context/media/MediaContext";
 import MediaLibrary from "./admin/pages/media/MediaLibrary";
@@ -41,6 +42,9 @@ import ProductManager from './admin/pages/commerce/products/ProductManager';
 import ProductEditor from './admin/pages/commerce/products/ProductEditor';
 
 import CategoryManager from './admin/pages/commerce/categories/CategoryManager';
+import { CategoryProvider } from './admin/context/commerce/CategoryContext';
+import { ProductProvider } from './admin/context/commerce/ProductContext';
+import { CollectionProvider } from './admin/context/commerce/CollectionContext';
 import CategoryEditor from './admin/pages/commerce/categories/CategoryEditor';
 import CollectionManager from './admin/pages/commerce/collections/CollectionManager';
 import CollectionEditor from './admin/pages/commerce/collections/CollectionEditor';
@@ -495,7 +499,7 @@ import {
 
 export default function App() {
   return (
-
+    <ToastProvider>
     <AuthProvider>
       <CommerceProvider>
         <InventoryProvider>
@@ -516,7 +520,7 @@ export default function App() {
                                       <SettingsProvider>
                                         <MarketingProvider>
                                           <CMSProvider>
-                                            <MediaProvider><GlobalSearchProvider><SearchProvider><CustomerProvider><SEOProvider><ExperienceProvider>
+                                              <MediaProvider><GlobalSearchProvider><SearchProvider><CustomerProvider><SEOProvider><ExperienceProvider><CategoryProvider><ProductProvider><CollectionProvider>
 
                                               <Router>
                                                 <Routes>
@@ -1096,7 +1100,7 @@ export default function App() {
                                                 </Routes>
                                               </Router>
 
-                                            </ExperienceProvider></SEOProvider></CustomerProvider></SearchProvider></GlobalSearchProvider></MediaProvider>
+                                                      </CollectionProvider></ProductProvider></CategoryProvider></ExperienceProvider></SEOProvider></CustomerProvider></SearchProvider></GlobalSearchProvider></MediaProvider>
                                           </CMSProvider>
                                         </MarketingProvider>
                                       </SettingsProvider>
@@ -1117,6 +1121,7 @@ export default function App() {
         </InventoryProvider>
       </CommerceProvider>
     </AuthProvider>
+    </ToastProvider>
 
   );
 }

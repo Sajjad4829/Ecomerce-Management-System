@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiArrowLeft, FiSave, FiInfo, FiImage, FiSearch, FiLayout 
-} from 'react-icons/fi';
+import { FiArrowLeft, FiSave, FiInfo, FiImage, FiSearch, FiLayout } from 'react-icons/fi';
 import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
+import { useCategories, generateSlug } from '../../../context/commerce/CategoryContext';
 
 const TABS = [
   { id: 'basic', label: 'Basic Info', icon: FiInfo },
@@ -24,40 +23,89 @@ export default function CategoryEditor() {
     name: '',
     slug: '',
     description: '',
-    parentCategory: '',
+    parentId: '',
     status: 'draft',
     featured: false,
-    layoutTemplate: 'default',
-    productsPerPage: 24,
-    showSidebar: true,
+    sortOrder: 1,
+    image: '',
+    bannerImage: '',
+    icon: '',
     seoTitle: '',
-    seoDescription: ''
+    seoDescription: '',
+    metaKeywords: '',
+    canonicalUrl: '',
+    robots: 'index,follow'
   });
+
+  const { categories, getCategoryById, addCategory, updateCategory } = useCategories();
 
   useEffect(() => {
     if (!isNew) {
-      setFormData({
-        name: 'Living Room',
-        slug: 'living-room',
-        description: 'Premium living room furniture including sofas, coffee tables, and media units.',
-        parentCategory: 'Furniture',
-        status: 'published',
-        featured: true,
-        layoutTemplate: 'grid-sidebar',
-        productsPerPage: 24,
-        showSidebar: true,
-        seoTitle: 'Luxury Living Room Furniture | Aurelia',
-        seoDescription: 'Discover our exclusive collection of premium living room furniture.'
-      });
+      const cat = getCategoryById(id);
+      if (cat) {
+        setFormData({
+          name: cat.name || '',
+          slug: cat.slug || '',
+          description: cat.description || '',
+          parentId: cat.parentId || '',
+          status: cat.status || 'draft',
+          featured: cat.featured || false,
+          sortOrder: cat.sortOrder || 1,
+          image: cat.image || '',
+          bannerImage: cat.bannerImage || '',
+          icon: cat.icon || '',
+          seoTitle: cat.seo?.metaTitle || '',
+          seoDescription: cat.seo?.metaDescription || '',
+          metaKeywords: cat.seo?.metaKeywords || '',
+          canonicalUrl: cat.seo?.canonicalUrl || '',
+          robots: cat.seo?.robots || 'index,follow'
+        });
+      }
     }
-  }, [id, isNew]);
+  }, [id, isNew, getCategoryById]);
 
   const handleSave = () => {
     setIsSaving(true);
+    
+    // Prepare payload
+    const payload = {
+      name: formData.name,
+      slug: formData.slug || generateSlug(formData.name),
+      description: formData.description,
+      parentId: formData.parentId || null,
+      status: formData.status,
+      featured: formData.featured,
+      sortOrder: Number(formData.sortOrder) || 1,
+      image: formData.image,
+      bannerImage: formData.bannerImage,
+      icon: formData.icon,
+      seo: {
+        metaTitle: formData.seoTitle,
+        metaDescription: formData.seoDescription,
+        metaKeywords: formData.metaKeywords,
+        canonicalUrl: formData.canonicalUrl,
+        robots: formData.robots
+      }
+    };
+
     setTimeout(() => {
+      if (isNew) {
+        addCategory(payload);
+      } else {
+        updateCategory(id, payload);
+      }
       setIsSaving(false);
       navigate('/admin/catalog/categories');
-    }, 800);
+    }, 400);
+  };
+
+  const handleNameChange = (e) => {
+    const newName = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      name: newName,
+      slug: isNew ? generateSlug(newName) : prev.slug // auto-generate slug only if new
+    }));
   };
 
   return (
@@ -160,7 +208,7 @@ export default function CategoryEditor() {
                         <input 
                           type="text" 
                           value={formData.name}
-                          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                          onChange={handleNameChange}
                           className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
                         />
                       </div>
@@ -178,14 +226,14 @@ export default function CategoryEditor() {
                       <div>
                         <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Parent Category</label>
                         <select 
-                          value={formData.parentCategory}
-                          onChange={(e) => setFormData(prev => ({ ...prev, parentCategory: e.target.value }))}
+                          value={formData.parentId}
+                          onChange={(e) => setFormData(prev => ({ ...prev, parentId: e.target.value }))}
                           className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
                         >
                           <option value="">None (Top Level)</option>
-                          <option value="Furniture">Furniture</option>
-                          <option value="Lighting">Lighting</option>
-                          <option value="Decor">Decor</option>
+                          {categories.filter(c => c.id !== id).map(c => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                          ))}
                         </select>
                       </div>
 

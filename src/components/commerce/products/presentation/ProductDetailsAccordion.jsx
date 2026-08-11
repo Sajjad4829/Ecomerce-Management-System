@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
+import { FiChevronDown, FiBox, FiLayers, FiInfo, FiHeart, FiShield, FiTruck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function AccordionSection({ title, children, isOpen, onToggle }) {
+function AccordionSection({ title, icon, children, isOpen, onToggle }) {
   return (
-    <div className="border-b border-stone-200">
+    <div className="border-t border-[#E5E7F2]">
       <button 
         onClick={onToggle}
         className="w-full flex items-center justify-between py-5 text-left focus:outline-none group"
       >
-        <span className="text-sm font-bold text-stone-900 group-hover:text-stone-600 transition-colors uppercase tracking-wider">{title}</span>
+        <div className="flex items-center gap-4">
+          {icon && <div className="text-[#111A4A]">{icon}</div>}
+          <span className="text-[13px] font-bold text-[#111A4A] transition-colors uppercase tracking-widest">{title}</span>
+        </div>
         <FiChevronDown 
-          className={`text-stone-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
-          size={20} 
+          className={`text-[#111A4A] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+          size={18} 
         />
       </button>
       <AnimatePresence>
@@ -51,10 +54,11 @@ export default function ProductDetailsAccordion({ product }) {
   const hasStory = !!details.story || !!description;
 
   return (
-    <div className="mt-16 w-full max-w-4xl">
+    <div className="mt-8 w-full max-w-4xl border-b border-[#E5E7F2]">
       {hasStory && (
         <AccordionSection 
           title="Product Story" 
+          icon={<FiInfo size={20} />}
           isOpen={openSection === 'story'} 
           onToggle={() => handleToggle('story')}
         >
@@ -65,6 +69,7 @@ export default function ProductDetailsAccordion({ product }) {
       {hasDimensions && (
         <AccordionSection 
           title="Dimensions" 
+          icon={<FiBox size={20} />}
           isOpen={openSection === 'dimensions'} 
           onToggle={() => handleToggle('dimensions')}
         >
@@ -84,6 +89,7 @@ export default function ProductDetailsAccordion({ product }) {
       {hasMaterials && (
         <AccordionSection 
           title="Materials & Finish" 
+          icon={<FiLayers size={20} />}
           isOpen={openSection === 'materials'} 
           onToggle={() => handleToggle('materials')}
         >
@@ -103,6 +109,7 @@ export default function ProductDetailsAccordion({ product }) {
       {hasCare && (
         <AccordionSection 
           title="Care Information" 
+          icon={<FiHeart size={20} />}
           isOpen={openSection === 'care'} 
           onToggle={() => handleToggle('care')}
         >
@@ -126,6 +133,7 @@ export default function ProductDetailsAccordion({ product }) {
       {hasWarranty && (
         <AccordionSection 
           title="Warranty" 
+          icon={<FiShield size={20} />}
           isOpen={openSection === 'warranty'} 
           onToggle={() => handleToggle('warranty')}
         >
@@ -143,6 +151,7 @@ export default function ProductDetailsAccordion({ product }) {
       {hasReturns && (
         <AccordionSection 
           title="Delivery & Returns" 
+          icon={<FiTruck size={20} />}
           isOpen={openSection === 'returns'} 
           onToggle={() => handleToggle('returns')}
         >

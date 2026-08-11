@@ -6,48 +6,11 @@ import BulkProductBar from '../../../components/commerce/products/BulkProductBar
 import ProductPreview from '../../../components/commerce/products/ProductPreview';
 import DuplicateProductModal from '../../../components/commerce/products/DuplicateProductModal';
 import { useNavigate } from 'react-router-dom';
+import { useProducts } from '../../../context/commerce/ProductContext';
 
 export default function ProductManager() {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([
-    {
-      id: 'prod-1',
-      sku: 'AUR-SOF-001',
-      name: 'The Sovereign Curved Sofa',
-      status: 'published',
-      category: 'Seating',
-      collection: 'The Sanctuary',
-      price: 12850,
-      stock: 5,
-      updatedAt: '2026-08-08',
-      image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=400'
-    },
-    {
-      id: 'prod-2',
-      sku: 'AUR-TBL-042',
-      name: 'Florentine Marble Dining Table',
-      status: 'published',
-      category: 'Tables',
-      collection: 'Heritage',
-      price: 8500,
-      stock: 2,
-      updatedAt: '2026-08-07',
-      image: 'https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&q=80&w=400'
-    },
-    {
-      id: 'prod-3',
-      sku: 'AUR-CHR-015',
-      name: 'Nordic Oak Lounge Chair',
-      status: 'draft',
-      category: 'Seating',
-      collection: 'Minimalist',
-      price: 3200,
-      stock: 0,
-      updatedAt: '2026-08-06',
-      image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=400'
-    }
-  ]);
-
+  const { products, bulkDelete, bulkUpdateStatus } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('list');
   const [showFilters, setShowFilters] = useState(false);
@@ -144,6 +107,16 @@ export default function ProductManager() {
       <BulkProductBar 
         selectedCount={selectedProducts.length} 
         onClear={() => setSelectedProducts([])} 
+        onAction={(action) => {
+          if (action === 'delete') {
+            bulkDelete(selectedProducts);
+          } else if (action === 'publish') {
+            bulkUpdateStatus(selectedProducts, 'published');
+          } else if (action === 'draft') {
+            bulkUpdateStatus(selectedProducts, 'draft');
+          }
+          setSelectedProducts([]);
+        }}
       />
 
       {/* Preview Drawer */}
