@@ -31,25 +31,25 @@ export default function ColorPalette() {
     
     return (
       <div className="mb-10">
-        <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest mb-4 border-b border-black/5 pb-2">
+        <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-4 border-b border-black/5 pb-2">
           {title}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {groupColors.map(color => (
-            <div key={color.id} className="bg-white border border-black/5 rounded-xl p-4 shadow-sm group">
+            <div key={color.id} className="bg-surface border border-black/5 rounded-xl p-4 shadow-sm group">
               <div 
                 className="w-full h-24 rounded-lg mb-4 border border-black/10 relative overflow-hidden"
                 style={{ backgroundColor: color.value }}
               >
                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <button className="bg-white text-[#1A1A1A] p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+                    <button className="bg-surface text-text-primary p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
                       <FiCopy size={16} />
                     </button>
                  </div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold text-[#1A1A1A]">{color.name}</span>
+                  <span className="text-sm font-bold text-text-primary">{color.name}</span>
                   <div className="relative w-8 h-8 rounded-full border border-black/10 overflow-hidden cursor-pointer" title="Edit Color">
                     <input 
                       type="color" 
@@ -59,7 +59,7 @@ export default function ColorPalette() {
                     />
                   </div>
                 </div>
-                <div className="flex justify-between items-center text-xs text-gray-500">
+                <div className="flex justify-between items-center text-xs text-text-muted">
                   <span className="font-mono">{color.value.toUpperCase()}</span>
                   <span className="font-mono truncate w-24 text-right" title={color.variable}>{color.variable}</span>
                 </div>

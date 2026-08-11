@@ -5,13 +5,13 @@ export default function StatusBadge({ status, className = '' }) {
 
   const styles = {
     published: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    draft: 'bg-amber-100 text-amber-800 border-amber-200',
-    archived: 'bg-gray-100 text-gray-600 border-gray-200'
+    draft: 'bg-warning-soft text-amber-800 border-amber-200',
+    archived: 'bg-gray-100 text-text-secondary border-border'
   };
 
   const dots = {
     published: 'bg-emerald-500',
-    draft: 'bg-amber-500',
+    draft: 'bg-warning-soft0',
     archived: 'bg-gray-400'
   };
 

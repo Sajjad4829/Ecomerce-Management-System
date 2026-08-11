@@ -19,33 +19,33 @@ export default function CollectionRuleBuilder({ rules, onChangeRules, matchMode,
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 bg-stone-50 p-4 rounded-lg border border-stone-200">
-        <span className="text-sm font-semibold text-stone-900">Products must match:</span>
+      <div className="flex items-center gap-3 bg-background p-4 rounded-lg border border-border">
+        <span className="text-sm font-semibold text-text-primary">Products must match:</span>
         <label className="flex items-center gap-2 cursor-pointer">
           <input 
             type="radio" 
             checked={matchMode === 'all'} 
             onChange={() => onChangeMatchMode('all')}
-            className="text-stone-900 focus:ring-stone-900"
+            className="text-text-primary focus:ring-stone-900"
           />
-          <span className="text-sm text-stone-700">All conditions (AND)</span>
+          <span className="text-sm text-text-secondary">All conditions (AND)</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input 
             type="radio" 
             checked={matchMode === 'any'} 
             onChange={() => onChangeMatchMode('any')}
-            className="text-stone-900 focus:ring-stone-900"
+            className="text-text-primary focus:ring-stone-900"
           />
-          <span className="text-sm text-stone-700">Any condition (OR)</span>
+          <span className="text-sm text-text-secondary">Any condition (OR)</span>
         </label>
       </div>
 
       <div className="space-y-3">
         {rules.map((rule, index) => (
-          <div key={rule.id || index} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center p-4 bg-white border border-stone-200 rounded-lg shadow-sm">
+          <div key={rule.id || index} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center p-4 bg-surface border border-border rounded-lg shadow-sm">
             <select 
-              className="w-full sm:w-auto px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
+              className="w-full sm:w-auto px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
               value={rule.field}
               onChange={(e) => updateRule(index, 'field', e.target.value)}
             >
@@ -57,7 +57,7 @@ export default function CollectionRuleBuilder({ rules, onChangeRules, matchMode,
             </select>
 
             <select 
-              className="w-full sm:w-auto px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
+              className="w-full sm:w-auto px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
               value={rule.operator}
               onChange={(e) => updateRule(index, 'operator', e.target.value)}
             >
@@ -73,12 +73,12 @@ export default function CollectionRuleBuilder({ rules, onChangeRules, matchMode,
               placeholder="Value..."
               value={rule.value}
               onChange={(e) => updateRule(index, 'value', e.target.value)}
-              className="w-full flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
+              className="w-full flex-1 px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-stone-900"
             />
 
             <button 
               onClick={() => removeRule(index)}
-              className="p-2 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0"
+              className="p-2 text-text-muted hover:text-danger hover:bg-danger-soft rounded-lg transition-colors shrink-0"
             >
               <FiTrash2 size={16} />
             </button>
@@ -88,7 +88,7 @@ export default function CollectionRuleBuilder({ rules, onChangeRules, matchMode,
 
       <button 
         onClick={addRule}
-        className="px-4 py-2 border border-stone-200 text-stone-600 text-sm font-semibold rounded-lg hover:bg-stone-50 transition-colors flex items-center gap-2"
+        className="px-4 py-2 border border-border text-text-secondary text-sm font-semibold rounded-lg hover:bg-background transition-colors flex items-center gap-2"
       >
         <FiPlus size={16} /> Add Condition
       </button>

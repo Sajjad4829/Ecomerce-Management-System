@@ -12,7 +12,7 @@ export default function TestimonialsPreview() {
         <h3 className="text-3xl md:text-4xl font-serif leading-relaxed mb-8">
           "The quality of the oak dining table exceeded all our expectations. It is truly a centerpiece that our family will gather around for decades to come."
         </h3>
-        <div className="text-sm tracking-widest uppercase font-bold text-gray-400">
+        <div className="text-sm tracking-widest uppercase font-bold text-text-muted">
           — Sarah Jenkins, Verified Buyer
         </div>
       </div>

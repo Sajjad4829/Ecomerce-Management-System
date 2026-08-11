@@ -20,7 +20,7 @@ export default function OrderTimeline({ order }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+    <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
       <h3 className="text-lg font-serif text-neutral-900 mb-6">Timeline</h3>
       <div className="space-y-6">
         {events.map((event, index) => (

@@ -10,7 +10,7 @@ export const SectionRenderer = ({ section }) => {
             <h1 className="text-5xl font-serif">{section.content?.heading || 'Hero Heading'}</h1>
             <p className="text-xl max-w-2xl mx-auto text-neutral-300">{section.content?.subtitle || 'Hero subtitle text'}</p>
             {section.content?.cta && (
-              <button className="px-8 py-3 bg-white text-neutral-900 font-medium rounded hover:bg-neutral-100">
+              <button className="px-8 py-3 bg-surface text-neutral-900 font-medium rounded hover:bg-neutral-100">
                 {section.content.cta}
               </button>
             )}
@@ -25,10 +25,10 @@ export const SectionRenderer = ({ section }) => {
       );
     case 'Banner':
       return (
-        <div className="bg-indigo-600 text-white p-12 text-center">
+        <div className="bg-primary text-white p-12 text-center">
           <h2 className="text-3xl font-serif mb-4">{section.content?.heading || 'Banner Heading'}</h2>
           <p className="mb-6">{section.content?.description || 'Banner description'}</p>
-          <button className="px-6 py-2 border border-white rounded hover:bg-indigo-700">
+          <button className="px-6 py-2 border border-white rounded hover:bg-primary-hover">
             {section.content?.cta || 'Learn More'}
           </button>
         </div>
@@ -62,12 +62,12 @@ export const SectionRenderer = ({ section }) => {
           </div>
           <div className={`grid grid-cols-1 md:grid-cols-${section.layout?.columns || 3} gap-8`}>
             {[1, 2, 3].map(i => (
-              <div key={i} className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
+              <div key={i} className="bg-surface border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
                 <div className="h-48 bg-neutral-100"></div>
                 <div className="p-6">
                   <h3 className="font-medium text-lg mb-2">Card Title {i}</h3>
                   <p className="text-sm text-neutral-600 mb-4">Card description placeholder text.</p>
-                  <a href="#" className="text-indigo-600 font-medium text-sm hover:underline">Read more</a>
+                  <a href="#" className="text-primary font-medium text-sm hover:underline">Read more</a>
                 </div>
               </div>
             ))}

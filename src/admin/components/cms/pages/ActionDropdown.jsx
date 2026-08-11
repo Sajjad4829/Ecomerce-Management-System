@@ -21,7 +21,7 @@ export default function ActionDropdown({ actions }) {
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-black/5 rounded transition-colors"
+        className="p-1.5 text-text-muted hover:text-text-primary hover:bg-black/5 rounded transition-colors"
       >
         <FiMoreVertical size={16} />
       </button>
@@ -33,7 +33,7 @@ export default function ActionDropdown({ actions }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-48 origin-top-right bg-white border border-black/5 rounded-xl shadow-lg shadow-black/5 z-50 overflow-hidden"
+            className="absolute right-0 mt-2 w-48 origin-top-right bg-surface border border-black/5 rounded-xl shadow-lg shadow-black/5 z-50 overflow-hidden"
           >
             <div className="py-1">
               {actions.map((action, index) => {
@@ -48,8 +48,8 @@ export default function ActionDropdown({ actions }) {
                     className={cn(
                       "flex items-center w-full text-left px-4 py-2 text-xs font-semibold tracking-wide transition-colors",
                       action.danger 
-                        ? "text-red-600 hover:bg-red-50" 
-                        : "text-gray-700 hover:bg-gray-50 hover:text-[#1A1A1A]"
+                        ? "text-danger hover:bg-danger-soft" 
+                        : "text-text-secondary hover:bg-background hover:text-text-primary"
                     )}
                   >
                     {Icon && <Icon className="mr-3 text-sm" />}

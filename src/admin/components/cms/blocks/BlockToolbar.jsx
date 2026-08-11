@@ -3,23 +3,23 @@ import { cn } from '../../../../utils/cn';
 
 export default function BlockToolbar({ searchQuery, setSearchQuery, view, setView }) {
   return (
-    <div className="bg-white p-4 rounded-xl border border-black/5 flex flex-col md:flex-row gap-4 justify-between items-center shadow-sm sticky top-0 z-20">
+    <div className="bg-surface p-4 rounded-xl border border-black/5 flex flex-col md:flex-row gap-4 justify-between items-center shadow-sm sticky top-0 z-20">
       <div className="relative w-full md:w-96">
-        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
         <input 
           type="text" 
           placeholder="Search global blocks..." 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-[#F7F5F2] border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20 focus:ring-1 focus:ring-black/20 transition-all"
+          className="w-full pl-10 pr-4 py-2 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 transition-all"
         />
       </div>
       
       <div className="flex items-center gap-3 w-full md:w-auto">
-        <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 border border-black/10 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+        <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 border border-black/10 rounded-lg text-xs font-semibold text-text-secondary hover:bg-background transition-colors">
           <FiFilter size={14} /> Filters
         </button>
-        <select className="flex-1 md:flex-none px-4 py-2 border border-black/10 rounded-lg text-xs font-semibold text-gray-600 bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:border-black/30">
+        <select className="flex-1 md:flex-none px-4 py-2 border border-black/10 rounded-lg text-xs font-semibold text-text-secondary bg-surface hover:bg-background transition-colors focus:outline-none focus:border-black/30">
           <option>Sort by: Last Updated</option>
           <option>Sort by: Most Used</option>
           <option>Sort by: Name (A-Z)</option>
@@ -30,7 +30,7 @@ export default function BlockToolbar({ searchQuery, setSearchQuery, view, setVie
             onClick={() => setView('grid')}
             className={cn(
               "p-1.5 rounded-md transition-colors",
-              view === 'grid' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+              view === 'grid' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
             )}
             title="Grid view"
           >
@@ -40,7 +40,7 @@ export default function BlockToolbar({ searchQuery, setSearchQuery, view, setVie
             onClick={() => setView('list')}
             className={cn(
               "p-1.5 rounded-md transition-colors",
-              view === 'list' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+              view === 'list' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
             )}
             title="List view"
           >

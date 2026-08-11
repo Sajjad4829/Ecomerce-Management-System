@@ -17,8 +17,8 @@ export function SettingsHome() {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-stone-900 mb-2">Settings Overview</h2>
-        <p className="text-stone-500">Configure your store, manage operations, and set up automations.</p>
+        <h2 className="text-2xl font-bold text-text-primary mb-2">Settings Overview</h2>
+        <p className="text-text-muted">Configure your store, manage operations, and set up automations.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -26,14 +26,14 @@ export function SettingsHome() {
           <button 
             key={idx} 
             onClick={() => navigate(link.path)}
-            className="flex items-start gap-4 p-5 bg-white border border-stone-200 rounded-xl hover:border-stone-400 hover:shadow-sm transition-all text-left"
+            className="flex items-start gap-4 p-5 bg-surface border border-border rounded-xl hover:border-stone-400 hover:shadow-sm transition-all text-left"
           >
-            <div className="p-3 bg-stone-50 rounded-lg text-stone-500">
+            <div className="p-3 bg-background rounded-lg text-text-muted">
               <link.icon size={20} />
             </div>
             <div>
-              <div className="font-bold text-stone-900 mb-1">{link.label}</div>
-              <div className="text-sm text-stone-500">{link.desc}</div>
+              <div className="font-bold text-text-primary mb-1">{link.label}</div>
+              <div className="text-sm text-text-muted">{link.desc}</div>
             </div>
           </button>
         ))}

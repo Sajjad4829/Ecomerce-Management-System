@@ -22,12 +22,12 @@ export default function PricingDashboard() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-green-100 text-green-900 font-mono text-[10px] uppercase font-bold">
+            <span className="px-2 py-0.5 rounded bg-success-soft text-green-900 font-mono text-[10px] uppercase font-bold">
               Commerce Engine
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Pricing Engine</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Pricing Engine</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage global pricing rules, customer group discounts, and scheduled price changes.
           </p>
         </div>
@@ -48,17 +48,17 @@ export default function PricingDashboard() {
       {activeTab === 'rules' && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
-            { label: 'Active Rules', value: '4', icon: FiDollarSign, color: 'text-green-600', bg: 'bg-green-50' },
-            { label: 'Scheduled', value: '2', icon: FiClock, color: 'text-blue-600', bg: 'bg-blue-50' },
-            { label: 'Drafts', value: '1', icon: FiArchive, color: 'text-stone-600', bg: 'bg-stone-100' },
+            { label: 'Active Rules', value: '4', icon: FiDollarSign, color: 'text-success', bg: 'bg-success-soft' },
+            { label: 'Scheduled', value: '2', icon: FiClock, color: 'text-primary', bg: 'bg-blue-50' },
+            { label: 'Drafts', value: '1', icon: FiArchive, color: 'text-text-secondary', bg: 'bg-stone-100' },
           ].map((stat, idx) => (
-            <div key={idx} className="bg-white p-5 rounded-xl border border-black/5 flex items-center gap-4">
+            <div key={idx} className="bg-surface p-5 rounded-xl border border-black/5 flex items-center gap-4">
               <div className={`w-12 h-12 ${stat.bg} rounded-full flex items-center justify-center shrink-0`}>
                 <stat.icon className={`${stat.color}`} size={20} />
               </div>
               <div>
-                <p className="text-xs font-mono font-bold text-gray-500 uppercase tracking-wider">{stat.label}</p>
-                <p className="text-2xl font-bold text-[#1A1A1A] mt-1">{stat.value}</p>
+                <p className="text-xs font-mono font-bold text-text-muted uppercase tracking-wider">{stat.label}</p>
+                <p className="text-2xl font-bold text-text-primary mt-1">{stat.value}</p>
               </div>
             </div>
           ))}
@@ -77,8 +77,8 @@ export default function PricingDashboard() {
             onClick={() => setActiveTab(tab.id)}
             className={`px-6 py-3 text-sm font-bold border-b-2 transition-colors ${
               activeTab === tab.id 
-                ? 'border-[#1A1A1A] text-[#1A1A1A]' 
-                : 'border-transparent text-gray-500 hover:text-gray-900'
+                ? 'border-[#1A1A1A] text-text-primary' 
+                : 'border-transparent text-text-muted hover:text-text-primary'
             }`}
           >
             {tab.label}
@@ -87,7 +87,7 @@ export default function PricingDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden min-h-[400px]">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden min-h-[400px]">
         {activeTab === 'rules' && (
           <>
             {/* Toolbar */}
@@ -98,7 +98,7 @@ export default function PricingDashboard() {
                     key={tab}
                     onClick={() => setRuleFilter(tab)}
                     className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors capitalize ${
-                      ruleFilter === tab ? 'bg-[#F7F5F2] text-[#1A1A1A]' : 'text-gray-500 hover:bg-gray-50'
+                      ruleFilter === tab ? 'bg-background text-text-primary' : 'text-text-muted hover:bg-background'
                     }`}
                   >
                     {tab}
@@ -108,14 +108,14 @@ export default function PricingDashboard() {
               
               <div className="flex gap-3">
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
                   <input 
                     type="text" 
                     placeholder="Search rules..." 
-                    className="pl-10 pr-4 py-2 bg-[#F7F5F2] border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20 focus:ring-1 focus:ring-black/20 w-64"
+                    className="pl-10 pr-4 py-2 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 w-64"
                   />
                 </div>
-                <button className="px-4 py-2 bg-[#F7F5F2] text-[#1A1A1A] rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2">
+                <button className="px-4 py-2 bg-background text-text-primary rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2">
                   <FiFilter size={16} /> Filter
                 </button>
               </div>
@@ -125,35 +125,35 @@ export default function PricingDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-black/5">
-                    <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Rule Name</th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Type & Target</th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Discount</th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Schedule</th>
+                  <tr className="bg-background border-b border-black/5">
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Rule Name</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Type & Target</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Discount</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Schedule</th>
                     <th className="p-4 text-right"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-black/5">
                   {MOCK_PRICE_RULES.map(rule => (
-                    <tr key={rule.id} className="hover:bg-gray-50 transition-colors group">
+                    <tr key={rule.id} className="hover:bg-background transition-colors group">
                       <td className="p-4">
-                        <Link to={`/admin/catalog/pricing/rules/${rule.id}`} className="text-sm font-bold text-[#1A1A1A] hover:text-blue-600">
+                        <Link to={`/admin/catalog/pricing/rules/${rule.id}`} className="text-sm font-bold text-text-primary hover:text-primary">
                           {rule.name}
                         </Link>
                       </td>
                       <td className="p-4">
-                        <p className="text-sm text-[#1A1A1A] font-medium">{rule.type}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{rule.target}</p>
+                        <p className="text-sm text-text-primary font-medium">{rule.type}</p>
+                        <p className="text-xs text-text-muted mt-0.5">{rule.target}</p>
                       </td>
                       <td className="p-4">
-                        <span className="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 text-xs font-bold rounded">
+                        <span className="inline-flex items-center px-2 py-1 bg-success-soft text-success text-xs font-bold rounded">
                           {rule.amount}
                         </span>
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-                          rule.status === 'active' ? 'bg-green-100 text-green-800' :
+                          rule.status === 'active' ? 'bg-success-soft text-green-800' :
                           rule.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
                           'bg-gray-100 text-gray-800'
                         }`}>
@@ -161,11 +161,11 @@ export default function PricingDashboard() {
                         </span>
                       </td>
                       <td className="p-4">
-                        <p className="text-xs text-gray-900">{rule.startDate}</p>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-wider">To: {rule.endDate}</p>
+                        <p className="text-xs text-text-primary">{rule.startDate}</p>
+                        <p className="text-[10px] text-text-muted uppercase tracking-wider">To: {rule.endDate}</p>
                       </td>
                       <td className="p-4 text-right">
-                        <button className="p-2 text-gray-400 hover:text-[#1A1A1A] rounded-lg hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-all">
+                        <button className="p-2 text-text-muted hover:text-text-primary rounded-lg hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-all">
                           <FiMoreVertical size={16} />
                         </button>
                       </td>

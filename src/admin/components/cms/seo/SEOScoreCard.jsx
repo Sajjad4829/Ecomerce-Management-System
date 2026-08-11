@@ -105,15 +105,15 @@ export default function SEOScoreCard({
 
   // Score color gauge logic
   const getScoreBadge = (score) => {
-    if (score >= 80) return { label: 'Excellent', bg: 'bg-green-100 text-green-800 border-green-200', stroke: 'stroke-green-600' };
-    if (score >= 50) return { label: 'Needs Improvement', bg: 'bg-amber-100 text-amber-800 border-amber-200', stroke: 'stroke-amber-500' };
-    return { label: 'Poor SEO', bg: 'bg-red-100 text-red-800 border-red-200', stroke: 'stroke-red-500' };
+    if (score >= 80) return { label: 'Excellent', bg: 'bg-success-soft text-green-800 border-green-200', stroke: 'stroke-green-600' };
+    if (score >= 50) return { label: 'Needs Improvement', bg: 'bg-warning-soft text-amber-800 border-amber-200', stroke: 'stroke-amber-500' };
+    return { label: 'Poor SEO', bg: 'bg-danger-soft text-red-800 border-red-200', stroke: 'stroke-red-500' };
   };
 
   const badge = getScoreBadge(evaluation.score);
 
   return (
-    <div className="bg-white border border-black/10 rounded-xl p-5 shadow-2xs space-y-4">
+    <div className="bg-surface border border-black/10 rounded-xl p-5 shadow-2xs space-y-4">
       {/* Top Score Gauge Header */}
       <div className="flex items-center justify-between border-b border-black/5 pb-4">
         <div className="flex items-center gap-3">
@@ -137,19 +137,19 @@ export default function SEOScoreCard({
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
             </svg>
-            <span className="absolute font-serif font-bold text-base text-[#1A1A1A]">
+            <span className="absolute font-serif font-bold text-base text-text-primary">
               {evaluation.score}
             </span>
           </div>
 
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="font-serif font-bold text-base text-[#1A1A1A]">SEO Health Score</h4>
+              <h4 className="font-serif font-bold text-base text-text-primary">SEO Health Score</h4>
               <span className={cn("px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border", badge.bg)}>
                 {badge.label}
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-text-muted mt-0.5">
               Live automated audit analyzing search rankings potential and meta completeness.
             </p>
           </div>
@@ -158,17 +158,17 @@ export default function SEOScoreCard({
 
       {/* Rules Breakdown Checklist */}
       <div className="space-y-2">
-        <h5 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+        <h5 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
           Automated Audit Findings ({evaluation.checks.length})
         </h5>
 
         <div className="space-y-1.5 max-h-56 overflow-y-auto custom-scrollbar pr-1">
           {evaluation.checks.map((chk, idx) => (
-            <div key={idx} className="flex items-start gap-2 text-xs p-2 rounded-lg bg-gray-50 border border-black/5">
-              {chk.status === 'pass' && <FiCheckCircle className="text-green-600 shrink-0 mt-0.5" size={14} />}
+            <div key={idx} className="flex items-start gap-2 text-xs p-2 rounded-lg bg-background border border-black/5">
+              {chk.status === 'pass' && <FiCheckCircle className="text-success shrink-0 mt-0.5" size={14} />}
               {chk.status === 'warn' && <FiAlertTriangle className="text-amber-500 shrink-0 mt-0.5" size={14} />}
-              {chk.status === 'fail' && <FiXCircle className="text-red-500 shrink-0 mt-0.5" size={14} />}
-              <span className="text-gray-700 leading-snug">{chk.msg}</span>
+              {chk.status === 'fail' && <FiXCircle className="text-danger shrink-0 mt-0.5" size={14} />}
+              <span className="text-text-secondary leading-snug">{chk.msg}</span>
             </div>
           ))}
         </div>

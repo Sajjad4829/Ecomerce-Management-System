@@ -4,8 +4,8 @@ import { PieChart as RechartsPieChart, Pie, Cell, Tooltip, ResponsiveContainer, 
 export default function PieChart({ data, height = 300, nameKey = 'name', dataKey = 'value', innerRadius = 0, colors = ['#1A1A1A', '#4A4A4A', '#8B8B8B', '#CCCCCC', '#E5E5E5'] }) {
   if (!data || data.length === 0) {
     return (
-      <div className="flex items-center justify-center w-full bg-gray-50 rounded-lg" style={{ height }}>
-        <p className="text-gray-400">No data available</p>
+      <div className="flex items-center justify-center w-full bg-background rounded-lg" style={{ height }}>
+        <p className="text-text-muted">No data available</p>
       </div>
     );
   }

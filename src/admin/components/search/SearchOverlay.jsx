@@ -79,23 +79,23 @@ export default function SearchOverlay() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] bg-stone-900/50 backdrop-blur-sm" onClick={closeOverlay}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] bg-primary/50 backdrop-blur-sm" onClick={closeOverlay}>
       <div 
-        className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] mx-4"
+        className="w-full max-w-2xl bg-surface rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] mx-4"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center px-4 py-4 border-b border-stone-100">
-          <FiSearch className="text-stone-400 text-xl shrink-0" />
+          <FiSearch className="text-text-muted text-xl shrink-0" />
           <input 
             ref={inputRef}
             type="text"
-            className="flex-1 px-4 text-lg bg-transparent border-none focus:outline-none focus:ring-0 text-stone-900 placeholder:text-stone-400"
+            className="flex-1 px-4 text-lg bg-transparent border-none focus:outline-none focus:ring-0 text-text-primary placeholder:text-text-muted"
             placeholder="Search products, orders, customers, or type a command..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
           />
-          <button onClick={closeOverlay} className="p-2 text-stone-400 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors">
+          <button onClick={closeOverlay} className="p-2 text-text-muted hover:text-text-primary rounded-lg hover:bg-stone-100 transition-colors">
             <FiX className="text-xl" />
           </button>
         </div>
@@ -105,16 +105,16 @@ export default function SearchOverlay() {
             <div className="p-2">
               {recentSearches.length > 0 && (
                 <div className="mb-6">
-                  <div className="text-xs font-bold text-stone-400 uppercase tracking-widest px-2 mb-2">Recent Searches</div>
+                  <div className="text-xs font-bold text-text-muted uppercase tracking-widest px-2 mb-2">Recent Searches</div>
                   {recentSearches.map((rs, i) => (
                     <button 
                       key={i}
                       onClick={() => setQuery(rs.query)}
-                      className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-stone-50 text-left group"
+                      className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-background text-left group"
                     >
                       <div className="flex items-center gap-3">
-                        <FiClock className="text-stone-400" />
-                        <span className="text-stone-700 font-medium group-hover:text-stone-900">{rs.query}</span>
+                        <FiClock className="text-text-muted" />
+                        <span className="text-text-secondary font-medium group-hover:text-text-primary">{rs.query}</span>
                       </div>
                     </button>
                   ))}
@@ -122,7 +122,7 @@ export default function SearchOverlay() {
               )}
               
               <div>
-                <div className="text-xs font-bold text-stone-400 uppercase tracking-widest px-2 mb-2">Quick Commands</div>
+                <div className="text-xs font-bold text-text-muted uppercase tracking-widest px-2 mb-2">Quick Commands</div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { name: 'Create Product', url: '/admin/catalog/products/new', icon: FiBox },
@@ -133,12 +133,12 @@ export default function SearchOverlay() {
                     <button 
                       key={i}
                       onClick={() => { closeOverlay(); navigate(cmd.url); }}
-                      className="flex items-center gap-3 p-3 border border-stone-100 rounded-xl hover:bg-stone-50 hover:border-stone-200 text-left transition-colors"
+                      className="flex items-center gap-3 p-3 border border-stone-100 rounded-xl hover:bg-background hover:border-border text-left transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-stone-100 text-stone-600 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-stone-100 text-text-secondary flex items-center justify-center shrink-0">
                         <cmd.icon />
                       </div>
-                      <span className="text-sm font-medium text-stone-700">{cmd.name}</span>
+                      <span className="text-sm font-medium text-text-secondary">{cmd.name}</span>
                     </button>
                   ))}
                 </div>
@@ -149,7 +149,7 @@ export default function SearchOverlay() {
           {query && (
             <div className="p-2">
               {loading ? (
-                <div className="py-8 text-center text-sm text-stone-500">Searching...</div>
+                <div className="py-8 text-center text-sm text-text-muted">Searching...</div>
               ) : results.length > 0 ? (
                 <div className="space-y-1">
                   {results.map((result, i) => (
@@ -157,34 +157,34 @@ export default function SearchOverlay() {
                       key={result.id}
                       onClick={() => handleSelect(result)}
                       className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors ${
-                        selectedIndex === i ? 'bg-stone-100' : 'hover:bg-stone-50'
+                        selectedIndex === i ? 'bg-stone-100' : 'hover:bg-background'
                       }`}
                     >
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                        result.type === 'Command' ? 'bg-stone-900 text-white' : 'bg-white border border-stone-200 text-stone-500'
+                        result.type === 'Command' ? 'bg-primary text-white' : 'bg-surface border border-border text-text-muted'
                       }`}>
                         {getIcon(result.type)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-bold text-stone-900 truncate">{result.name}</div>
-                        <div className="text-xs text-stone-500 truncate mt-0.5">
+                        <div className="text-sm font-bold text-text-primary truncate">{result.name}</div>
+                        <div className="text-xs text-text-muted truncate mt-0.5">
                           {result.type} • {result.sku || result.customer || result.category || result.typeDetail || result.status}
                         </div>
                       </div>
-                      <FiArrowRight className={`shrink-0 transition-opacity ${selectedIndex === i ? 'opacity-100 text-stone-900' : 'opacity-0 text-stone-400 group-hover:opacity-100'}`} />
+                      <FiArrowRight className={`shrink-0 transition-opacity ${selectedIndex === i ? 'opacity-100 text-text-primary' : 'opacity-0 text-text-muted group-hover:opacity-100'}`} />
                     </button>
                   ))}
                 </div>
               ) : (
                 <div className="py-12 text-center">
-                  <div className="w-12 h-12 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-3 text-stone-400">
+                  <div className="w-12 h-12 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-3 text-text-muted">
                     <FiSearch size={20} />
                   </div>
-                  <div className="text-stone-900 font-medium">No results found for "{query}"</div>
-                  <div className="text-stone-500 text-sm mt-1">Try a different term or check advanced search.</div>
+                  <div className="text-text-primary font-medium">No results found for "{query}"</div>
+                  <div className="text-text-muted text-sm mt-1">Try a different term or check advanced search.</div>
                   <button 
                     onClick={() => { closeOverlay(); navigate('/admin/search/advanced'); }}
-                    className="mt-4 px-4 py-2 bg-stone-100 text-stone-700 rounded-lg text-sm font-medium hover:bg-stone-200 transition-colors"
+                    className="mt-4 px-4 py-2 bg-stone-100 text-text-secondary rounded-lg text-sm font-medium hover:bg-stone-200 transition-colors"
                   >
                     Go to Advanced Search
                   </button>
@@ -194,10 +194,10 @@ export default function SearchOverlay() {
           )}
         </div>
         
-        <div className="px-4 py-3 bg-stone-50 border-t border-stone-100 flex items-center gap-4 text-xs text-stone-500">
-          <div className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-white border border-stone-200 rounded text-stone-700 font-mono">↑↓</span> to navigate</div>
-          <div className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-white border border-stone-200 rounded text-stone-700 font-mono">↵</span> to select</div>
-          <div className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-white border border-stone-200 rounded text-stone-700 font-mono">esc</span> to close</div>
+        <div className="px-4 py-3 bg-background border-t border-stone-100 flex items-center gap-4 text-xs text-text-muted">
+          <div className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-surface border border-border rounded text-text-secondary font-mono">↑↓</span> to navigate</div>
+          <div className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-surface border border-border rounded text-text-secondary font-mono">↵</span> to select</div>
+          <div className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-surface border border-border rounded text-text-secondary font-mono">esc</span> to close</div>
         </div>
       </div>
     </div>

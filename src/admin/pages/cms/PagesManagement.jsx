@@ -47,8 +47,8 @@ export default function PagesManagement() {
         className="flex flex-col lg:flex-row lg:items-end justify-between gap-6"
       >
         <div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Pages</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Pages</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage all standalone pages across your platform. Create, edit, and organize page content, URLs, and SEO settings.
           </p>
         </div>

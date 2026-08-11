@@ -8,7 +8,7 @@ export default function ViewSwitcher({ view, setView }) {
         onClick={() => setView('grid')}
         className={cn(
           "p-1.5 rounded-md transition-colors",
-          view === 'grid' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+          view === 'grid' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
         )}
         title="Grid view"
       >
@@ -18,7 +18,7 @@ export default function ViewSwitcher({ view, setView }) {
         onClick={() => setView('list')}
         className={cn(
           "p-1.5 rounded-md transition-colors",
-          view === 'list' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+          view === 'list' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
         )}
         title="List view"
       >

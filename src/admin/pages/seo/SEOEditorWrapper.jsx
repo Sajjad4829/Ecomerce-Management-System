@@ -17,7 +17,7 @@ export function SEOEditorWrapper() {
 
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-6">
-      <button onClick={() => navigate('/admin/seo/resources')} className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors text-sm">
+      <button onClick={() => navigate('/admin/seo/resources')} className="flex items-center gap-2 text-text-muted hover:text-text-primary transition-colors text-sm">
         <FiArrowLeft /> Back to Resources
       </button>
       

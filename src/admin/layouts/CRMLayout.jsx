@@ -27,7 +27,7 @@ export default function CRMLayout() {
   return (
     <div className="flex h-[calc(100vh-4rem)]">
       {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-neutral-200 overflow-y-auto">
+      <div className="w-64 bg-surface border-r border-neutral-200 overflow-y-auto">
         <div className="p-6">
           <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-4">CRM & Sales</h2>
           <nav className="space-y-1">

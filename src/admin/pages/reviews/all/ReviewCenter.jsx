@@ -15,9 +15,9 @@ export default function ReviewCenter() {
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'Published': return 'bg-green-100 text-green-800';
-      case 'Pending': return 'bg-amber-100 text-amber-800';
-      case 'Rejected': return 'bg-red-100 text-red-800';
+      case 'Published': return 'bg-success-soft text-green-800';
+      case 'Pending': return 'bg-warning-soft text-amber-800';
+      case 'Rejected': return 'bg-danger-soft text-red-800';
       case 'Hidden': return 'bg-neutral-100 text-neutral-800';
       case 'Reported': return 'bg-orange-100 text-orange-800';
       default: return 'bg-neutral-100 text-neutral-800';
@@ -33,7 +33,7 @@ export default function ReviewCenter() {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input 
@@ -41,7 +41,7 @@ export default function ReviewCenter() {
             placeholder="Search reviews..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+            className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" 
           />
         </div>
         <button className="px-4 py-2 border border-neutral-200 rounded-md text-neutral-700 hover:bg-neutral-50 flex items-center gap-2">
@@ -49,7 +49,7 @@ export default function ReviewCenter() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -71,7 +71,7 @@ export default function ReviewCenter() {
                 <td className="px-6 py-4">
                   <div className="text-neutral-900">{review.customerName}</div>
                   {review.verifiedPurchase && (
-                    <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
+                    <div className="flex items-center gap-1 text-xs text-success mt-1">
                       <CheckCircle2 className="w-3 h-3" /> Verified
                     </div>
                   )}
@@ -93,8 +93,8 @@ export default function ReviewCenter() {
                   <div className="flex items-center justify-end gap-2">
                     {review.status === 'Pending' && (
                       <>
-                        <button onClick={() => approveReview(review.id)} className="p-1 text-green-600 hover:bg-green-50 rounded" title="Approve"><Check className="w-4 h-4" /></button>
-                        <button onClick={() => rejectReview(review.id)} className="p-1 text-red-600 hover:bg-red-50 rounded" title="Reject"><X className="w-4 h-4" /></button>
+                        <button onClick={() => approveReview(review.id)} className="p-1 text-success hover:bg-success-soft rounded" title="Approve"><Check className="w-4 h-4" /></button>
+                        <button onClick={() => rejectReview(review.id)} className="p-1 text-danger hover:bg-danger-soft rounded" title="Reject"><X className="w-4 h-4" /></button>
                       </>
                     )}
                     {review.status === 'Published' && (

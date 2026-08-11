@@ -116,13 +116,13 @@ export default function VariantGenerator({ onCancel, onGenerate, basePrice, base
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-stone-200 h-full flex flex-col">
-      <div className="px-6 py-4 border-b border-stone-200 flex items-center justify-between bg-stone-50 rounded-t-xl">
+    <div className="bg-surface rounded-xl shadow-sm border border-border h-full flex flex-col">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-background rounded-t-xl">
         <div>
-          <h2 className="text-lg font-serif font-bold text-stone-900">Generate Variants</h2>
-          <p className="text-xs text-stone-500">Step {step} of 2: {step === 1 ? 'Select Attributes' : 'Preview & Generate'}</p>
+          <h2 className="text-lg font-serif font-bold text-text-primary">Generate Variants</h2>
+          <p className="text-xs text-text-muted">Step {step} of 2: {step === 1 ? 'Select Attributes' : 'Preview & Generate'}</p>
         </div>
-        <button onClick={onCancel} className="p-2 text-stone-400 hover:text-stone-900 rounded-full hover:bg-stone-200 transition-colors">
+        <button onClick={onCancel} className="p-2 text-text-muted hover:text-text-primary rounded-full hover:bg-stone-200 transition-colors">
           <FiX size={20} />
         </button>
       </div>
@@ -130,25 +130,25 @@ export default function VariantGenerator({ onCancel, onGenerate, basePrice, base
       <div className="flex-1 overflow-hidden flex flex-col">
         {step === 1 ? (
           <div className="p-8 overflow-y-auto max-w-4xl mx-auto w-full">
-            <h3 className="text-sm font-bold text-stone-900 mb-6">Select Global Attributes</h3>
+            <h3 className="text-sm font-bold text-text-primary mb-6">Select Global Attributes</h3>
             <div className="space-y-6">
               {MOCK_ATTRIBUTES.map(attr => {
                 const isSelected = !!selectedOptions[attr.id];
                 const selectedValues = selectedOptions[attr.id] || [];
 
                 return (
-                  <div key={attr.id} className={`border rounded-xl transition-all ${isSelected ? 'border-stone-400 shadow-sm' : 'border-stone-200'}`}>
+                  <div key={attr.id} className={`border rounded-xl transition-all ${isSelected ? 'border-stone-400 shadow-sm' : 'border-border'}`}>
                     <div 
-                      className="px-5 py-4 flex items-center gap-4 cursor-pointer hover:bg-stone-50 rounded-xl"
+                      className="px-5 py-4 flex items-center gap-4 cursor-pointer hover:bg-background rounded-xl"
                       onClick={() => handleAttributeToggle(attr.id)}
                     >
-                      <div className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${isSelected ? 'bg-stone-900 border-stone-900 text-white' : 'border-stone-300 text-transparent'}`}>
+                      <div className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${isSelected ? 'bg-primary border-stone-900 text-white' : 'border-border-hover text-transparent'}`}>
                         <FiCheck size={14} />
                       </div>
                       <div className="flex-1">
-                        <span className="font-semibold text-stone-900 text-sm">{attr.name}</span>
+                        <span className="font-semibold text-text-primary text-sm">{attr.name}</span>
                         {isSelected && (
-                          <span className="ml-3 text-xs text-stone-500 font-mono">
+                          <span className="ml-3 text-xs text-text-muted font-mono">
                             {selectedValues.length} selected
                           </span>
                         )}
@@ -156,8 +156,8 @@ export default function VariantGenerator({ onCancel, onGenerate, basePrice, base
                     </div>
                     
                     {isSelected && (
-                      <div className="px-5 pb-5 pt-2 border-t border-stone-100 bg-stone-50 rounded-b-xl">
-                        <p className="text-xs text-stone-500 uppercase font-bold tracking-wider mb-3">Select Values</p>
+                      <div className="px-5 pb-5 pt-2 border-t border-stone-100 bg-background rounded-b-xl">
+                        <p className="text-xs text-text-muted uppercase font-bold tracking-wider mb-3">Select Values</p>
                         <div className="flex flex-wrap gap-2">
                           {attr.values.map(val => {
                             const valSelected = selectedValues.includes(val.id);
@@ -167,8 +167,8 @@ export default function VariantGenerator({ onCancel, onGenerate, basePrice, base
                                 onClick={() => handleValueToggle(attr.id, val.id)}
                                 className={`px-4 py-2 rounded-lg text-sm transition-all border ${
                                   valSelected 
-                                    ? 'bg-amber-100 border-amber-300 text-amber-900 font-medium' 
-                                    : 'bg-white border-stone-200 text-stone-600 hover:border-stone-300'
+                                    ? 'bg-warning-soft border-amber-300 text-amber-900 font-medium' 
+                                    : 'bg-surface border-border text-text-secondary hover:border-border-hover'
                                 }`}
                               >
                                 {val.label}
@@ -188,10 +188,10 @@ export default function VariantGenerator({ onCancel, onGenerate, basePrice, base
         )}
       </div>
 
-      <div className="px-6 py-4 border-t border-stone-200 bg-stone-50 rounded-b-xl flex items-center justify-between shrink-0">
+      <div className="px-6 py-4 border-t border-border bg-background rounded-b-xl flex items-center justify-between shrink-0">
         <button 
           onClick={step === 1 ? onCancel : () => setStep(1)}
-          className="px-4 py-2 text-stone-600 hover:text-stone-900 text-sm font-medium transition-colors"
+          className="px-4 py-2 text-text-secondary hover:text-text-primary text-sm font-medium transition-colors"
         >
           {step === 1 ? 'Cancel' : 'Back'}
         </button>
@@ -199,7 +199,7 @@ export default function VariantGenerator({ onCancel, onGenerate, basePrice, base
         <button 
           onClick={step === 1 ? () => setStep(2) : handleFinish}
           disabled={step === 1 && combinations.length === 0}
-          className="px-6 py-2 bg-stone-900 text-white rounded-lg text-sm font-semibold hover:bg-stone-800 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {step === 1 ? (
             <>Preview Combinations ({combinations.length}) <FiChevronRight size={16} /></>

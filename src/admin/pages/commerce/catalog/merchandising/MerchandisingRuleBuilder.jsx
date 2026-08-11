@@ -37,26 +37,26 @@ export default function MerchandisingRuleBuilder() {
       <div className="flex items-center gap-4">
         <button 
           onClick={() => navigate('/admin/catalog/merchandising/rules')}
-          className="p-2 bg-white border border-black/10 rounded-lg hover:bg-gray-50 transition-colors"
+          className="p-2 bg-surface border border-black/10 rounded-lg hover:bg-background transition-colors"
         >
           <FiArrowLeft />
         </button>
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">Create Merchandising Rule</h1>
-          <p className="text-sm text-gray-500">Define conditional logic for search and discovery.</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Create Merchandising Rule</h1>
+          <p className="text-sm text-text-muted">Define conditional logic for search and discovery.</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-black/5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Rule Name</label>
+            <label className="block text-sm font-medium text-text-secondary mb-1">Rule Name</label>
             <input 
               type="text" 
               value={rule.name}
               onChange={(e) => setRule({ ...rule, name: e.target.value })}
               placeholder="e.g., Boost Summer Collection for 'Outdoor'"
-              className="w-full px-4 py-2 bg-gray-50 border border-black/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-black/20"
+              className="w-full px-4 py-2 bg-background border border-black/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-black/20"
             />
           </div>
           <div className="flex gap-4">
@@ -82,21 +82,21 @@ export default function MerchandisingRuleBuilder() {
         </div>
 
         {/* Condition Builder (WHEN) */}
-        <div className="p-6 border-b border-black/5 bg-gray-50">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">WHEN (Condition)</h3>
+        <div className="p-6 border-b border-black/5 bg-background">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-text-muted mb-4">WHEN (Condition)</h3>
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="w-full sm:w-1/3">
               <select 
                 value={rule.conditionType}
                 onChange={(e) => setRule({ ...rule, conditionType: e.target.value })}
-                className="w-full px-4 py-2 bg-white border border-black/10 rounded-lg focus:outline-none"
+                className="w-full px-4 py-2 bg-surface border border-black/10 rounded-lg focus:outline-none"
               >
                 <option value="Search Query">Search Query</option>
                 <option value="Category">Category</option>
                 <option value="Customer Segment">Customer Segment</option>
               </select>
             </div>
-            <div className="w-full sm:w-1/3 flex items-center justify-center text-sm font-medium text-gray-400">
+            <div className="w-full sm:w-1/3 flex items-center justify-center text-sm font-medium text-text-muted">
               Equals
             </div>
             <div className="w-full sm:w-1/3">
@@ -105,7 +105,7 @@ export default function MerchandisingRuleBuilder() {
                 value={rule.conditionValue}
                 onChange={(e) => setRule({ ...rule, conditionValue: e.target.value })}
                 placeholder={rule.conditionType === 'Search Query' ? "e.g., 'sofa'" : 'Value'}
-                className="w-full px-4 py-2 bg-white border border-black/10 rounded-lg focus:outline-none"
+                className="w-full px-4 py-2 bg-surface border border-black/10 rounded-lg focus:outline-none"
               />
             </div>
           </div>
@@ -113,13 +113,13 @@ export default function MerchandisingRuleBuilder() {
 
         {/* Action Builder (THEN) */}
         <div className="p-6">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">THEN (Action)</h3>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-text-muted mb-4">THEN (Action)</h3>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="w-full sm:w-1/3">
               <select 
                 value={rule.actionType}
                 onChange={(e) => setRule({ ...rule, actionType: e.target.value })}
-                className="w-full px-4 py-2 bg-white border border-black/10 rounded-lg focus:outline-none"
+                className="w-full px-4 py-2 bg-surface border border-black/10 rounded-lg focus:outline-none"
               >
                 <option value="Boost">Boost</option>
                 <option value="Pin">Pin</option>
@@ -131,7 +131,7 @@ export default function MerchandisingRuleBuilder() {
               <select 
                 value={rule.targetType}
                 onChange={(e) => setRule({ ...rule, targetType: e.target.value })}
-                className="w-full px-4 py-2 bg-white border border-black/10 rounded-lg focus:outline-none"
+                className="w-full px-4 py-2 bg-surface border border-black/10 rounded-lg focus:outline-none"
               >
                 <option value="Product">Product</option>
                 <option value="Collection">Collection</option>
@@ -144,7 +144,7 @@ export default function MerchandisingRuleBuilder() {
                 value={rule.targetValue}
                 onChange={(e) => setRule({ ...rule, targetValue: e.target.value })}
                 placeholder="Target ID or Name"
-                className="w-full px-4 py-2 bg-white border border-black/10 rounded-lg focus:outline-none"
+                className="w-full px-4 py-2 bg-surface border border-black/10 rounded-lg focus:outline-none"
               />
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function MerchandisingRuleBuilder() {
           {rule.actionType === 'Boost' || rule.actionType === 'Bury' ? (
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-gray-700">Weight</label>
+                <label className="block text-sm font-medium text-text-secondary">Weight</label>
                 <span className="text-sm font-mono bg-gray-100 px-2 py-0.5 rounded">{rule.weight}</span>
               </div>
               <input 
@@ -171,7 +171,7 @@ export default function MerchandisingRuleBuilder() {
       <div className="flex justify-end gap-3">
         <button 
           onClick={() => navigate('/admin/catalog/merchandising/rules')}
-          className="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+          className="px-6 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:bg-gray-100 transition-colors"
         >
           Cancel
         </button>

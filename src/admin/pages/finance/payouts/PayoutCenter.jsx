@@ -20,7 +20,7 @@ export const PayoutCenter = () => {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -36,7 +36,7 @@ export const PayoutCenter = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
@@ -58,21 +58,21 @@ export const PayoutCenter = () => {
                   <td className="px-6 py-4 text-neutral-600">{po.gateway}</td>
                   <td className="px-6 py-4 text-neutral-600">{po.period}</td>
                   <td className="px-6 py-4 text-right text-neutral-600">${po.grossAmount?.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-right text-red-600">-${po.fees?.toLocaleString()}</td>
+                  <td className="px-6 py-4 text-right text-danger">-${po.fees?.toLocaleString()}</td>
                   <td className="px-6 py-4 text-right font-medium text-neutral-900">
                     ${po.netAmount?.toLocaleString()}
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                       po.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' :
-                      po.status === 'Pending' ? 'bg-amber-100 text-amber-800' :
+                      po.status === 'Pending' ? 'bg-warning-soft text-amber-800' :
                       'bg-neutral-100 text-neutral-800'
                     }`}>
                       {po.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="inline-flex items-center justify-center p-2 text-neutral-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors">
+                    <button className="inline-flex items-center justify-center p-2 text-neutral-400 hover:text-primary hover:bg-primary-soft rounded transition-colors">
                       <ExternalLink className="w-4 h-4" />
                     </button>
                   </td>

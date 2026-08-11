@@ -40,7 +40,7 @@ export default function SearchRankingManager() {
         }
       />
       
-      <div className="bg-white p-6 rounded-xl border border-black/5 shadow-sm max-w-3xl">
+      <div className="bg-surface p-6 rounded-xl border border-black/5 shadow-sm max-w-3xl">
         <div className="flex items-start gap-3 p-4 bg-blue-50 text-blue-900 rounded-lg mb-8">
           <FiInfo className="mt-0.5 shrink-0" />
           <div className="text-sm">
@@ -55,10 +55,10 @@ export default function SearchRankingManager() {
           {ranking.map((signal) => (
             <div key={signal.id} className="space-y-3">
               <div className="flex justify-between items-center">
-                <label className="block text-sm font-medium text-gray-900">
+                <label className="block text-sm font-medium text-text-primary">
                   {signal.signal}
                 </label>
-                <span className="text-sm font-mono text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                <span className="text-sm font-mono text-text-muted bg-gray-100 px-2 py-0.5 rounded">
                   Weight: {weights[signal.id]}
                 </span>
               </div>
@@ -70,7 +70,7 @@ export default function SearchRankingManager() {
                 onChange={(e) => handleWeightChange(signal.id, e.target.value)}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
               />
-              <div className="flex justify-between text-xs text-gray-400">
+              <div className="flex justify-between text-xs text-text-muted">
                 <span>0 (Ignored)</span>
                 <span>100 (Maximum Influence)</span>
               </div>

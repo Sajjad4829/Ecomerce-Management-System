@@ -6,9 +6,9 @@ export default function CategoryGridPreview() {
   ];
 
   return (
-    <div className="py-24 px-8 md:px-16 bg-white">
+    <div className="py-24 px-8 md:px-16 bg-surface">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-serif font-bold text-[#1A1A1A] mb-12 text-center">Shop by Room</h2>
+        <h2 className="text-3xl font-serif font-bold text-text-primary mb-12 text-center">Shop by Room</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {categories.map((cat, idx) => (
             <div key={idx} className="group relative h-96 overflow-hidden cursor-pointer">

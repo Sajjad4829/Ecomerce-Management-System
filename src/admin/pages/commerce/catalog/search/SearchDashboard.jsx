@@ -36,8 +36,8 @@ export default function SearchDashboard() {
               Discovery Engine
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Search Configuration</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Search Configuration</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage global search behavior, facets, ranking algorithms, and analyze customer search intent.
           </p>
         </div>

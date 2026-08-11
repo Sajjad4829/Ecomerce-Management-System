@@ -21,7 +21,7 @@ export default function ThemeSidebar({ activeSection, setActiveSection }) {
         <ul className="space-y-6 custom-scrollbar max-h-[calc(100vh-12rem)] overflow-y-auto">
           {groups.map(group => (
             <li key={group}>
-              <h3 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3 pl-3">
+              <h3 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted mb-3 pl-3">
                 {group}
               </h3>
               <ul className="space-y-1">
@@ -33,7 +33,7 @@ export default function ThemeSidebar({ activeSection, setActiveSection }) {
                         "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors font-medium flex items-center justify-between",
                         activeSection === section.id 
                           ? "bg-[#1A1A1A] text-white shadow-sm" 
-                          : "text-gray-600 hover:bg-black/5 hover:text-[#1A1A1A]"
+                          : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                       )}
                     >
                       {section.label}

@@ -25,7 +25,7 @@ export const GoodsReceiving = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Active Shipments Queue */}
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm flex flex-col">
           <div className="p-5 border-b border-neutral-200">
             <h2 className="font-medium text-neutral-900">Incoming Shipments</h2>
             <p className="text-sm text-neutral-500 mt-1">Select a PO to begin receiving process</p>
@@ -57,7 +57,7 @@ export const GoodsReceiving = () => {
                 </div>
                 <button 
                   onClick={() => navigate(`/admin/procurement/purchase-orders/${po.id}`)}
-                  className="p-2 text-indigo-600 bg-indigo-50 rounded-md hover:bg-indigo-100 transition-colors opacity-0 group-hover:opacity-100 flex items-center gap-1"
+                  className="p-2 text-primary bg-primary-soft rounded-md hover:bg-indigo-100 transition-colors opacity-0 group-hover:opacity-100 flex items-center gap-1"
                 >
                   Receive <ArrowRight className="w-4 h-4" />
                 </button>
@@ -73,7 +73,7 @@ export const GoodsReceiving = () => {
         </div>
 
         {/* Recent Receiving Logs */}
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm flex flex-col">
           <div className="p-5 border-b border-neutral-200">
             <h2 className="font-medium text-neutral-900">Recent Receipts</h2>
             <p className="text-sm text-neutral-500 mt-1">Audit log of processed goods</p>
@@ -83,11 +83,11 @@ export const GoodsReceiving = () => {
               <div key={rec.id} className="p-4 flex items-start gap-4">
                 <div className="mt-1">
                   {rec.status === 'Completed' ? (
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                    <div className="w-8 h-8 rounded-full bg-success-soft flex items-center justify-center text-success">
                       <PackageCheck className="w-4 h-4" />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                    <div className="w-8 h-8 rounded-full bg-warning-soft flex items-center justify-center text-warning">
                       <AlertCircle className="w-4 h-4" />
                     </div>
                   )}
@@ -98,7 +98,7 @@ export const GoodsReceiving = () => {
                     <div className="text-xs text-neutral-500">{rec.date}</div>
                   </div>
                   <div className="text-sm text-neutral-600 mt-1">Received {rec.itemsReceived} items at {rec.warehouseId}</div>
-                  <div className="mt-2 inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                  <div className="mt-2 inline-flex items-center gap-1 text-xs text-warning bg-warning-soft px-2 py-1 rounded">
                     <AlertCircle className="w-3 h-3" />
                     Inventory update requires backend transaction
                   </div>

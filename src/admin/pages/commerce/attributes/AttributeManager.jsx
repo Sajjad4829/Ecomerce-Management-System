@@ -81,15 +81,15 @@ export default function AttributeManager() {
 
   return (
     <div className="p-6 space-y-6 max-w-[1400px] mx-auto relative pb-24">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-stone-200">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] uppercase font-bold">
+            <span className="px-2 py-0.5 rounded bg-warning-soft text-amber-900 font-mono text-[10px] uppercase font-bold">
               Catalog Engine
             </span>
           </div>
-          <h1 className="font-serif font-bold text-2xl text-stone-900 mt-1">Attributes & Specifications</h1>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <h1 className="font-serif font-bold text-2xl text-text-primary mt-1">Attributes & Specifications</h1>
+          <p className="text-xs text-text-muted mt-0.5">
             Manage reusable product attributes, specifications, and variants.
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function AttributeManager() {
         <div className="flex gap-2">
           <button 
             onClick={() => navigate('/admin/catalog/attributes/groups')}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-lg text-xs font-semibold hover:bg-stone-50 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-surface border border-border text-text-secondary rounded-lg text-xs font-semibold hover:bg-background transition-colors shadow-sm"
           >
             <FiSettings size={14} />
             Manage Groups
@@ -124,24 +124,24 @@ export default function AttributeManager() {
             createLabel="Create Attribute"
           />
 
-          <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+          <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-stone-50 border-b border-stone-200">
+                  <tr className="bg-background border-b border-border">
                     <th className="p-4 w-10">
                       <input 
                         type="checkbox" 
                         onChange={(e) => handleSelectAll(e.target.checked)}
                         checked={attributes.length > 0 && selectedAttributes.length === attributes.length}
-                        className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+                        className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900"
                       />
                     </th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Attribute</th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Type / Group</th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Status</th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Usage</th>
-                    <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Properties</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Attribute</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Type / Group</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Usage</th>
+                    <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Properties</th>
                     <th className="p-4 w-10"></th>
                   </tr>
                 </thead>
@@ -149,7 +149,7 @@ export default function AttributeManager() {
                   {filteredAttributes.map(attr => (
                     <tr 
                       key={attr.id}
-                      className={`hover:bg-stone-50 transition-colors group cursor-pointer ${selectedAttributes.includes(attr.id) ? 'bg-stone-50' : ''}`}
+                      className={`hover:bg-background transition-colors group cursor-pointer ${selectedAttributes.includes(attr.id) ? 'bg-background' : ''}`}
                       onClick={(e) => {
                         if (e.target.type !== 'checkbox' && !e.target.closest('button')) {
                           navigate(`/admin/catalog/attributes/${attr.id}`);
@@ -161,29 +161,29 @@ export default function AttributeManager() {
                           type="checkbox"
                           checked={selectedAttributes.includes(attr.id)}
                           onChange={(e) => handleSelectOne(attr.id, e.target.checked)}
-                          className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+                          className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900"
                         />
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           <div>
-                            <p className="font-semibold text-stone-900 text-sm group-hover:text-amber-700 transition-colors">{attr.name}</p>
-                            <p className="text-xs text-stone-500 font-mono">/{attr.slug}</p>
+                            <p className="font-semibold text-text-primary text-sm group-hover:text-warning transition-colors">{attr.name}</p>
+                            <p className="text-xs text-text-muted font-mono">/{attr.slug}</p>
                           </div>
                         </div>
                       </td>
                       <td className="p-4">
                         <div className="flex flex-col gap-1">
-                          <span className="font-mono text-xs text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded uppercase w-fit">
+                          <span className="font-mono text-xs text-text-secondary bg-stone-100 px-1.5 py-0.5 rounded uppercase w-fit">
                             {attr.type}
                           </span>
-                          <span className="text-xs text-stone-500">{attr.group}</span>
+                          <span className="text-xs text-text-muted">{attr.group}</span>
                         </div>
                       </td>
                       <td className="p-4">
                         <CatalogStatusBadge status={attr.status} />
                       </td>
-                      <td className="p-4 text-sm text-stone-600">
+                      <td className="p-4 text-sm text-text-secondary">
                         {attr.usageCount}
                       </td>
                       <td className="p-4">
@@ -199,7 +199,7 @@ export default function AttributeManager() {
                       <td className="p-4 relative" onClick={e => e.stopPropagation()}>
                         <button 
                           onClick={(e) => toggleMenu(attr.id, e)}
-                          className="p-1.5 text-stone-400 hover:text-stone-900 hover:bg-stone-200 rounded transition-colors"
+                          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-stone-200 rounded transition-colors"
                         >
                           <FiMoreVertical size={16} />
                         </button>
@@ -210,19 +210,19 @@ export default function AttributeManager() {
                               initial={{ opacity: 0, scale: 0.95 }}
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.95 }}
-                              className="absolute right-0 top-full mt-1 w-40 bg-white border border-stone-200 rounded-lg shadow-xl z-10 py-1"
+                              className="absolute right-0 top-full mt-1 w-40 bg-surface border border-border rounded-lg shadow-xl z-10 py-1"
                             >
-                              <button onClick={() => { navigate(`/admin/catalog/attributes/${attr.id}`); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                              <button onClick={() => { navigate(`/admin/catalog/attributes/${attr.id}`); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                                 <FiEdit2 size={12} /> Edit
                               </button>
-                              <button onClick={() => { setPreviewAttribute(attr); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                              <button onClick={() => { setPreviewAttribute(attr); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                                 <FiEye size={12} /> Preview
                               </button>
-                              <button className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                              <button className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                                 <FiCopy size={12} /> Duplicate
                               </button>
                               <div className="h-px bg-stone-100 my-1" />
-                              <button className="w-full text-left px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 flex items-center gap-2">
+                              <button className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
                                 <FiTrash2 size={12} /> Delete
                               </button>
                             </motion.div>
@@ -233,7 +233,7 @@ export default function AttributeManager() {
                   ))}
                   {filteredAttributes.length === 0 && (
                     <tr>
-                      <td colSpan="7" className="p-8 text-center text-stone-500 text-sm">
+                      <td colSpan="7" className="p-8 text-center text-text-muted text-sm">
                         No attributes found.
                       </td>
                     </tr>

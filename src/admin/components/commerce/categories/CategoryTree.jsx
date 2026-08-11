@@ -29,7 +29,7 @@ const CategoryNode = ({
   return (
     <div className="w-full">
       <div 
-        className={`group flex items-center justify-between py-3 pr-4 border-b border-stone-100 hover:bg-stone-50 transition-colors cursor-pointer ${selectedCategories.includes(node.id) ? 'bg-stone-50' : ''}`}
+        className={`group flex items-center justify-between py-3 pr-4 border-b border-stone-100 hover:bg-background transition-colors cursor-pointer ${selectedCategories.includes(node.id) ? 'bg-background' : ''}`}
         style={{ paddingLeft: `${depth * 24 + 16}px` }}
         onClick={(e) => {
           if (e.target.type !== 'checkbox' && !e.target.closest('button')) {
@@ -42,7 +42,7 @@ const CategoryNode = ({
             {hasChildren ? (
               <button 
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-0.5 text-stone-400 hover:text-stone-900 transition-colors"
+                className="p-0.5 text-text-muted hover:text-text-primary transition-colors"
               >
                 {isExpanded ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
               </button>
@@ -53,21 +53,21 @@ const CategoryNode = ({
               type="checkbox"
               checked={selectedCategories.includes(node.id)}
               onChange={(e) => onSelectOne(node.id, e.target.checked)}
-              className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+              className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900"
             />
           </div>
           
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-stone-900 group-hover:text-amber-700 transition-colors">
+            <span className="text-sm font-semibold text-text-primary group-hover:text-warning transition-colors">
               {node.name}
             </span>
-            <span className="text-xs text-stone-500 font-mono">/{node.slug}</span>
+            <span className="text-xs text-text-muted font-mono">/{node.slug}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-6">
           <div className="w-24 text-right">
-            <span className="text-xs text-stone-500">{node.productCount} Products</span>
+            <span className="text-xs text-text-muted">{node.productCount} Products</span>
           </div>
           <div className="w-24 text-right">
             <CatalogStatusBadge status={node.status} />
@@ -75,7 +75,7 @@ const CategoryNode = ({
           <div className="relative" onClick={e => e.stopPropagation()}>
             <button 
               onClick={toggleMenu}
-              className="p-1.5 text-stone-400 hover:text-stone-900 hover:bg-stone-200 rounded transition-colors"
+              className="p-1.5 text-text-muted hover:text-text-primary hover:bg-stone-200 rounded transition-colors"
             >
               <FiMoreVertical size={16} />
             </button>
@@ -86,23 +86,23 @@ const CategoryNode = ({
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="absolute right-0 top-full mt-1 w-40 bg-white border border-stone-200 rounded-lg shadow-xl z-20 py-1"
+                  className="absolute right-0 top-full mt-1 w-40 bg-surface border border-border rounded-lg shadow-xl z-20 py-1"
                 >
-                  <button onClick={() => { onEdit(node.id); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                  <button onClick={() => { onEdit(node.id); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                     <FiEdit2 size={12} /> Edit
                   </button>
-                  <button onClick={() => { onPreview(node); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                  <button onClick={() => { onPreview(node); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                     <FiEye size={12} /> Preview
                   </button>
                   <div className="h-px bg-stone-100 my-1" />
-                  <button className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                  <button className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                     <FiMove size={12} /> Move
                   </button>
-                  <button className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                  <button className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                     <FiCopy size={12} /> Duplicate
                   </button>
                   <div className="h-px bg-stone-100 my-1" />
-                  <button className="w-full text-left px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 flex items-center gap-2">
+                  <button className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
                     <FiTrash2 size={12} /> Delete
                   </button>
                 </motion.div>
@@ -149,19 +149,19 @@ export default function CategoryTree({
   onPreview
 }) {
   return (
-    <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between p-4 bg-stone-50 border-b border-stone-200">
+    <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="flex items-center justify-between p-4 bg-background border-b border-border">
         <div className="flex items-center gap-3 pl-7">
           <input 
             type="checkbox"
             onChange={(e) => onSelectAll(e.target.checked)}
-            className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+            className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900"
           />
-          <span className="text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Category Hierarchy</span>
+          <span className="text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Category Hierarchy</span>
         </div>
         <div className="flex items-center gap-6 pr-10">
-          <span className="w-24 text-right text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Products</span>
-          <span className="w-24 text-right text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Status</span>
+          <span className="w-24 text-right text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Products</span>
+          <span className="w-24 text-right text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</span>
         </div>
       </div>
 
@@ -178,7 +178,7 @@ export default function CategoryTree({
           />
         ))}
         {categories.length === 0 && (
-          <div className="p-8 text-center text-stone-500 text-sm">
+          <div className="p-8 text-center text-text-muted text-sm">
             No categories found.
           </div>
         )}

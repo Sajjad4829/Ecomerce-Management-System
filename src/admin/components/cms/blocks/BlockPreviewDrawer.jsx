@@ -21,20 +21,20 @@ export default function BlockPreviewDrawer({ isOpen, block, onClose }) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed inset-y-0 right-0 w-[800px] max-w-[90vw] bg-white shadow-2xl z-50 flex flex-col border-l border-black/10"
+        className="fixed inset-y-0 right-0 w-[800px] max-w-[90vw] bg-surface shadow-2xl z-50 flex flex-col border-l border-black/10"
       >
         {/* Header */}
-        <div className="h-16 border-b border-black/10 flex items-center justify-between px-6 shrink-0 bg-[#F7F5F2]">
+        <div className="h-16 border-b border-black/10 flex items-center justify-between px-6 shrink-0 bg-background">
           <div className="flex items-center gap-4">
-            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded">
+            <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest bg-gray-100 px-2 py-1 rounded">
               {block.category}
             </div>
-            <h2 className="text-lg font-bold font-serif text-[#1A1A1A]">{block.name}</h2>
+            <h2 className="text-lg font-bold font-serif text-text-primary">{block.name}</h2>
           </div>
           <div className="flex items-center gap-4">
             <button 
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/5 text-gray-500 transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/5 text-text-muted transition-colors"
             >
               <FiX size={18} />
             </button>
@@ -42,21 +42,21 @@ export default function BlockPreviewDrawer({ isOpen, block, onClose }) {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col bg-gray-50">
+        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col bg-background">
           
           {/* Main Preview Area */}
           <div className="p-8 border-b border-black/5 flex-1 flex flex-col">
              <div className="flex justify-center gap-2 mb-6">
-               <button className="p-2 bg-white rounded-lg border border-black/10 text-[#1A1A1A] shadow-sm"><FiMonitor size={18}/></button>
-               <button className="p-2 text-gray-400 hover:text-[#1A1A1A]"><FiTablet size={18}/></button>
-               <button className="p-2 text-gray-400 hover:text-[#1A1A1A]"><FiSmartphone size={18}/></button>
+               <button className="p-2 bg-surface rounded-lg border border-black/10 text-text-primary shadow-sm"><FiMonitor size={18}/></button>
+               <button className="p-2 text-text-muted hover:text-text-primary"><FiTablet size={18}/></button>
+               <button className="p-2 text-text-muted hover:text-text-primary"><FiSmartphone size={18}/></button>
              </div>
              
-             <div className="flex-1 bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden min-h-[400px] flex items-center justify-center relative">
+             <div className="flex-1 bg-surface border border-black/10 rounded-xl shadow-sm overflow-hidden min-h-[400px] flex items-center justify-center relative">
                {block.image ? (
                  <img src={block.image} alt={block.name} className="w-full h-full object-cover object-top" />
                ) : (
-                 <div className="text-center text-gray-400">
+                 <div className="text-center text-text-muted">
                     <FiLayers size={48} className="mx-auto mb-4 opacity-50" />
                     <p className="text-sm font-medium">Interactive preview not available.</p>
                  </div>
@@ -65,23 +65,23 @@ export default function BlockPreviewDrawer({ isOpen, block, onClose }) {
           </div>
 
           {/* Details Panel */}
-          <div className="p-8 bg-white grid grid-cols-3 gap-12">
+          <div className="p-8 bg-surface grid grid-cols-3 gap-12">
             <div className="col-span-2 space-y-6">
               <div>
-                <h3 className="text-xs font-bold text-[#1A1A1A] uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <FiInfo className="text-gray-400" /> Description
+                <h3 className="text-xs font-bold text-text-primary uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <FiInfo className="text-text-muted" /> Description
                 </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm text-text-secondary leading-relaxed">
                   {block.description || "A reusable content block. Changes made to this block will be reflected across all pages where it is used."}
                 </p>
               </div>
               <div>
-                 <h3 className="text-xs font-bold text-[#1A1A1A] uppercase tracking-widest mb-3">
+                 <h3 className="text-xs font-bold text-text-primary uppercase tracking-widest mb-3">
                   Tags
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {block.tags?.map(tag => (
-                    <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-widest bg-gray-100 text-gray-500 border border-black/5">
+                    <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-widest bg-gray-100 text-text-muted border border-black/5">
                       {tag}
                     </span>
                   ))}
@@ -91,16 +91,16 @@ export default function BlockPreviewDrawer({ isOpen, block, onClose }) {
             
             <div className="space-y-6">
                <div>
-                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Version</h3>
-                  <p className="text-sm font-mono text-[#1A1A1A]">{block.version || '1.0.0'}</p>
+                  <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2">Version</h3>
+                  <p className="text-sm font-mono text-text-primary">{block.version || '1.0.0'}</p>
                </div>
                <div>
-                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Status</h3>
-                  <p className="text-sm font-semibold text-green-600 flex items-center gap-1"><FiCheck /> Published</p>
+                  <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2">Status</h3>
+                  <p className="text-sm font-semibold text-success flex items-center gap-1"><FiCheck /> Published</p>
                </div>
                <div>
-                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Usage Count</h3>
-                  <p className="text-sm font-semibold text-[#1A1A1A]">Active on {block.usageCount} pages</p>
+                  <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2">Usage Count</h3>
+                  <p className="text-sm font-semibold text-text-primary">Active on {block.usageCount} pages</p>
                </div>
             </div>
           </div>

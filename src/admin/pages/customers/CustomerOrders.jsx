@@ -38,15 +38,15 @@ export function CustomerOrders() {
                 <td className="p-4 text-neutral-600">{new Date(order.date).toLocaleDateString()}</td>
                 <td className="p-4">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                    order.status === 'delivered' ? 'bg-green-100 text-green-800' : 
-                    order.status === 'returned' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                    order.status === 'delivered' ? 'bg-success-soft text-green-800' : 
+                    order.status === 'returned' ? 'bg-danger-soft text-red-800' : 'bg-yellow-100 text-yellow-800'
                   }`}>
                     {order.status}
                   </span>
                 </td>
                 <td className="p-4">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                    order.payment === 'paid' ? 'bg-green-100 text-green-800' : 
+                    order.payment === 'paid' ? 'bg-success-soft text-green-800' : 
                     order.payment === 'refunded' ? 'bg-neutral-200 text-neutral-800' : 'bg-yellow-100 text-yellow-800'
                   }`}>
                     {order.payment}
@@ -55,7 +55,7 @@ export function CustomerOrders() {
                 <td className="p-4 text-neutral-600">{order.items}</td>
                 <td className="p-4 font-medium text-neutral-900">${order.total.toFixed(2)}</td>
                 <td className="p-4 text-right">
-                  <Link to={`/admin/orders/${order.id}`} className="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                  <Link to={`/admin/orders/${order.id}`} className="text-primary hover:text-indigo-900 inline-flex items-center">
                     View <ExternalLink className="w-3 h-3 ml-1" />
                   </Link>
                 </td>

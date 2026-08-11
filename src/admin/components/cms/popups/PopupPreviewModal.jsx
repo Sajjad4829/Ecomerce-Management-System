@@ -17,15 +17,15 @@ export default function PopupPreviewModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-black/10 overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-black/10 overflow-hidden">
         
         {/* Header */}
-        <div className="p-4 bg-gray-50 border-b border-black/5 flex items-center justify-between shrink-0">
+        <div className="p-4 bg-background border-b border-black/5 flex items-center justify-between shrink-0">
           <div>
-            <h3 className="font-serif font-bold text-base text-[#1A1A1A]">
+            <h3 className="font-serif font-bold text-base text-text-primary">
               Live Popup Campaign Preview — {campaignName}
             </h3>
-            <p className="text-xs text-gray-500">Simulating popup card appearance inside store front page layout.</p>
+            <p className="text-xs text-text-muted">Simulating popup card appearance inside store front page layout.</p>
           </div>
 
           <div className="flex items-center gap-1 bg-gray-200/80 p-1 rounded-xl border border-black/5">
@@ -34,7 +34,7 @@ export default function PopupPreviewModal({
               onClick={() => setDevice('desktop')}
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                device === 'desktop' ? "bg-white text-black shadow-2xs" : "text-gray-600 hover:text-black"
+                device === 'desktop' ? "bg-surface text-black shadow-2xs" : "text-text-secondary hover:text-black"
               )}
             >
               <FiMonitor size={14} /> Desktop
@@ -44,7 +44,7 @@ export default function PopupPreviewModal({
               onClick={() => setDevice('tablet')}
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                device === 'tablet' ? "bg-white text-black shadow-2xs" : "text-gray-600 hover:text-black"
+                device === 'tablet' ? "bg-surface text-black shadow-2xs" : "text-text-secondary hover:text-black"
               )}
             >
               <FiTablet size={14} /> Tablet
@@ -54,7 +54,7 @@ export default function PopupPreviewModal({
               onClick={() => setDevice('mobile')}
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                device === 'mobile' ? "bg-white text-black shadow-2xs" : "text-gray-600 hover:text-black"
+                device === 'mobile' ? "bg-surface text-black shadow-2xs" : "text-text-secondary hover:text-black"
               )}
             >
               <FiSmartphone size={14} /> Mobile
@@ -63,7 +63,7 @@ export default function PopupPreviewModal({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-black hover:bg-black/5 rounded-lg transition-colors"
+            className="p-1.5 text-text-muted hover:text-black hover:bg-black/5 rounded-lg transition-colors"
           >
             <FiX size={18} />
           </button>
@@ -79,7 +79,7 @@ export default function PopupPreviewModal({
           )}>
             
             {/* Mock website header background */}
-            <div className="p-4 bg-white border-b border-black/5 flex items-center justify-between text-xs text-gray-400">
+            <div className="p-4 bg-surface border-b border-black/5 flex items-center justify-between text-xs text-text-muted">
               <span className="font-serif font-bold text-black text-sm">AURELIAN MILANO</span>
               <div className="flex items-center gap-4">
                 <span>Living</span>
@@ -106,7 +106,7 @@ export default function PopupPreviewModal({
             </div>
 
             {/* Mock website footer */}
-            <div className="p-3 bg-stone-200 text-[10px] text-gray-500 text-center">
+            <div className="p-3 bg-stone-200 text-[10px] text-text-muted text-center">
               Aurelian Luxury House © 2025 • Simulated Front Store Preview
             </div>
 

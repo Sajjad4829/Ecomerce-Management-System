@@ -8,30 +8,30 @@ const MOCK_WISHLIST = [
 
 export default function CustomerWishlist() {
   return (
-    <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+    <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
       <div className="p-6 border-b border-black/5 flex items-center justify-between">
-        <h3 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2">
-          <FiHeart className="text-gray-400" /> Wishlist
+        <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+          <FiHeart className="text-text-muted" /> Wishlist
         </h3>
-        <span className="text-xs text-gray-500 font-medium">2 Items</span>
+        <span className="text-xs text-text-muted font-medium">2 Items</span>
       </div>
 
       <div className="divide-y divide-black/5">
         {MOCK_WISHLIST.map(item => (
-          <div key={item.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
+          <div key={item.id} className="p-6 flex items-center justify-between hover:bg-background transition-colors">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
-                <FiShoppingCart className="text-gray-400" />
+                <FiShoppingCart className="text-text-muted" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#1A1A1A]">
+                <h4 className="text-sm font-bold text-text-primary">
                   <Link to={`/admin/catalog/products/${item.id}`} className="hover:underline">{item.product}</Link>
                 </h4>
-                <p className="text-xs text-gray-500 mt-0.5">{item.variant}</p>
+                <p className="text-xs text-text-muted mt-0.5">{item.variant}</p>
                 <div className="flex items-center gap-3 mt-1.5">
-                  <span className="text-sm font-medium text-[#1A1A1A]">{item.price}</span>
+                  <span className="text-sm font-medium text-text-primary">{item.price}</span>
                   <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
-                    item.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    item.available ? 'bg-success-soft text-green-800' : 'bg-danger-soft text-red-800'
                   }`}>
                     {item.available ? 'In Stock' : 'Out of Stock'}
                   </span>
@@ -39,8 +39,8 @@ export default function CustomerWishlist() {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-400">Added</p>
-              <p className="text-sm text-gray-600 font-medium">{item.added}</p>
+              <p className="text-xs text-text-muted">Added</p>
+              <p className="text-sm text-text-secondary font-medium">{item.added}</p>
             </div>
           </div>
         ))}

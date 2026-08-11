@@ -25,12 +25,12 @@ export default function SchemaManager() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <Link to="/admin/seo" className="text-sm font-medium text-gray-500 hover:text-black">SEO Engine</Link>
+            <Link to="/admin/seo" className="text-sm font-medium text-text-muted hover:text-black">SEO Engine</Link>
             <span className="text-gray-300">/</span>
-            <span className="text-sm font-medium text-gray-900">Structured Data</span>
+            <span className="text-sm font-medium text-text-primary">Structured Data</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Schema Manager</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Schema Manager</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage JSON-LD structured data for rich snippets in search results.
           </p>
         </div>
@@ -38,23 +38,23 @@ export default function SchemaManager() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {schemas.map((schema) => (
-          <div key={schema.id} className="bg-white rounded-xl border border-black/5 shadow-sm p-6 flex flex-col">
+          <div key={schema.id} className="bg-surface rounded-xl border border-black/5 shadow-sm p-6 flex flex-col">
             <div className="flex justify-between items-start mb-4">
-              <div className="w-10 h-10 bg-[#F7F5F2] rounded-lg flex items-center justify-center text-gray-600">
+              <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center text-text-secondary">
                 <FiCode size={20} />
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider bg-gray-100 px-2 py-1 rounded">
+                <span className="text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider bg-gray-100 px-2 py-1 rounded">
                   {schema.type}
                 </span>
-                <button className="text-gray-400 hover:text-black">
+                <button className="text-text-muted hover:text-black">
                   <FiMoreVertical size={16} />
                 </button>
               </div>
             </div>
             
-            <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{schema.title}</h3>
-            <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">
+            <h3 className="text-lg font-bold text-text-primary mb-2">{schema.title}</h3>
+            <p className="text-sm text-text-muted leading-relaxed mb-6 flex-1">
               {schema.description}
             </p>
             
@@ -67,18 +67,18 @@ export default function SchemaManager() {
                     checked={schema.status === 'enabled'}
                     onChange={() => toggleSchema(schema.id)}
                   />
-                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${schema.status === 'enabled' ? 'translate-x-4.5' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-surface transition-transform ${schema.status === 'enabled' ? 'translate-x-4.5' : 'translate-x-1'}`} />
                 </div>
-                <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+                <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">
                   {schema.status === 'enabled' ? 'Active' : 'Inactive'}
                 </span>
               </label>
               
               <div className="flex gap-2">
-                <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Preview Schema">
+                <button className="p-2 text-text-muted hover:text-primary hover:bg-blue-50 rounded-lg transition-colors" title="Preview Schema">
                   <FiEye size={16} />
                 </button>
-                <button className="p-2 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-50 rounded-lg transition-colors" title="Configure">
+                <button className="p-2 text-text-muted hover:text-text-primary hover:bg-background rounded-lg transition-colors" title="Configure">
                   <FiSettings size={16} />
                 </button>
               </div>
@@ -87,13 +87,13 @@ export default function SchemaManager() {
         ))}
       </div>
 
-      <div className="bg-[#F7F5F2] p-6 rounded-xl border border-black/5 flex gap-4 items-start">
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0 border border-black/10">
-          <FiCode className="text-gray-600" />
+      <div className="bg-background p-6 rounded-xl border border-black/5 flex gap-4 items-start">
+        <div className="w-10 h-10 bg-surface rounded-full flex items-center justify-center shrink-0 border border-black/10">
+          <FiCode className="text-text-secondary" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-[#1A1A1A]">About Structured Data</h4>
-          <p className="text-sm text-gray-600 mt-1">
+          <h4 className="text-sm font-bold text-text-primary">About Structured Data</h4>
+          <p className="text-sm text-text-secondary mt-1">
             Structured data is added to your store's HTML using JSON-LD format. It helps search engines like Google understand your content and display rich results. 
             Modifying these settings impacts how your site appears in SERPs.
           </p>

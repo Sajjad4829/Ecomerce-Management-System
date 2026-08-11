@@ -20,18 +20,18 @@ export default function SectionList({
     : sections;
 
   return (
-    <div className="w-80 bg-white border-r border-black/10 flex flex-col h-[calc(100vh-4rem)] shrink-0 z-10 overflow-hidden shadow-xl shadow-black/5">
+    <div className="w-80 bg-surface border-r border-black/10 flex flex-col h-[calc(100vh-4rem)] shrink-0 z-10 overflow-hidden shadow-xl shadow-black/5">
       {/* Header */}
-      <div className="p-4 border-b border-black/5 shrink-0 bg-[#F7F5F2]">
-        <h2 className="text-[10px] font-bold uppercase tracking-widest text-[#1A1A1A] mb-4">Content Structure</h2>
+      <div className="p-4 border-b border-black/5 shrink-0 bg-background">
+        <h2 className="text-[10px] font-bold uppercase tracking-widest text-text-primary mb-4">Content Structure</h2>
         <div className="relative">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-3.5" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted size-3.5" />
           <input 
             type="text" 
             placeholder="Search sections..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-white border border-black/10 rounded-lg text-xs focus:outline-none focus:border-black/30 transition-all"
+            className="w-full pl-9 pr-3 py-2 bg-surface border border-black/10 rounded-lg text-xs focus:outline-none focus:border-black/30 transition-all"
           />
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function SectionList({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-white rounded-lg"
+                  className="bg-surface rounded-lg"
                 >
                   <SectionItem 
                     section={section} 
@@ -77,17 +77,17 @@ export default function SectionList({
         )}
 
         {filteredSections.length === 0 && (
-          <div className="text-center py-8 text-gray-400 text-xs">
+          <div className="text-center py-8 text-text-muted text-xs">
             No sections found.
           </div>
         )}
       </div>
 
       {/* Footer Actions */}
-      <div className="p-4 border-t border-black/5 shrink-0 bg-gray-50/50">
+      <div className="p-4 border-t border-black/5 shrink-0 bg-background/50">
         <button 
           onClick={onAddSection}
-          className="w-full py-2.5 bg-white border border-black/10 border-dashed rounded-lg text-xs font-semibold uppercase tracking-widest text-[#1A1A1A] hover:bg-gray-50 hover:border-black/20 hover:shadow-sm transition-all flex items-center justify-center gap-2"
+          className="w-full py-2.5 bg-surface border border-black/10 border-dashed rounded-lg text-xs font-semibold uppercase tracking-widest text-text-primary hover:bg-background hover:border-black/20 hover:shadow-sm transition-all flex items-center justify-center gap-2"
         >
           <FiPlus /> Add Section
         </button>

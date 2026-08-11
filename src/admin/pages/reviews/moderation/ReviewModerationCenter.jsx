@@ -16,7 +16,7 @@ export default function ReviewModerationCenter() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -33,14 +33,14 @@ export default function ReviewModerationCenter() {
                   <div className="text-neutral-500 text-xs mt-1 line-clamp-1">{review.content}</div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${review.status === 'Reported' ? 'bg-orange-100 text-orange-800' : 'bg-amber-100 text-amber-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${review.status === 'Reported' ? 'bg-orange-100 text-orange-800' : 'bg-warning-soft text-amber-800'}`}>
                     {review.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <button onClick={() => approveReview(review.id)} className="p-1 text-green-600 hover:bg-green-50 rounded" title="Approve"><Check className="w-4 h-4" /></button>
-                    <button onClick={() => rejectReview(review.id)} className="p-1 text-red-600 hover:bg-red-50 rounded" title="Reject"><X className="w-4 h-4" /></button>
+                    <button onClick={() => approveReview(review.id)} className="p-1 text-success hover:bg-success-soft rounded" title="Approve"><Check className="w-4 h-4" /></button>
+                    <button onClick={() => rejectReview(review.id)} className="p-1 text-danger hover:bg-danger-soft rounded" title="Reject"><X className="w-4 h-4" /></button>
                     {review.status === 'Reported' && (
                       <button onClick={() => hideReview(review.id)} className="p-1 text-neutral-600 hover:bg-neutral-100 rounded" title="Hide"><EyeOff className="w-4 h-4" /></button>
                     )}

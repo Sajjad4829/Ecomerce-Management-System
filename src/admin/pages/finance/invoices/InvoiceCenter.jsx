@@ -23,7 +23,7 @@ export const InvoiceCenter = () => {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -40,7 +40,7 @@ export const InvoiceCenter = () => {
       </div>
       <div className="flex justify-end"><button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Invoice</button></div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
@@ -58,7 +58,7 @@ export const InvoiceCenter = () => {
               {filteredInvoices.map((inv) => (
                 <tr key={inv.id} className="hover:bg-neutral-50 transition-colors">
                   <td className="px-6 py-4 font-medium text-neutral-900">{inv.invoiceNumber}</td>
-                  <td className="px-6 py-4 text-indigo-600 hover:underline cursor-pointer">{inv.orderId}</td>
+                  <td className="px-6 py-4 text-primary hover:underline cursor-pointer">{inv.orderId}</td>
                   <td className="px-6 py-4 text-neutral-600">{inv.customer}</td>
                   <td className="px-6 py-4 text-neutral-600">{inv.date}</td>
                   <td className="px-6 py-4 text-right font-medium text-neutral-900">
@@ -68,19 +68,19 @@ export const InvoiceCenter = () => {
                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                       inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-800' :
                       inv.status === 'Draft' ? 'bg-neutral-100 text-neutral-800' :
-                      'bg-amber-100 text-amber-800'
+                      'bg-warning-soft text-amber-800'
                     }`}>
                       {inv.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <button className="inline-flex items-center justify-center p-2 text-neutral-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors">
+                      <button className="inline-flex items-center justify-center p-2 text-neutral-400 hover:text-primary hover:bg-primary-soft rounded transition-colors">
                         <Download className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => navigate(`/admin/finance/invoices/${inv.id}`)}
-                        className="inline-flex items-center justify-center p-2 text-neutral-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                        className="inline-flex items-center justify-center p-2 text-neutral-400 hover:text-primary hover:bg-primary-soft rounded transition-colors"
                       >
                         <ExternalLink className="w-4 h-4" />
                       </button>

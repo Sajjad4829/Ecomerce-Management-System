@@ -38,11 +38,11 @@ export default function CustomerManager() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <Link to="/admin/customers" className="text-sm font-medium text-gray-500 hover:text-black">Customers</Link>
+            <Link to="/admin/customers" className="text-sm font-medium text-text-muted hover:text-black">Customers</Link>
             <span className="text-gray-300">/</span>
-            <span className="text-sm font-medium text-gray-900">List</span>
+            <span className="text-sm font-medium text-text-primary">List</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Customer Manager</h1>
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Customer Manager</h1>
         </div>
         
         <div className="flex gap-3">
@@ -52,7 +52,7 @@ export default function CustomerManager() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden relative">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden relative">
         {selectedCustomers.length > 0 && (
           <BulkCustomerBar 
             count={selectedCustomers.length} 
@@ -62,17 +62,17 @@ export default function CustomerManager() {
 
         <div className="p-4 border-b border-black/5 flex flex-col md:flex-row justify-between gap-4">
           <div className="relative flex-1 max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
             <input 
               type="text" 
               placeholder="Search by name, email, phone..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-[#F7F5F2] border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full"
+              className="pl-10 pr-4 py-2 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full"
             />
           </div>
           <div className="flex items-center gap-3">
-            <button className="px-4 py-2 bg-white border border-black/10 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm">
+            <button className="px-4 py-2 bg-surface border border-black/10 text-text-secondary rounded-lg text-sm font-medium hover:bg-background transition-colors flex items-center gap-2 shadow-sm">
               <FiFilter size={16} /> Filters
             </button>
           </div>
@@ -81,45 +81,45 @@ export default function CustomerManager() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-black/5">
+              <tr className="bg-background border-b border-black/5">
                 <th className="p-4 w-12 text-center">
                   <input 
                     type="checkbox" 
                     checked={selectedCustomers.length === MOCK_CUSTOMERS.length && MOCK_CUSTOMERS.length > 0}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]"
+                    className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]"
                   />
                 </th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Customer</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Type & Group</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Commerce</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Joined</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Customer</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Type & Group</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Commerce</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Joined</th>
                 <th className="p-4 text-right"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/5">
               {MOCK_CUSTOMERS.map(customer => (
-                <tr key={customer.id} className={`hover:bg-gray-50 transition-colors ${selectedCustomers.includes(customer.id) ? 'bg-gray-50' : ''}`}>
+                <tr key={customer.id} className={`hover:bg-background transition-colors ${selectedCustomers.includes(customer.id) ? 'bg-background' : ''}`}>
                   <td className="p-4 text-center">
                     <input 
                       type="checkbox" 
                       checked={selectedCustomers.includes(customer.id)}
                       onChange={() => toggleSelect(customer.id)}
-                      className="w-4 h-4 rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]"
+                      className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]"
                     />
                   </td>
                   <td className="p-4">
-                    <Link to={`/admin/customers/${customer.id}`} className="font-bold text-[#1A1A1A] hover:underline block">
+                    <Link to={`/admin/customers/${customer.id}`} className="font-bold text-text-primary hover:underline block">
                       {customer.name}
                     </Link>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-500 flex items-center gap-1"><FiMail size={10} /> {customer.email}</span>
+                      <span className="text-xs text-text-muted flex items-center gap-1"><FiMail size={10} /> {customer.email}</span>
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="flex flex-col gap-1.5 items-start">
-                      <span className="text-xs font-medium text-gray-700">{customer.type}</span>
+                      <span className="text-xs font-medium text-text-secondary">{customer.type}</span>
                       <CustomerGroupBadge group={customer.group} />
                     </div>
                   </td>
@@ -127,18 +127,18 @@ export default function CustomerManager() {
                     <CustomerStatusBadge status={customer.status} />
                   </td>
                   <td className="p-4">
-                    <p className="text-sm font-medium text-[#1A1A1A]">{customer.orders} orders</p>
-                    <p className="text-xs text-gray-500">{customer.totalSpent}</p>
+                    <p className="text-sm font-medium text-text-primary">{customer.orders} orders</p>
+                    <p className="text-xs text-text-muted">{customer.totalSpent}</p>
                   </td>
-                  <td className="p-4 text-sm text-gray-500">
+                  <td className="p-4 text-sm text-text-muted">
                     {customer.joined}
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link to={`/admin/customers/${customer.id}/edit`} className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
+                      <Link to={`/admin/customers/${customer.id}/edit`} className="p-2 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
                         <FiEdit size={16} />
                       </Link>
-                      <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
+                      <button className="p-2 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
                         <FiMoreVertical size={16} />
                       </button>
                     </div>

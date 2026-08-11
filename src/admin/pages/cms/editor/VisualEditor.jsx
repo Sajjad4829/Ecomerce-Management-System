@@ -83,7 +83,7 @@ export default function VisualEditor() {
   };
 
   return (
-    <div className="h-screen w-screen bg-gray-50 flex flex-col overflow-hidden font-sans fixed inset-0 z-50">
+    <div className="h-screen w-screen bg-background flex flex-col overflow-hidden font-sans fixed inset-0 z-50">
       <EditorToolbar 
         device={device} 
         setDevice={setDevice} 

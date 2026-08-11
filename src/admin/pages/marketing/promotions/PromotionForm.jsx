@@ -20,20 +20,20 @@ export const PromotionForm = () => {
             <p className="text-sm text-neutral-500 mt-1">Define discount rules and offers</p>
           </div>
         </div>
-        <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-medium flex items-center gap-2">
+        <button className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover font-medium flex items-center gap-2">
           <Save className="w-4 h-4" /> Save Promotion
         </button>
       </div>
 
-      <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6 space-y-6">
+      <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
-            <label className="text-sm font-medium text-neutral-700">Promotion Name <span className="text-red-500">*</span></label>
-            <input type="text" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. 15% Off Summer Collection" />
+            <label className="text-sm font-medium text-neutral-700">Promotion Name <span className="text-danger">*</span></label>
+            <input type="text" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. 15% Off Summer Collection" />
           </div>
           <div className="space-y-1">
             <label className="text-sm font-medium text-neutral-700">Type</label>
-            <select className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            <select className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-surface">
               <option>Percentage Discount</option>
               <option>Fixed Discount</option>
               <option>Buy One Get One (Placeholder)</option>
@@ -42,7 +42,7 @@ export const PromotionForm = () => {
           </div>
           <div className="space-y-1 md:col-span-2">
             <label className="text-sm font-medium text-neutral-700">Discount Value</label>
-            <input type="text" className="w-full md:w-1/2 px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. 15 or 50.00" />
+            <input type="text" className="w-full md:w-1/2 px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. 15 or 50.00" />
           </div>
         </div>
 
@@ -51,11 +51,11 @@ export const PromotionForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
             <label className="text-sm font-medium text-neutral-700">Start Date</label>
-            <input type="date" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="date" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
           </div>
           <div className="space-y-1">
             <label className="text-sm font-medium text-neutral-700">End Date</label>
-            <input type="date" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="date" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
           </div>
         </div>
       </div>

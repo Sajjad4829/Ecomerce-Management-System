@@ -7,15 +7,15 @@ export default function InventoryTable({ inventory }) {
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'In Stock': return 'bg-green-100 text-green-800';
-      case 'Low Stock': return 'bg-amber-100 text-amber-800';
-      case 'Out of Stock': return 'bg-red-100 text-red-800';
+      case 'In Stock': return 'bg-success-soft text-green-800';
+      case 'Low Stock': return 'bg-warning-soft text-amber-800';
+      case 'Out of Stock': return 'bg-danger-soft text-red-800';
       default: return 'bg-neutral-100 text-neutral-800';
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+    <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
@@ -64,14 +64,14 @@ export default function InventoryTable({ inventory }) {
                     </button>
                     <button 
                       onClick={() => navigate(`/admin/inventory/adjustments?product=${item.productId}&warehouse=${item.warehouseId}`)}
-                      className="p-1.5 text-neutral-500 hover:text-indigo-600 hover:bg-indigo-50 rounded"
+                      className="p-1.5 text-neutral-500 hover:text-primary hover:bg-primary-soft rounded"
                       title="Adjust Stock"
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
                     <button 
                       onClick={() => navigate(`/admin/inventory/transfers?product=${item.productId}`)}
-                      className="p-1.5 text-neutral-500 hover:text-indigo-600 hover:bg-indigo-50 rounded"
+                      className="p-1.5 text-neutral-500 hover:text-primary hover:bg-primary-soft rounded"
                       title="Transfer Stock"
                     >
                       <ArrowRightLeft className="w-4 h-4" />

@@ -10,17 +10,17 @@ export default function NotificationTemplates() {
     <div className="max-w-7xl mx-auto space-y-6 pb-24">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-stone-900">Notification Templates</h1>
-          <p className="text-sm text-stone-500 mt-1">Manage templates for automated and manual communications.</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Notification Templates</h1>
+          <p className="text-sm text-text-muted mt-1">Manage templates for automated and manual communications.</p>
         </div>
-        <Link to="/admin/notifications/templates/new" className="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white rounded-lg hover:bg-stone-800 font-medium">
+        <Link to="/admin/notifications/templates/new" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover font-medium">
           <FiPlus /> New Template
         </Link>
       </div>
 
-      <div className="bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-surface border border-border rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-stone-50 border-b border-stone-200 text-stone-600 font-medium">
+          <thead className="bg-background border-b border-border text-text-secondary font-medium">
             <tr>
               <th className="px-6 py-3">Template Name</th>
               <th className="px-6 py-3">Event / Trigger</th>
@@ -32,34 +32,34 @@ export default function NotificationTemplates() {
           </thead>
           <tbody className="divide-y divide-stone-200">
             {templates.map(template => (
-              <tr key={template.id} className="hover:bg-stone-50">
+              <tr key={template.id} className="hover:bg-background">
                 <td className="px-6 py-4">
-                  <div className="font-medium text-stone-900">{template.name}</div>
-                  <div className="text-xs text-stone-500 font-mono mt-0.5">{template.id}</div>
+                  <div className="font-medium text-text-primary">{template.name}</div>
+                  <div className="text-xs text-text-muted font-mono mt-0.5">{template.id}</div>
                 </td>
-                <td className="px-6 py-4 font-mono text-xs text-stone-600">{template.event}</td>
+                <td className="px-6 py-4 font-mono text-xs text-text-secondary">{template.event}</td>
                 <td className="px-6 py-4">
-                  <span className="px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs font-medium border border-stone-200">
+                  <span className="px-2 py-1 bg-stone-100 text-text-secondary rounded text-xs font-medium border border-border">
                     {template.channel}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-stone-600">{template.audience}</td>
+                <td className="px-6 py-4 text-text-secondary">{template.audience}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    template.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-500'
+                    template.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-text-muted'
                   }`}>
                     {template.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <button className="p-1.5 text-stone-400 hover:text-stone-900" title="Duplicate">
+                    <button className="p-1.5 text-text-muted hover:text-text-primary" title="Duplicate">
                       <FiCopy />
                     </button>
-                    <button className="p-1.5 text-stone-400 hover:text-red-600" title="Archive">
+                    <button className="p-1.5 text-text-muted hover:text-danger" title="Archive">
                       <FiArchive />
                     </button>
-                    <Link to={`/admin/notifications/templates/${template.id}`} className="p-1.5 text-stone-400 hover:text-stone-900" title="Edit">
+                    <Link to={`/admin/notifications/templates/${template.id}`} className="p-1.5 text-text-muted hover:text-text-primary" title="Edit">
                       <FiEdit2 />
                     </Link>
                   </div>
@@ -68,7 +68,7 @@ export default function NotificationTemplates() {
             ))}
             {templates.length === 0 && (
               <tr>
-                <td colSpan="6" className="px-6 py-8 text-center text-stone-500">
+                <td colSpan="6" className="px-6 py-8 text-center text-text-muted">
                   No templates found.
                 </td>
               </tr>

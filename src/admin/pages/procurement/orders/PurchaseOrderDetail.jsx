@@ -32,11 +32,11 @@ export const PurchaseOrderDetail = () => {
           <p className="text-sm text-neutral-500 mt-1">Expected Delivery: {po.expectedDate}</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-3 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 transition-colors">
+          <button className="px-3 py-2 border border-neutral-200 text-neutral-700 bg-surface rounded-md hover:bg-neutral-50 transition-colors">
             <Download className="w-4 h-4" />
           </button>
           {po.status === 'Pending Approval' && (
-            <button className="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2">
+            <button className="px-4 py-2 text-white bg-primary rounded-md hover:bg-primary-hover transition-colors flex items-center gap-2">
               <CheckCircle className="w-4 h-4" /> Approve PO
             </button>
           )}
@@ -54,7 +54,7 @@ export const PurchaseOrderDetail = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
           {/* Order Items */}
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm overflow-hidden">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm overflow-hidden">
             <div className="p-5 border-b border-neutral-200">
               <h3 className="font-medium text-neutral-900">Order Items</h3>
             </div>
@@ -77,7 +77,7 @@ export const PurchaseOrderDetail = () => {
                         <div className="text-xs text-neutral-500">{item.productId}</div>
                       </td>
                       <td className="px-5 py-4 text-right font-medium text-neutral-900">{item.quantityOrdered}</td>
-                      <td className="px-5 py-4 text-right text-indigo-600 font-medium">{item.quantityReceived}</td>
+                      <td className="px-5 py-4 text-right text-primary font-medium">{item.quantityReceived}</td>
                       <td className="px-5 py-4 text-right text-neutral-600">${item.unitCost?.toLocaleString()}</td>
                       <td className="px-5 py-4 text-right font-medium text-neutral-900">${(item.quantityOrdered * (item.unitCost || 0)).toLocaleString()}</td>
                     </tr>
@@ -94,14 +94,14 @@ export const PurchaseOrderDetail = () => {
           </div>
           
           {/* Timeline Placeholder */}
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-5">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-5">
             <h3 className="font-medium text-neutral-900 mb-4">Procurement Timeline</h3>
             <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-neutral-200 before:to-transparent">
                <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-green-100 text-green-600 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-success-soft text-success shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                   <CheckCircle className="w-5 h-5"/>
                 </div>
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-neutral-200 shadow-sm bg-white">
+                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-neutral-200 shadow-sm bg-surface">
                   <div className="flex items-center justify-between mb-1">
                     <div className="font-medium text-neutral-900">PO Created</div>
                     <div className="text-xs text-neutral-500">May 1, 2024</div>
@@ -115,11 +115,11 @@ export const PurchaseOrderDetail = () => {
 
         {/* Sidebar Info */}
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-5">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-5">
             <h3 className="font-medium text-neutral-900 mb-4">Supplier Information</h3>
             {supplier ? (
               <div className="space-y-3">
-                <div className="font-medium text-indigo-600">{supplier.name}</div>
+                <div className="font-medium text-primary">{supplier.name}</div>
                 <div className="text-sm text-neutral-600">{supplier.code}</div>
                 <div className="text-sm text-neutral-600 mt-2">{supplier.contactPerson}</div>
                 <div className="text-sm text-neutral-500">{supplier.email}</div>
@@ -129,7 +129,7 @@ export const PurchaseOrderDetail = () => {
             )}
           </div>
           
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-5">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-5">
             <h3 className="font-medium text-neutral-900 mb-4">Delivery Information</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">

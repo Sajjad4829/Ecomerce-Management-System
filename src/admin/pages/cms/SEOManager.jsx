@@ -150,24 +150,24 @@ export default function SEOManager() {
         className="flex flex-col md:flex-row md:items-end justify-between gap-4"
       >
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">SEO & Structured Data</span>
+            <span className="text-text-primary font-semibold">SEO & Structured Data</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Central Enterprise SEO Manager</h1>
-          <p className="text-sm text-gray-500 mt-1 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Central Enterprise SEO Manager</h1>
+          <p className="text-sm text-text-muted mt-1 max-w-xl leading-relaxed">
             Configure organic search metadata, SERP previews, social cards, Google JSON-LD schema microdata, and crawler indexing rules across all catalog items and store pages.
           </p>
         </div>
 
         {/* Quick Tabs Button Navigation */}
-        <div className="flex items-center bg-gray-100 p-1 rounded-xl border border-black/5 text-xs font-bold text-gray-600">
+        <div className="flex items-center bg-gray-100 p-1 rounded-xl border border-black/5 text-xs font-bold text-text-secondary">
           <button
             onClick={() => setActiveTab('audit')}
             className={cn(
               "px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer",
-              activeTab === 'audit' ? "bg-white text-[#1A1A1A] shadow-2xs font-bold" : "hover:text-black"
+              activeTab === 'audit' ? "bg-surface text-text-primary shadow-2xs font-bold" : "hover:text-black"
             )}
           >
             <FiGlobe size={14} />
@@ -178,7 +178,7 @@ export default function SEOManager() {
             onClick={() => setActiveTab('indexing')}
             className={cn(
               "px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer",
-              activeTab === 'indexing' ? "bg-white text-[#1A1A1A] shadow-2xs font-bold" : "hover:text-black"
+              activeTab === 'indexing' ? "bg-surface text-text-primary shadow-2xs font-bold" : "hover:text-black"
             )}
           >
             <FiFileText size={14} />
@@ -189,7 +189,7 @@ export default function SEOManager() {
             onClick={() => setActiveTab('schema')}
             className={cn(
               "px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer",
-              activeTab === 'schema' ? "bg-white text-[#1A1A1A] shadow-2xs font-bold" : "hover:text-black"
+              activeTab === 'schema' ? "bg-surface text-text-primary shadow-2xs font-bold" : "hover:text-black"
             )}
           >
             <FiCode size={14} />
@@ -200,7 +200,7 @@ export default function SEOManager() {
             onClick={() => setActiveTab('global')}
             className={cn(
               "px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer",
-              activeTab === 'global' ? "bg-white text-[#1A1A1A] shadow-2xs font-bold" : "hover:text-black"
+              activeTab === 'global' ? "bg-surface text-text-primary shadow-2xs font-bold" : "hover:text-black"
             )}
           >
             <FiSettings size={14} />
@@ -223,7 +223,7 @@ export default function SEOManager() {
           />
 
           <div className="space-y-3">
-            <h3 className="font-serif font-bold text-lg text-[#1A1A1A]">Resource SEO Status Directory</h3>
+            <h3 className="font-serif font-bold text-lg text-text-primary">Resource SEO Status Directory</h3>
             <IndexingTable
               resources={resources}
               onEditResource={(res) => setEditingResource(res)}
@@ -238,8 +238,8 @@ export default function SEOManager() {
       {activeTab === 'indexing' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif font-bold text-lg text-[#1A1A1A]">Manage Resource Metadata & Directives</h3>
-            <span className="text-xs text-gray-500 font-mono">Showing {resources.length} configurable CMS endpoints</span>
+            <h3 className="font-serif font-bold text-lg text-text-primary">Manage Resource Metadata & Directives</h3>
+            <span className="text-xs text-text-muted font-mono">Showing {resources.length} configurable CMS endpoints</span>
           </div>
 
           <IndexingTable

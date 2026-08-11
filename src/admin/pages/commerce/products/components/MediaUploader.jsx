@@ -69,28 +69,28 @@ export default function MediaUploader({ media, onChange }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E7F2] shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+    <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
       <div className="flex items-center gap-3 mb-2">
         <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiImage size={16} /></div>
-        <h2 className="text-lg font-bold text-[#111A4A]">Product Images & Media</h2>
+        <h2 className="text-lg font-bold text-text-primary">Product Images & Media</h2>
       </div>
-      <p className="text-sm text-[#7C849F] mb-6 ml-11">Upload high quality images and videos</p>
+      <p className="text-sm text-text-muted mb-6 ml-11">Upload high quality images and videos</p>
 
       {/* Main Uploader */}
       <div 
         className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center text-center transition-colors ${
-          dragActive ? 'border-[#4F46FF] bg-[#4F46FF]/5' : 'border-[#4F46FF]/30 bg-[#EEF0FF]/30'
+          dragActive ? 'border-primary bg-primary/5' : 'border-primary/30 bg-primary-soft/30'
         }`}
         onDragEnter={onDrag}
         onDragLeave={onDrag}
         onDragOver={onDrag}
         onDrop={onDrop}
       >
-        <div className="w-14 h-14 bg-white rounded-full shadow-[0_4px_12px_rgba(79,70,255,0.1)] flex items-center justify-center text-[#4F46FF] mb-5">
+        <div className="w-14 h-14 bg-surface rounded-full shadow-[0_4px_12px_rgba(79,70,255,0.1)] flex items-center justify-center text-primary mb-5">
           <FiUploadCloud size={28} />
         </div>
-        <h3 className="text-[#111A4A] font-bold text-lg mb-1">Drag & drop images here</h3>
-        <p className="text-[#7C849F] text-sm mb-5">or click to browse</p>
+        <h3 className="text-text-primary font-bold text-lg mb-1">Drag & drop images here</h3>
+        <p className="text-text-muted text-sm mb-5">or click to browse</p>
         <button 
           onClick={() => fileInputRef.current?.click()}
           className="px-8 py-2.5 bg-gradient-to-r from-[#4F46FF] to-[#6D63FF] text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-[0_4px_14px_rgba(79,70,255,0.3)]"
@@ -105,25 +105,25 @@ export default function MediaUploader({ media, onChange }) {
           ref={fileInputRef} 
           onChange={(e) => handleFiles(e.target.files)}
         />
-        <p className="text-[#7C849F] text-xs mt-5">Supports: JPG, PNG, WebP (Max 10MB each)</p>
+        <p className="text-text-muted text-xs mt-5">Supports: JPG, PNG, WebP (Max 10MB each)</p>
       </div>
 
       {/* Gallery Previews */}
       {(media.primaryImage || media.gallery.length > 0) && (
         <div className="mt-8 space-y-4">
-          <h3 className="text-sm font-bold text-[#111A4A]">Uploaded Media</h3>
+          <h3 className="text-sm font-bold text-text-primary">Uploaded Media</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             
             {/* Primary Image */}
             {media.primaryImage && (
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden border-2 border-[#4F46FF] bg-stone-50 relative group">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden border-2 border-primary bg-background relative group">
                 <img src={media.primaryImage} alt="Primary" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <button onClick={() => removeImage(media.primaryImage, true)} className="p-2 bg-white/20 hover:bg-red-500 rounded-full text-white backdrop-blur">
+                  <button onClick={() => removeImage(media.primaryImage, true)} className="p-2 bg-surface/20 hover:bg-danger-soft0 rounded-full text-white backdrop-blur">
                     <FiX size={16} />
                   </button>
                 </div>
-                <div className="absolute top-2 left-2 px-2 py-1 bg-[#4F46FF] text-white text-[10px] font-bold uppercase rounded-md shadow-sm">
+                <div className="absolute top-2 left-2 px-2 py-1 bg-primary text-white text-[10px] font-bold uppercase rounded-md shadow-sm">
                   Primary
                 </div>
               </div>
@@ -131,13 +131,13 @@ export default function MediaUploader({ media, onChange }) {
 
             {/* Gallery Images */}
             {media.gallery.map((img, idx) => (
-              <div key={idx} className="aspect-[4/3] rounded-2xl overflow-hidden border border-[#E5E7F2] bg-stone-50 relative group">
+              <div key={idx} className="aspect-[4/3] rounded-2xl overflow-hidden border border-border bg-background relative group">
                 <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 flex-col">
-                  <button onClick={() => setAsPrimary(img)} className="px-3 py-1.5 bg-white text-[#111A4A] text-xs font-bold rounded-lg shadow-sm hover:bg-[#EEF0FF]">
+                  <button onClick={() => setAsPrimary(img)} className="px-3 py-1.5 bg-surface text-text-primary text-xs font-bold rounded-lg shadow-sm hover:bg-primary-soft">
                     Set Primary
                   </button>
-                  <button onClick={() => removeImage(img, false)} className="p-2 bg-white/20 hover:bg-red-500 rounded-full text-white backdrop-blur">
+                  <button onClick={() => removeImage(img, false)} className="p-2 bg-surface/20 hover:bg-danger-soft0 rounded-full text-white backdrop-blur">
                     <FiX size={16} />
                   </button>
                 </div>
@@ -148,11 +148,11 @@ export default function MediaUploader({ media, onChange }) {
       )}
 
       {/* 360 Viewer Settings */}
-      <div className="mt-8 pt-8 border-t border-[#E5E7F2]">
+      <div className="mt-8 pt-8 border-t border-border">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-sm font-bold text-[#111A4A]">360° Product Viewer</h3>
-            <p className="text-xs text-[#7C849F]">Upload 36 frames for a smooth 360 rotation</p>
+            <h3 className="text-sm font-bold text-text-primary">360° Product Viewer</h3>
+            <p className="text-xs text-text-muted">Upload 36 frames for a smooth 360 rotation</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input 
@@ -161,13 +161,13 @@ export default function MediaUploader({ media, onChange }) {
               checked={media.view360?.enabled}
               onChange={(e) => onChange('view360', { ...media.view360, enabled: e.target.checked })}
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4F46FF]"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-border-hover after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
           </label>
         </div>
 
         {media.view360?.enabled && (
           <div className="space-y-4">
-             <div className="border border-dashed border-[#E5E7F2] rounded-xl p-4 flex flex-col items-center justify-center relative bg-stone-50">
+             <div className="border border-dashed border-border rounded-xl p-4 flex flex-col items-center justify-center relative bg-background">
                <input 
                  type="file" 
                  multiple 
@@ -175,20 +175,20 @@ export default function MediaUploader({ media, onChange }) {
                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
                  onChange={(e) => handle360Files(e.target.files)}
                />
-               <FiUploadCloud size={24} className="text-[#7C849F] mb-2" />
-               <span className="text-sm font-semibold text-[#111A4A]">Upload 360° Frames</span>
+               <FiUploadCloud size={24} className="text-text-muted mb-2" />
+               <span className="text-sm font-semibold text-text-primary">Upload 360° Frames</span>
              </div>
              
              {media.view360.frames.length > 0 && (
                 <div>
-                   <div className="text-xs font-bold text-[#111A4A] mb-2">Uploaded Frames ({media.view360.frames.length})</div>
+                   <div className="text-xs font-bold text-text-primary mb-2">Uploaded Frames ({media.view360.frames.length})</div>
                    <div className="flex gap-2 overflow-auto no-scrollbar pb-2">
                      {media.view360.frames.map((frame, i) => (
-                       <div key={i} className="w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-[#E5E7F2] relative group">
+                       <div key={i} className="w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-border relative group">
                          <img src={frame} alt={`Frame ${i}`} className="w-full h-full object-cover" />
                          <button 
                            onClick={() => onChange('view360', { ...media.view360, frames: media.view360.frames.filter((_, idx) => idx !== i) })}
-                           className="absolute inset-0 bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100"
+                           className="absolute inset-0 bg-danger-soft0/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100"
                          >
                            <FiX size={14} />
                          </button>

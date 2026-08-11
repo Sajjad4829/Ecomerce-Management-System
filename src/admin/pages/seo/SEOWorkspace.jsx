@@ -13,9 +13,9 @@ const SEO_MODULES = [
 
 const METRICS = [
   { label: 'Total Indexed Entities', value: '482' },
-  { label: 'SEO Optimized', value: '85%', textClass: 'text-green-600' },
-  { label: 'Needs Improvement', value: '45', textClass: 'text-amber-600' },
-  { label: 'Critical Errors', value: '12', textClass: 'text-red-600' }
+  { label: 'SEO Optimized', value: '85%', textClass: 'text-success' },
+  { label: 'Needs Improvement', value: '45', textClass: 'text-warning' },
+  { label: 'Critical Errors', value: '12', textClass: 'text-danger' }
 ];
 
 export default function SEOWorkspace() {
@@ -28,8 +28,8 @@ export default function SEOWorkspace() {
             SEO & Discovery
           </span>
         </div>
-        <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">SEO Engine</h1>
-        <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+        <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">SEO Engine</h1>
+        <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
           Manage technical SEO, structured data, redirects, and global search engine visibility settings.
         </p>
       </div>
@@ -37,9 +37,9 @@ export default function SEOWorkspace() {
       {/* Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {METRICS.map((metric, idx) => (
-          <div key={idx} className="bg-white p-5 rounded-xl border border-black/5 shadow-sm">
-            <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">{metric.label}</p>
-            <p className={`text-2xl font-bold mt-1 ${metric.textClass || 'text-[#1A1A1A]'}`}>{metric.value}</p>
+          <div key={idx} className="bg-surface p-5 rounded-xl border border-black/5 shadow-sm">
+            <p className="text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">{metric.label}</p>
+            <p className={`text-2xl font-bold mt-1 ${metric.textClass || 'text-text-primary'}`}>{metric.value}</p>
           </div>
         ))}
       </div>
@@ -52,20 +52,20 @@ export default function SEOWorkspace() {
             <Link 
               key={module.id} 
               to={module.path}
-              className="bg-white rounded-xl border border-black/5 p-6 hover:border-black/20 hover:shadow-md transition-all group block"
+              className="bg-surface rounded-xl border border-black/5 p-6 hover:border-black/20 hover:shadow-md transition-all group block"
             >
               <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 bg-[#F7F5F2] rounded-xl flex items-center justify-center group-hover:bg-[#1A1A1A] group-hover:text-white transition-colors">
+                <div className="w-12 h-12 bg-background rounded-xl flex items-center justify-center group-hover:bg-[#1A1A1A] group-hover:text-white transition-colors">
                   <Icon size={20} />
                 </div>
                 {module.count !== undefined && (
-                  <span className="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold">
+                  <span className="px-2.5 py-1 bg-gray-100 text-text-secondary rounded-lg text-xs font-bold">
                     {module.count}
                   </span>
                 )}
               </div>
-              <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{module.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{module.description}</p>
+              <h3 className="text-lg font-bold text-text-primary mb-2">{module.title}</h3>
+              <p className="text-sm text-text-muted leading-relaxed">{module.description}</p>
             </Link>
           );
         })}

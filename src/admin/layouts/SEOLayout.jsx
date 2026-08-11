@@ -48,20 +48,20 @@ export default function SEOLayout() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-w-7xl mx-auto overflow-hidden">
-      <div className="flex items-center justify-between px-8 py-6 bg-[#F7F5F2] shrink-0 border-b border-stone-200">
+      <div className="flex items-center justify-between px-8 py-6 bg-background shrink-0 border-b border-border">
         <div>
-          <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors mb-2 text-sm">
+          <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-text-muted hover:text-text-primary transition-colors mb-2 text-sm">
             <FiArrowLeft /> Back to Dashboard
           </button>
-          <h1 className="text-3xl font-light text-[#1A1A1A] tracking-wide">SEO Center</h1>
+          <h1 className="text-3xl font-light text-text-primary tracking-wide">SEO Center</h1>
         </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-64 border-r border-stone-200 bg-[#F7F5F2] overflow-y-auto shrink-0 hidden md:block py-4">
+        <div className="w-64 border-r border-border bg-background overflow-y-auto shrink-0 hidden md:block py-4">
           {navCategories.map((cat, idx) => (
             <div key={idx} className="mb-6 px-4">
-              <h3 className="text-xs font-bold text-stone-500 uppercase tracking-widest mb-2 px-2">{cat.name}</h3>
+              <h3 className="text-xs font-bold text-text-muted uppercase tracking-widest mb-2 px-2">{cat.name}</h3>
               <ul className="space-y-1">
                 {cat.items.map((item, itemIdx) => (
                   <li key={itemIdx}>
@@ -70,11 +70,11 @@ export default function SEOLayout() {
                       end={item.end}
                       className={({ isActive }) => 
                         `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          isActive ? 'bg-white shadow-sm text-stone-900' : 'text-stone-600 hover:bg-stone-50'
+                          isActive ? 'bg-surface shadow-sm text-text-primary' : 'text-text-secondary hover:bg-background'
                         }`
                       }
                     >
-                      <item.icon className="text-stone-400" />
+                      <item.icon className="text-text-muted" />
                       {item.label}
                     </NavLink>
                   </li>
@@ -84,7 +84,7 @@ export default function SEOLayout() {
           ))}
         </div>
 
-        <div className="flex-1 bg-white overflow-y-auto">
+        <div className="flex-1 bg-surface overflow-y-auto">
           <Outlet />
         </div>
       </div>

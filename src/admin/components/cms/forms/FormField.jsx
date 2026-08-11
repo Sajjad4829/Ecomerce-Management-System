@@ -38,7 +38,7 @@ export default function FormField({
             disabled={!isPreview}
             placeholder={placeholder}
             defaultValue={defaultValue}
-            className="w-full px-3 py-2 bg-gray-50 border border-black/10 rounded-lg text-xs font-medium focus:bg-white focus:outline-none focus:border-black/30 disabled:bg-gray-50/70 cursor-pointer"
+            className="w-full px-3 py-2 bg-background border border-black/10 rounded-lg text-xs font-medium focus:bg-surface focus:outline-none focus:border-black/30 disabled:bg-background/70 cursor-pointer"
           />
         );
 
@@ -49,7 +49,7 @@ export default function FormField({
             disabled={!isPreview}
             placeholder={placeholder}
             defaultValue={defaultValue}
-            className="w-full px-3 py-2 bg-gray-50 border border-black/10 rounded-lg text-xs font-medium focus:bg-white focus:outline-none focus:border-black/30 disabled:bg-gray-50/70 resize-none cursor-pointer"
+            className="w-full px-3 py-2 bg-background border border-black/10 rounded-lg text-xs font-medium focus:bg-surface focus:outline-none focus:border-black/30 disabled:bg-background/70 resize-none cursor-pointer"
           />
         );
 
@@ -58,7 +58,7 @@ export default function FormField({
           <select
             disabled={!isPreview}
             defaultValue={defaultValue || (options[0] || '')}
-            className="w-full px-3 py-2 bg-gray-50 border border-black/10 rounded-lg text-xs font-medium focus:bg-white focus:outline-none disabled:bg-gray-50/70 cursor-pointer"
+            className="w-full px-3 py-2 bg-background border border-black/10 rounded-lg text-xs font-medium focus:bg-surface focus:outline-none disabled:bg-background/70 cursor-pointer"
           >
             <option value="" disabled>Select an option...</option>
             {options.map((opt, i) => (
@@ -71,7 +71,7 @@ export default function FormField({
         return (
           <div className="space-y-1.5 pt-1">
             {options.map((opt, i) => (
-              <label key={i} className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
+              <label key={i} className="flex items-center gap-2 text-xs text-text-secondary cursor-pointer">
                 <input
                   type="radio"
                   name={`radio-${id}`}
@@ -88,7 +88,7 @@ export default function FormField({
         return (
           <div className="space-y-1.5 pt-1">
             {options.map((opt, i) => (
-              <label key={i} className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
+              <label key={i} className="flex items-center gap-2 text-xs text-text-secondary cursor-pointer">
                 <input
                   type="checkbox"
                   disabled={!isPreview}
@@ -105,7 +105,7 @@ export default function FormField({
           <input
             type="date"
             disabled={!isPreview}
-            className="w-full px-3 py-2 bg-gray-50 border border-black/10 rounded-lg text-xs font-medium focus:bg-white"
+            className="w-full px-3 py-2 bg-background border border-black/10 rounded-lg text-xs font-medium focus:bg-surface"
           />
         );
 
@@ -114,28 +114,28 @@ export default function FormField({
           <input
             type="time"
             disabled={!isPreview}
-            className="w-full px-3 py-2 bg-gray-50 border border-black/10 rounded-lg text-xs font-medium focus:bg-white"
+            className="w-full px-3 py-2 bg-background border border-black/10 rounded-lg text-xs font-medium focus:bg-surface"
           />
         );
 
       case 'file':
         return (
-          <div className="border-2 border-dashed border-black/15 rounded-xl p-4 text-center bg-gray-50/50 hover:bg-gray-50 transition-colors">
-            <span className="text-xs font-bold text-gray-600 block">Click or Drag Files Here</span>
-            <span className="text-[10px] text-gray-400 block mt-0.5">{helpText || 'Upload drawings, specs, or images (PDF, PNG, JPG)'}</span>
+          <div className="border-2 border-dashed border-black/15 rounded-xl p-4 text-center bg-background/50 hover:bg-background transition-colors">
+            <span className="text-xs font-bold text-text-secondary block">Click or Drag Files Here</span>
+            <span className="text-[10px] text-text-muted block mt-0.5">{helpText || 'Upload drawings, specs, or images (PDF, PNG, JPG)'}</span>
           </div>
         );
 
       case 'heading':
         return (
-          <h4 className="font-serif font-bold text-base text-[#1A1A1A] border-b border-black/10 pb-1 mt-2">
+          <h4 className="font-serif font-bold text-base text-text-primary border-b border-black/10 pb-1 mt-2">
             {label || 'Section Heading'}
           </h4>
         );
 
       case 'paragraph':
         return (
-          <p className="text-xs text-gray-500 leading-relaxed italic">
+          <p className="text-xs text-text-muted leading-relaxed italic">
             {label || 'Help paragraph text describing guidelines to the user.'}
           </p>
         );
@@ -145,7 +145,7 @@ export default function FormField({
 
       case 'consent':
         return (
-          <label className="flex items-start gap-2.5 text-xs text-gray-700 cursor-pointer pt-1">
+          <label className="flex items-start gap-2.5 text-xs text-text-secondary cursor-pointer pt-1">
             <input type="checkbox" disabled={!isPreview} className="mt-0.5 rounded border-black/20" />
             <span className="leading-snug">{label || 'I agree to the privacy terms and VIP client communications.'}</span>
           </label>
@@ -153,7 +153,7 @@ export default function FormField({
 
       case 'hidden':
         return (
-          <div className="p-2 bg-amber-50 border border-amber-200 rounded text-[10px] font-mono text-amber-800 flex items-center justify-between">
+          <div className="p-2 bg-warning-soft border border-amber-200 rounded text-[10px] font-mono text-amber-800 flex items-center justify-between">
             <span>[HIDDEN FIELD] Name: <strong>{label}</strong></span>
             <span>Value: <code>{defaultValue || 'dynamic'}</code></span>
           </div>
@@ -173,7 +173,7 @@ export default function FormField({
       className={cn(
         "relative rounded-xl transition-all duration-200 group border",
         width === 'half' ? "col-span-1" : "col-span-2",
-        !isPreview && "p-3.5 bg-white cursor-pointer hover:border-black/30",
+        !isPreview && "p-3.5 bg-surface cursor-pointer hover:border-black/30",
         isSelected && !isPreview ? "border-2 border-[#1A1A1A] shadow-md ring-2 ring-black/5" : "border-black/10",
         isPreview && "p-1 border-transparent"
       )}
@@ -182,7 +182,7 @@ export default function FormField({
       {!isPreview && (
         <div className="flex items-center justify-between mb-2 pb-2 border-b border-black/5">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-gray-100 text-[9px] font-mono font-bold uppercase text-gray-600">
+            <span className="px-2 py-0.5 rounded bg-gray-100 text-[9px] font-mono font-bold uppercase text-text-secondary">
               {type}
             </span>
             {width === 'half' && (
@@ -197,7 +197,7 @@ export default function FormField({
               type="button"
               disabled={isFirst}
               onClick={(e) => { e.stopPropagation(); onMoveUp(); }}
-              className="p-1 hover:bg-gray-100 text-gray-500 rounded disabled:opacity-30"
+              className="p-1 hover:bg-gray-100 text-text-muted rounded disabled:opacity-30"
               title="Move Up"
             >
               <FiArrowUp size={12} />
@@ -206,7 +206,7 @@ export default function FormField({
               type="button"
               disabled={isLast}
               onClick={(e) => { e.stopPropagation(); onMoveDown(); }}
-              className="p-1 hover:bg-gray-100 text-gray-500 rounded disabled:opacity-30"
+              className="p-1 hover:bg-gray-100 text-text-muted rounded disabled:opacity-30"
               title="Move Down"
             >
               <FiArrowDown size={12} />
@@ -214,7 +214,7 @@ export default function FormField({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onDuplicate(); }}
-              className="p-1 hover:bg-gray-100 text-gray-600 rounded"
+              className="p-1 hover:bg-gray-100 text-text-secondary rounded"
               title="Duplicate Field"
             >
               <FiCopy size={12} />
@@ -222,7 +222,7 @@ export default function FormField({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onDelete(); }}
-              className="p-1 hover:bg-red-50 text-red-600 rounded"
+              className="p-1 hover:bg-danger-soft text-danger rounded"
               title="Delete Field"
             >
               <FiTrash2 size={12} />
@@ -236,7 +236,7 @@ export default function FormField({
         {!hideStandardLabel && (
           <label className="text-xs font-bold text-gray-800 flex items-center justify-between">
             <span>
-              {label} {required && <span className="text-red-500 ml-0.5">*</span>}
+              {label} {required && <span className="text-danger ml-0.5">*</span>}
             </span>
           </label>
         )}
@@ -244,7 +244,7 @@ export default function FormField({
         {renderControl()}
 
         {helpText && !hideStandardLabel && (
-          <span className="text-[10px] text-gray-400 block">{helpText}</span>
+          <span className="text-[10px] text-text-muted block">{helpText}</span>
         )}
       </div>
     </div>

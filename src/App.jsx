@@ -448,6 +448,7 @@ import CustomerLoyaltyHistory from './storefront/pages/account/loyalty/CustomerL
 import CustomerRewards from './storefront/pages/account/loyalty/CustomerRewards';
 import CustomerReferrals from './storefront/pages/account/loyalty/CustomerReferrals';
 
+import { ThemeProvider } from './admin/context/theme/ThemeContext';
 import { SettingsProvider } from './admin/context/settings/SettingsContext';
 import SettingsLayout from './admin/layouts/SettingsLayout';
 import { SettingsHome } from './admin/pages/settings/SettingsHome';
@@ -460,6 +461,7 @@ import CustomerSegmentation from './admin/pages/commerce/customers/segments/Cust
 import SegmentBuilder from './admin/pages/commerce/customers/segments/SegmentBuilder';
 import SegmentDetail from './admin/pages/commerce/customers/segments/SegmentDetail';
 import SegmentAnalytics from './admin/pages/commerce/customers/segments/SegmentAnalytics';
+import AppearanceSettings from './admin/pages/settings/appearance/AppearanceSettings';
 
 
 
@@ -499,6 +501,7 @@ import {
 
 export default function App() {
   return (
+    <ThemeProvider>
     <ToastProvider>
     <AuthProvider>
       <CommerceProvider>
@@ -614,6 +617,7 @@ export default function App() {
 
                                                     <Route path="settings" element={<SettingsLayout />}>
                                                       <Route index element={<SettingsHome />} />
+                                                      <Route path="appearance" element={<AppearanceSettings />} />
                                                       <Route path="store" element={<GeneralSettings />} />
                                                       <Route path="branding" element={<BrandingSettings />} />
                                                       <Route path="business" element={<BusinessSettings />} />
@@ -1100,7 +1104,7 @@ export default function App() {
                                                 </Routes>
                                               </Router>
 
-                                                      </CollectionProvider></ProductProvider></CategoryProvider></ExperienceProvider></SEOProvider></CustomerProvider></SearchProvider></GlobalSearchProvider></MediaProvider>
+                                              </CollectionProvider></ProductProvider></CategoryProvider></ExperienceProvider></SEOProvider></CustomerProvider></SearchProvider></GlobalSearchProvider></MediaProvider>
                                           </CMSProvider>
                                         </MarketingProvider>
                                       </SettingsProvider>
@@ -1122,6 +1126,7 @@ export default function App() {
       </CommerceProvider>
     </AuthProvider>
     </ToastProvider>
+    </ThemeProvider>
 
   );
 }

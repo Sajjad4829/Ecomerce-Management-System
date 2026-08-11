@@ -14,7 +14,7 @@ export default function WarrantyClaimCenter() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -35,7 +35,7 @@ export default function WarrantyClaimCenter() {
                 <td className="px-6 py-4 text-neutral-600">{wc.productName}</td>
                 <td className="px-6 py-4 text-neutral-600">{wc.issue}</td>
                 <td className="px-6 py-4">
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-warning-soft text-amber-800">
                     {wc.status}
                   </span>
                 </td>

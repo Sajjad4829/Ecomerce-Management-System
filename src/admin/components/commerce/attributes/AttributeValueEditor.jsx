@@ -51,7 +51,7 @@ export default function AttributeValueEditor({ attributeType, values, onChange }
           value={newValue}
           onChange={(e) => setNewValue(e.target.value)}
           placeholder="New value (e.g. Oak, XL, Blue)..."
-          className="flex-1 px-4 py-2 bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm"
+          className="flex-1 px-4 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm"
           onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
         />
         {isColor && (
@@ -59,33 +59,33 @@ export default function AttributeValueEditor({ attributeType, values, onChange }
             type="color"
             value={newColor}
             onChange={(e) => setNewColor(e.target.value)}
-            className="w-12 h-[38px] p-0.5 bg-white border border-stone-200 rounded-lg cursor-pointer"
+            className="w-12 h-[38px] p-0.5 bg-surface border border-border rounded-lg cursor-pointer"
           />
         )}
         <button 
           onClick={handleAdd}
-          className="px-4 py-2 bg-stone-900 text-white rounded-lg text-sm font-semibold hover:bg-stone-800 transition-colors flex items-center gap-2"
+          className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors flex items-center gap-2"
         >
           <FiPlus size={16} /> Add Value
         </button>
       </div>
 
-      <div className="border border-stone-200 rounded-xl overflow-hidden bg-white">
+      <div className="border border-border rounded-xl overflow-hidden bg-surface">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-stone-50 border-b border-stone-200">
+            <tr className="bg-background border-b border-border">
               <th className="p-3 w-10"></th>
-              <th className="p-3 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Label</th>
-              <th className="p-3 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Slug</th>
-              {isColor && <th className="p-3 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Color</th>}
-              {isImage && <th className="p-3 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Image</th>}
+              <th className="p-3 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Label</th>
+              <th className="p-3 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Slug</th>
+              {isColor && <th className="p-3 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Color</th>}
+              {isImage && <th className="p-3 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Image</th>}
               <th className="p-3 w-10"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-100">
             {values.map((v, i) => (
-              <tr key={v.id} className="hover:bg-stone-50 transition-colors">
-                <td className="p-3 text-stone-400 cursor-grab active:cursor-grabbing">
+              <tr key={v.id} className="hover:bg-background transition-colors">
+                <td className="p-3 text-text-muted cursor-grab active:cursor-grabbing">
                   <FiMenu size={16} />
                 </td>
                 <td className="p-3">
@@ -97,11 +97,11 @@ export default function AttributeValueEditor({ attributeType, values, onChange }
                       newValues[i].label = e.target.value;
                       onChange(newValues);
                     }}
-                    className="w-full bg-transparent border-none p-0 focus:ring-0 text-sm font-medium text-stone-900"
+                    className="w-full bg-transparent border-none p-0 focus:ring-0 text-sm font-medium text-text-primary"
                   />
                 </td>
                 <td className="p-3">
-                  <span className="font-mono text-xs text-stone-500">{v.slug}</span>
+                  <span className="font-mono text-xs text-text-muted">{v.slug}</span>
                 </td>
                 {isColor && (
                   <td className="p-3">
@@ -119,7 +119,7 @@ export default function AttributeValueEditor({ attributeType, values, onChange }
                 )}
                 {isImage && (
                   <td className="p-3">
-                    <button className="w-8 h-8 rounded border border-dashed border-stone-300 flex items-center justify-center text-stone-400 hover:text-stone-600 hover:bg-stone-100 transition-colors">
+                    <button className="w-8 h-8 rounded border border-dashed border-border-hover flex items-center justify-center text-text-muted hover:text-text-secondary hover:bg-stone-100 transition-colors">
                       <FiPlus size={14} />
                     </button>
                   </td>
@@ -127,7 +127,7 @@ export default function AttributeValueEditor({ attributeType, values, onChange }
                 <td className="p-3">
                   <button 
                     onClick={() => handleRemove(v.id)}
-                    className="p-1.5 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    className="p-1.5 text-text-muted hover:text-danger hover:bg-danger-soft rounded transition-colors"
                   >
                     <FiTrash2 size={14} />
                   </button>
@@ -136,7 +136,7 @@ export default function AttributeValueEditor({ attributeType, values, onChange }
             ))}
             {values.length === 0 && (
               <tr>
-                <td colSpan={isColor || isImage ? 5 : 4} className="p-8 text-center text-stone-500 text-sm">
+                <td colSpan={isColor || isImage ? 5 : 4} className="p-8 text-center text-text-muted text-sm">
                   No values defined yet. Add some above.
                 </td>
               </tr>

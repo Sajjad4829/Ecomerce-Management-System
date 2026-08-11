@@ -12,7 +12,7 @@ export default function TemplateHierarchy({ template }) {
       name: template.theme || 'Aurelian Luxury Gold',
       icon: FiSliders,
       badge: 'Design System Tokens',
-      bg: 'bg-stone-900 text-white',
+      bg: 'bg-primary text-white',
       border: 'border-stone-800'
     },
     {
@@ -39,8 +39,8 @@ export default function TemplateHierarchy({ template }) {
       name: `${(template.sections || []).length} Sections Attached`,
       icon: FiGrid,
       badge: 'Modular Content',
-      bg: 'bg-stone-50 text-stone-900',
-      border: 'border-stone-200'
+      bg: 'bg-background text-text-primary',
+      border: 'border-border'
     },
     {
       level: 5,
@@ -48,19 +48,19 @@ export default function TemplateHierarchy({ template }) {
       name: `${(template.placeholders || []).length} Dynamic Bindings`,
       icon: FiBox,
       badge: 'Runtime Hydration',
-      bg: 'bg-amber-50 text-amber-950',
+      bg: 'bg-warning-soft text-amber-950',
       border: 'border-amber-200'
     }
   ];
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-5 shadow-sm space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+    <div className="bg-surface rounded-xl border border-border p-5 shadow-sm space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-border">
         <div>
-          <h3 className="font-serif font-bold text-stone-900 text-sm">Template Architecture Hierarchy</h3>
-          <p className="text-xs text-stone-500">Structural resolution order from theme tokens down to runtime data binding</p>
+          <h3 className="font-serif font-bold text-text-primary text-sm">Template Architecture Hierarchy</h3>
+          <p className="text-xs text-text-muted">Structural resolution order from theme tokens down to runtime data binding</p>
         </div>
-        <span className="text-[10px] font-mono uppercase bg-stone-100 text-stone-700 px-2 py-1 rounded font-bold">
+        <span className="text-[10px] font-mono uppercase bg-stone-100 text-text-secondary px-2 py-1 rounded font-bold">
           v{template.version || '1.0.0'}
         </span>
       </div>
@@ -76,18 +76,18 @@ export default function TemplateHierarchy({ template }) {
               <div className={`p-2 rounded-lg border shadow-sm ${step.bg} ${step.border} shrink-0`}>
                 <Icon size={16} />
               </div>
-              <div className="flex-1 min-w-0 bg-stone-50/80 border border-stone-200/80 rounded-lg p-2.5 flex items-center justify-between gap-2 hover:border-amber-400 transition-colors">
+              <div className="flex-1 min-w-0 bg-background/80 border border-border/80 rounded-lg p-2.5 flex items-center justify-between gap-2 hover:border-amber-400 transition-colors">
                 <div className="truncate">
                   <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-mono text-stone-500 font-bold uppercase tracking-wider">
+                    <span className="text-[9px] font-mono text-text-muted font-bold uppercase tracking-wider">
                       L{step.level}: {step.title}
                     </span>
                   </div>
-                  <div className="font-medium text-xs text-stone-900 truncate mt-0.5">
+                  <div className="font-medium text-xs text-text-primary truncate mt-0.5">
                     {step.name}
                   </div>
                 </div>
-                <span className="text-[10px] font-mono bg-white px-2 py-0.5 rounded border border-stone-200 text-stone-600 font-semibold shrink-0">
+                <span className="text-[10px] font-mono bg-surface px-2 py-0.5 rounded border border-border text-text-secondary font-semibold shrink-0">
                   {step.badge}
                 </span>
               </div>

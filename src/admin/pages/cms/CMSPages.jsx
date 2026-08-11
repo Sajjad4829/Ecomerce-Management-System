@@ -15,37 +15,37 @@ export const CMSDashboard = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-sm text-neutral-500 mb-1">Total Pages</div>
             <div className="text-2xl font-bold text-neutral-900">3</div>
           </div>
           <FileText className="w-8 h-8 text-neutral-300" />
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-sm text-neutral-500 mb-1">Total Sections</div>
             <div className="text-2xl font-bold text-neutral-900">14</div>
           </div>
           <Layers className="w-8 h-8 text-neutral-300" />
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-sm text-neutral-500 mb-1">Navigation Menus</div>
             <div className="text-2xl font-bold text-neutral-900">3</div>
           </div>
           <Navigation className="w-8 h-8 text-neutral-300" />
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-sm text-neutral-500 mb-1">SEO Issues</div>
-            <div className="text-2xl font-bold text-amber-600">1</div>
+            <div className="text-2xl font-bold text-warning">1</div>
           </div>
           <Search className="w-8 h-8 text-amber-300" />
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
         <h3 className="font-medium text-neutral-900 mb-4">Recent Activity</h3>
         <div className="space-y-4">
           <div className="text-sm text-neutral-600 border-l-2 border-neutral-200 pl-4 py-1">
@@ -70,7 +70,7 @@ export const PageCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Page Center</h1>
         <Link to="create" className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Page</Link>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -92,14 +92,14 @@ export const PageCenter = () => {
                 </td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    p.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    p.status === 'Published' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                   }`}>
                     {p.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-neutral-600">{p.sections}</td>
                 <td className="px-6 py-4 text-right space-x-3">
-                  <Link to={`${p.id}/builder`} className="text-indigo-600 hover:text-indigo-900 font-medium">Builder</Link>
+                  <Link to={`${p.id}/builder`} className="text-primary hover:text-indigo-900 font-medium">Builder</Link>
                   <Link to={`${p.id}/preview`} className="text-neutral-600 hover:text-neutral-900 font-medium">Preview</Link>
                   <Link to={`${p.id}/edit`} className="text-neutral-600 hover:text-neutral-900 font-medium">Edit</Link>
                 </td>
@@ -128,7 +128,7 @@ export const PageForm = () => {
         </Link>
         <h1 className="text-2xl font-serif text-neutral-900">{pageId ? 'Edit Page' : 'Create Page'}</h1>
       </div>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm space-y-4">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm space-y-4">
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Page Name</label>
           <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" placeholder="e.g. About Us" />
@@ -179,7 +179,7 @@ export const PageBuilder = () => {
   return (
     <div className="flex h-[calc(100vh-4rem)] -m-8"> {/* Negative margin to break out of layout padding */}
       {/* Left Panel: Section Library */}
-      <div className="w-64 bg-white border-r border-neutral-200 flex flex-col">
+      <div className="w-64 bg-surface border-r border-neutral-200 flex flex-col">
         <div className="p-4 border-b border-neutral-200">
           <h2 className="font-bold text-neutral-900">Add Section</h2>
         </div>
@@ -207,7 +207,7 @@ export const PageBuilder = () => {
 
       {/* Center Panel: Canvas */}
       <div className="flex-1 bg-neutral-100 flex flex-col">
-        <div className="bg-white border-b border-neutral-200 p-4 flex justify-between items-center">
+        <div className="bg-surface border-b border-neutral-200 p-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Link to="/admin/cms/pages" className="text-neutral-500 hover:text-neutral-900"><ArrowLeft className="w-5 h-5"/></Link>
             <span className="font-medium">{page.name}</span>
@@ -220,13 +220,13 @@ export const PageBuilder = () => {
         <div className="flex-1 overflow-y-auto p-8">
           <div className="max-w-4xl mx-auto space-y-4">
             {/* Mock Canvas Content */}
-            <div className="border-2 border-indigo-500 rounded relative group bg-white shadow-sm">
+            <div className="border-2 border-indigo-500 rounded relative group bg-surface shadow-sm">
               <div className="absolute top-0 right-0 -mt-3 mr-2 hidden group-hover:flex gap-1">
-                <button className="p-1 bg-white border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveUp className="w-3 h-3"/></button>
-                <button className="p-1 bg-white border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveDown className="w-3 h-3"/></button>
-                <button className="p-1 bg-white border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><Copy className="w-3 h-3"/></button>
-                <button className="p-1 bg-white border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><EyeOff className="w-3 h-3"/></button>
-                <button className="p-1 bg-white border border-neutral-200 rounded shadow-sm hover:bg-red-50 text-red-600"><Trash2 className="w-3 h-3"/></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveUp className="w-3 h-3"/></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveDown className="w-3 h-3"/></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><Copy className="w-3 h-3"/></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><EyeOff className="w-3 h-3"/></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-danger-soft text-danger"><Trash2 className="w-3 h-3"/></button>
               </div>
               <div className="h-48 bg-neutral-200 flex flex-col items-center justify-center rounded m-1 border-2 border-dashed border-neutral-300">
                 <div className="font-serif text-2xl text-neutral-800 mb-2">Hero Section</div>
@@ -234,7 +234,7 @@ export const PageBuilder = () => {
               </div>
             </div>
             
-            <div className="border border-neutral-200 rounded relative group hover:border-indigo-300 bg-white shadow-sm transition-colors cursor-pointer">
+            <div className="border border-neutral-200 rounded relative group hover:border-indigo-300 bg-surface shadow-sm transition-colors cursor-pointer">
               <div className="h-32 flex items-center justify-center p-6 gap-6 m-1">
                 <div className="w-1/3 bg-neutral-200 h-full rounded border-2 border-dashed border-neutral-300"></div>
                 <div className="w-2/3 space-y-2">
@@ -245,7 +245,7 @@ export const PageBuilder = () => {
               </div>
             </div>
             
-            <div className="border-2 border-dashed border-neutral-300 rounded h-24 flex items-center justify-center bg-white text-neutral-400 hover:bg-neutral-50 hover:border-neutral-400 cursor-pointer transition-colors">
+            <div className="border-2 border-dashed border-neutral-300 rounded h-24 flex items-center justify-center bg-surface text-neutral-400 hover:bg-neutral-50 hover:border-neutral-400 cursor-pointer transition-colors">
               Drop Section Here
             </div>
           </div>
@@ -253,7 +253,7 @@ export const PageBuilder = () => {
       </div>
 
       {/* Right Panel: Settings */}
-      <div className="w-80 bg-white border-l border-neutral-200 flex flex-col">
+      <div className="w-80 bg-surface border-l border-neutral-200 flex flex-col">
         <div className="p-4 border-b border-neutral-200 flex justify-between items-center">
           <h2 className="font-bold text-neutral-900">Hero Section</h2>
           <span className="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded">Selected</span>
@@ -291,7 +291,7 @@ export const PageBuilder = () => {
             <div>
               <label className="block text-xs text-neutral-500 mb-1">Alignment</label>
               <div className="flex bg-neutral-100 rounded p-0.5 border border-neutral-200">
-                <button className="flex-1 py-1 text-xs bg-white shadow-sm rounded">Left</button>
+                <button className="flex-1 py-1 text-xs bg-surface shadow-sm rounded">Left</button>
                 <button className="flex-1 py-1 text-xs text-neutral-500 hover:text-neutral-900">Center</button>
                 <button className="flex-1 py-1 text-xs text-neutral-500 hover:text-neutral-900">Right</button>
               </div>
@@ -313,7 +313,7 @@ export const SectionLibrary = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {sections.map(s => (
-          <div key={s.id} className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
+          <div key={s.id} className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
             <div className="h-32 bg-neutral-100 border-b border-neutral-200 flex items-center justify-center text-neutral-400 text-sm">
               [Preview Thumbnail]
             </div>
@@ -326,7 +326,7 @@ export const SectionLibrary = () => {
               <div className="flex justify-between items-center mt-auto pt-4 border-t border-neutral-100">
                 <span className="text-xs text-neutral-500">Used in {s.usageCount} pages</span>
                 <div className="space-x-2 text-sm">
-                  <button className="text-indigo-600 hover:text-indigo-800 font-medium">Edit</button>
+                  <button className="text-primary hover:text-indigo-800 font-medium">Edit</button>
                   <button className="text-neutral-600 hover:text-neutral-800 font-medium">Duplicate</button>
                 </div>
               </div>
@@ -346,7 +346,7 @@ export const BlockCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Reusable Blocks</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Block</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -364,14 +364,14 @@ export const BlockCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{b.type}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    b.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    b.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                   }`}>
                     {b.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-neutral-600">{b.updatedAt}</td>
                 <td className="px-6 py-4 text-right space-x-3">
-                  <button className="text-indigo-600 hover:text-indigo-900 font-medium">Edit</button>
+                  <button className="text-primary hover:text-indigo-900 font-medium">Edit</button>
                   <button className="text-neutral-600 hover:text-neutral-900 font-medium">Delete</button>
                 </td>
               </tr>
@@ -391,7 +391,7 @@ export const NavigationCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Navigation Menus</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Menu</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -410,13 +410,13 @@ export const NavigationCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{m.items}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    m.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    m.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                   }`}>
                     {m.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right space-x-3">
-                  <button className="text-indigo-600 hover:text-indigo-900 font-medium">Builder</button>
+                  <button className="text-primary hover:text-indigo-900 font-medium">Builder</button>
                   <button className="text-neutral-600 hover:text-neutral-900 font-medium">Settings</button>
                 </td>
               </tr>
@@ -434,7 +434,7 @@ export const HeaderManager = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Header Configuration</h1>
       </div>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm space-y-6">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm space-y-6">
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Logo</label>
           <div className="flex items-center gap-4">
@@ -453,16 +453,16 @@ export const HeaderManager = () => {
           <label className="block text-sm font-medium text-neutral-700 mb-2">Features</label>
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" className="rounded text-indigo-600" defaultChecked /> Enable Search
+              <input type="checkbox" className="rounded text-primary" defaultChecked /> Enable Search
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" className="rounded text-indigo-600" defaultChecked /> Enable User Account
+              <input type="checkbox" className="rounded text-primary" defaultChecked /> Enable User Account
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" className="rounded text-indigo-600" defaultChecked /> Enable Wishlist
+              <input type="checkbox" className="rounded text-primary" defaultChecked /> Enable Wishlist
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" className="rounded text-indigo-600" defaultChecked /> Enable Cart
+              <input type="checkbox" className="rounded text-primary" defaultChecked /> Enable Cart
             </label>
           </div>
         </div>
@@ -480,7 +480,7 @@ export const FooterManager = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Footer Configuration</h1>
       </div>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm space-y-6">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm space-y-6">
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Footer Description</label>
           <textarea className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm" rows={3} defaultValue="Premium furniture and luxury resorts."></textarea>
@@ -511,7 +511,7 @@ export const BannerManager = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Banners</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Banner</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -530,13 +530,13 @@ export const BannerManager = () => {
                 <td className="px-6 py-4 text-neutral-600">{b.startDate} - {b.endDate}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    b.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    b.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                   }`}>
                     {b.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right space-x-3">
-                  <button className="text-indigo-600 hover:text-indigo-900 font-medium">Edit</button>
+                  <button className="text-primary hover:text-indigo-900 font-medium">Edit</button>
                 </td>
               </tr>
             ))}
@@ -554,7 +554,7 @@ export const SEOCenter = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">SEO Center</h1>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -572,14 +572,14 @@ export const SEOCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{s.title}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    s.status === 'Indexed' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+                    s.status === 'Indexed' ? 'bg-success-soft text-green-800' : 'bg-warning-soft text-amber-800'
                   }`}>
                     {s.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-neutral-600">{s.score}</td>
                 <td className="px-6 py-4 text-right space-x-3">
-                  <button className="text-indigo-600 hover:text-indigo-900 font-medium">Edit Meta</button>
+                  <button className="text-primary hover:text-indigo-900 font-medium">Edit Meta</button>
                 </td>
               </tr>
             ))}
@@ -598,7 +598,7 @@ export const RedirectCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Redirects</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Redirect</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -617,13 +617,13 @@ export const RedirectCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{r.statusCode}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    r.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    r.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                   }`}>
                     {r.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right space-x-3">
-                  <button className="text-indigo-600 hover:text-indigo-900 font-medium">Edit</button>
+                  <button className="text-primary hover:text-indigo-900 font-medium">Edit</button>
                   <button className="text-neutral-600 hover:text-neutral-900 font-medium">Delete</button>
                 </td>
               </tr>
@@ -642,21 +642,21 @@ export const PagePreview = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] -m-8 bg-neutral-100">
-      <div className="bg-white border-b border-neutral-200 p-4 flex justify-between items-center">
+      <div className="bg-surface border-b border-neutral-200 p-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
           <Link to={`/admin/cms/pages/${pageId}/builder`} className="text-neutral-500 hover:text-neutral-900"><ArrowLeft className="w-5 h-5"/></Link>
           <span className="font-medium">{page.name} - Preview</span>
         </div>
         <div className="flex gap-2">
            <div className="flex bg-neutral-100 rounded p-1 border border-neutral-200 mr-4">
-              <button className="px-3 py-1 text-sm bg-white shadow-sm rounded">Desktop</button>
+              <button className="px-3 py-1 text-sm bg-surface shadow-sm rounded">Desktop</button>
               <button className="px-3 py-1 text-sm text-neutral-500 hover:text-neutral-900">Tablet</button>
               <button className="px-3 py-1 text-sm text-neutral-500 hover:text-neutral-900">Mobile</button>
             </div>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto flex justify-center p-8">
-        <div className="bg-white w-full max-w-6xl shadow-xl min-h-full border border-neutral-200 rounded">
+        <div className="bg-surface w-full max-w-6xl shadow-xl min-h-full border border-neutral-200 rounded">
             {/* Mock Rendered Frontend */}
             <div className="h-16 border-b border-neutral-200 flex items-center px-8 justify-between">
               <div className="font-serif font-bold text-xl">BRAND</div>
@@ -684,7 +684,7 @@ export const PageVersions = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Page Versions</h1>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -705,7 +705,7 @@ export const PageVersions = () => {
                 <td className="px-6 py-4 text-neutral-600">{v.changeSummary}</td>
                 <td className="px-6 py-4 text-neutral-600">{v.createdAt}</td>
                 <td className="px-6 py-4 text-right space-x-3">
-                  <button className="text-indigo-600 hover:text-indigo-900 font-medium">Compare</button>
+                  <button className="text-primary hover:text-indigo-900 font-medium">Compare</button>
                   <button className="text-neutral-600 hover:text-neutral-900 font-medium">Restore</button>
                 </td>
               </tr>
@@ -745,7 +745,7 @@ export const PageTypeCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Page Type Management</h1>
         <Link to="create" className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Page Type</Link>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -766,19 +766,19 @@ export const PageTypeCenter = () => {
                   <td className="px-6 py-4 text-neutral-600">{usageCount}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      pt.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                      pt.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                     }`}>
                       {pt.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right space-x-3">
                     {pt.status === 'Active' ? (
-                      <button onClick={() => handleDeactivate(pt.id)} className="text-amber-600 hover:text-amber-900 font-medium">Deactivate</button>
+                      <button onClick={() => handleDeactivate(pt.id)} className="text-warning hover:text-amber-900 font-medium">Deactivate</button>
                     ) : (
-                      <button onClick={() => handleActivate(pt.id)} className="text-green-600 hover:text-green-900 font-medium">Activate</button>
+                      <button onClick={() => handleActivate(pt.id)} className="text-success hover:text-green-900 font-medium">Activate</button>
                     )}
-                    <Link to={`${pt.id}/edit`} className="text-indigo-600 hover:text-indigo-900 font-medium">Edit</Link>
-                    <button onClick={() => handleDelete(pt.id)} className="text-red-600 hover:text-red-900 font-medium"><Trash2 className="w-4 h-4 inline" /></button>
+                    <Link to={`${pt.id}/edit`} className="text-primary hover:text-indigo-900 font-medium">Edit</Link>
+                    <button onClick={() => handleDelete(pt.id)} className="text-danger hover:text-red-900 font-medium"><Trash2 className="w-4 h-4 inline" /></button>
                   </td>
                 </tr>
               );
@@ -818,7 +818,7 @@ export const PageTypeForm = () => {
         </button>
         <h1 className="text-2xl font-serif text-neutral-900">{id ? 'Edit Page Type' : 'Create Page Type'}</h1>
       </div>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm space-y-4">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm space-y-4">
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Name</label>
           <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. Furniture Guide" />

@@ -27,17 +27,17 @@ export const SupplierDetail = () => {
         <div className="flex-1">
           <h1 className="text-2xl font-serif text-neutral-900 flex items-center gap-2">
             {supplier.name}
-            <span className="text-sm font-sans font-normal px-2.5 py-0.5 rounded-full bg-green-100 text-green-800">
+            <span className="text-sm font-sans font-normal px-2.5 py-0.5 rounded-full bg-success-soft text-green-800">
               {supplier.status}
             </span>
           </h1>
           <p className="text-sm text-neutral-500 mt-1">Supplier Code: {supplier.code}</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-surface rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
             <Edit3 className="w-4 h-4" /> Edit
           </button>
-          <button className="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 text-white bg-primary rounded-md hover:bg-primary-hover transition-colors flex items-center gap-2">
             <ShoppingCart className="w-4 h-4" /> Create PO
           </button>
         </div>
@@ -46,7 +46,7 @@ export const SupplierDetail = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Contact Info */}
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+          <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
             <h3 className="font-medium text-neutral-900 mb-4">Contact Information</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
@@ -59,7 +59,7 @@ export const SupplierDetail = () => {
               <div className="flex items-start gap-3">
                 <Mail className="w-5 h-5 text-neutral-400 mt-0.5" />
                 <div>
-                  <a href={`mailto:${supplier.email}`} className="text-sm font-medium text-indigo-600 hover:underline">{supplier.email}</a>
+                  <a href={`mailto:${supplier.email}`} className="text-sm font-medium text-primary hover:underline">{supplier.email}</a>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -77,29 +77,29 @@ export const SupplierDetail = () => {
             </div>
           </div>
           
-          <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+          <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
             <h3 className="font-medium text-neutral-900 mb-4">Performance Metrics</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-neutral-600">On-Time Delivery</span>
-                  <span className="font-medium text-green-600">94%</span>
+                  <span className="font-medium text-success">94%</span>
                 </div>
-                <div className="w-full bg-neutral-100 rounded-full h-1.5"><div className="bg-green-500 h-1.5 rounded-full w-[94%]" /></div>
+                <div className="w-full bg-neutral-100 rounded-full h-1.5"><div className="bg-success-soft0 h-1.5 rounded-full w-[94%]" /></div>
               </div>
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-neutral-600">Quality Rate</span>
-                  <span className="font-medium text-green-600">98%</span>
+                  <span className="font-medium text-success">98%</span>
                 </div>
-                <div className="w-full bg-neutral-100 rounded-full h-1.5"><div className="bg-green-500 h-1.5 rounded-full w-[98%]" /></div>
+                <div className="w-full bg-neutral-100 rounded-full h-1.5"><div className="bg-success-soft0 h-1.5 rounded-full w-[98%]" /></div>
               </div>
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-neutral-600">Fulfillment Rate</span>
-                  <span className="font-medium text-amber-600">85%</span>
+                  <span className="font-medium text-warning">85%</span>
                 </div>
-                <div className="w-full bg-neutral-100 rounded-full h-1.5"><div className="bg-amber-500 h-1.5 rounded-full w-[85%]" /></div>
+                <div className="w-full bg-neutral-100 rounded-full h-1.5"><div className="bg-warning-soft0 h-1.5 rounded-full w-[85%]" /></div>
               </div>
               <p className="text-xs text-neutral-400 text-right mt-2">*Backend Placeholder Data</p>
             </div>
@@ -108,7 +108,7 @@ export const SupplierDetail = () => {
 
         {/* Orders and Activity */}
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm">
             <div className="p-5 border-b border-neutral-200">
               <h3 className="font-medium text-neutral-900">Recent Purchase Orders</h3>
             </div>
@@ -118,7 +118,7 @@ export const SupplierDetail = () => {
                   <div>
                     <button 
                       onClick={() => navigate(`/admin/procurement/purchase-orders/${po.id}`)}
-                      className="font-medium text-indigo-600 hover:underline"
+                      className="font-medium text-primary hover:underline"
                     >
                       {po.poNumber}
                     </button>

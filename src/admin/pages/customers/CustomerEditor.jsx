@@ -45,7 +45,7 @@ export default function CustomerEditor() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/admin/customers')}
-            className="px-4 py-2 text-neutral-600 bg-white border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2"
+            className="px-4 py-2 text-neutral-600 bg-surface border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2"
           >
             <X className="w-4 h-4" /> Cancel
           </button>
@@ -58,7 +58,7 @@ export default function CustomerEditor() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+      <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
         <div className="flex items-center gap-4 mb-6 pb-6 border-b border-neutral-100">
           <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center">
             <User className="w-8 h-8 text-neutral-400" />
@@ -80,7 +80,7 @@ export default function CustomerEditor() {
                 errors.firstName ? 'border-red-300' : 'border-neutral-200'
               }`}
             />
-            {errors.firstName && <p className="text-sm text-red-600">{errors.firstName}</p>}
+            {errors.firstName && <p className="text-sm text-danger">{errors.firstName}</p>}
           </div>
 
           <div className="space-y-2">
@@ -93,7 +93,7 @@ export default function CustomerEditor() {
                 errors.lastName ? 'border-red-300' : 'border-neutral-200'
               }`}
             />
-            {errors.lastName && <p className="text-sm text-red-600">{errors.lastName}</p>}
+            {errors.lastName && <p className="text-sm text-danger">{errors.lastName}</p>}
           </div>
 
           <div className="space-y-2">
@@ -106,7 +106,7 @@ export default function CustomerEditor() {
                 errors.email ? 'border-red-300' : 'border-neutral-200'
               }`}
             />
-            {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
+            {errors.email && <p className="text-sm text-danger">{errors.email}</p>}
           </div>
 
           <div className="space-y-2">
@@ -132,7 +132,7 @@ export default function CustomerEditor() {
               <option value="inactive">Inactive</option>
               <option value="suspended">Suspended</option>
             </select>
-            {errors.status && <p className="text-sm text-red-600">{errors.status}</p>}
+            {errors.status && <p className="text-sm text-danger">{errors.status}</p>}
           </div>
         </div>
       </div>

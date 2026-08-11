@@ -17,25 +17,25 @@ export default function PageTable({ data, selectedIds, toggleSelection, toggleAl
   ];
 
   return (
-    <div className="bg-white border border-black/5 rounded-xl overflow-hidden shadow-sm">
+    <div className="bg-surface border border-black/5 rounded-xl overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[900px]">
           <thead>
-            <tr className="bg-[#F7F5F2] border-b border-black/5">
+            <tr className="bg-background border-b border-black/5">
               <th className="px-6 py-4 w-12 text-center">
                 <input 
                   type="checkbox" 
                   checked={allSelected}
                   onChange={toggleAll}
-                  className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A] cursor-pointer"
+                  className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A] cursor-pointer"
                 />
               </th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Title & Slug</th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Status & Vis</th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Template</th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">SEO</th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Author & Date</th>
-              <th className="px-6 py-4 text-right text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Actions</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Title & Slug</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Status & Vis</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Template</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">SEO</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Author & Date</th>
+              <th className="px-6 py-4 text-right text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-black/5">
@@ -47,45 +47,45 @@ export default function PageTable({ data, selectedIds, toggleSelection, toggleAl
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * index, duration: 0.3 }}
                   key={page.id} 
-                  className={`hover:bg-gray-50/50 transition-colors group ${isSelected ? 'bg-gray-50/80' : ''}`}
+                  className={`hover:bg-background/50 transition-colors group ${isSelected ? 'bg-background/80' : ''}`}
                 >
                   <td className="px-6 py-4 text-center">
                     <input 
                       type="checkbox" 
                       checked={isSelected}
                       onChange={() => toggleSelection(page.id)}
-                      className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A] cursor-pointer"
+                      className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A] cursor-pointer"
                     />
                   </td>
                   <td className="px-6 py-4">
-                    <div className="font-serif font-bold text-[#1A1A1A]">{page.title}</div>
-                    <div className="text-xs text-gray-500 mt-1">{page.slug}</div>
+                    <div className="font-serif font-bold text-text-primary">{page.title}</div>
+                    <div className="text-xs text-text-muted mt-1">{page.slug}</div>
                   </td>
                   <td className="px-6 py-4">
                     <PageStatusBadge status={page.status} />
-                    <div className="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mt-2">
+                    <div className="text-[10px] uppercase tracking-widest font-semibold text-text-muted mt-2">
                       {page.visibility || 'Public'}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-1 rounded inline-block">
+                    <div className="text-xs font-semibold text-text-secondary bg-gray-100 px-2 py-1 rounded inline-block">
                       {page.template}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                      <div className="flex items-center gap-1.5">
-                        <div className={`w-2 h-2 rounded-full ${page.seoScore > 80 ? 'bg-green-500' : page.seoScore > 50 ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
-                        <span className="text-xs text-gray-600 font-medium">{page.seoScore}/100</span>
+                        <div className={`w-2 h-2 rounded-full ${page.seoScore > 80 ? 'bg-success-soft0' : page.seoScore > 50 ? 'bg-yellow-500' : 'bg-danger-soft0'}`}></div>
+                        <span className="text-xs text-text-secondary font-medium">{page.seoScore}/100</span>
                      </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="w-5 h-5 rounded-full bg-[#ECEAE6] border border-black/10 flex items-center justify-center">
-                        <span className="text-[9px] font-bold text-gray-600">{page.author.charAt(0)}</span>
+                        <span className="text-[9px] font-bold text-text-secondary">{page.author.charAt(0)}</span>
                       </div>
-                      <span className="text-xs text-gray-600 font-medium">{page.author}</span>
+                      <span className="text-xs text-text-secondary font-medium">{page.author}</span>
                     </div>
-                    <div className="text-xs text-gray-400 pl-7">{page.lastUpdated}</div>
+                    <div className="text-xs text-text-muted pl-7">{page.lastUpdated}</div>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <ActionDropdown actions={getActions(page)} />

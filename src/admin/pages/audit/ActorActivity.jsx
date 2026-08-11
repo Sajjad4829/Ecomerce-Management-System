@@ -11,13 +11,13 @@ export default function ActorActivity() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-24">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-stone-900">Actor Activity</h1>
-        <p className="text-sm text-stone-500 mt-1">Monitor staff actions and behavior patterns</p>
+        <h1 className="text-2xl font-serif font-bold text-text-primary">Actor Activity</h1>
+        <p className="text-sm text-text-muted mt-1">Monitor staff actions and behavior patterns</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
         <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-stone-50 border-b border-stone-200 text-stone-600 font-medium">
+          <thead className="bg-background border-b border-border text-text-secondary font-medium">
             <tr>
               <th className="px-6 py-3">Actor</th>
               <th className="px-6 py-3">Role</th>
@@ -29,27 +29,27 @@ export default function ActorActivity() {
           </thead>
           <tbody className="divide-y divide-stone-200">
             {actors.map(actor => (
-              <tr key={actor.id} className="hover:bg-stone-50">
+              <tr key={actor.id} className="hover:bg-background">
                 <td className="px-6 py-4">
-                  <div className="font-medium text-stone-900">{actor.name}</div>
-                  <div className="text-xs text-stone-500">{actor.id}</div>
+                  <div className="font-medium text-text-primary">{actor.name}</div>
+                  <div className="text-xs text-text-muted">{actor.id}</div>
                 </td>
-                <td className="px-6 py-4 text-stone-600">{actor.role}</td>
-                <td className="px-6 py-4 font-mono text-stone-900">{actor.events}</td>
+                <td className="px-6 py-4 text-text-secondary">{actor.role}</td>
+                <td className="px-6 py-4 font-mono text-text-primary">{actor.events}</td>
                 <td className="px-6 py-4">
                   {actor.highRisk > 0 ? (
-                    <span className="inline-flex items-center gap-1 text-red-600 font-medium bg-red-50 px-2 py-1 rounded">
+                    <span className="inline-flex items-center gap-1 text-danger font-medium bg-danger-soft px-2 py-1 rounded">
                       <FiAlertCircle size={12} /> {actor.highRisk}
                     </span>
                   ) : (
-                    <span className="text-stone-400">0</span>
+                    <span className="text-text-muted">0</span>
                   )}
                 </td>
-                <td className="px-6 py-4 text-stone-500 text-xs">
+                <td className="px-6 py-4 text-text-muted text-xs">
                   {new Date(actor.lastActive).toLocaleString()}
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <Link to={`/admin/audit/actors/${encodeURIComponent(actor.id)}`} className="text-stone-600 hover:text-stone-900 font-medium">
+                  <Link to={`/admin/audit/actors/${encodeURIComponent(actor.id)}`} className="text-text-secondary hover:text-text-primary font-medium">
                     View Activity
                   </Link>
                 </td>

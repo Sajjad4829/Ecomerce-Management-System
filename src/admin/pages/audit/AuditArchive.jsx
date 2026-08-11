@@ -9,13 +9,13 @@ export default function AuditArchive() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-24">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-stone-900">Audit Archive</h1>
-        <p className="text-sm text-stone-500 mt-1">Access cold storage logs for historical compliance</p>
+        <h1 className="text-2xl font-serif font-bold text-text-primary">Audit Archive</h1>
+        <p className="text-sm text-text-muted mt-1">Access cold storage logs for historical compliance</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
         <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-stone-50 border-b border-stone-200 text-stone-600 font-medium">
+          <thead className="bg-background border-b border-border text-text-secondary font-medium">
             <tr>
               <th className="px-6 py-3">Archive Name</th>
               <th className="px-6 py-3">Size</th>
@@ -26,14 +26,14 @@ export default function AuditArchive() {
           </thead>
           <tbody className="divide-y divide-stone-200">
             {archives.map(archive => (
-              <tr key={archive.id} className="hover:bg-stone-50">
+              <tr key={archive.id} className="hover:bg-background">
                 <td className="px-6 py-4">
-                  <div className="font-medium text-stone-900 flex items-center gap-2">
-                    <FiDatabase className="text-stone-400" /> {archive.name}
+                  <div className="font-medium text-text-primary flex items-center gap-2">
+                    <FiDatabase className="text-text-muted" /> {archive.name}
                   </div>
                 </td>
-                <td className="px-6 py-4 text-stone-600 font-mono">{archive.size}</td>
-                <td className="px-6 py-4 text-stone-500 text-xs">
+                <td className="px-6 py-4 text-text-secondary font-mono">{archive.size}</td>
+                <td className="px-6 py-4 text-text-muted text-xs">
                   {new Date(archive.date).toLocaleString()}
                 </td>
                 <td className="px-6 py-4">
@@ -42,7 +42,7 @@ export default function AuditArchive() {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button className="text-stone-600 hover:text-stone-900 font-medium flex items-center justify-end gap-1 w-full">
+                  <button className="text-text-secondary hover:text-text-primary font-medium flex items-center justify-end gap-1 w-full">
                     <FiDownload size={14} /> Request Restore
                   </button>
                 </td>

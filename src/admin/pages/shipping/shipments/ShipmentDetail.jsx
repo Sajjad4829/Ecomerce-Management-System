@@ -26,8 +26,8 @@ export const ShipmentDetail = () => {
             <span className={`text-sm font-sans font-medium px-2.5 py-0.5 rounded-full ${
               ship.status === 'Delivered' ? 'bg-emerald-100 text-emerald-800' :
               ship.status === 'In Transit' ? 'bg-blue-100 text-blue-800' :
-              ship.status === 'Delayed' ? 'bg-red-100 text-red-800' :
-              'bg-amber-100 text-amber-800'
+              ship.status === 'Delayed' ? 'bg-danger-soft text-red-800' :
+              'bg-warning-soft text-amber-800'
             }`}>
               {ship.status}
             </span>
@@ -35,10 +35,10 @@ export const ShipmentDetail = () => {
           <p className="text-sm text-neutral-500 mt-1">Created on {ship.date} • Expected: {ship.expectedDelivery}</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-surface rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
             <Printer className="w-4 h-4" /> Print Label
           </button>
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover transition-colors flex items-center gap-2">
             Track Package
           </button>
         </div>
@@ -46,7 +46,7 @@ export const ShipmentDetail = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
             <h3 className="font-medium text-neutral-900 mb-4 flex items-center gap-2"><MapPin className="w-4 h-4 text-neutral-400"/> Routing Details</h3>
             <div className="grid grid-cols-2 gap-8 text-sm">
               <div>
@@ -70,12 +70,12 @@ export const ShipmentDetail = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
             <h3 className="font-medium text-neutral-900 mb-4 flex items-center gap-2"><Box className="w-4 h-4 text-neutral-400"/> Package Information</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between pb-3 border-b border-neutral-100">
                 <span className="text-neutral-500">Order ID</span>
-                <span className="font-medium text-indigo-600 cursor-pointer hover:underline">{ship.orderId}</span>
+                <span className="font-medium text-primary cursor-pointer hover:underline">{ship.orderId}</span>
               </div>
               <div className="flex justify-between pb-3 border-b border-neutral-100">
                 <span className="text-neutral-500">Items</span>
@@ -94,7 +94,7 @@ export const ShipmentDetail = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
             <h3 className="font-medium text-neutral-900 mb-4 flex items-center gap-2"><Truck className="w-4 h-4 text-neutral-400"/> Carrier Info</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
@@ -107,17 +107,17 @@ export const ShipmentDetail = () => {
               </div>
               <div className="flex justify-between pt-3 border-t border-neutral-100">
                 <span className="text-neutral-500">Tracking</span>
-                <span className="font-mono font-medium text-indigo-600 cursor-pointer hover:underline">{ship.trackingNumber}</span>
+                <span className="font-mono font-medium text-primary cursor-pointer hover:underline">{ship.trackingNumber}</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
             <h3 className="font-medium text-neutral-900 mb-4">Tracking Timeline</h3>
             <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-neutral-200 before:to-transparent">
               
               <div className="relative flex items-center gap-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 text-blue-600 shadow shrink-0">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 text-primary shadow shrink-0">
                   <Box className="w-5 h-5"/>
                 </div>
                 <div className="flex-1 p-3 rounded border border-neutral-100 bg-neutral-50">
@@ -128,7 +128,7 @@ export const ShipmentDetail = () => {
 
               {(ship.status === 'In Transit' || ship.status === 'Delivered') && (
                 <div className="relative flex items-center gap-4">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 text-blue-600 shadow shrink-0">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 text-primary shadow shrink-0">
                     <Truck className="w-5 h-5"/>
                   </div>
                   <div className="flex-1 p-3 rounded border border-neutral-100 bg-neutral-50">
@@ -162,7 +162,7 @@ export const ShipmentDetail = () => {
 };
 
 export const ProofOfDelivery = () => (
-  <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6 mt-6">
+  <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6 mt-6">
     <h3 className="font-medium text-neutral-900 mb-4 flex items-center gap-2"><CheckCircle className="w-4 h-4 text-neutral-400"/> Proof of Delivery</h3>
     <div className="text-sm text-neutral-500">
       <p>Recipient: John Doe (Signed)</p>
@@ -173,7 +173,7 @@ export const ProofOfDelivery = () => (
 );
 
 export const ReturnToSender = () => (
-  <div className="bg-white rounded-lg border border-red-200 bg-red-50 p-6 mt-6">
+  <div className="bg-surface rounded-lg border border-red-200 bg-danger-soft p-6 mt-6">
     <h3 className="font-medium text-red-900 mb-2">Return to Sender Action</h3>
     <p className="text-sm text-red-700 mb-4">Delivery has failed multiple times or was refused. Initiate return workflow.</p>
     <button className="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700">Initiate RTS</button>

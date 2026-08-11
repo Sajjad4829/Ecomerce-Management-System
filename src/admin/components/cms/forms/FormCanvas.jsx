@@ -11,24 +11,24 @@ export default function FormCanvas({
   submitButtonText = 'Submit Inquiry'
 }) {
   return (
-    <div className="bg-white border border-black/10 rounded-xl p-6 shadow-2xs min-h-[500px] flex flex-col justify-between">
+    <div className="bg-surface border border-black/10 rounded-xl p-6 shadow-2xs min-h-[500px] flex flex-col justify-between">
       
       {/* Top Canvas Header */}
       <div className="flex items-center justify-between border-b border-black/5 pb-3 mb-4">
         <div className="flex items-center gap-2">
-          <FiGrid size={16} className="text-gray-500" />
-          <h3 className="font-serif font-bold text-sm text-[#1A1A1A]">Live Form Canvas</h3>
+          <FiGrid size={16} className="text-text-muted" />
+          <h3 className="font-serif font-bold text-sm text-text-primary">Live Form Canvas</h3>
         </div>
-        <span className="text-xs text-gray-400 font-mono">{fields.length} elements placed</span>
+        <span className="text-xs text-text-muted font-mono">{fields.length} elements placed</span>
       </div>
 
       {/* Fields Canvas Grid */}
       <div className="flex-1">
         {fields.length === 0 ? (
-          <div className="border-2 border-dashed border-black/10 rounded-xl p-12 text-center my-8 bg-gray-50/50">
+          <div className="border-2 border-dashed border-black/10 rounded-xl p-12 text-center my-8 bg-background/50">
             <FiPlus size={24} className="mx-auto text-gray-300 mb-2" />
-            <h4 className="font-serif font-bold text-sm text-[#1A1A1A]">Your form canvas is currently empty</h4>
-            <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
+            <h4 className="font-serif font-bold text-sm text-text-primary">Your form canvas is currently empty</h4>
+            <p className="text-xs text-text-muted mt-1 max-w-xs mx-auto">
               Select or drag field elements from the left Library panel to build your custom inquiry or lead capture form.
             </p>
           </div>

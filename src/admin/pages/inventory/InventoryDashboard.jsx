@@ -28,7 +28,7 @@ export default function InventoryDashboard() {
           <p className="text-sm text-neutral-500 mt-1">Manage stock across all locations</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 text-neutral-600 bg-white border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 text-neutral-600 bg-surface border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
             <Download className="w-4 h-4" /> Export
           </button>
         </div>
@@ -36,26 +36,26 @@ export default function InventoryDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <p className="text-sm text-neutral-500 mb-1">Available Stock Units</p>
           <p className="text-2xl font-serif text-neutral-900">{totalAvailable}</p>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <p className="text-sm text-neutral-500 mb-1">Reserved Stock Units</p>
-          <p className="text-2xl font-serif text-blue-600">{totalReserved}</p>
+          <p className="text-2xl font-serif text-primary">{totalReserved}</p>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <p className="text-sm text-neutral-500 mb-1">Low Stock Items</p>
-          <p className="text-2xl font-serif text-amber-600">{lowStockCount}</p>
+          <p className="text-2xl font-serif text-warning">{lowStockCount}</p>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <p className="text-sm text-neutral-500 mb-1">Out of Stock Items</p>
-          <p className="text-2xl font-serif text-red-600">{outOfStockCount}</p>
+          <p className="text-2xl font-serif text-danger">{outOfStockCount}</p>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex flex-col md:flex-row items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex flex-col md:flex-row items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -72,7 +72,7 @@ export default function InventoryDashboard() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-2 pr-8 py-2 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white"
+              className="pl-2 pr-8 py-2 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-surface"
             >
               <option value="all">All Statuses</option>
               <option value="In Stock">In Stock</option>

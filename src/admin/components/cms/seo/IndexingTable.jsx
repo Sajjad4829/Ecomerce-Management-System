@@ -54,17 +54,17 @@ export default function IndexingTable({
   return (
     <div className="space-y-4">
       {/* Search & Filter Toolbar */}
-      <div className="bg-white border border-black/5 rounded-xl p-3 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="bg-surface border border-black/5 rounded-xl p-3 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3">
         
         {/* Left: Search input */}
         <div className="relative flex-1 min-w-[220px]">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={14} />
           <input
             type="text"
             placeholder="Search resources by name, slug, or title tag..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs focus:bg-white focus:outline-none focus:border-black/30"
+            className="w-full pl-9 pr-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs focus:bg-surface focus:outline-none focus:border-black/30"
           />
         </div>
 
@@ -77,8 +77,8 @@ export default function IndexingTable({
               className={cn(
                 "px-3 py-1 rounded-md capitalize transition-all whitespace-nowrap cursor-pointer",
                 selectedResourceType === t
-                  ? "bg-white text-[#1A1A1A] shadow-2xs font-bold"
-                  : "text-gray-500 hover:text-black"
+                  ? "bg-surface text-text-primary shadow-2xs font-bold"
+                  : "text-text-muted hover:text-black"
               )}
             >
               {t}
@@ -90,7 +90,7 @@ export default function IndexingTable({
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs font-semibold text-gray-700 cursor-pointer"
+          className="px-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs font-semibold text-text-secondary cursor-pointer"
         >
           <option value="all">All SEO Statuses</option>
           <option value="healthy">Healthy (80+ Score)</option>
@@ -107,13 +107,13 @@ export default function IndexingTable({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onBulkIndex(selectedIds)}
-              className="px-3 py-1 bg-white border border-blue-300 rounded-lg hover:bg-blue-100 text-blue-900 font-bold"
+              className="px-3 py-1 bg-surface border border-blue-300 rounded-lg hover:bg-blue-100 text-blue-900 font-bold"
             >
               Mark Index
             </button>
             <button
               onClick={() => onBulkNoindex(selectedIds)}
-              className="px-3 py-1 bg-white border border-red-300 rounded-lg hover:bg-red-50 text-red-700 font-bold"
+              className="px-3 py-1 bg-surface border border-red-300 rounded-lg hover:bg-danger-soft text-red-700 font-bold"
             >
               Set Noindex
             </button>
@@ -122,10 +122,10 @@ export default function IndexingTable({
       )}
 
       {/* Indexing Table */}
-      <div className="bg-white border border-black/5 rounded-xl overflow-hidden shadow-2xs">
+      <div className="bg-surface border border-black/5 rounded-xl overflow-hidden shadow-2xs">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50/80 border-b border-black/5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <tr className="bg-background/80 border-b border-black/5 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               <th className="p-3 w-10 text-center">
                 <input
                   type="checkbox"
@@ -149,7 +149,7 @@ export default function IndexingTable({
                 <tr
                   key={item.id}
                   className={cn(
-                    "hover:bg-gray-50/80 transition-colors group cursor-pointer",
+                    "hover:bg-background/80 transition-colors group cursor-pointer",
                     isSelected && "bg-blue-50/40"
                   )}
                   onClick={() => onEditResource(item)}
@@ -165,29 +165,29 @@ export default function IndexingTable({
 
                   <td className="p-3">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded bg-black/5 text-[9px] font-mono font-bold uppercase text-gray-600">
+                      <span className="px-2 py-0.5 rounded bg-black/5 text-[9px] font-mono font-bold uppercase text-text-secondary">
                         {item.type}
                       </span>
-                      <div className="font-bold text-[#1A1A1A] truncate max-w-[200px]">{item.title}</div>
+                      <div className="font-bold text-text-primary truncate max-w-[200px]">{item.title}</div>
                     </div>
-                    <div className="text-[10px] font-mono text-gray-400 mt-0.5">
+                    <div className="text-[10px] font-mono text-text-muted mt-0.5">
                       /{item.type}/{item.slug}
                     </div>
                   </td>
 
                   <td className="p-3 hidden md:table-cell">
-                    <div className="truncate max-w-[260px] text-gray-700 font-medium">
-                      {item.seoTitle || <span className="italic text-gray-400">Not defined</span>}
+                    <div className="truncate max-w-[260px] text-text-secondary font-medium">
+                      {item.seoTitle || <span className="italic text-text-muted">Not defined</span>}
                     </div>
                   </td>
 
                   <td className="p-3 font-mono text-[11px]">
                     {item.isNoIndex ? (
-                      <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 font-bold text-[10px] uppercase">
+                      <span className="px-2 py-0.5 rounded bg-danger-soft text-red-700 font-bold text-[10px] uppercase">
                         noindex
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 font-bold text-[10px] uppercase">
+                      <span className="px-2 py-0.5 rounded bg-success-soft text-success font-bold text-[10px] uppercase">
                         indexed
                       </span>
                     )}
@@ -202,8 +202,8 @@ export default function IndexingTable({
                   <td className="p-3 font-mono font-bold">
                     <span className={cn(
                       "px-2 py-0.5 rounded text-[11px]",
-                      item.seoScore >= 80 ? "bg-green-100 text-green-800" :
-                      item.seoScore >= 50 ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"
+                      item.seoScore >= 80 ? "bg-success-soft text-green-800" :
+                      item.seoScore >= 50 ? "bg-warning-soft text-amber-800" : "bg-danger-soft text-red-800"
                     )}>
                       {item.seoScore}/100
                     </span>
@@ -213,7 +213,7 @@ export default function IndexingTable({
                     <button
                       type="button"
                       onClick={() => onEditResource(item)}
-                      className="px-3 py-1.5 border border-black/10 rounded-lg text-xs font-semibold text-gray-700 hover:bg-black/5 transition-colors flex items-center gap-1.5 ml-auto"
+                      className="px-3 py-1.5 border border-black/10 rounded-lg text-xs font-semibold text-text-secondary hover:bg-black/5 transition-colors flex items-center gap-1.5 ml-auto"
                     >
                       <FiEdit2 size={13} />
                       <span>Edit SEO</span>

@@ -24,13 +24,13 @@ export default function WarehouseCenter() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {warehouses.map((warehouse) => (
-          <div key={warehouse.id} className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+          <div key={warehouse.id} className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-neutral-50 text-neutral-600 rounded-lg">
                 <Building2 className="w-6 h-6" />
               </div>
               <span className={`px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wider ${
-                warehouse.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                warehouse.status === 'active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
               }`}>
                 {warehouse.status}
               </span>
@@ -51,7 +51,7 @@ export default function WarehouseCenter() {
                 </div>
                 <div className="w-full bg-neutral-100 rounded-full h-1.5">
                   <div 
-                    className="bg-indigo-600 h-1.5 rounded-full" 
+                    className="bg-primary h-1.5 rounded-full" 
                     style={{ width: `${Math.min(100, (warehouse.used / warehouse.capacity) * 100)}%` }}
                   />
                 </div>
@@ -69,7 +69,7 @@ export default function WarehouseCenter() {
                 </button>
                 <button 
                   onClick={() => navigate(`/admin/inventory/warehouses/${warehouse.id}/edit`)}
-                  className="p-2 text-neutral-500 border border-neutral-200 rounded hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                  className="p-2 text-neutral-500 border border-neutral-200 rounded hover:text-primary hover:bg-primary-soft transition-colors"
                 >
                   <Edit3 className="w-4 h-4" />
                 </button>

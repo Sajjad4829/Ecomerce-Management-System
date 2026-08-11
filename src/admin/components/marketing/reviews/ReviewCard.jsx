@@ -6,21 +6,21 @@ export default function ReviewCard({ review }) {
   // review = { id, reviewer, avatar, rating, title, content, pros, cons, variant, verified, media: [], date, helpful, merchantReply: { text, date } }
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-black/5 shadow-sm">
+    <div className="bg-surface p-6 rounded-xl border border-black/5 shadow-sm">
       <div className="flex justify-between items-start mb-4">
         <div className="flex gap-4 items-center">
           <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
             {review.avatar ? (
               <img src={review.avatar} alt={review.reviewer} className="w-full h-full object-cover rounded-full" />
             ) : (
-              <span className="text-sm font-bold text-gray-400">{review.reviewer.charAt(0)}</span>
+              <span className="text-sm font-bold text-text-muted">{review.reviewer.charAt(0)}</span>
             )}
           </div>
           <div>
-            <p className="text-sm font-bold text-[#1A1A1A]">{review.reviewer}</p>
+            <p className="text-sm font-bold text-text-primary">{review.reviewer}</p>
             <div className="flex items-center gap-2 mt-0.5">
               <VerifiedBadge status={review.verified} />
-              <span className="text-xs text-gray-400">{review.date}</span>
+              <span className="text-xs text-text-muted">{review.date}</span>
             </div>
           </div>
         </div>
@@ -29,22 +29,22 @@ export default function ReviewCard({ review }) {
       </div>
 
       <div className="mb-4">
-        <h4 className="text-base font-bold text-[#1A1A1A] mb-2">{review.title}</h4>
-        <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{review.content}</p>
+        <h4 className="text-base font-bold text-text-primary mb-2">{review.title}</h4>
+        <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-line">{review.content}</p>
       </div>
 
       {(review.pros || review.cons) && (
-        <div className="flex flex-col gap-2 mb-4 bg-[#F7F5F2] p-4 rounded-lg">
+        <div className="flex flex-col gap-2 mb-4 bg-background p-4 rounded-lg">
           {review.pros && (
             <div className="flex gap-2 text-sm">
-              <span className="font-bold text-green-700 shrink-0">Pros:</span>
-              <span className="text-gray-700">{review.pros}</span>
+              <span className="font-bold text-success shrink-0">Pros:</span>
+              <span className="text-text-secondary">{review.pros}</span>
             </div>
           )}
           {review.cons && (
             <div className="flex gap-2 text-sm">
               <span className="font-bold text-red-700 shrink-0">Cons:</span>
-              <span className="text-gray-700">{review.cons}</span>
+              <span className="text-text-secondary">{review.cons}</span>
             </div>
           )}
         </div>
@@ -61,28 +61,28 @@ export default function ReviewCard({ review }) {
       )}
 
       {review.variant && (
-        <div className="text-xs text-gray-500 font-medium mb-4">
-          Purchased: <span className="text-gray-900">{review.variant}</span>
+        <div className="text-xs text-text-muted font-medium mb-4">
+          Purchased: <span className="text-text-primary">{review.variant}</span>
         </div>
       )}
 
       {review.merchantReply && (
         <div className="mt-4 pl-4 border-l-2 border-black/10">
           <div className="flex items-center gap-2 mb-1">
-            <FiMessageCircle size={14} className="text-gray-400" />
-            <span className="text-xs font-bold text-[#1A1A1A]">Merchant Response</span>
-            <span className="text-xs text-gray-400 ml-auto">{review.merchantReply.date}</span>
+            <FiMessageCircle size={14} className="text-text-muted" />
+            <span className="text-xs font-bold text-text-primary">Merchant Response</span>
+            <span className="text-xs text-text-muted ml-auto">{review.merchantReply.date}</span>
           </div>
-          <p className="text-sm text-gray-600">{review.merchantReply.text}</p>
+          <p className="text-sm text-text-secondary">{review.merchantReply.text}</p>
         </div>
       )}
 
       <div className="mt-6 pt-4 border-t border-black/5 flex justify-between items-center">
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-text-muted">
           {review.helpful || 0} people found this helpful
         </span>
         <div className="flex gap-2">
-          <button className="px-3 py-1.5 text-xs font-medium border border-black/10 rounded-md text-gray-600 hover:bg-gray-50 transition-colors">
+          <button className="px-3 py-1.5 text-xs font-medium border border-black/10 rounded-md text-text-secondary hover:bg-background transition-colors">
             Helpful
           </button>
         </div>

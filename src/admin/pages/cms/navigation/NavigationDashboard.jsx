@@ -26,13 +26,13 @@ export default function NavigationDashboard() {
         className="flex flex-col lg:flex-row lg:items-end justify-between gap-6"
       >
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">Navigation</span>
+            <span className="text-text-primary font-semibold">Navigation</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Navigation Builder</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Navigation Builder</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage menus, mega menus, and navigational structures across your entire platform.
           </p>
         </div>
@@ -50,26 +50,26 @@ export default function NavigationDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
       >
-        <div className="bg-white border border-black/5 rounded-xl shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-black/5 flex flex-col sm:flex-row gap-4 justify-between items-center bg-gray-50/50">
+        <div className="bg-surface border border-black/5 rounded-xl shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-black/5 flex flex-col sm:flex-row gap-4 justify-between items-center bg-background/50">
             <div className="relative w-full sm:w-96">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
               <input 
                 type="text" 
                 placeholder="Search menus..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white border border-black/10 rounded-lg text-sm focus:outline-none focus:border-black/30 transition-colors"
+                className="w-full pl-10 pr-4 py-2 bg-surface border border-black/10 rounded-lg text-sm focus:outline-none focus:border-black/30 transition-colors"
               />
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              <select className="flex-1 sm:flex-none px-4 py-2 bg-white border border-black/10 rounded-lg text-sm focus:outline-none focus:border-black/30 appearance-none">
+              <select className="flex-1 sm:flex-none px-4 py-2 bg-surface border border-black/10 rounded-lg text-sm focus:outline-none focus:border-black/30 appearance-none">
                 <option>All Locations</option>
                 <option>Primary Header</option>
                 <option>Footer</option>
                 <option>Mobile Nav</option>
               </select>
-              <select className="flex-1 sm:flex-none px-4 py-2 bg-white border border-black/10 rounded-lg text-sm focus:outline-none focus:border-black/30 appearance-none">
+              <select className="flex-1 sm:flex-none px-4 py-2 bg-surface border border-black/10 rounded-lg text-sm focus:outline-none focus:border-black/30 appearance-none">
                 <option>All Status</option>
                 <option>Active</option>
                 <option>Draft</option>
@@ -80,54 +80,54 @@ export default function NavigationDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 border-b border-black/5">
-                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Menu Name</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Location</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Items</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Last Updated</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest text-right">Actions</th>
+                <tr className="bg-background border-b border-black/5">
+                  <th className="px-6 py-4 text-xs font-bold text-text-muted uppercase tracking-widest">Menu Name</th>
+                  <th className="px-6 py-4 text-xs font-bold text-text-muted uppercase tracking-widest">Location</th>
+                  <th className="px-6 py-4 text-xs font-bold text-text-muted uppercase tracking-widest">Items</th>
+                  <th className="px-6 py-4 text-xs font-bold text-text-muted uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-xs font-bold text-text-muted uppercase tracking-widest">Last Updated</th>
+                  <th className="px-6 py-4 text-xs font-bold text-text-muted uppercase tracking-widest text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-black/5">
                 {NAV_MENUS.map((menu) => (
-                  <tr key={menu.id} className="hover:bg-gray-50/50 transition-colors group">
+                  <tr key={menu.id} className="hover:bg-background/50 transition-colors group">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-[#1A1A1A]">{menu.name}</div>
+                      <div className="font-semibold text-text-primary">{menu.name}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{menu.location}</span>
+                      <span className="text-sm text-text-secondary">{menu.location}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-500 font-mono">{menu.items}</span>
+                      <span className="text-sm text-text-muted font-mono">{menu.items}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className={cn(
                         "inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest",
-                        menu.status === 'active' ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
+                        menu.status === 'active' ? "bg-success-soft text-success" : "bg-gray-100 text-text-secondary"
                       )}>
                         {menu.status}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-500">{menu.updated}</span>
+                      <span className="text-sm text-text-muted">{menu.updated}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-2 text-gray-400 hover:text-[#1A1A1A] hover:bg-white rounded-lg border border-transparent hover:border-black/10 transition-all" title="Preview">
+                        <button className="p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-lg border border-transparent hover:border-black/10 transition-all" title="Preview">
                           <FiEye size={16} />
                         </button>
                         <button 
                           onClick={() => navigate('/admin/cms/navigation/editor')}
-                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-white rounded-lg border border-transparent hover:border-black/10 transition-all" 
+                          className="p-2 text-text-muted hover:text-primary hover:bg-surface rounded-lg border border-transparent hover:border-black/10 transition-all" 
                           title="Edit"
                         >
                           <FiEdit2 size={16} />
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-[#1A1A1A] hover:bg-white rounded-lg border border-transparent hover:border-black/10 transition-all" title="Duplicate">
+                        <button className="p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-lg border border-transparent hover:border-black/10 transition-all" title="Duplicate">
                           <FiCopy size={16} />
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-white rounded-lg border border-transparent hover:border-black/10 transition-all" title="Delete">
+                        <button className="p-2 text-text-muted hover:text-danger hover:bg-surface rounded-lg border border-transparent hover:border-black/10 transition-all" title="Delete">
                           <FiTrash2 size={16} />
                         </button>
                       </div>

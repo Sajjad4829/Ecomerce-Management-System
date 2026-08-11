@@ -4,8 +4,8 @@ import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 export default function LineChart({ data, lines, height = 300, xAxisKey = 'name' }) {
   if (!data || data.length === 0) {
     return (
-      <div className="flex items-center justify-center w-full bg-gray-50 rounded-lg" style={{ height }}>
-        <p className="text-gray-400">No data available for this period</p>
+      <div className="flex items-center justify-center w-full bg-background rounded-lg" style={{ height }}>
+        <p className="text-text-muted">No data available for this period</p>
       </div>
     );
   }

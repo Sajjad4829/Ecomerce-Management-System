@@ -34,7 +34,7 @@ export default function PopupCanvas({
         <div className="flex items-center gap-3 shrink-0">
           <button
             type="button"
-            className="px-3 py-1 bg-white text-black font-bold rounded-lg text-xs hover:bg-gray-100 transition-colors cursor-pointer"
+            className="px-3 py-1 bg-surface text-black font-bold rounded-lg text-xs hover:bg-gray-100 transition-colors cursor-pointer"
           >
             {buttonText}
           </button>
@@ -78,14 +78,14 @@ export default function PopupCanvas({
               <input
                 type="email"
                 placeholder="Enter your email for private invite..."
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-xs placeholder:text-white/50 text-white focus:outline-none"
+                className="w-full px-3 py-2 bg-surface/10 border border-white/20 rounded-lg text-xs placeholder:text-white/50 text-white focus:outline-none"
               />
             </div>
           )}
 
           <button
             type="button"
-            className="w-full py-2.5 bg-white text-black font-bold text-xs uppercase tracking-wider rounded-lg shadow-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+            className="w-full py-2.5 bg-surface text-black font-bold text-xs uppercase tracking-wider rounded-lg shadow-md hover:bg-gray-100 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
           >
             <span>{buttonText}</span>
             <FiArrowRight size={14} />
@@ -142,7 +142,7 @@ export default function PopupCanvas({
               <input
                 type="email"
                 placeholder="Enter email address..."
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-xs placeholder:text-white/50 text-white focus:outline-none"
+                className="w-full px-3 py-2 bg-surface/10 border border-white/20 rounded-lg text-xs placeholder:text-white/50 text-white focus:outline-none"
               />
             </div>
           )}
@@ -150,7 +150,7 @@ export default function PopupCanvas({
           <div className="space-y-2 pt-1">
             <button
               type="button"
-              className="w-full py-3 bg-white text-black font-bold text-xs uppercase tracking-wider rounded-xl shadow-md hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-3 bg-surface text-black font-bold text-xs uppercase tracking-wider rounded-xl shadow-md hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span>{buttonText}</span>
               <FiArrowRight size={14} />

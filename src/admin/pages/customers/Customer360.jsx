@@ -25,7 +25,7 @@ export function Customer360() {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden flex flex-col h-[calc(100vh-12rem)]">
+    <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden flex flex-col h-[calc(100vh-12rem)]">
       {/* Header */}
       <div className="p-6 border-b border-neutral-200 bg-neutral-50 shrink-0">
         <div className="flex items-start justify-between">
@@ -44,7 +44,7 @@ export function Customer360() {
               </div>
               <div className="mt-3 flex items-center space-x-2">
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                  customer.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                  customer.status === 'active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                 }`}>
                   {customer.status}
                 </span>
@@ -67,7 +67,7 @@ export function Customer360() {
       {/* Main Content Area (Sidebar + Content) */}
       <div className="flex flex-1 overflow-hidden">
         {/* Vertical Tabs Sidebar */}
-        <div className="w-64 border-r border-neutral-200 bg-white overflow-y-auto shrink-0 p-4 space-y-1">
+        <div className="w-64 border-r border-neutral-200 bg-surface overflow-y-auto shrink-0 p-4 space-y-1">
           {tabs.map(tab => (
             <NavLink
               key={tab.name}
@@ -88,7 +88,7 @@ export function Customer360() {
         </div>
 
         {/* Dynamic Content */}
-        <div className="flex-1 overflow-y-auto p-6 bg-white">
+        <div className="flex-1 overflow-y-auto p-6 bg-surface">
           <Outlet context={{ customer }} />
         </div>
       </div>

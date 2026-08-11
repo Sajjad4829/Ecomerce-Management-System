@@ -18,17 +18,17 @@ export default function PopupLayoutInspector({
   };
 
   return (
-    <div className="bg-white border border-black/10 rounded-xl p-4 shadow-2xs space-y-4">
+    <div className="bg-surface border border-black/10 rounded-xl p-4 shadow-2xs space-y-4">
       <div className="border-b border-black/5 pb-2">
-        <h4 className="font-serif font-bold text-sm text-[#1A1A1A]">Popup Layout & Styling</h4>
-        <p className="text-[11px] text-gray-400">Configure modal format, background colors, radii, and backdrops.</p>
+        <h4 className="font-serif font-bold text-sm text-text-primary">Popup Layout & Styling</h4>
+        <p className="text-[11px] text-text-muted">Configure modal format, background colors, radii, and backdrops.</p>
       </div>
 
       <div className="space-y-3.5 text-xs">
         
         {/* Popup Type Selector */}
         <div className="space-y-1">
-          <label className="font-bold text-gray-700 uppercase tracking-wider text-[10px]">Campaign Popup Format</label>
+          <label className="font-bold text-text-secondary uppercase tracking-wider text-[10px]">Campaign Popup Format</label>
           <div className="grid grid-cols-2 gap-2">
             {['Modal', 'Slide-in', 'Announcement', 'Bottom Bar', 'Fullscreen'].map((type) => (
               <button
@@ -37,7 +37,7 @@ export default function PopupLayoutInspector({
                 onClick={() => handleChange('popupType', type)}
                 className={cn(
                   "py-2 px-2.5 rounded-lg border text-xs font-bold transition-all cursor-pointer text-center",
-                  popupType === type ? "bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-2xs" : "bg-gray-50 text-gray-600 border-black/10 hover:bg-gray-100"
+                  popupType === type ? "bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-2xs" : "bg-background text-text-secondary border-black/10 hover:bg-gray-100"
                 )}
               >
                 {type}
@@ -49,7 +49,7 @@ export default function PopupLayoutInspector({
         {/* Color Palette */}
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
-            <label className="font-bold text-gray-700 uppercase tracking-wider text-[10px]">Background Color</label>
+            <label className="font-bold text-text-secondary uppercase tracking-wider text-[10px]">Background Color</label>
             <div className="flex items-center gap-2">
               <input
                 type="color"
@@ -61,13 +61,13 @@ export default function PopupLayoutInspector({
                 type="text"
                 value={backgroundColor}
                 onChange={(e) => handleChange('backgroundColor', e.target.value)}
-                className="flex-1 px-2 py-1 bg-gray-50 border border-black/10 rounded text-xs font-mono"
+                className="flex-1 px-2 py-1 bg-background border border-black/10 rounded text-xs font-mono"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-gray-700 uppercase tracking-wider text-[10px]">Text Color</label>
+            <label className="font-bold text-text-secondary uppercase tracking-wider text-[10px]">Text Color</label>
             <div className="flex items-center gap-2">
               <input
                 type="color"
@@ -79,17 +79,17 @@ export default function PopupLayoutInspector({
                 type="text"
                 value={textColor}
                 onChange={(e) => handleChange('textColor', e.target.value)}
-                className="flex-1 px-2 py-1 bg-gray-50 border border-black/10 rounded text-xs font-mono"
+                className="flex-1 px-2 py-1 bg-background border border-black/10 rounded text-xs font-mono"
               />
             </div>
           </div>
         </div>
 
         {/* Overlay Backdrop */}
-        <div className="p-3 bg-gray-50 border border-black/5 rounded-lg flex items-center justify-between">
+        <div className="p-3 bg-background border border-black/5 rounded-lg flex items-center justify-between">
           <div>
             <span className="font-bold text-gray-800 block text-xs">Dim Backdrop Overlay</span>
-            <span className="text-[10px] text-gray-400">Darken page background behind popup card</span>
+            <span className="text-[10px] text-text-muted">Darken page background behind popup card</span>
           </div>
           <input
             type="checkbox"
@@ -101,11 +101,11 @@ export default function PopupLayoutInspector({
 
         {/* Border Radius */}
         <div className="space-y-1">
-          <label className="font-bold text-gray-700 uppercase tracking-wider text-[10px]">Corner Radius ({borderRadius})</label>
+          <label className="font-bold text-text-secondary uppercase tracking-wider text-[10px]">Corner Radius ({borderRadius})</label>
           <select
             value={borderRadius}
             onChange={(e) => handleChange('borderRadius', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs font-semibold"
+            className="w-full px-2.5 py-1.5 bg-background border border-black/10 rounded-lg text-xs font-semibold"
           >
             <option value="0px font-mono">0px (Sharp Luxury Edges)</option>
             <option value="8px font-mono">8px (Subtle Radius)</option>

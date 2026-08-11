@@ -14,8 +14,8 @@ export default function ReviewDetail() {
   if (!review) {
     return (
       <div className="p-8 text-center">
-        <h2 className="text-xl font-bold text-gray-900">Review not found</h2>
-        <button onClick={() => navigate('/admin/reviews/all')} className="text-blue-600 hover:underline mt-2">Return to list</button>
+        <h2 className="text-xl font-bold text-text-primary">Review not found</h2>
+        <button onClick={() => navigate('/admin/reviews/all')} className="text-primary hover:underline mt-2">Return to list</button>
       </div>
     );
   }
@@ -29,21 +29,21 @@ export default function ReviewDetail() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link to="/admin/reviews/all" className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-            <FiArrowLeft size={20} className="text-gray-600" />
+          <Link to="/admin/reviews/all" className="p-2 border border-border rounded-lg hover:bg-background transition-colors">
+            <FiArrowLeft size={20} className="text-text-secondary" />
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">{review.id}</h1>
+              <h1 className="text-2xl font-bold text-text-primary">{review.id}</h1>
               <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                  review.status === 'Published' ? 'bg-green-100 text-green-800' :
+                  review.status === 'Published' ? 'bg-success-soft text-green-800' :
                   review.status === 'Pending Moderation' ? 'bg-yellow-100 text-yellow-800' :
                   'bg-gray-100 text-gray-800'
               }`}>
                 {review.status}
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">Product: {review.productName}</p>
+            <p className="text-sm text-text-muted mt-1">Product: {review.productName}</p>
           </div>
         </div>
         
@@ -55,10 +55,10 @@ export default function ReviewDetail() {
              </>
           )}
           {review.status === 'Published' && (
-             <button onClick={() => handleStatusChange('Hidden')} className="px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"><FiEyeOff/> Hide Review</button>
+             <button onClick={() => handleStatusChange('Hidden')} className="px-4 py-2 bg-gray-100 text-text-secondary border border-border-hover rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"><FiEyeOff/> Hide Review</button>
           )}
           {(review.status === 'Hidden' || review.status === 'Rejected') && (
-             <button onClick={() => handleStatusChange('Published')} className="px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2">Restore (Publish)</button>
+             <button onClick={() => handleStatusChange('Published')} className="px-4 py-2 bg-gray-100 text-text-secondary border border-border-hover rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2">Restore (Publish)</button>
           )}
         </div>
       </div>
@@ -68,9 +68,9 @@ export default function ReviewDetail() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-               <h2 className="text-lg font-bold text-gray-900">Review Content</h2>
+          <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
+               <h2 className="text-lg font-bold text-text-primary">Review Content</h2>
             </div>
             <div className="p-6">
                <div className="flex items-center gap-2 mb-4">
@@ -81,17 +81,17 @@ export default function ReviewDetail() {
                      </svg>
                    ))}
                  </span>
-                 <span className="text-sm font-bold text-gray-900">{review.rating} out of 5</span>
+                 <span className="text-sm font-bold text-text-primary">{review.rating} out of 5</span>
                </div>
-               {review.title && <h3 className="text-xl font-bold text-gray-900 mb-2">{review.title}</h3>}
-               <p className="text-gray-700 whitespace-pre-wrap">{review.content}</p>
+               {review.title && <h3 className="text-xl font-bold text-text-primary mb-2">{review.title}</h3>}
+               <p className="text-text-secondary whitespace-pre-wrap">{review.content}</p>
                
                {review.media && review.media.length > 0 && (
                  <div className="mt-6">
-                   <h4 className="text-sm font-semibold text-gray-900 mb-3">Customer Photos</h4>
+                   <h4 className="text-sm font-semibold text-text-primary mb-3">Customer Photos</h4>
                    <div className="flex flex-wrap gap-4">
                      {review.media.map((img, i) => (
-                       <img key={i} src={img.url} alt={`Review media ${i}`} className="w-32 h-32 object-cover rounded-lg border border-gray-200" />
+                       <img key={i} src={img.url} alt={`Review media ${i}`} className="w-32 h-32 object-cover rounded-lg border border-border" />
                      ))}
                    </div>
                  </div>
@@ -106,28 +106,28 @@ export default function ReviewDetail() {
         {/* Sidebar */}
         <div className="space-y-6">
           
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Customer Details</h2>
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+            <h2 className="text-lg font-bold text-text-primary mb-4">Customer Details</h2>
             <div className="space-y-3">
               <div>
-                <p className="font-medium text-gray-900">{review.customerName}</p>
+                <p className="font-medium text-text-primary">{review.customerName}</p>
                 {review.isVerifiedPurchase ? (
-                  <p className="text-sm text-green-700 font-semibold flex items-center gap-1 mt-1"><FiCheckCircle size={14}/> Verified Purchase</p>
+                  <p className="text-sm text-success font-semibold flex items-center gap-1 mt-1"><FiCheckCircle size={14}/> Verified Purchase</p>
                 ) : (
-                  <p className="text-sm text-gray-500 mt-1">Unverified Buyer</p>
+                  <p className="text-sm text-text-muted mt-1">Unverified Buyer</p>
                 )}
               </div>
               {review.orderId && (
                 <div className="pt-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Associated Order</p>
-                  <p className="text-sm text-gray-900 mt-1"><Link to={`/admin/orders/${review.orderId}`} className="text-blue-600 hover:underline">{review.orderId}</Link></p>
+                  <p className="text-xs text-text-muted uppercase font-semibold">Associated Order</p>
+                  <p className="text-sm text-text-primary mt-1"><Link to={`/admin/orders/${review.orderId}`} className="text-primary hover:underline">{review.orderId}</Link></p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-             <h2 className="text-lg font-bold text-gray-900 mb-6">Review Timeline</h2>
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+             <h2 className="text-lg font-bold text-text-primary mb-6">Review Timeline</h2>
              <ReviewTimeline events={review.timeline} />
           </div>
 

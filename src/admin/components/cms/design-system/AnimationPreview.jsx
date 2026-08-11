@@ -19,18 +19,18 @@ export default function AnimationPreview() {
     <div className="space-y-8">
       
       {/* Durations */}
-      <div className="bg-white border border-black/5 rounded-xl p-8 shadow-sm">
-        <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
+      <div className="bg-surface border border-black/5 rounded-xl p-8 shadow-sm">
+        <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
           Animation Durations
         </h3>
         <div className="space-y-6">
           {DURATION_TOKENS.map(token => (
             <div key={token.id} className="flex items-center gap-6">
                <div className="w-32 shrink-0 text-right">
-                  <div className="text-xs font-bold text-[#1A1A1A]">{token.name}</div>
-                  <div className="text-[10px] text-gray-500 font-mono">{token.value}</div>
+                  <div className="text-xs font-bold text-text-primary">{token.name}</div>
+                  <div className="text-[10px] text-text-muted font-mono">{token.value}</div>
                </div>
-               <div className="flex-1 bg-gray-50 border border-black/5 rounded-md p-4 overflow-hidden relative h-16 group">
+               <div className="flex-1 bg-background border border-black/5 rounded-md p-4 overflow-hidden relative h-16 group">
                  <motion.div 
                    className="w-8 h-8 bg-[#A69076] rounded-md absolute left-4 group-hover:left-[calc(100%-3rem)]"
                    transition={{ duration: parseFloat(token.value) / 1000, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
@@ -42,18 +42,18 @@ export default function AnimationPreview() {
       </div>
 
       {/* Easings */}
-      <div className="bg-white border border-black/5 rounded-xl p-8 shadow-sm">
-        <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
+      <div className="bg-surface border border-black/5 rounded-xl p-8 shadow-sm">
+        <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
           Easing Functions
         </h3>
         <div className="space-y-6">
           {EASING_TOKENS.map(token => (
             <div key={token.id} className="flex items-center gap-6">
                <div className="w-32 shrink-0 text-right">
-                  <div className="text-xs font-bold text-[#1A1A1A]">{token.name}</div>
-                  <div className="text-[10px] text-gray-500 font-mono text-xs">{token.value}</div>
+                  <div className="text-xs font-bold text-text-primary">{token.name}</div>
+                  <div className="text-[10px] text-text-muted font-mono text-xs">{token.value}</div>
                </div>
-               <div className="flex-1 bg-gray-50 border border-black/5 rounded-md p-4 overflow-hidden relative h-16 group">
+               <div className="flex-1 bg-background border border-black/5 rounded-md p-4 overflow-hidden relative h-16 group">
                  <motion.div 
                    className="w-8 h-8 bg-[#1A1A1A] rounded-md absolute left-4 group-hover:left-[calc(100%-3rem)]"
                    transition={{ 

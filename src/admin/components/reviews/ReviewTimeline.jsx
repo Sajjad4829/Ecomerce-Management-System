@@ -25,17 +25,17 @@ export default function ReviewTimeline({ events }) {
             )}
             
             <div className={`absolute top-1 left-0 w-8 h-8 rounded-full border-2 flex items-center justify-center ${
-               isLast ? 'border-blue-600 bg-blue-50 text-blue-600' : 'border-gray-300 bg-white text-gray-400'
+               isLast ? 'border-blue-600 bg-blue-50 text-primary' : 'border-border-hover bg-surface text-text-muted'
             }`}>
               {getIcon(ev.status)}
             </div>
             
             <div>
-              <p className={`text-sm font-bold ${isLast ? 'text-gray-900' : 'text-gray-600'}`}>
+              <p className={`text-sm font-bold ${isLast ? 'text-text-primary' : 'text-text-secondary'}`}>
                 {ev.status}
               </p>
-              <p className="text-xs text-gray-500 font-medium mt-0.5">{ev.actor}</p>
-              <p className="text-xs text-gray-400 mt-1">{new Date(ev.timestamp).toLocaleString()}</p>
+              <p className="text-xs text-text-muted font-medium mt-0.5">{ev.actor}</p>
+              <p className="text-xs text-text-muted mt-1">{new Date(ev.timestamp).toLocaleString()}</p>
             </div>
           </div>
         );

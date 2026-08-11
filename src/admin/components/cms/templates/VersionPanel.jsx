@@ -40,20 +40,20 @@ export default function VersionPanel({ versions = [], currentVersion, onRestore,
   ];
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-5 shadow-sm space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+    <div className="bg-surface rounded-xl border border-border p-5 shadow-sm space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-border">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-lg bg-stone-100 text-stone-800">
             <FiClock size={18} />
           </div>
           <div>
-            <h3 className="font-serif font-bold text-stone-900 text-sm">Version Control & Audit Log</h3>
-            <p className="text-xs text-stone-500">Track changes, compare revisions, and restore published blueprints</p>
+            <h3 className="font-serif font-bold text-text-primary text-sm">Version Control & Audit Log</h3>
+            <p className="text-xs text-text-muted">Track changes, compare revisions, and restore published blueprints</p>
           </div>
         </div>
         <button
           onClick={() => onPublish && onPublish('1.3.0-draft')}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold transition-colors"
         >
           <FiPlus size={14} />
           Create New Version Draft
@@ -68,29 +68,29 @@ export default function VersionPanel({ versions = [], currentVersion, onRestore,
               key={v.version}
               className={`border rounded-xl p-3.5 transition-all ${
                 isCurrent 
-                  ? 'border-amber-400 bg-amber-50/20 shadow-sm' 
-                  : 'border-stone-200 hover:border-stone-300 bg-white'
+                  ? 'border-amber-400 bg-warning-soft/20 shadow-sm' 
+                  : 'border-border hover:border-border-hover bg-surface'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded bg-stone-100 text-stone-700">
+                  <div className="p-1.5 rounded bg-stone-100 text-text-secondary">
                     <FiGitCommit size={15} />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-stone-900">
+                      <span className="font-mono text-xs font-bold text-text-primary">
                         v{v.version}
                       </span>
                       {isCurrent && (
-                        <span className="text-[9px] bg-stone-900 text-white px-1.5 py-0.5 rounded font-mono font-bold uppercase">
+                        <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded font-mono font-bold uppercase">
                           Active
                         </span>
                       )}
                       <StatusBadge status={v.status} />
                     </div>
-                    <div className="text-[11px] text-stone-500 mt-0.5">
-                      By <span className="font-medium text-stone-700">{v.author}</span> • {v.timestamp}
+                    <div className="text-[11px] text-text-muted mt-0.5">
+                      By <span className="font-medium text-text-secondary">{v.author}</span> • {v.timestamp}
                     </div>
                   </div>
                 </div>
@@ -108,7 +108,7 @@ export default function VersionPanel({ versions = [], currentVersion, onRestore,
                   )}
                   <button
                     onClick={() => onDuplicate && onDuplicate(v.version)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 border border-stone-200 hover:bg-stone-50 text-stone-700 rounded text-xs font-medium transition-colors"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 border border-border hover:bg-background text-text-secondary rounded text-xs font-medium transition-colors"
                     title="Duplicate as new draft"
                   >
                     <FiCopy size={12} />
@@ -117,11 +117,11 @@ export default function VersionPanel({ versions = [], currentVersion, onRestore,
                 </div>
               </div>
 
-              <div className="mt-2.5 text-xs text-stone-600 bg-stone-50/80 rounded p-2 border border-stone-100 font-mono">
+              <div className="mt-2.5 text-xs text-text-secondary bg-background/80 rounded p-2 border border-stone-100 font-mono">
                 {v.changelog}
               </div>
 
-              <div className="mt-2 flex items-center gap-4 text-[11px] text-stone-500">
+              <div className="mt-2 flex items-center gap-4 text-[11px] text-text-muted">
                 <span>{v.sectionsCount} Sections</span>
                 <span>•</span>
                 <span>{v.placeholdersCount} Dynamic Placeholders</span>

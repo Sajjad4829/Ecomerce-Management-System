@@ -12,7 +12,7 @@ export function OpenGraphEditor({ seoData, onChange }) {
             value={seoData?.ogTitle || ''}
             onChange={(e) => onChange({ ...seoData, ogTitle: e.target.value })}
             placeholder={seoData?.title || "e.g. Modern Sofa - Aurora Furniture"}
-            className="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-400"
+            className="w-full p-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
           />
         </SEOFieldGroup>
 
@@ -22,24 +22,24 @@ export function OpenGraphEditor({ seoData, onChange }) {
             onChange={(e) => onChange({ ...seoData, ogDescription: e.target.value })}
             placeholder={seoData?.description || "Description..."}
             rows={3}
-            className="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-400"
+            className="w-full p-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
           />
         </SEOFieldGroup>
 
         <SEOFieldGroup label="Open Graph Image" description="Recommended size: 1200x630 pixels.">
           <div className="flex flex-col gap-3">
             <div className="flex gap-3">
-              <button className="px-4 py-2 bg-stone-100 text-stone-700 text-sm font-medium rounded-lg hover:bg-stone-200 transition-colors flex items-center gap-2">
+              <button className="px-4 py-2 bg-stone-100 text-text-secondary text-sm font-medium rounded-lg hover:bg-stone-200 transition-colors flex items-center gap-2">
                 <FiImage /> Select from Media
               </button>
               {seoData?.ogImage && (
-                 <button onClick={() => onChange({ ...seoData, ogImage: null })} className="px-4 py-2 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors">
+                 <button onClick={() => onChange({ ...seoData, ogImage: null })} className="px-4 py-2 text-danger text-sm font-medium rounded-lg hover:bg-danger-soft transition-colors">
                   Remove
                 </button>
               )}
             </div>
             {seoData?.ogImage && (
-              <div className="w-32 h-20 bg-stone-100 border border-stone-200 rounded-lg overflow-hidden">
+              <div className="w-32 h-20 bg-stone-100 border border-border rounded-lg overflow-hidden">
                 <img src={seoData.ogImage} alt="OG" className="w-full h-full object-cover" />
               </div>
             )}
@@ -48,7 +48,7 @@ export function OpenGraphEditor({ seoData, onChange }) {
       </div>
 
       <div>
-        <h4 className="font-bold text-stone-900 mb-4 text-sm">Social Preview</h4>
+        <h4 className="font-bold text-text-primary mb-4 text-sm">Social Preview</h4>
         <SocialPreview 
           title={seoData?.ogTitle || seoData?.title} 
           description={seoData?.ogDescription || seoData?.description} 

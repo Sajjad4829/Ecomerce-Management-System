@@ -12,8 +12,8 @@ export default function RoleManager() {
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">Roles & Permissions</h1>
-          <p className="text-gray-500 text-sm mt-1">Manage enterprise access control levels</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Roles & Permissions</h1>
+          <p className="text-text-muted text-sm mt-1">Manage enterprise access control levels</p>
         </div>
         <button 
           onClick={() => navigate('/admin/settings/roles/new')}
@@ -23,7 +23,7 @@ export default function RoleManager() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <DataTable 
           data={roles}
           columns={[
@@ -37,12 +37,12 @@ export default function RoleManager() {
                 )}
               </div>
             )},
-            { key: 'description', label: 'Description', render: (val) => <span className="text-gray-500">{val}</span> },
+            { key: 'description', label: 'Description', render: (val) => <span className="text-text-muted">{val}</span> },
             { key: 'staffCount', label: 'Staff Assigned' },
             { key: 'permissionCount', label: 'Permissions' },
             { key: 'status', label: 'Status', render: (val) => (
               <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                val === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                val === 'Active' ? 'bg-success-soft text-green-800' : 'bg-gray-100 text-gray-800'
               }`}>
                 {val}
               </span>

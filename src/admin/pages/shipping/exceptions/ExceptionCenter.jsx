@@ -14,7 +14,7 @@ export const ExceptionCenter = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -30,7 +30,7 @@ export const ExceptionCenter = () => {
             {exceptions.map((exc) => (
               <tr key={exc.id} className="hover:bg-neutral-50 transition-colors">
                 <td className="px-6 py-4 font-medium text-neutral-900">{exc.id}</td>
-                <td className="px-6 py-4 text-indigo-600 hover:underline cursor-pointer">{exc.shipmentId}</td>
+                <td className="px-6 py-4 text-primary hover:underline cursor-pointer">{exc.shipmentId}</td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-500" />
@@ -40,7 +40,7 @@ export const ExceptionCenter = () => {
                 <td className="px-6 py-4 text-neutral-600 truncate max-w-xs">{exc.description}</td>
                 <td className="px-6 py-4 text-neutral-600">{exc.date}</td>
                 <td className="px-6 py-4 text-center">
-                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-warning-soft text-amber-800">
                     {exc.status}
                   </span>
                 </td>

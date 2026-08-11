@@ -58,12 +58,12 @@ export default function PermissionMatrix() {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center gap-4 mb-8">
-        <button onClick={() => navigate(`/admin/settings/roles/${roleId}`)} className="text-gray-400 hover:text-black">
+        <button onClick={() => navigate(`/admin/settings/roles/${roleId}`)} className="text-text-muted hover:text-black">
           <FiArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">{role.name} Matrix</h1>
-          <p className="text-gray-500 text-sm mt-1">Configure fine-grained module access and actions</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">{role.name} Matrix</h1>
+          <p className="text-text-muted text-sm mt-1">Configure fine-grained module access and actions</p>
         </div>
         <div className="ml-auto">
           <button 
@@ -82,13 +82,13 @@ export default function PermissionMatrix() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-x-auto">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr>
-              <th className="p-4 border-b border-black/10 bg-gray-50 font-medium text-gray-500">Resource</th>
+              <th className="p-4 border-b border-black/10 bg-background font-medium text-text-muted">Resource</th>
               {actions.map(act => (
-                <th key={act} className="p-4 border-b border-black/10 bg-gray-50 font-medium text-gray-500 text-center capitalize w-24">
+                <th key={act} className="p-4 border-b border-black/10 bg-background font-medium text-text-muted text-center capitalize w-24">
                   {act}
                 </th>
               ))}
@@ -98,18 +98,18 @@ export default function PermissionMatrix() {
             {modules.map(mod => (
               <React.Fragment key={mod.id}>
                 <tr>
-                  <td colSpan={actions.length + 1} className="p-4 bg-gray-50/50 border-b border-black/5 font-semibold text-gray-700">
+                  <td colSpan={actions.length + 1} className="p-4 bg-background/50 border-b border-black/5 font-semibold text-text-secondary">
                     {mod.name}
                   </td>
                 </tr>
                 {mod.resources.map(res => (
-                  <tr key={res} className="border-b border-black/5 last:border-0 hover:bg-gray-50/30 transition-colors">
+                  <tr key={res} className="border-b border-black/5 last:border-0 hover:bg-background/30 transition-colors">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <button 
                           onClick={() => toggleRow(mod.id, res)}
                           disabled={isSuperAdmin}
-                          className="w-4 h-4 rounded border border-gray-300 flex items-center justify-center text-white disabled:opacity-50"
+                          className="w-4 h-4 rounded border border-border-hover flex items-center justify-center text-white disabled:opacity-50"
                           style={{ backgroundColor: actions.every(a => selected[`${mod.id}.${res}.${a}`]) ? 'black' : 'transparent', borderColor: actions.every(a => selected[`${mod.id}.${res}.${a}`]) ? 'black' : '#d1d5db' }}
                         >
                           {actions.every(a => selected[`${mod.id}.${res}.${a}`]) && <FiCheck className="w-3 h-3" />}
@@ -125,7 +125,7 @@ export default function PermissionMatrix() {
                           <button
                             onClick={() => togglePermission(mod.id, res, act)}
                             disabled={isSuperAdmin}
-                            className={`w-5 h-5 rounded border mx-auto flex items-center justify-center text-white transition-colors disabled:opacity-50 ${isChecked ? 'bg-black border-black' : 'border-gray-300 bg-white hover:border-gray-400'}`}
+                            className={`w-5 h-5 rounded border mx-auto flex items-center justify-center text-white transition-colors disabled:opacity-50 ${isChecked ? 'bg-black border-black' : 'border-border-hover bg-surface hover:border-gray-400'}`}
                           >
                             {isChecked && <FiCheck className="w-3.5 h-3.5" />}
                           </button>

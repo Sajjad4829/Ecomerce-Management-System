@@ -23,21 +23,21 @@ export default function DisplayRules({
   };
 
   return (
-    <div className="bg-white border border-black/10 rounded-xl p-4 shadow-2xs space-y-4">
+    <div className="bg-surface border border-black/10 rounded-xl p-4 shadow-2xs space-y-4">
       <div className="border-b border-black/5 pb-2">
-        <h4 className="font-serif font-bold text-sm text-[#1A1A1A]">Display Audience & Frequency Rules</h4>
-        <p className="text-[11px] text-gray-400">Control target store routes, device responsiveness, and re-display frequency.</p>
+        <h4 className="font-serif font-bold text-sm text-text-primary">Display Audience & Frequency Rules</h4>
+        <p className="text-[11px] text-text-muted">Control target store routes, device responsiveness, and re-display frequency.</p>
       </div>
 
       <div className="space-y-3.5 text-xs">
         
         {/* Page Target Selector */}
         <div className="space-y-1">
-          <label className="font-bold text-gray-700 uppercase tracking-wider text-[10px]">Target Store Routes</label>
+          <label className="font-bold text-text-secondary uppercase tracking-wider text-[10px]">Target Store Routes</label>
           <select
             value={targetPages}
             onChange={(e) => handleChange('targetPages', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs font-semibold focus:bg-white focus:outline-none"
+            className="w-full px-2.5 py-1.5 bg-background border border-black/10 rounded-lg text-xs font-semibold focus:bg-surface focus:outline-none"
           >
             <option value="all">All Store Pages (Sitewide)</option>
             <option value="products">Product Detail Pages (PDPs) Only</option>
@@ -48,7 +48,7 @@ export default function DisplayRules({
 
         {/* Device Target Checkboxes */}
         <div className="space-y-1">
-          <label className="font-bold text-gray-700 uppercase tracking-wider text-[10px]">Device Targeting</label>
+          <label className="font-bold text-text-secondary uppercase tracking-wider text-[10px]">Device Targeting</label>
           <div className="grid grid-cols-3 gap-2">
             {[
               { id: 'desktop', label: 'Desktop' },
@@ -63,7 +63,7 @@ export default function DisplayRules({
                   onClick={() => handleDeviceToggle(d.id)}
                   className={cn(
                     "py-1.5 px-2 rounded-lg border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5",
-                    isActive ? "bg-black text-white border-black" : "bg-gray-50 text-gray-500 border-black/10"
+                    isActive ? "bg-black text-white border-black" : "bg-background text-text-muted border-black/10"
                   )}
                 >
                   {isActive && <FiCheck size={12} className="text-green-400" />}
@@ -76,11 +76,11 @@ export default function DisplayRules({
 
         {/* Impression Frequency */}
         <div className="space-y-1">
-          <label className="font-bold text-gray-700 uppercase tracking-wider text-[10px]">Re-display Frequency Limit</label>
+          <label className="font-bold text-text-secondary uppercase tracking-wider text-[10px]">Re-display Frequency Limit</label>
           <select
             value={frequency}
             onChange={(e) => handleChange('frequency', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs font-semibold focus:bg-white focus:outline-none"
+            className="w-full px-2.5 py-1.5 bg-background border border-black/10 rounded-lg text-xs font-semibold focus:bg-surface focus:outline-none"
           >
             <option value="once_per_session">Once Per Browsing Session</option>
             <option value="once_per_day">Once Every 24 Hours</option>

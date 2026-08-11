@@ -1,8 +1,8 @@
 export default function CatalogStatusBadge({ status }) {
   const styles = {
     published: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    draft: 'bg-stone-100 text-stone-600 border-stone-200',
-    archived: 'bg-red-50 text-red-700 border-red-200'
+    draft: 'bg-stone-100 text-text-secondary border-border',
+    archived: 'bg-danger-soft text-red-700 border-red-200'
   };
 
   const style = styles[status] || styles.draft;

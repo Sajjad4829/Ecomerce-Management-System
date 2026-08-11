@@ -41,8 +41,8 @@ export default function PricePreview() {
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h2 className="text-xl font-serif font-bold text-[#1A1A1A] mb-2">Price Simulation Engine</h2>
-          <p className="text-sm text-gray-500 max-w-lg">
+          <h2 className="text-xl font-serif font-bold text-text-primary mb-2">Price Simulation Engine</h2>
+          <p className="text-sm text-text-muted max-w-lg">
             Test how different rules, discounts, and customer groups interact to calculate the final display price.
           </p>
         </div>
@@ -51,25 +51,25 @@ export default function PricePreview() {
           {/* Inputs */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-[#1A1A1A]">1. Base Product Price</h3>
+              <h3 className="text-sm font-bold text-text-primary">1. Base Product Price</h3>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted font-bold">$</span>
                 <input 
                   type="number" 
                   value={regularPrice}
                   onChange={(e) => setRegularPrice(Number(e.target.value))}
-                  className="w-full pl-8 pr-4 py-3 bg-[#F7F5F2] border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-lg font-bold text-[#1A1A1A]"
+                  className="w-full pl-8 pr-4 py-3 bg-background border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-lg font-bold text-text-primary"
                 />
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex justify-between items-end">
-                <h3 className="text-sm font-bold text-[#1A1A1A]">2. Active Promotion</h3>
+                <h3 className="text-sm font-bold text-text-primary">2. Active Promotion</h3>
                 <select 
                   value={promoType}
                   onChange={(e) => setPromoType(e.target.value)}
-                  className="text-xs font-medium text-gray-500 bg-transparent border-none focus:ring-0 cursor-pointer"
+                  className="text-xs font-medium text-text-muted bg-transparent border-none focus:ring-0 cursor-pointer"
                 >
                   <option value="percentage">% Off</option>
                   <option value="fixed">$ Off</option>
@@ -80,35 +80,35 @@ export default function PricePreview() {
                   type="number" 
                   value={promoDiscount}
                   onChange={(e) => setPromoDiscount(Number(e.target.value))}
-                  className="w-full pl-4 pr-12 py-3 bg-[#F7F5F2] border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-lg font-bold text-[#1A1A1A]"
+                  className="w-full pl-4 pr-12 py-3 bg-background border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-lg font-bold text-text-primary"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted font-bold">
                   {promoType === 'percentage' ? '%' : '$'}
                 </span>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-[#1A1A1A]">3. Customer Group (e.g. Wholesale)</h3>
+              <h3 className="text-sm font-bold text-text-primary">3. Customer Group (e.g. Wholesale)</h3>
               <div className="relative">
                 <input 
                   type="number" 
                   value={groupDiscount}
                   onChange={(e) => setGroupDiscount(Number(e.target.value))}
-                  className="w-full pl-4 pr-12 py-3 bg-[#F7F5F2] border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-lg font-bold text-[#1A1A1A]"
+                  className="w-full pl-4 pr-12 py-3 bg-background border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-lg font-bold text-text-primary"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">% Off</span>
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted font-bold">% Off</span>
               </div>
             </div>
           </div>
 
           {/* Visualization */}
           <div className="bg-[#1A1A1A] rounded-2xl p-8 text-white flex flex-col justify-center">
-            <h3 className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-8">Waterfall Calculation</h3>
+            <h3 className="text-[10px] font-mono font-bold text-text-muted uppercase tracking-widest mb-8">Waterfall Calculation</h3>
             
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <span className="text-gray-400">Regular Price</span>
+                <span className="text-text-muted">Regular Price</span>
                 <span className="text-xl font-medium">${calc.price.toLocaleString()}</span>
               </div>
 
@@ -138,9 +138,9 @@ export default function PricePreview() {
               </div>
             </div>
             
-            <div className="mt-8 flex items-start gap-3 p-4 bg-white/5 rounded-xl border border-white/10">
-              <FiInfo className="text-gray-400 shrink-0 mt-0.5" />
-              <p className="text-xs text-gray-400 leading-relaxed">
+            <div className="mt-8 flex items-start gap-3 p-4 bg-surface/5 rounded-xl border border-white/10">
+              <FiInfo className="text-text-muted shrink-0 mt-0.5" />
+              <p className="text-xs text-text-muted leading-relaxed">
                 Rules apply sequentially. Group discounts apply to the post-promotion price to protect profit margins.
               </p>
             </div>

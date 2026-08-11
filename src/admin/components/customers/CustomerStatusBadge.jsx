@@ -2,15 +2,15 @@ export default function CustomerStatusBadge({ status }) {
   const getStatusStyles = () => {
     switch (status.toLowerCase()) {
       case 'active':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-success-soft text-green-800 border-green-200';
       case 'inactive':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-100 text-gray-800 border-border';
       case 'suspended':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-danger-soft text-red-800 border-red-200';
       case 'archived':
         return 'bg-gray-800 text-gray-300 border-gray-700';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-100 text-gray-800 border-border';
     }
   };
 

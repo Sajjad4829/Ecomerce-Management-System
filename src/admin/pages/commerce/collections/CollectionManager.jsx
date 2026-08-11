@@ -41,15 +41,15 @@ export default function CollectionManager() {
 
   return (
     <div className="p-6 space-y-6 max-w-[1400px] mx-auto relative pb-24">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-stone-200">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] uppercase font-bold">
+            <span className="px-2 py-0.5 rounded bg-warning-soft text-amber-900 font-mono text-[10px] uppercase font-bold">
               Catalog Management
             </span>
           </div>
-          <h1 className="font-serif font-bold text-2xl text-stone-900 mt-1">Collections</h1>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <h1 className="font-serif font-bold text-2xl text-text-primary mt-1">Collections</h1>
+          <p className="text-xs text-text-muted mt-0.5">
             Create curated product groupings and automated merchandising rules.
           </p>
         </div>
@@ -85,23 +85,23 @@ export default function CollectionManager() {
               onPreview={setPreviewCollection}
             />
           ) : (
-            <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+            <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-stone-50 border-b border-stone-200">
+                    <tr className="bg-background border-b border-border">
                       <th className="p-4 w-10">
                         <input 
                           type="checkbox" 
                           onChange={(e) => handleSelectAll(e.target.checked)}
                           checked={collections.length > 0 && selectedCollections.length === collections.length}
-                          className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+                          className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900"
                         />
                       </th>
-                      <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Collection</th>
-                      <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Type</th>
-                      <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Status</th>
-                      <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Products</th>
+                      <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Collection</th>
+                      <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Type</th>
+                      <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
+                      <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Products</th>
                       <th className="p-4 w-10"></th>
                     </tr>
                   </thead>
@@ -109,7 +109,7 @@ export default function CollectionManager() {
                     {filteredCollections.map(collection => (
                       <tr 
                         key={collection.id}
-                        className={`hover:bg-stone-50 transition-colors group cursor-pointer ${selectedCollections.includes(collection.id) ? 'bg-stone-50' : ''}`}
+                        className={`hover:bg-background transition-colors group cursor-pointer ${selectedCollections.includes(collection.id) ? 'bg-background' : ''}`}
                         onClick={(e) => {
                           if (e.target.type !== 'checkbox' && !e.target.closest('button')) {
                             navigate(`/admin/catalog/collections/${collection.id}`);
@@ -121,47 +121,47 @@ export default function CollectionManager() {
                             type="checkbox"
                             checked={selectedCollections.includes(collection.id)}
                             onChange={(e) => handleSelectOne(collection.id, e.target.checked)}
-                            className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+                            className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900"
                           />
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded bg-stone-100 border border-stone-200 overflow-hidden shrink-0">
+                            <div className="w-10 h-10 rounded bg-stone-100 border border-border overflow-hidden shrink-0">
                               <img src={collection.image} alt={collection.name} className="w-full h-full object-cover" />
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <p className="font-semibold text-stone-900">{collection.name}</p>
+                                <p className="font-semibold text-text-primary">{collection.name}</p>
                                 {collection.featured && (
-                                  <span className="px-1.5 py-0.5 rounded-sm bg-amber-100 text-amber-900 text-[9px] font-mono font-bold uppercase tracking-wider">
+                                  <span className="px-1.5 py-0.5 rounded-sm bg-warning-soft text-amber-900 text-[9px] font-mono font-bold uppercase tracking-wider">
                                     Featured
                                   </span>
                                 )}
                               </div>
-                              <p className="text-xs text-stone-500 font-mono mt-0.5">/{collection.slug}</p>
+                              <p className="text-xs text-text-muted font-mono mt-0.5">/{collection.slug}</p>
                             </div>
                           </div>
                         </td>
                         <td className="p-4">
-                          <span className="capitalize text-sm font-medium text-stone-700">{collection.type}</span>
+                          <span className="capitalize text-sm font-medium text-text-secondary">{collection.type}</span>
                         </td>
                         <td className="p-4">
                           <CatalogStatusBadge status={collection.status} />
                           {collection.status === 'scheduled' && (
-                            <div className="flex items-center gap-1 text-[10px] text-stone-500 mt-1 font-mono">
+                            <div className="flex items-center gap-1 text-[10px] text-text-muted mt-1 font-mono">
                               <FiClock size={10} /> {new Date(collection.startAt).toLocaleDateString()}
                             </div>
                           )}
                         </td>
                         <td className="p-4">
-                          <span className="font-mono text-sm text-stone-700">
+                          <span className="font-mono text-sm text-text-secondary">
                             {collection.productIds ? collection.productIds.length : (collection.resolvedProducts?.length || 0)} items
                           </span>
                         </td>
                         <td className="p-4 relative" onClick={e => e.stopPropagation()}>
                           <button 
                             onClick={(e) => toggleMenu(collection.id, e)}
-                            className="p-2 hover:bg-stone-200 rounded transition-colors text-stone-400 group-hover:text-stone-600"
+                            className="p-2 hover:bg-stone-200 rounded transition-colors text-text-muted group-hover:text-text-secondary"
                           >
                             <FiMoreVertical size={18} />
                           </button>
@@ -178,14 +178,14 @@ export default function CollectionManager() {
                                   animate={{ opacity: 1, scale: 1 }}
                                   exit={{ opacity: 0, scale: 0.95 }}
                                   transition={{ duration: 0.1 }}
-                                  className="absolute right-10 top-4 w-48 bg-white rounded-lg shadow-xl border border-stone-200 py-1 z-50 overflow-hidden"
+                                  className="absolute right-10 top-4 w-48 bg-surface rounded-lg shadow-xl border border-border py-1 z-50 overflow-hidden"
                                 >
                                   <button 
                                     onClick={() => {
                                       navigate(`/admin/catalog/collections/${collection.id}`);
                                       setActiveMenu(null);
                                     }}
-                                    className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-background flex items-center gap-2"
                                   >
                                     <FiEdit2 size={14} /> Edit Collection
                                   </button>
@@ -194,7 +194,7 @@ export default function CollectionManager() {
                                       setPreviewCollection(collection);
                                       setActiveMenu(null);
                                     }}
-                                    className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-background flex items-center gap-2"
                                   >
                                     <FiEye size={14} /> Live Preview
                                   </button>
@@ -203,7 +203,7 @@ export default function CollectionManager() {
                                       duplicateCollection(collection.id);
                                       setActiveMenu(null);
                                     }}
-                                    className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-background flex items-center gap-2"
                                   >
                                     <FiCopy size={14} /> Duplicate
                                   </button>
@@ -213,7 +213,7 @@ export default function CollectionManager() {
                                       deleteCollection(collection.id);
                                       setActiveMenu(null);
                                     }}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2 text-sm text-danger hover:bg-danger-soft flex items-center gap-2"
                                   >
                                     <FiTrash2 size={14} /> Delete
                                   </button>
@@ -226,7 +226,7 @@ export default function CollectionManager() {
                     ))}
                     {filteredCollections.length === 0 && (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-stone-500">
+                        <td colSpan={6} className="p-8 text-center text-text-muted">
                           No collections found.
                         </td>
                       </tr>

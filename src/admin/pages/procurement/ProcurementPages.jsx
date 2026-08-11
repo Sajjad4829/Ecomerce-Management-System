@@ -8,24 +8,24 @@ export const ProcurementDashboard = () => {
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Procurement Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+        <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
           <div className="text-sm text-neutral-500 font-medium mb-1">Active Suppliers</div>
           <div className="text-2xl font-bold text-neutral-900">24</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+        <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
           <div className="text-sm text-neutral-500 font-medium mb-1">Pending Requests</div>
           <div className="text-2xl font-bold text-neutral-900">12</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+        <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
           <div className="text-sm text-neutral-500 font-medium mb-1">Pending POs</div>
           <div className="text-2xl font-bold text-neutral-900">5</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+        <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
           <div className="text-sm text-neutral-500 font-medium mb-1">Goods Receipts</div>
           <div className="text-2xl font-bold text-neutral-900">8</div>
         </div>
       </div>
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200 text-center">
+      <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200 text-center">
         <PieChart className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Procurement Analytics Placeholder</h3>
         <p className="text-sm text-neutral-500 mt-1">Backend accounting calculation required for spend metrics.</p>
@@ -42,7 +42,7 @@ export const SupplierCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Suppliers</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Supplier</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -64,7 +64,7 @@ export const SupplierCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{s.contact}</td>
                 <td className="px-6 py-4 text-neutral-600">{s.rating}/5</td>
                 <td className="px-6 py-4 text-neutral-600">{s.status}</td>
-                <td className="px-6 py-4"><Link to={`/admin/procurement/suppliers/${s.id}`} className="text-indigo-600 hover:text-indigo-900">View</Link></td>
+                <td className="px-6 py-4"><Link to={`/admin/procurement/suppliers/${s.id}`} className="text-primary hover:text-indigo-900">View</Link></td>
               </tr>
             ))}
           </tbody>
@@ -92,7 +92,7 @@ export const SupplierDetail = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border border-neutral-200 p-6 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 p-6 shadow-sm">
           <h3 className="font-medium text-neutral-900 mb-4">Contact Information</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-neutral-500">Contact Person</span><span className="font-medium">{supplier.contact}</span></div>
@@ -100,7 +100,7 @@ export const SupplierDetail = () => {
             <div className="flex justify-between"><span className="text-neutral-500">Phone</span><span className="font-medium">{supplier.phone}</span></div>
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-neutral-200 p-6 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 p-6 shadow-sm">
           <h3 className="font-medium text-neutral-900 mb-4">Performance</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-neutral-500">Rating</span><span className="font-medium">{supplier.rating} / 5</span></div>
@@ -110,7 +110,7 @@ export const SupplierDetail = () => {
         </div>
       </div>
       
-      <div className="bg-white rounded-lg border border-neutral-200 p-6 shadow-sm">
+      <div className="bg-surface rounded-lg border border-neutral-200 p-6 shadow-sm">
         <h3 className="font-medium text-neutral-900 mb-4">Supplier Documents</h3>
         <p className="text-sm text-neutral-500 mb-4">Trade license, tax documents, and contracts will appear here.</p>
         <button className="px-4 py-2 border border-neutral-200 rounded text-sm hover:bg-neutral-50">Upload Document</button>
@@ -124,7 +124,7 @@ export const SupplierCategories = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Supplier Categories</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -152,7 +152,7 @@ export const SupplierPerformance = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Supplier Performance</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <BarChart2 className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Supplier Evaluation Dashboard</h3>
         <p className="text-sm text-neutral-500 mt-1">Delivery score, quality score, pricing score placeholders.</p>
@@ -169,7 +169,7 @@ export const PurchaseRequestCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Purchase Requests</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">New Request</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -191,12 +191,12 @@ export const PurchaseRequestCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">${r.estimatedCost}</td>
                 <td className="px-6 py-4 text-neutral-600">{r.priority}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${r.status === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${r.status === 'Approved' ? 'bg-success-soft text-green-800' : 'bg-warning-soft text-amber-800'}`}>
                     {r.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <Link to={`/admin/procurement/requests/${r.id}`} className="text-indigo-600 hover:text-indigo-900 font-medium">Review</Link>
+                  <Link to={`/admin/procurement/requests/${r.id}`} className="text-primary hover:text-indigo-900 font-medium">Review</Link>
                 </td>
               </tr>
             ))}
@@ -224,13 +224,13 @@ export const PurchaseRequestDetail = () => {
             <p className="text-sm text-neutral-500 mt-1">Department: {req.department} | By: {req.requestedBy}</p>
           </div>
           <div className="space-x-2">
-            <button className="px-4 py-2 border border-neutral-200 text-red-600 rounded hover:bg-red-50">Reject</button>
+            <button className="px-4 py-2 border border-neutral-200 text-danger rounded hover:bg-danger-soft">Reject</button>
             <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Approve & Create PO</button>
           </div>
         </div>
       </div>
       
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
         <h3 className="font-medium text-neutral-900 mb-4">Request Details</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div><div className="text-neutral-500">Items Count</div><div className="font-medium mt-1">{req.items}</div></div>
@@ -253,7 +253,7 @@ export const PurchaseOrderCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Purchase Orders</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create PO</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -273,12 +273,12 @@ export const PurchaseOrderCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">${po.total}</td>
                 <td className="px-6 py-4 text-neutral-600">{po.expectedDate}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${po.status === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${po.status === 'Approved' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
                     {po.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <Link to={`/admin/procurement/purchase-orders/${po.id}`} className="text-indigo-600 hover:text-indigo-900 font-medium">View</Link>
+                  <Link to={`/admin/procurement/purchase-orders/${po.id}`} className="text-primary hover:text-indigo-900 font-medium">View</Link>
                 </td>
               </tr>
             ))}
@@ -306,7 +306,7 @@ export const PurchaseOrderDetail = () => {
         </div>
       </div>
       
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
         <h3 className="font-medium text-neutral-900 mb-4">Order Summary</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div><div className="text-neutral-500">Total Value</div><div className="font-medium mt-1">${po.total}</div></div>
@@ -351,7 +351,7 @@ export const GoodsReceiptCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Goods Receipts</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Record Receipt</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -389,7 +389,7 @@ export const SupplierInvoiceCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Supplier Invoices</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Invoice</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -427,7 +427,7 @@ export const SupplierPaymentCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Supplier Payments</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Record Payment</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -465,7 +465,7 @@ export const ProcurementBudgets = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Procurement Budgets</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Budget</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -501,7 +501,7 @@ export const ProcurementCategories = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Procurement Categories</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <Briefcase className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Procurement Item Categories</h3>
         <p className="text-sm text-neutral-500 mt-1">Manage categories for procurement tracking and budgeting.</p>
@@ -514,7 +514,7 @@ export const ProcurementAnalytics = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Procurement Analytics</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <BarChart2 className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Analytics Dashboard</h3>
         <p className="text-sm text-neutral-500 mt-1">Spend volume, supplier counts, average PO values.</p>

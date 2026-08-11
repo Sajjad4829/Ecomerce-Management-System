@@ -67,7 +67,7 @@ export default function StockAdjustment() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-neutral-200 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm overflow-hidden">
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
@@ -77,7 +77,7 @@ export default function StockAdjustment() {
               <select
                 value={formData.productId}
                 onChange={(e) => setFormData({ ...formData, productId: e.target.value })}
-                className={`w-full p-2.5 bg-white border ${errors.productId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
+                className={`w-full p-2.5 bg-surface border ${errors.productId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
               >
                 <option value="">Select a product...</option>
                 {uniqueProducts.map(p => (
@@ -86,7 +86,7 @@ export default function StockAdjustment() {
                   </option>
                 ))}
               </select>
-              {errors.productId && <p className="text-xs text-red-600">{errors.productId}</p>}
+              {errors.productId && <p className="text-xs text-danger">{errors.productId}</p>}
             </div>
 
             {/* Warehouse Selection */}
@@ -95,20 +95,20 @@ export default function StockAdjustment() {
               <select
                 value={formData.warehouseId}
                 onChange={(e) => setFormData({ ...formData, warehouseId: e.target.value })}
-                className={`w-full p-2.5 bg-white border ${errors.warehouseId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
+                className={`w-full p-2.5 bg-surface border ${errors.warehouseId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
               >
                 <option value="">Select a warehouse...</option>
                 {warehouses.map(w => (
                   <option key={w.id} value={w.id}>{w.name}</option>
                 ))}
               </select>
-              {errors.warehouseId && <p className="text-xs text-red-600">{errors.warehouseId}</p>}
+              {errors.warehouseId && <p className="text-xs text-danger">{errors.warehouseId}</p>}
             </div>
 
             {/* Current Stock Display */}
             {selectedProduct && (
               <div className="col-span-full p-4 bg-neutral-50 border border-neutral-100 rounded-md flex items-center gap-4">
-                <AlertCircle className="w-5 h-5 text-indigo-600" />
+                <AlertCircle className="w-5 h-5 text-primary" />
                 <div className="text-sm">
                   <span className="text-neutral-500">Current available stock: </span>
                   <span className="font-medium text-neutral-900">{selectedProduct.available} units</span>
@@ -122,7 +122,7 @@ export default function StockAdjustment() {
               <select
                 value={formData.adjustmentType}
                 onChange={(e) => setFormData({ ...formData, adjustmentType: e.target.value })}
-                className="w-full p-2.5 bg-white border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                className="w-full p-2.5 bg-surface border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900"
               >
                 <option value="Increase">Increase Stock (+)</option>
                 <option value="Decrease">Decrease Stock (-)</option>
@@ -139,9 +139,9 @@ export default function StockAdjustment() {
                 min="1"
                 value={formData.quantity}
                 onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value, 10) || '' })}
-                className={`w-full p-2.5 bg-white border ${errors.quantity ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
+                className={`w-full p-2.5 bg-surface border ${errors.quantity ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
               />
-              {errors.quantity && <p className="text-xs text-red-600">{errors.quantity}</p>}
+              {errors.quantity && <p className="text-xs text-danger">{errors.quantity}</p>}
             </div>
 
             {/* Reason */}
@@ -151,7 +151,7 @@ export default function StockAdjustment() {
                 rows="3"
                 value={formData.reason}
                 onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                className="w-full p-2.5 bg-white border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900 resize-none"
+                className="w-full p-2.5 bg-surface border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900 resize-none"
                 placeholder="Explain the reason for this adjustment..."
               ></textarea>
             </div>
@@ -162,7 +162,7 @@ export default function StockAdjustment() {
             <button
               type="button"
               onClick={() => navigate('/admin/inventory')}
-              className="px-4 py-2 text-neutral-700 bg-white border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors"
+              className="px-4 py-2 text-neutral-700 bg-surface border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors"
             >
               Cancel
             </button>

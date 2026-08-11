@@ -2,11 +2,11 @@ import { cn } from '../../../../utils/cn';
 
 export default function PageStatusBadge({ status }) {
   const styles = {
-    Published: 'bg-green-50 text-green-700 border-green-200',
+    Published: 'bg-success-soft text-success border-green-200',
     Draft: 'bg-yellow-50 text-yellow-700 border-yellow-200',
     Scheduled: 'bg-blue-50 text-blue-700 border-blue-200',
     Private: 'bg-purple-50 text-purple-700 border-purple-200',
-    Archived: 'bg-gray-50 text-gray-600 border-gray-200',
+    Archived: 'bg-background text-text-secondary border-border',
   };
 
   return (

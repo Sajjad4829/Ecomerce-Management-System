@@ -28,15 +28,15 @@ export default function LayoutPreview() {
     <div className="space-y-8">
       
       {/* Border Radius */}
-      <div className="bg-white border border-black/5 rounded-xl p-8 shadow-sm">
+      <div className="bg-surface border border-black/5 rounded-xl p-8 shadow-sm">
         <div className="flex items-center justify-between mb-6 border-b border-black/5 pb-2">
-           <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest">
+           <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest">
              Border Radius (Shape)
            </h3>
            <select 
               value={globalRadius}
               onChange={(e) => setGlobalRadius(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 border border-black/10 rounded-md text-xs font-semibold focus:outline-none focus:bg-white appearance-none"
+              className="px-3 py-1.5 bg-background border border-black/10 rounded-md text-xs font-semibold focus:outline-none focus:bg-surface appearance-none"
             >
               <option value="0px">Sharp (0px)</option>
               <option value="4px">Slight (4px)</option>
@@ -52,26 +52,26 @@ export default function LayoutPreview() {
                  className="w-16 h-16 bg-[#1A1A1A] mb-3 transition-all"
                  style={{ borderRadius: token.value }}
                ></div>
-               <div className="text-xs font-bold text-[#1A1A1A]">{token.name}</div>
-               <div className="text-[10px] text-gray-500 font-mono">{token.value}</div>
+               <div className="text-xs font-bold text-text-primary">{token.name}</div>
+               <div className="text-[10px] text-text-muted font-mono">{token.value}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Spacing System */}
-      <div className="bg-white border border-black/5 rounded-xl p-8 shadow-sm">
-        <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
+      <div className="bg-surface border border-black/5 rounded-xl p-8 shadow-sm">
+        <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
           Spacing Scale
         </h3>
         <div className="space-y-6">
           {SPACING_TOKENS.map(token => (
             <div key={token.id} className="flex items-center gap-6">
                <div className="w-24 shrink-0 text-right">
-                  <div className="text-xs font-bold text-[#1A1A1A]">{token.name}</div>
-                  <div className="text-[10px] text-gray-500 font-mono">{token.px} / {token.value}</div>
+                  <div className="text-xs font-bold text-text-primary">{token.name}</div>
+                  <div className="text-[10px] text-text-muted font-mono">{token.px} / {token.value}</div>
                </div>
-               <div className="flex-1 bg-gray-50 border border-black/5 rounded-md p-2 flex items-center">
+               <div className="flex-1 bg-background border border-black/5 rounded-md p-2 flex items-center">
                  <div 
                    className="bg-[#A69076]/40 border border-[#A69076] h-6 rounded-sm"
                    style={{ width: token.value }}

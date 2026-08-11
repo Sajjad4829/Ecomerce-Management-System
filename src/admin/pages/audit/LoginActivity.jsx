@@ -9,17 +9,17 @@ export default function LoginActivity() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-24">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-stone-900">Login Activity</h1>
-        <p className="text-sm text-stone-500 mt-1">Authentication attempts across all staff accounts</p>
+        <h1 className="text-2xl font-serif font-bold text-text-primary">Login Activity</h1>
+        <p className="text-sm text-text-muted mt-1">Authentication attempts across all staff accounts</p>
       </div>
 
-      <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 text-amber-800 text-sm">
+      <div className="bg-warning-soft p-4 rounded-lg border border-amber-200 text-amber-800 text-sm">
         <strong>Note:</strong> Real session tracking, IP geolocation, and browser fingerprinting require a backend identity provider integration.
       </div>
 
-      <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
         <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-stone-50 border-b border-stone-200 text-stone-600 font-medium">
+          <thead className="bg-background border-b border-border text-text-secondary font-medium">
             <tr>
               <th className="px-6 py-3">Timestamp</th>
               <th className="px-6 py-3">Actor</th>
@@ -29,18 +29,18 @@ export default function LoginActivity() {
           </thead>
           <tbody className="divide-y divide-stone-200">
             {logins.map(login => (
-              <tr key={login.id} className="hover:bg-stone-50">
-                <td className="px-6 py-4 text-stone-500 text-xs">
+              <tr key={login.id} className="hover:bg-background">
+                <td className="px-6 py-4 text-text-muted text-xs">
                   {new Date(login.time).toLocaleString()}
                 </td>
-                <td className="px-6 py-4 font-medium text-stone-900">{login.staff}</td>
+                <td className="px-6 py-4 font-medium text-text-primary">{login.staff}</td>
                 <td className="px-6 py-4">
-                  <div className="text-stone-900">{login.device}</div>
-                  <div className="text-xs text-stone-500 font-mono">{login.ip}</div>
+                  <div className="text-text-primary">{login.device}</div>
+                  <div className="text-xs text-text-muted font-mono">{login.ip}</div>
                 </td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    login.status === 'Success' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                    login.status === 'Success' ? 'bg-emerald-100 text-emerald-700' : 'bg-danger-soft text-red-700'
                   }`}>
                     {login.status}
                   </span>

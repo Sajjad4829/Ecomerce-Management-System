@@ -6,8 +6,8 @@ export default function Breadcrumb() {
   const pathnames = location.pathname.split('/').filter((x) => x);
 
   return (
-    <nav className="flex items-center text-[11px] uppercase tracking-[0.2em] font-medium text-gray-500">
-      <Link to="/admin" className="hover:text-[#1A1A1A] transition-colors flex items-center gap-1">
+    <nav className="flex items-center text-[11px] uppercase tracking-[0.2em] font-medium text-text-muted">
+      <Link to="/admin" className="hover:text-text-primary transition-colors flex items-center gap-1">
         <FiHome className="text-[13px] mb-[2px]" />
       </Link>
       
@@ -20,11 +20,11 @@ export default function Breadcrumb() {
 
         return (
           <div key={to} className="flex items-center">
-            <FiChevronRight className="mx-2 text-gray-400" />
+            <FiChevronRight className="mx-2 text-text-muted" />
             {isLast ? (
-              <span className="text-[#1A1A1A] font-bold">{formattedValue}</span>
+              <span className="text-text-primary font-bold">{formattedValue}</span>
             ) : (
-              <Link to={to} className="hover:text-[#1A1A1A] transition-colors">
+              <Link to={to} className="hover:text-text-primary transition-colors">
                 {formattedValue}
               </Link>
             )}

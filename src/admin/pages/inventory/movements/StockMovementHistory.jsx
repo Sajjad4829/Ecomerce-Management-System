@@ -15,9 +15,9 @@ export default function StockMovementHistory() {
   });
 
   const getMovementIcon = (type, quantity) => {
-    if (type === 'Transfer In' || quantity > 0) return <ArrowUpRight className="w-5 h-5 text-green-600" />;
-    if (type === 'Transfer Out' || quantity < 0) return <ArrowDownRight className="w-5 h-5 text-red-600" />;
-    if (type === 'Adjustment') return <Edit3 className="w-5 h-5 text-indigo-600" />;
+    if (type === 'Transfer In' || quantity > 0) return <ArrowUpRight className="w-5 h-5 text-success" />;
+    if (type === 'Transfer Out' || quantity < 0) return <ArrowDownRight className="w-5 h-5 text-danger" />;
+    if (type === 'Adjustment') return <Edit3 className="w-5 h-5 text-primary" />;
     return <ArrowRightLeft className="w-5 h-5 text-neutral-600" />;
   };
 
@@ -43,7 +43,7 @@ export default function StockMovementHistory() {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex flex-col md:flex-row items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex flex-col md:flex-row items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -59,7 +59,7 @@ export default function StockMovementHistory() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="pl-2 pr-8 py-2 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white"
+            className="pl-2 pr-8 py-2 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-surface"
           >
             <option value="all">All Types</option>
             <option value="Purchase">Purchase</option>
@@ -71,7 +71,7 @@ export default function StockMovementHistory() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
@@ -104,7 +104,7 @@ export default function StockMovementHistory() {
                     {getWarehouseName(movement.warehouseId)}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <span className={`font-medium ${movement.quantity > 0 ? 'text-green-600' : movement.quantity < 0 ? 'text-red-600' : 'text-neutral-900'}`}>
+                    <span className={`font-medium ${movement.quantity > 0 ? 'text-success' : movement.quantity < 0 ? 'text-danger' : 'text-neutral-900'}`}>
                       {movement.quantity > 0 ? '+' : ''}{movement.quantity}
                     </span>
                   </td>

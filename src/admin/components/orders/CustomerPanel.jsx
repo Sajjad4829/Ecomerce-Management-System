@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 
 export default function CustomerPanel({ order }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+    <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-neutral-200 bg-neutral-50 flex items-center justify-between">
         <h3 className="text-lg font-serif text-neutral-900">Customer</h3>
-        <Link to={`/admin/customers/${order.customerId}`} className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+        <Link to={`/admin/customers/${order.customerId}`} className="text-sm text-primary hover:text-indigo-700 font-medium">
           View Profile
         </Link>
       </div>
@@ -26,7 +26,7 @@ export default function CustomerPanel({ order }) {
         <div className="space-y-3">
           <div className="flex items-start gap-3">
             <Mail className="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" />
-            <a href={`mailto:${order.email}`} className="text-sm text-indigo-600 hover:underline break-all">
+            <a href={`mailto:${order.email}`} className="text-sm text-primary hover:underline break-all">
               {order.email}
             </a>
           </div>

@@ -11,9 +11,9 @@ const MOCK_DATA = [
 
 const StatusBadge = ({ status }) => {
   const styles = {
-    Published: 'bg-green-50 text-green-700 border-green-200',
+    Published: 'bg-success-soft text-success border-green-200',
     Draft: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-    Archived: 'bg-gray-50 text-gray-600 border-gray-200'
+    Archived: 'bg-background text-text-secondary border-border'
   };
 
   return (
@@ -25,17 +25,17 @@ const StatusBadge = ({ status }) => {
 
 export default function RecentContentTable() {
   return (
-    <div className="bg-white border border-black/5 rounded-xl overflow-hidden shadow-sm">
+    <div className="bg-surface border border-black/5 rounded-xl overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
-            <tr className="bg-[#F7F5F2] border-b border-black/5">
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Name</th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Type</th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Status</th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Last Updated</th>
-              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Author</th>
-              <th className="px-6 py-4 text-right text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500">Actions</th>
+            <tr className="bg-background border-b border-black/5">
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Name</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Type</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Status</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Last Updated</th>
+              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Author</th>
+              <th className="px-6 py-4 text-right text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-black/5">
@@ -45,34 +45,34 @@ export default function RecentContentTable() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index, duration: 0.3 }}
                 key={item.id} 
-                className="hover:bg-gray-50/50 transition-colors group"
+                className="hover:bg-background/50 transition-colors group"
               >
                 <td className="px-6 py-4">
-                  <div className="font-semibold text-[#1A1A1A]">{item.name}</div>
+                  <div className="font-semibold text-text-primary">{item.name}</div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-xs text-gray-600">{item.type}</div>
+                  <div className="text-xs text-text-secondary">{item.type}</div>
                 </td>
                 <td className="px-6 py-4">
                   <StatusBadge status={item.status} />
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-xs text-gray-500">{item.date}</div>
+                  <div className="text-xs text-text-muted">{item.date}</div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-full bg-[#ECEAE6] border border-black/10 flex items-center justify-center">
-                      <span className="text-[9px] font-bold text-gray-600">{item.author.charAt(0)}</span>
+                      <span className="text-[9px] font-bold text-text-secondary">{item.author.charAt(0)}</span>
                     </div>
-                    <span className="text-xs text-gray-600">{item.author}</span>
+                    <span className="text-xs text-text-secondary">{item.author}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-black/5 rounded transition-colors">
+                    <button className="p-1.5 text-text-muted hover:text-text-primary hover:bg-black/5 rounded transition-colors">
                       <FiEdit2 size={14} />
                     </button>
-                    <button className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-black/5 rounded transition-colors">
+                    <button className="p-1.5 text-text-muted hover:text-text-primary hover:bg-black/5 rounded transition-colors">
                       <FiMoreVertical size={14} />
                     </button>
                   </div>

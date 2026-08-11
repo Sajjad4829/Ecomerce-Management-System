@@ -6,8 +6,8 @@ export default function OrderHeader({ order, onCancel }) {
     switch (status) {
       case 'processing': return 'bg-blue-100 text-blue-800';
       case 'shipped': return 'bg-indigo-100 text-indigo-800';
-      case 'delivered': return 'bg-green-100 text-green-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
+      case 'delivered': return 'bg-success-soft text-green-800';
+      case 'cancelled': return 'bg-danger-soft text-red-800';
       default: return 'bg-neutral-100 text-neutral-800';
     }
   };
@@ -36,7 +36,7 @@ export default function OrderHeader({ order, onCancel }) {
         {order.status !== 'cancelled' && (
           <button 
             onClick={onCancel}
-            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors" 
+            className="p-2 text-danger hover:text-red-700 hover:bg-danger-soft rounded-md transition-colors" 
             title="Cancel Order"
           >
             <Ban className="w-5 h-5" />

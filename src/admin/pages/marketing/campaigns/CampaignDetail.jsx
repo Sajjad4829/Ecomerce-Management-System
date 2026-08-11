@@ -36,11 +36,11 @@ export const CampaignDetail = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 flex items-center gap-2">
+          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-surface rounded-md hover:bg-neutral-50 flex items-center gap-2">
             <Edit className="w-4 h-4" /> Edit
           </button>
           {camp.status === 'Active' ? (
-            <button className="px-4 py-2 bg-amber-100 text-amber-800 rounded-md hover:bg-amber-200 font-medium flex items-center gap-2">
+            <button className="px-4 py-2 bg-warning-soft text-amber-800 rounded-md hover:bg-amber-200 font-medium flex items-center gap-2">
               <Pause className="w-4 h-4" /> Pause Campaign
             </button>
           ) : (
@@ -53,7 +53,7 @@ export const CampaignDetail = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
             <h3 className="font-medium text-neutral-900 mb-4 flex items-center gap-2"><Calendar className="w-4 h-4 text-neutral-400"/> Schedule & Channels</h3>
             <div className="grid grid-cols-2 gap-8 text-sm">
               <div>
@@ -73,7 +73,7 @@ export const CampaignDetail = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
             <h3 className="font-medium text-neutral-900 mb-4 flex items-center gap-2"><Tag className="w-4 h-4 text-neutral-400"/> Linked Promotions & Content</h3>
             <div className="space-y-4">
               <div className="p-4 border border-neutral-100 rounded bg-neutral-50 flex items-center justify-between">
@@ -81,21 +81,21 @@ export const CampaignDetail = () => {
                   <div className="font-medium text-neutral-900 text-sm">15% Off Summer Collection</div>
                   <div className="text-xs text-neutral-500 mt-1">Promotion • Active</div>
                 </div>
-                <button className="text-indigo-600 text-sm font-medium hover:underline">View</button>
+                <button className="text-primary text-sm font-medium hover:underline">View</button>
               </div>
               <div className="p-4 border border-neutral-100 rounded bg-neutral-50 flex items-center justify-between">
                 <div>
                   <div className="font-medium text-neutral-900 text-sm flex items-center gap-2"><Image className="w-4 h-4"/> Summer Sale Hero Banner</div>
                   <div className="text-xs text-neutral-500 mt-1">Banner • Homepage Hero</div>
                 </div>
-                <button className="text-indigo-600 text-sm font-medium hover:underline">View</button>
+                <button className="text-primary text-sm font-medium hover:underline">View</button>
               </div>
             </div>
           </div>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
             <h3 className="font-medium text-neutral-900 mb-4 flex items-center gap-2"><Users className="w-4 h-4 text-neutral-400"/> Audience</h3>
             <div className="text-sm">
               <div className="font-medium text-neutral-900">{camp.audience}</div>
@@ -103,7 +103,7 @@ export const CampaignDetail = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
             <h3 className="font-medium text-neutral-900 mb-4">Analytics (Placeholder)</h3>
             <div className="space-y-4">
               <div>

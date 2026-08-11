@@ -41,7 +41,7 @@ export default function CategoryGrid({
       {displayCategories.map(category => (
         <div 
           key={category.id} 
-          className={`relative bg-white rounded-xl border p-4 shadow-sm transition-all cursor-pointer group ${selectedCategories.includes(category.id) ? 'border-amber-400 ring-1 ring-amber-400' : 'border-stone-200 hover:border-stone-300'}`}
+          className={`relative bg-surface rounded-xl border p-4 shadow-sm transition-all cursor-pointer group ${selectedCategories.includes(category.id) ? 'border-amber-400 ring-1 ring-amber-400' : 'border-border hover:border-border-hover'}`}
           onClick={(e) => {
             if (e.target.type !== 'checkbox' && !e.target.closest('button')) {
               onEdit(category.id);
@@ -54,12 +54,12 @@ export default function CategoryGrid({
               type="checkbox"
               checked={selectedCategories.includes(category.id)}
               onChange={(e) => onSelectOne(category.id, e.target.checked)}
-              className="w-4 h-4 mt-1 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+              className="w-4 h-4 mt-1 rounded border-border-hover text-text-primary focus:ring-stone-900"
             />
             <div className="relative">
               <button 
                 onClick={(e) => toggleMenu(e, category.id)}
-                className="p-1.5 text-stone-400 hover:text-stone-900 hover:bg-stone-100 rounded transition-colors"
+                className="p-1.5 text-text-muted hover:text-text-primary hover:bg-stone-100 rounded transition-colors"
               >
                 <FiMoreVertical size={16} />
               </button>
@@ -70,12 +70,12 @@ export default function CategoryGrid({
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="absolute right-0 top-full mt-1 w-32 bg-white border border-stone-200 rounded-lg shadow-xl z-20 py-1"
+                    className="absolute right-0 top-full mt-1 w-32 bg-surface border border-border rounded-lg shadow-xl z-20 py-1"
                   >
-                    <button onClick={() => { onEdit(category.id); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                    <button onClick={() => { onEdit(category.id); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                       <FiEdit2 size={12} /> Edit
                     </button>
-                    <button onClick={() => { onPreview(category); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                    <button onClick={() => { onPreview(category); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                       <FiEye size={12} /> Preview
                     </button>
                   </motion.div>
@@ -85,7 +85,7 @@ export default function CategoryGrid({
           </div>
 
           {/* Icon / Image */}
-          <div className="w-12 h-12 rounded-lg bg-stone-50 border border-stone-100 flex items-center justify-center mb-3 text-stone-400 overflow-hidden">
+          <div className="w-12 h-12 rounded-lg bg-background border border-stone-100 flex items-center justify-center mb-3 text-text-muted overflow-hidden">
             {category.image ? (
               <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
             ) : (
@@ -95,19 +95,19 @@ export default function CategoryGrid({
 
           {/* Info */}
           <div className="space-y-1 mb-3">
-            <h3 className="text-sm font-semibold text-stone-900 truncate">{category.name}</h3>
-            <p className="text-xs text-stone-500 font-mono truncate">/{category.slug}</p>
+            <h3 className="text-sm font-semibold text-text-primary truncate">{category.name}</h3>
+            <p className="text-xs text-text-muted font-mono truncate">/{category.slug}</p>
           </div>
 
           {/* Footer Stats */}
           <div className="flex items-center justify-between pt-3 border-t border-stone-100">
-            <span className="text-xs text-stone-500">{category.productCount} Products</span>
+            <span className="text-xs text-text-muted">{category.productCount} Products</span>
             <CatalogStatusBadge status={category.status} />
           </div>
         </div>
       ))}
       {displayCategories.length === 0 && (
-        <div className="col-span-full py-12 text-center text-stone-500">
+        <div className="col-span-full py-12 text-center text-text-muted">
           No categories found.
         </div>
       )}

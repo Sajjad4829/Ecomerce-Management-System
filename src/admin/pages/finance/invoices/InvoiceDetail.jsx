@@ -26,16 +26,16 @@ export const InvoiceDetail = () => {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-surface rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
             <Printer className="w-4 h-4" /> Print
           </button>
-          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-surface rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
             <Download className="w-4 h-4" /> Download PDF
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-8 max-w-3xl mx-auto">
+      <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-8 max-w-3xl mx-auto">
         <div className="flex justify-between items-start border-b border-neutral-200 pb-8 mb-8">
           <div>
             <h2 className="text-2xl font-serif font-medium text-neutral-900 tracking-tight">Premium Furniture Co.</h2>
@@ -54,7 +54,7 @@ export const InvoiceDetail = () => {
               <p><span className="text-neutral-500">Order ID:</span> <span className="font-medium text-neutral-900">{inv.orderId}</span></p>
             </div>
             <div className={`mt-4 inline-block px-3 py-1 rounded text-sm font-medium border ${
-              inv.status === 'Paid' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'
+              inv.status === 'Paid' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-warning-soft text-warning'
             }`}>
               {inv.status}
             </div>

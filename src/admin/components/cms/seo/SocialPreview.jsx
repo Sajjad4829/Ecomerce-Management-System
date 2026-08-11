@@ -17,12 +17,12 @@ export default function SocialPreview({
   const displayImage = ogImage || "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80";
 
   return (
-    <div className="bg-white border border-black/10 rounded-xl p-4 shadow-2xs space-y-3">
+    <div className="bg-surface border border-black/10 rounded-xl p-4 shadow-2xs space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
         <div className="flex items-center gap-2">
-          <FiShare2 className="text-gray-400" size={14} />
-          <span className="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider">
+          <FiShare2 className="text-text-muted" size={14} />
+          <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
             Social Media Sharing Preview
           </span>
         </div>
@@ -33,7 +33,7 @@ export default function SocialPreview({
             onClick={() => setPlatform('facebook')}
             className={cn(
               "px-2.5 py-1 rounded-md text-[11px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer",
-              platform === 'facebook' ? "bg-white text-blue-600 shadow-2xs font-bold" : "text-gray-500 hover:text-black"
+              platform === 'facebook' ? "bg-surface text-primary shadow-2xs font-bold" : "text-text-muted hover:text-black"
             )}
           >
             <FiFacebook size={12} />
@@ -44,7 +44,7 @@ export default function SocialPreview({
             onClick={() => setPlatform('twitter')}
             className={cn(
               "px-2.5 py-1 rounded-md text-[11px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer",
-              platform === 'twitter' ? "bg-white text-[#1DA1F2] shadow-2xs font-bold" : "text-gray-500 hover:text-black"
+              platform === 'twitter' ? "bg-surface text-[#1DA1F2] shadow-2xs font-bold" : "text-text-muted hover:text-black"
             )}
           >
             <FiTwitter size={12} />
@@ -56,7 +56,7 @@ export default function SocialPreview({
       {/* Social Card Preview Container */}
       {platform === 'facebook' ? (
         /* Facebook / OpenGraph Style Card */
-        <div className="border border-gray-200 rounded-xl overflow-hidden bg-[#F0F2F5] shadow-xs">
+        <div className="border border-border rounded-xl overflow-hidden bg-[#F0F2F5] shadow-xs">
           <div className="relative aspect-[1.91/1] bg-gray-200 overflow-hidden group">
             <img
               src={displayImage}
@@ -66,15 +66,15 @@ export default function SocialPreview({
             <button
               type="button"
               onClick={onSelectImageClick}
-              className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-xs text-[#1A1A1A] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md hover:bg-white transition-all cursor-pointer opacity-90 hover:opacity-100"
+              className="absolute bottom-3 right-3 bg-surface/90 backdrop-blur-xs text-text-primary px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md hover:bg-surface transition-all cursor-pointer opacity-90 hover:opacity-100"
             >
               <FiImage size={14} />
               <span>Change OG Image</span>
             </button>
           </div>
 
-          <div className="p-3.5 bg-white border-t border-gray-100">
-            <div className="text-[10px] font-mono text-gray-400 uppercase tracking-wider mb-1">
+          <div className="p-3.5 bg-surface border-t border-gray-100">
+            <div className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-1">
               AURELIANFURNITURE.COM
             </div>
             <h4 className="font-bold text-sm text-[#1C1E21] leading-tight line-clamp-1">
@@ -87,7 +87,7 @@ export default function SocialPreview({
         </div>
       ) : (
         /* Twitter / X Large Summary Card */
-        <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-xs max-w-lg mx-auto">
+        <div className="border border-border rounded-2xl overflow-hidden bg-surface shadow-xs max-w-lg mx-auto">
           <div className="relative aspect-[1.91/1] bg-gray-200 overflow-hidden">
             <img
               src={displayImage}
@@ -105,7 +105,7 @@ export default function SocialPreview({
           </div>
 
           <div className="p-3.5">
-            <div className="flex items-center gap-1 text-[11px] text-gray-500 mb-0.5">
+            <div className="flex items-center gap-1 text-[11px] text-text-muted mb-0.5">
               <span>aurelianfurniture.com</span>
             </div>
             <h4 className="font-bold text-xs text-[#0F1419] leading-snug line-clamp-1">
@@ -119,7 +119,7 @@ export default function SocialPreview({
       )}
 
       {/* Image Specs Indicator */}
-      <div className="flex items-center justify-between text-[11px] font-mono text-gray-500 bg-gray-50 p-2 rounded-lg border border-black/5">
+      <div className="flex items-center justify-between text-[11px] font-mono text-text-muted bg-background p-2 rounded-lg border border-black/5">
         <span>Recommended Dimensions: <strong className="text-black">1200 x 630 px</strong></span>
         <span>Aspect Ratio: <strong className="text-black">1.91:1</strong></span>
       </div>

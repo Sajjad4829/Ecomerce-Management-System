@@ -18,44 +18,44 @@ export default function MediaCollectionForm() {
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
-        <button onClick={() => navigate('/admin/media/collections')} className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors">
+        <button onClick={() => navigate('/admin/media/collections')} className="flex items-center gap-2 text-text-muted hover:text-text-primary transition-colors">
           <FiArrowLeft /> Back to Collections
         </button>
-        <button onClick={handleSave} className="flex items-center gap-2 px-6 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors">
+        <button onClick={handleSave} className="flex items-center gap-2 px-6 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-colors">
           <FiSave /> Save Collection
         </button>
       </div>
 
       <div>
-        <h1 className="text-3xl font-light text-[#1A1A1A] tracking-wide mb-2">Create Collection</h1>
-        <p className="text-sm text-stone-500">Group related assets together logically.</p>
+        <h1 className="text-3xl font-light text-text-primary tracking-wide mb-2">Create Collection</h1>
+        <p className="text-sm text-text-muted">Group related assets together logically.</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-8 space-y-6">
+      <div className="bg-surface rounded-2xl shadow-sm border border-stone-100 p-8 space-y-6">
         <div>
-          <label className="text-xs font-bold text-stone-900 uppercase tracking-widest block mb-2">Collection Name</label>
+          <label className="text-xs font-bold text-text-primary uppercase tracking-widest block mb-2">Collection Name</label>
           <input 
             type="text" 
             value={formData.name}
             onChange={e => setFormData({...formData, name: e.target.value})}
-            className="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-stone-400" 
+            className="w-full p-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:border-primary" 
             placeholder="e.g. Summer Campaign 2026"
           />
         </div>
         
         <div>
-          <label className="text-xs font-bold text-stone-900 uppercase tracking-widest block mb-2">Description</label>
+          <label className="text-xs font-bold text-text-primary uppercase tracking-widest block mb-2">Description</label>
           <textarea 
             rows="3"
             value={formData.description}
             onChange={e => setFormData({...formData, description: e.target.value})}
-            className="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-stone-400" 
+            className="w-full p-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:border-primary" 
           />
         </div>
 
         <div>
-          <label className="text-xs font-bold text-stone-900 uppercase tracking-widest block mb-2">Assets ({formData.assetIds.length})</label>
-          <button onClick={() => setIsPickerOpen(true)} className="flex items-center justify-center gap-2 w-full p-8 border-2 border-dashed border-stone-300 rounded-xl text-stone-500 hover:border-stone-400 hover:text-stone-700 transition-colors bg-stone-50">
+          <label className="text-xs font-bold text-text-primary uppercase tracking-widest block mb-2">Assets ({formData.assetIds.length})</label>
+          <button onClick={() => setIsPickerOpen(true)} className="flex items-center justify-center gap-2 w-full p-8 border-2 border-dashed border-border-hover rounded-xl text-text-muted hover:border-stone-400 hover:text-text-secondary transition-colors bg-background">
             <FiImage size={24} />
             <span className="font-medium">Select Assets from Library</span>
           </button>

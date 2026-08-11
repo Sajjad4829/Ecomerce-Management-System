@@ -41,12 +41,12 @@ export default function CampaignBuilder() {
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate('/admin/marketing/campaigns')}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-text-secondary transition-colors"
           >
             <FiArrowLeft />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{isEditing ? 'Edit Campaign' : 'Create Campaign'}</h1>
+            <h1 className="text-2xl font-bold text-text-primary">{isEditing ? 'Edit Campaign' : 'Create Campaign'}</h1>
           </div>
         </div>
         <button 
@@ -59,38 +59,38 @@ export default function CampaignBuilder() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
-            <h2 className="font-bold text-gray-900 mb-4">Campaign Information</h2>
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-6 space-y-4">
+            <h2 className="font-bold text-text-primary mb-4">Campaign Information</h2>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Campaign Name</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Campaign Name</label>
               <input 
                 type="text" 
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                 placeholder="e.g. Summer Clearance 2025"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Internal Description</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Internal Description</label>
               <textarea 
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                 placeholder="Optional description for internal use"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Campaign Type</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Campaign Type</label>
                 <select 
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                  className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                 >
                   <option value="Seasonal">Seasonal</option>
                   <option value="Flash Sale">Flash Sale</option>
@@ -100,35 +100,35 @@ export default function CampaignBuilder() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Priority (1 = Highest)</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Priority (1 = Highest)</label>
                 <input 
                   type="number" 
                   name="priority"
                   value={formData.priority}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                  className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                   min="1"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
-             <h2 className="font-bold text-gray-900 mb-4">Promotions</h2>
-             <p className="text-sm text-gray-500">You can add promotions and discount rules to this campaign after it has been created.</p>
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-6 space-y-4">
+             <h2 className="font-bold text-text-primary mb-4">Promotions</h2>
+             <p className="text-sm text-text-muted">You can add promotions and discount rules to this campaign after it has been created.</p>
           </div>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
-            <h2 className="font-bold text-gray-900 mb-4">Schedule</h2>
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-6 space-y-4">
+            <h2 className="font-bold text-text-primary mb-4">Schedule</h2>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Status</label>
               <select 
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
               >
                 <option value="Draft">Draft</option>
                 <option value="Scheduled">Scheduled</option>
@@ -138,23 +138,23 @@ export default function CampaignBuilder() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Start Date</label>
               <input 
                 type="date" 
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">End Date</label>
               <input 
                 type="date" 
                 name="endDate"
                 value={formData.endDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
               />
             </div>
           </div>

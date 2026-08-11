@@ -31,7 +31,7 @@ export default function AdminLayout() {
   }, [location]);
 
   return (
-    <div className="flex h-screen bg-[#F7F5F2] text-[#1A1A1A] font-sans overflow-hidden">
+    <div className="flex h-screen bg-background text-text-primary font-sans overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       
       {/* Mobile Overlay */}

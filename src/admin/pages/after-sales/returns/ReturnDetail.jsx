@@ -34,7 +34,7 @@ export default function ReturnDetail() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-6 md:col-span-2">
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
             <h3 className="text-sm font-medium text-neutral-900 mb-4">Return Information</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
@@ -56,7 +56,7 @@ export default function ReturnDetail() {
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
              <h3 className="text-sm font-medium text-neutral-900 mb-4">Return Timeline</h3>
              <div className="text-center text-neutral-500 py-8 border border-dashed border-neutral-200 rounded-lg">
                 <RotateCcw className="w-8 h-8 mx-auto text-neutral-300 mb-2" />
@@ -66,18 +66,18 @@ export default function ReturnDetail() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
             <h3 className="text-sm font-medium text-neutral-900 mb-4">Status</h3>
             <div className="space-y-3 text-sm">
               <span className={`px-3 py-1 rounded-full text-xs font-medium inline-block ${
-                ret.status === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+                ret.status === 'Approved' ? 'bg-success-soft text-green-800' : 'bg-blue-100 text-blue-800'
               }`}>
                 {ret.status}
               </span>
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
              <h3 className="text-sm font-medium text-neutral-900 mb-4">Resolution</h3>
              <div className="text-center text-neutral-500 py-6 border border-dashed border-neutral-200 rounded-lg">
                 <p className="text-sm">Pending Approval</p>

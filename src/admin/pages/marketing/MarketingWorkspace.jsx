@@ -33,8 +33,8 @@ export default function MarketingWorkspace() {
               Growth Engine
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Marketing Workspace</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Marketing Workspace</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Centralized hub for managing promotions, campaigns, discounts, and customer retention.
           </p>
         </div>
@@ -45,23 +45,23 @@ export default function MarketingWorkspace() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.4 }}
-        className="bg-white p-4 rounded-xl border border-black/5 flex flex-col md:flex-row gap-4 justify-between items-center shadow-sm"
+        className="bg-surface p-4 rounded-xl border border-black/5 flex flex-col md:flex-row gap-4 justify-between items-center shadow-sm"
       >
         <div className="relative w-full md:w-96">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
           <input 
             type="text" 
             placeholder="Search marketing modules..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20 focus:ring-1 focus:ring-black/20 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 transition-all"
           />
         </div>
       </motion.div>
 
       {/* Modules Grid */}
       <div>
-        <div className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 mb-6 pl-2">
+        <div className="text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted mb-6 pl-2">
           Marketing Modules
         </div>
         {MARKETING_MODULES.filter(m => m.title.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 ? (

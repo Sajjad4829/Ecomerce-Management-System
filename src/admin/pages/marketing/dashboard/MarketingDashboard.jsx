@@ -22,7 +22,7 @@ export const MarketingDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-2 text-indigo-500">
             <Megaphone className="w-4 h-4" />
             <span className="text-sm font-medium">Active Campaigns</span>
@@ -30,7 +30,7 @@ export const MarketingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">{activeCampaigns}</div>
         </div>
 
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-2 text-emerald-500">
             <Tag className="w-4 h-4" />
             <span className="text-sm font-medium">Active Promotions</span>
@@ -38,7 +38,7 @@ export const MarketingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">{activePromotions}</div>
         </div>
 
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-2 text-blue-500">
             <Ticket className="w-4 h-4" />
             <span className="text-sm font-medium">Active Coupons</span>
@@ -46,7 +46,7 @@ export const MarketingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">{activeCoupons}</div>
         </div>
 
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-2 text-amber-500">
             <Users className="w-4 h-4" />
             <span className="text-sm font-medium">Customer Segments</span>
@@ -56,7 +56,7 @@ export const MarketingDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2 text-neutral-500">
             <TrendingUp className="w-4 h-4" />
             <span className="text-sm font-medium">Campaign Revenue</span>
@@ -64,7 +64,7 @@ export const MarketingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">$24,500 <span className="text-xs text-neutral-400 font-sans ml-1">(Placeholder)</span></div>
         </div>
         
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2 text-neutral-500">
             <ShoppingCart className="w-4 h-4" />
             <span className="text-sm font-medium">Abandoned Cart Recovery</span>
@@ -72,7 +72,7 @@ export const MarketingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">12.4% <span className="text-xs text-neutral-400 font-sans ml-1">(Placeholder)</span></div>
         </div>
 
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2 text-neutral-500">
             <Ticket className="w-4 h-4" />
             <span className="text-sm font-medium">Coupon Usage</span>
@@ -82,10 +82,10 @@ export const MarketingDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm">
           <div className="p-5 border-b border-neutral-200 flex items-center justify-between">
             <h2 className="font-medium text-neutral-900">Recent Campaigns</h2>
-            <button onClick={() => navigate('/admin/marketing/campaigns')} className="text-sm text-indigo-600 font-medium">View All</button>
+            <button onClick={() => navigate('/admin/marketing/campaigns')} className="text-sm text-primary font-medium">View All</button>
           </div>
           <div className="divide-y divide-neutral-200">
             {campaigns.slice(0, 5).map(campaign => (
@@ -108,10 +108,10 @@ export const MarketingDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm">
           <div className="p-5 border-b border-neutral-200 flex items-center justify-between">
             <h2 className="font-medium text-neutral-900">Active Promotions</h2>
-            <button onClick={() => navigate('/admin/marketing/promotions')} className="text-sm text-indigo-600 font-medium">View All</button>
+            <button onClick={() => navigate('/admin/marketing/promotions')} className="text-sm text-primary font-medium">View All</button>
           </div>
           <div className="divide-y divide-neutral-200">
             {promotions.filter(p => p.status === 'Active').map(promo => (

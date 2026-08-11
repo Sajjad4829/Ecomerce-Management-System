@@ -13,7 +13,7 @@ export const PaymentCenter = () => {
           <p className="text-sm text-neutral-500 mt-1">Manage customer payments</p>
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -36,13 +36,13 @@ export const PaymentCenter = () => {
                 <td className="px-6 py-4 font-medium">${p.amount}</td>
                 <td className="px-6 py-4 text-neutral-600">{p.method}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${p.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${p.status === 'Paid' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
                     {p.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-neutral-500">{new Date(p.date).toLocaleDateString()}</td>
                 <td className="px-6 py-4 text-right">
-                  <Link to={`/admin/finance/payments/${p.id}`} className="text-indigo-600 hover:text-indigo-900 font-medium">View</Link>
+                  <Link to={`/admin/finance/payments/${p.id}`} className="text-primary hover:text-indigo-900 font-medium">View</Link>
                 </td>
               </tr>
             ))}
@@ -69,7 +69,7 @@ export const PaymentDetail = () => {
           <p className="text-sm text-neutral-500 mt-1">Order: {payment.orderId}</p>
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
         <h3 className="text-sm font-medium text-neutral-900 mb-4">Payment Details</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div><div className="text-neutral-500">Customer</div><div className="font-medium mt-1">{payment.customer}</div></div>
@@ -89,7 +89,7 @@ export const CreditNoteCenter = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Credit Notes</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -122,7 +122,7 @@ export const DebitNoteCenter = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Debit Notes</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -161,7 +161,7 @@ export const TaxCenter = () => {
           <Link to="/admin/finance/tax/reports" className="px-4 py-2 border border-neutral-200 rounded-md text-neutral-700 hover:bg-neutral-50 text-sm">Reports</Link>
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -192,7 +192,7 @@ export const TaxTransactions = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Tax Transactions</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -224,7 +224,7 @@ export const TaxReports = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Tax Reports</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <Calculator className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Tax Reporting</h3>
         <p className="text-sm text-neutral-500 mt-1">Placeholder for tax collected, taxable sales, tax-exempt sales, etc.</p>
@@ -237,7 +237,7 @@ export const DiscountCenter = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Discounts Impact</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <Percent className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Financial Impact of Discounts</h3>
         <p className="text-sm text-neutral-500 mt-1">Placeholder for discount totals, campaigns impact, and coupon usage financial summaries.</p>
@@ -251,7 +251,7 @@ export const CustomerBalances = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Customer Balances</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -284,7 +284,7 @@ export const AdjustmentCenter = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Financial Adjustments</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -319,7 +319,7 @@ export const ReconciliationCenter = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Payment Reconciliation</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -341,7 +341,7 @@ export const ReconciliationCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">${rec.receivedAmount}</td>
                 <td className="px-6 py-4 text-neutral-600">${rec.difference}</td>
                 <td className="px-6 py-4 text-neutral-600">{rec.status}</td>
-                <td className="px-6 py-4"><Link to={`/admin/finance/reconciliation/${rec.id}`} className="text-indigo-600 hover:text-indigo-900">View</Link></td>
+                <td className="px-6 py-4"><Link to={`/admin/finance/reconciliation/${rec.id}`} className="text-primary hover:text-indigo-900">View</Link></td>
               </tr>
             ))}
           </tbody>
@@ -358,7 +358,7 @@ export const ReconciliationDetail = () => {
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Reconciliation {rec.id}</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <FileCheck2 className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Period: {rec.period}</h3>
         <p className="text-sm text-neutral-500 mt-1">Expected: ${rec.expectedAmount} | Received: ${rec.receivedAmount} | Difference: ${rec.difference}</p>
@@ -373,7 +373,7 @@ export const ExpenseCenter = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Expenses Foundation</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -406,7 +406,7 @@ export const AccountCenter = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Accounting Categories (Chart of Accounts)</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -437,7 +437,7 @@ export const FinancialPeriods = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Financial Periods</h1>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -468,11 +468,11 @@ export const FinancialReports = () => {
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Financial Reports</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Link to="/admin/finance/reports/profit-loss" className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm hover:border-indigo-300 transition-colors">
+        <Link to="/admin/finance/reports/profit-loss" className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm hover:border-indigo-300 transition-colors">
           <h3 className="font-medium text-neutral-900 text-lg mb-2">Profit & Loss</h3>
           <p className="text-sm text-neutral-500">View revenue, costs, and net profit over time.</p>
         </Link>
-        <Link to="/admin/finance/reports/cash-flow" className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm hover:border-indigo-300 transition-colors">
+        <Link to="/admin/finance/reports/cash-flow" className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm hover:border-indigo-300 transition-colors">
           <h3 className="font-medium text-neutral-900 text-lg mb-2">Cash Flow</h3>
           <p className="text-sm text-neutral-500">Track cash inflows and outflows.</p>
         </Link>
@@ -485,7 +485,7 @@ export const ProfitLossReport = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Profit & Loss Foundation</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <BarChart2 className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Placeholder</h3>
         <p className="text-sm text-neutral-500 mt-1">Backend accounting calculation required. No real financial results available.</p>
@@ -498,7 +498,7 @@ export const CashFlowReport = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Cash Flow Foundation</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <TrendingUp className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Placeholder</h3>
         <p className="text-sm text-neutral-500 mt-1">Backend cash calculation required. No real cash flow available.</p>

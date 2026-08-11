@@ -54,7 +54,7 @@ export default function OrderDetail() {
           <OrderItems items={order.items} />
           
           {/* Fulfillment Section Placeholder */}
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
              <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-serif text-neutral-900">Fulfillment</h3>
                 <span className="text-sm text-neutral-500 capitalize">{order.fulfillmentStatus}</span>
@@ -62,7 +62,7 @@ export default function OrderDetail() {
              {order.warehouseId ? (
                 <div className="text-sm text-neutral-600">Assigned to Warehouse: <span className="font-medium text-neutral-900">{order.warehouseId}</span></div>
              ) : (
-                <div className="text-sm text-amber-600">No warehouse assigned yet.</div>
+                <div className="text-sm text-warning">No warehouse assigned yet.</div>
              )}
              <div className="mt-4 flex gap-3">
                <button className="px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-md hover:bg-neutral-800 transition-colors">

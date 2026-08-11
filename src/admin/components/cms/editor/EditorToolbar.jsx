@@ -8,21 +8,21 @@ import { Link } from 'react-router-dom';
 
 export default function EditorToolbar({ device, setDevice, onOpenSettings }) {
   return (
-    <div className="h-16 bg-white border-b border-black/10 flex items-center justify-between px-4 shrink-0 z-20 sticky top-0">
+    <div className="h-16 bg-surface border-b border-black/10 flex items-center justify-between px-4 shrink-0 z-20 sticky top-0">
       {/* Left: Back & Title */}
       <div className="flex items-center gap-4 w-1/3">
         <Link 
           to="/admin/cms/pages" 
-          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-text-muted transition-colors"
         >
           <FiArrowLeft size={18} />
         </Link>
         <div className="h-6 w-px bg-black/10"></div>
         <div>
-          <h1 className="text-sm font-bold text-[#1A1A1A] font-serif">Home Page V2</h1>
+          <h1 className="text-sm font-bold text-text-primary font-serif">Home Page V2</h1>
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-            <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Draft - Last saved 2m ago</span>
+            <span className="text-[10px] text-text-muted font-medium uppercase tracking-wider">Draft - Last saved 2m ago</span>
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@ export default function EditorToolbar({ device, setDevice, onOpenSettings }) {
             onClick={() => setDevice('desktop')}
             className={cn(
               "p-1.5 rounded-md transition-colors",
-              device === 'desktop' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+              device === 'desktop' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
             )}
             title="Desktop view"
           >
@@ -44,7 +44,7 @@ export default function EditorToolbar({ device, setDevice, onOpenSettings }) {
             onClick={() => setDevice('tablet')}
             className={cn(
               "p-1.5 rounded-md transition-colors",
-              device === 'tablet' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+              device === 'tablet' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
             )}
             title="Tablet view"
           >
@@ -54,7 +54,7 @@ export default function EditorToolbar({ device, setDevice, onOpenSettings }) {
             onClick={() => setDevice('mobile')}
             className={cn(
               "p-1.5 rounded-md transition-colors",
-              device === 'mobile' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+              device === 'mobile' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
             )}
             title="Mobile view"
           >
@@ -64,11 +64,11 @@ export default function EditorToolbar({ device, setDevice, onOpenSettings }) {
 
         <div className="h-5 w-px bg-black/10"></div>
 
-        <div className="flex items-center gap-2 text-gray-400">
-          <button className="p-1.5 hover:text-[#1A1A1A] hover:bg-gray-100 rounded-md transition-colors" title="Undo">
+        <div className="flex items-center gap-2 text-text-muted">
+          <button className="p-1.5 hover:text-text-primary hover:bg-gray-100 rounded-md transition-colors" title="Undo">
             <FiRotateCcw size={16} />
           </button>
-          <button className="p-1.5 hover:text-[#1A1A1A] hover:bg-gray-100 rounded-md transition-colors" title="Redo">
+          <button className="p-1.5 hover:text-text-primary hover:bg-gray-100 rounded-md transition-colors" title="Redo">
             <FiRotateCw size={16} />
           </button>
         </div>
@@ -78,24 +78,24 @@ export default function EditorToolbar({ device, setDevice, onOpenSettings }) {
       <div className="flex items-center gap-3 w-1/3 justify-end">
         <button 
           onClick={onOpenSettings}
-          className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted hover:bg-gray-100 transition-colors"
           title="Page Settings"
         >
           <FiSettings size={18} />
         </button>
-        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors" title="Preview Live">
+        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted hover:bg-gray-100 transition-colors" title="Preview Live">
           <FiPlay size={18} />
         </button>
         
         <div className="h-6 w-px bg-black/10 mx-1"></div>
 
-        <button className="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-[#1A1A1A] transition-colors">
+        <button className="px-4 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
           Save Draft
         </button>
         <button className="px-5 py-2 bg-[#1A1A1A] text-white text-xs font-semibold uppercase tracking-widest rounded-lg hover:bg-black/80 transition-colors shadow-sm flex items-center gap-2">
           <FiCheck /> Publish
         </button>
-        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted hover:bg-gray-100 transition-colors">
           <FiMoreVertical size={18} />
         </button>
       </div>

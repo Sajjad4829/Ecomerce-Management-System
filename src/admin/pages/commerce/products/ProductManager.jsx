@@ -55,15 +55,15 @@ export default function ProductManager() {
   return (
     <div className="p-6 space-y-6 max-w-[1400px] mx-auto relative pb-24">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-stone-200">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] uppercase font-bold">
+            <span className="px-2 py-0.5 rounded bg-warning-soft text-amber-900 font-mono text-[10px] uppercase font-bold">
               Catalog Management
             </span>
           </div>
-          <h1 className="font-serif font-bold text-2xl text-stone-900 mt-1">Products</h1>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <h1 className="font-serif font-bold text-2xl text-text-primary mt-1">Products</h1>
+          <p className="text-xs text-text-muted mt-0.5">
             Manage your bespoke furniture catalog, variants, and pricing.
           </p>
         </div>

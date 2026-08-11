@@ -32,13 +32,13 @@ export default function AnalyticsDashboard() {
     <div className="max-w-7xl mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">Executive Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Enterprise Analytics Overview</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Executive Dashboard</h1>
+          <p className="text-sm text-text-muted mt-1">Enterprise Analytics Overview</p>
         </div>
         <div className="flex items-center gap-4">
           <DataStatusIndicator status="mock" message="Mock Data (Backend Pending)" />
           <DateRangeSelector />
-          <button className="flex items-center gap-2 px-4 py-2 border border-black/10 rounded-lg hover:bg-gray-50">
+          <button className="flex items-center gap-2 px-4 py-2 border border-black/10 rounded-lg hover:bg-background">
             <FiFilter /> Filters
           </button>
           <button className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800">
@@ -79,7 +79,7 @@ export default function AnalyticsDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-black/5 shadow-sm">
+        <div className="lg:col-span-2 bg-surface p-6 rounded-xl border border-black/5 shadow-sm">
           <h3 className="text-lg font-medium mb-6">Revenue Trend</h3>
           <AreaChart 
             data={salesData.trend} 
@@ -89,7 +89,7 @@ export default function AnalyticsDashboard() {
             ]} 
           />
         </div>
-        <div className="bg-white p-6 rounded-xl border border-black/5 shadow-sm">
+        <div className="bg-surface p-6 rounded-xl border border-black/5 shadow-sm">
           <h3 className="text-lg font-medium mb-6">Order Volume</h3>
           <BarChart 
             data={salesData.trend} 

@@ -12,15 +12,15 @@ export default function MerchandisingRuleManager() {
 
   const columns = [
     { key: 'name', label: 'Rule Name', render: (val) => <span className="font-medium">{val}</span> },
-    { key: 'condition', label: 'When', render: (val) => <span className="text-gray-600 text-sm bg-gray-50 px-2 py-1 rounded">{val}</span> },
+    { key: 'condition', label: 'When', render: (val) => <span className="text-text-secondary text-sm bg-background px-2 py-1 rounded">{val}</span> },
     { key: 'action', label: 'Action', render: (val) => <span className="font-medium text-sm text-blue-700">{val}</span> },
-    { key: 'target', label: 'Target', render: (val) => <span className="text-gray-600 text-sm">{val}</span> },
+    { key: 'target', label: 'Target', render: (val) => <span className="text-text-secondary text-sm">{val}</span> },
     { 
       key: 'status', 
       label: 'Status',
       render: (val) => (
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          val === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+          val === 'Active' ? 'bg-success-soft text-green-800' : 'bg-gray-100 text-gray-800'
         }`}>
           {val}
         </span>
@@ -32,18 +32,18 @@ export default function MerchandisingRuleManager() {
       render: (_, item) => (
         <div className="flex items-center justify-end gap-2">
           {item.status === 'Active' ? (
-             <button className="p-2 text-gray-400 hover:text-yellow-600 transition-colors" title="Pause Rule">
+             <button className="p-2 text-text-muted hover:text-yellow-600 transition-colors" title="Pause Rule">
                <FiPause size={16} />
              </button>
           ) : (
-             <button className="p-2 text-gray-400 hover:text-green-600 transition-colors" title="Activate Rule">
+             <button className="p-2 text-text-muted hover:text-success transition-colors" title="Activate Rule">
                <FiPlay size={16} />
              </button>
           )}
-          <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors" title="Edit">
+          <button className="p-2 text-text-muted hover:text-primary transition-colors" title="Edit">
             <FiEdit2 size={16} />
           </button>
-          <button className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete">
+          <button className="p-2 text-text-muted hover:text-danger transition-colors" title="Delete">
             <FiTrash2 size={16} />
           </button>
         </div>
@@ -72,7 +72,7 @@ export default function MerchandisingRuleManager() {
         }
       />
       
-      <div className="bg-white rounded-xl border border-black/5 overflow-hidden shadow-sm">
+      <div className="bg-surface rounded-xl border border-black/5 overflow-hidden shadow-sm">
         <DataTable 
           data={merchandisingRules}
           columns={columns}

@@ -8,7 +8,7 @@ export default function DateRangeSelector() {
     <select 
       value={dateRange}
       onChange={(e) => setDateRange(e.target.value)}
-      className="px-4 py-2 bg-white border border-black/10 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black/20"
+      className="px-4 py-2 bg-surface border border-black/10 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black/20"
     >
       <option value="Today">Today</option>
       <option value="Yesterday">Yesterday</option>

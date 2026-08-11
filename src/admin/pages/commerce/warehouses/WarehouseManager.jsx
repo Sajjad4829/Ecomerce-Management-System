@@ -19,12 +19,12 @@ export default function WarehouseManager() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] uppercase font-bold">
+            <span className="px-2 py-0.5 rounded bg-warning-soft text-amber-900 font-mono text-[10px] uppercase font-bold">
               Commerce Engine
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Warehouses & Locations</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Warehouses & Locations</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage your physical fulfillment centers, retail stores, and stock locations.
           </p>
         </div>
@@ -39,17 +39,17 @@ export default function WarehouseManager() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-black/5 flex flex-col md:flex-row justify-between gap-4">
           <div className="flex gap-3">
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
               <input 
                 type="text" 
                 placeholder="Search locations..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-[#F7F5F2] border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full md:w-80"
+                className="pl-10 pr-4 py-2 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full md:w-80"
               />
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function WarehouseManager() {
             <Link 
               key={warehouse.id} 
               to={`/admin/catalog/warehouses/${warehouse.id}`}
-              className="block bg-white border border-black/10 rounded-xl p-6 hover:border-black/30 hover:shadow-md transition-all group relative overflow-hidden"
+              className="block bg-surface border border-black/10 rounded-xl p-6 hover:border-black/30 hover:shadow-md transition-all group relative overflow-hidden"
             >
               {warehouse.isDefault && (
                 <div className="absolute top-0 right-0 bg-blue-50 text-blue-700 text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-bl-lg">
@@ -70,37 +70,37 @@ export default function WarehouseManager() {
               
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-[#1A1A1A] group-hover:text-blue-600 transition-colors">
+                  <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">
                     {warehouse.name}
                   </h3>
-                  <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                    <span className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-gray-600 border border-gray-200">
+                  <div className="flex items-center gap-2 mt-1 text-xs text-text-muted">
+                    <span className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-text-secondary border border-border">
                       {warehouse.code}
                     </span>
                     <span>•</span>
-                    <span className={`px-2 py-0.5 rounded-full font-semibold ${warehouse.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    <span className={`px-2 py-0.5 rounded-full font-semibold ${warehouse.status === 'active' ? 'bg-success-soft text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                       {warehouse.status.charAt(0).toUpperCase() + warehouse.status.slice(1)}
                     </span>
                   </div>
                 </div>
-                <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 group-hover:bg-[#1A1A1A] group-hover:text-white transition-colors">
+                <div className="w-10 h-10 bg-background rounded-full flex items-center justify-center text-text-muted group-hover:bg-[#1A1A1A] group-hover:text-white transition-colors">
                   <FiArrowRight size={20} />
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
-                <FiMapPin className="text-gray-400" />
+              <div className="flex items-center gap-2 text-sm text-text-secondary mb-6">
+                <FiMapPin className="text-text-muted" />
                 {warehouse.location}
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-black/5">
                 <div>
-                  <p className="text-[10px] font-mono font-bold text-gray-500 uppercase">Active SKUs</p>
-                  <p className="text-lg font-bold text-[#1A1A1A] mt-1">{warehouse.skus.toLocaleString()}</p>
+                  <p className="text-[10px] font-mono font-bold text-text-muted uppercase">Active SKUs</p>
+                  <p className="text-lg font-bold text-text-primary mt-1">{warehouse.skus.toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-mono font-bold text-gray-500 uppercase">Total Units</p>
-                  <p className="text-lg font-bold text-[#1A1A1A] mt-1">{warehouse.units.toLocaleString()}</p>
+                  <p className="text-[10px] font-mono font-bold text-text-muted uppercase">Total Units</p>
+                  <p className="text-lg font-bold text-text-primary mt-1">{warehouse.units.toLocaleString()}</p>
                 </div>
               </div>
             </Link>

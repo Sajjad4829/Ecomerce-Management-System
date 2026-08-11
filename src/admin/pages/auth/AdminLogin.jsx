@@ -32,19 +32,19 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F5F2] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <div className="w-12 h-12 bg-[#1A1A1A] rounded-xl flex items-center justify-center mx-auto mb-6 shadow-lg">
             <span className="text-xl font-serif font-bold text-white tracking-wider">A</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mb-2">Workspace Login</h1>
-          <p className="text-sm text-gray-500">Sign in to the administrative console.</p>
+          <h1 className="text-3xl font-serif font-bold text-text-primary mb-2">Workspace Login</h1>
+          <p className="text-sm text-text-muted">Sign in to the administrative console.</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-8">
+        <div className="bg-surface rounded-2xl shadow-sm border border-black/5 p-8">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-sm rounded-lg flex items-start gap-3">
+            <div className="mb-6 p-4 bg-danger-soft border border-red-100 text-danger text-sm rounded-lg flex items-start gap-3">
               <FiLock className="mt-0.5 shrink-0" />
               <p>{error}</p>
             </div>
@@ -52,14 +52,14 @@ export default function AdminLogin() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Email Address</label>
+              <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Email Address</label>
               <div className="relative">
-                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-[#F7F5F2] border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-[#1A1A1A]"
+                  className="w-full pl-11 pr-4 py-3 bg-background border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-text-primary"
                   required
                 />
               </div>
@@ -67,22 +67,22 @@ export default function AdminLogin() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-mono font-bold text-gray-500 uppercase">Password</label>
-                <Link to="#" className="text-xs font-medium text-gray-500 hover:text-black transition-colors">Forgot?</Link>
+                <label className="block text-xs font-mono font-bold text-text-muted uppercase">Password</label>
+                <Link to="#" className="text-xs font-medium text-text-muted hover:text-black transition-colors">Forgot?</Link>
               </div>
               <div className="relative">
-                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-11 pr-12 py-3 bg-[#F7F5F2] border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-[#1A1A1A]"
+                  className="w-full pl-11 pr-12 py-3 bg-background border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-text-primary"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black focus:outline-none"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-black focus:outline-none"
                 >
                   {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                 </button>
@@ -94,9 +94,9 @@ export default function AdminLogin() {
                 id="remember_me" 
                 name="remember_me" 
                 type="checkbox" 
-                className="h-4 w-4 rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]" 
+                className="h-4 w-4 rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]" 
               />
-              <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-700 cursor-pointer">
+              <label htmlFor="remember_me" className="ml-2 block text-sm text-text-secondary cursor-pointer">
                 Remember me for 30 days
               </label>
             </div>
@@ -115,7 +115,7 @@ export default function AdminLogin() {
           </form>
           
           <div className="mt-8 pt-6 border-t border-black/5 text-center">
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-text-muted">
               By signing in, you agree to the enterprise <br/><a href="#" className="hover:text-black underline decoration-gray-300">Terms of Service</a> & <a href="#" className="hover:text-black underline decoration-gray-300">Privacy Policy</a>.
             </p>
           </div>

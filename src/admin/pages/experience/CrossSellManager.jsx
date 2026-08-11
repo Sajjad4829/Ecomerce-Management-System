@@ -38,7 +38,7 @@ export const CrossSellManager = () => {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg border border-neutral-200 shadow-sm">
+      <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm">
         <div className="p-4 border-b border-neutral-200 flex gap-4">
           <div className="relative flex-1">
             <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
@@ -82,7 +82,7 @@ export const CrossSellManager = () => {
             <p className="text-neutral-500 mb-6">Create complementary product relationships to help customers discover products that complete their purchase.</p>
             <Link 
               to="/admin/experience/cross-sell/new"
-              className="inline-flex px-4 py-2 bg-white border border-neutral-300 text-neutral-700 rounded-md text-sm font-medium hover:bg-neutral-50"
+              className="inline-flex px-4 py-2 bg-surface border border-neutral-300 text-neutral-700 rounded-md text-sm font-medium hover:bg-neutral-50"
             >
               <Plus className="w-4 h-4 mr-2" />
               Create New
@@ -130,9 +130,9 @@ export const CrossSellManager = () => {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          item.status === 'Active' ? 'bg-green-100 text-green-800' : 
+                          item.status === 'Active' ? 'bg-success-soft text-green-800' : 
                           item.status === 'Scheduled' ? 'bg-blue-100 text-blue-800' :
-                          item.status === 'Expired' ? 'bg-red-100 text-red-800' :
+                          item.status === 'Expired' ? 'bg-danger-soft text-red-800' :
                           'bg-neutral-100 text-neutral-800'
                         }`}>
                           {item.status}
@@ -149,7 +149,7 @@ export const CrossSellManager = () => {
                                 deleteCrossSell(item.id);
                               }
                             }}
-                            className="p-2 text-red-400 hover:text-red-600 transition-colors"
+                            className="p-2 text-red-400 hover:text-danger transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

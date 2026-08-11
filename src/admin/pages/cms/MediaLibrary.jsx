@@ -241,13 +241,13 @@ export default function MediaLibrary() {
         className="flex flex-col md:flex-row md:items-end justify-between gap-4"
       >
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">Media Asset Manager</span>
+            <span className="text-text-primary font-semibold">Media Asset Manager</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Digital Asset Manager (DAM)</h1>
-          <p className="text-sm text-gray-500 mt-1 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Digital Asset Manager (DAM)</h1>
+          <p className="text-sm text-text-muted mt-1 max-w-xl leading-relaxed">
             Centralized media library for high-resolution furniture imagery, promotional videos, and brand collateral.
           </p>
         </div>
@@ -256,7 +256,7 @@ export default function MediaLibrary() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsPickerTesterOpen(true)}
-            className="px-4 py-2.5 border border-black/10 bg-white rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-2xs flex items-center gap-2"
+            className="px-4 py-2.5 border border-black/10 bg-surface rounded-lg text-xs font-semibold text-text-secondary hover:bg-background transition-all shadow-2xs flex items-center gap-2"
           >
             <FiLayers size={14} />
             <span>Test Media Picker Component</span>
@@ -266,43 +266,43 @@ export default function MediaLibrary() {
 
       {/* Metrics Banner */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-[#1A1A1A]">
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-text-primary">
             <FiImage size={20} />
           </div>
           <div>
-            <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Images</span>
-            <span className="text-lg font-serif font-bold text-[#1A1A1A]">720 files</span>
+            <span className="text-xs text-text-muted font-semibold uppercase tracking-wider block">Images</span>
+            <span className="text-lg font-serif font-bold text-text-primary">720 files</span>
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs flex items-center gap-3">
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center">
             <FiVideo size={20} />
           </div>
           <div>
-            <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Videos</span>
-            <span className="text-lg font-serif font-bold text-[#1A1A1A]">48 files</span>
+            <span className="text-xs text-text-muted font-semibold uppercase tracking-wider block">Videos</span>
+            <span className="text-lg font-serif font-bold text-text-primary">48 files</span>
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs flex items-center gap-3">
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
             <FiFileText size={20} />
           </div>
           <div>
-            <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Documents</span>
-            <span className="text-lg font-serif font-bold text-[#1A1A1A]">124 files</span>
+            <span className="text-xs text-text-muted font-semibold uppercase tracking-wider block">Documents</span>
+            <span className="text-lg font-serif font-bold text-text-primary">124 files</span>
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-warning-soft text-warning flex items-center justify-center">
             <FiHardDrive size={20} />
           </div>
           <div>
-            <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Total Usage</span>
-            <span className="text-lg font-serif font-bold text-[#1A1A1A]">42.8 GB</span>
+            <span className="text-xs text-text-muted font-semibold uppercase tracking-wider block">Total Usage</span>
+            <span className="text-lg font-serif font-bold text-text-primary">42.8 GB</span>
           </div>
         </div>
       </div>

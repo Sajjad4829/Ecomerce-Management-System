@@ -23,8 +23,8 @@ export default function AnalyticsTabs() {
             cn(
               "px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
               isActive
-                ? "border-black text-[#1A1A1A]"
-                : "border-transparent text-gray-500 hover:text-[#1A1A1A] hover:border-black/30"
+                ? "border-black text-text-primary"
+                : "border-transparent text-text-muted hover:text-text-primary hover:border-black/30"
             )
           }
         >

@@ -38,13 +38,13 @@ export default function DynamicPlaceholder({ type, customTitle, isSelected, onCl
       onClick={onClick}
       className={`relative border-2 border-dashed rounded-xl p-4 transition-all duration-200 cursor-pointer ${
         isSelected 
-          ? 'border-[#1A1A1A] bg-amber-50/50 shadow-md ring-2 ring-black/5' 
-          : 'border-amber-300/80 bg-amber-50/20 hover:border-amber-400 hover:bg-amber-50/40'
+          ? 'border-[#1A1A1A] bg-warning-soft/50 shadow-md ring-2 ring-black/5' 
+          : 'border-amber-300/80 bg-warning-soft/20 hover:border-amber-400 hover:bg-warning-soft/40'
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-lg bg-amber-100/80 text-amber-900 border border-amber-200/60 shrink-0">
+          <div className="p-2.5 rounded-lg bg-warning-soft/80 text-amber-900 border border-amber-200/60 shrink-0">
             <Icon size={18} />
           </div>
           <div>
@@ -54,12 +54,12 @@ export default function DynamicPlaceholder({ type, customTitle, isSelected, onCl
               </span>
               <span className="text-[10px] font-mono text-amber-800/60">[{type}]</span>
             </div>
-            <h4 className="font-serif font-bold text-sm text-[#1A1A1A] mt-0.5">{config.label}</h4>
-            <p className="text-xs text-gray-500 mt-0.5">{config.description}</p>
+            <h4 className="font-serif font-bold text-sm text-text-primary mt-0.5">{config.label}</h4>
+            <p className="text-xs text-text-muted mt-0.5">{config.description}</p>
           </div>
         </div>
 
-        <div className="px-2 py-1 rounded bg-amber-100 text-amber-900 font-mono text-[10px] font-bold shrink-0">
+        <div className="px-2 py-1 rounded bg-warning-soft text-amber-900 font-mono text-[10px] font-bold shrink-0">
           Dynamic Binding
         </div>
       </div>

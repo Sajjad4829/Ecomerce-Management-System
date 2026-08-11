@@ -32,7 +32,7 @@ export default function ReviewDetail() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
@@ -63,13 +63,13 @@ export default function ReviewDetail() {
             )}
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
             <h3 className="text-sm font-medium text-neutral-900 mb-4">Respond to Customer</h3>
             <textarea
               value={response}
               onChange={(e) => setResponse(e.target.value)}
               placeholder="Write an official response (publicly visible)..."
-              className="w-full h-32 p-3 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm mb-4"
+              className="w-full h-32 p-3 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm mb-4"
             ></textarea>
             <div className="flex justify-end">
               <button onClick={handleRespond} className="px-4 py-2 bg-neutral-900 text-white rounded-md hover:bg-neutral-800 transition-colors flex items-center gap-2 text-sm">
@@ -80,7 +80,7 @@ export default function ReviewDetail() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
             <h3 className="text-sm font-medium text-neutral-900 mb-4">Moderation Action</h3>
             <div className="space-y-3">
               <div className="flex justify-between text-sm mb-4">
@@ -88,19 +88,19 @@ export default function ReviewDetail() {
                 <span className="font-medium">{review.status}</span>
               </div>
               
-              <button onClick={() => approveReview(review.id)} className="w-full px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-md hover:bg-green-100 transition-colors flex items-center justify-center gap-2 text-sm font-medium">
+              <button onClick={() => approveReview(review.id)} className="w-full px-4 py-2 bg-success-soft text-success border border-green-200 rounded-md hover:bg-success-soft transition-colors flex items-center justify-center gap-2 text-sm font-medium">
                 <Check className="w-4 h-4" /> Approve
               </button>
               <button onClick={() => hideReview(review.id)} className="w-full px-4 py-2 bg-neutral-50 text-neutral-700 border border-neutral-200 rounded-md hover:bg-neutral-100 transition-colors flex items-center justify-center gap-2 text-sm font-medium">
                 <EyeOff className="w-4 h-4" /> Hide
               </button>
-              <button onClick={() => rejectReview(review.id)} className="w-full px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-md hover:bg-red-100 transition-colors flex items-center justify-center gap-2 text-sm font-medium">
+              <button onClick={() => rejectReview(review.id)} className="w-full px-4 py-2 bg-danger-soft text-red-700 border border-red-200 rounded-md hover:bg-danger-soft transition-colors flex items-center justify-center gap-2 text-sm font-medium">
                 <X className="w-4 h-4" /> Reject
               </button>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
             <h3 className="text-sm font-medium text-neutral-900 mb-4">Customer Info</h3>
             <div className="space-y-3 text-sm">
               <div>
@@ -110,7 +110,7 @@ export default function ReviewDetail() {
               <div>
                 <div className="text-neutral-500">Verification</div>
                 {review.verifiedPurchase ? (
-                  <div className="flex items-center gap-1 text-green-600 mt-1 font-medium">
+                  <div className="flex items-center gap-1 text-success mt-1 font-medium">
                     <CheckCircle2 className="w-4 h-4" /> Verified Purchase
                   </div>
                 ) : (

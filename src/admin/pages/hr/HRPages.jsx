@@ -8,24 +8,24 @@ export const HRDashboard = () => {
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">HR Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+        <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
           <div className="text-sm text-neutral-500 font-medium mb-1">Total Employees</div>
           <div className="text-2xl font-bold text-neutral-900">120</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+        <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
           <div className="text-sm text-neutral-500 font-medium mb-1">On Leave</div>
           <div className="text-2xl font-bold text-neutral-900">5</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+        <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
           <div className="text-sm text-neutral-500 font-medium mb-1">Pending Leave Requests</div>
           <div className="text-2xl font-bold text-neutral-900">3</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+        <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
           <div className="text-sm text-neutral-500 font-medium mb-1">Open Positions</div>
           <div className="text-2xl font-bold text-neutral-900">8</div>
         </div>
       </div>
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200 text-center">
+      <div className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200 text-center">
         <BarChart2 className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Workforce Analytics Placeholder</h3>
         <p className="text-sm text-neutral-500 mt-1">Backend integrations required for real-time attendance tracking.</p>
@@ -42,7 +42,7 @@ export const EmployeeDirectory = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Employee Directory</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Employee</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -63,12 +63,12 @@ export const EmployeeDirectory = () => {
                 <td className="px-6 py-4 text-neutral-600">{e.department}</td>
                 <td className="px-6 py-4 text-neutral-600">{e.position}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${e.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${e.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
                     {e.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <Link to={`/admin/hr/employees/${e.id}`} className="text-indigo-600 hover:text-indigo-900 font-medium">View Profile</Link>
+                  <Link to={`/admin/hr/employees/${e.id}`} className="text-primary hover:text-indigo-900 font-medium">View Profile</Link>
                 </td>
               </tr>
             ))}
@@ -97,7 +97,7 @@ export const EmployeeProfile = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border border-neutral-200 p-6 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 p-6 shadow-sm">
           <h3 className="font-medium text-neutral-900 mb-4">Personal Information</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-neutral-500">Employee ID</span><span className="font-medium">{emp.employeeId}</span></div>
@@ -105,7 +105,7 @@ export const EmployeeProfile = () => {
             <div className="flex justify-between"><span className="text-neutral-500">Phone</span><span className="font-medium">{emp.phone}</span></div>
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-neutral-200 p-6 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 p-6 shadow-sm">
           <h3 className="font-medium text-neutral-900 mb-4">Employment</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-neutral-500">Employment Type</span><span className="font-medium">{emp.employmentType}</span></div>
@@ -115,7 +115,7 @@ export const EmployeeProfile = () => {
         </div>
       </div>
       
-      <div className="bg-white rounded-lg border border-neutral-200 p-6 shadow-sm text-center">
+      <div className="bg-surface rounded-lg border border-neutral-200 p-6 shadow-sm text-center">
         <h3 className="font-medium text-neutral-900 mb-4 text-left">Employee Documents</h3>
         <p className="text-sm text-neutral-500 mb-4">Employment contracts and ID documents will appear here.</p>
         <button className="px-4 py-2 border border-neutral-200 rounded text-sm hover:bg-neutral-50">Upload Document</button>
@@ -132,7 +132,7 @@ export const DepartmentCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Departments</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Department</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -166,7 +166,7 @@ export const TeamCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Teams</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Team</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -202,7 +202,7 @@ export const PositionCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Positions</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Position</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -241,7 +241,7 @@ export const AttendanceCenter = () => {
           <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Mark Attendance</button>
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -262,7 +262,7 @@ export const AttendanceCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{a.checkOut}</td>
                 <td className="px-6 py-4 text-neutral-600">{a.workingHours}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${a.status === 'Present' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${a.status === 'Present' ? 'bg-success-soft text-green-800' : 'bg-warning-soft text-amber-800'}`}>
                     {a.status}
                   </span>
                 </td>
@@ -279,7 +279,7 @@ export const AttendanceCalendar = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Attendance Calendar</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <Calendar className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Monthly Attendance View</h3>
         <p className="text-sm text-neutral-500 mt-1">Mock view only. Select dates to see attendance details.</p>
@@ -296,7 +296,7 @@ export const ShiftCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Shift Management</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Shift</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -334,7 +334,7 @@ export const WorkScheduleCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Work Schedules</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Assign Schedule</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -372,7 +372,7 @@ export const LeaveCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Leave Requests</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Submit Leave</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -392,12 +392,12 @@ export const LeaveCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{l.type}</td>
                 <td className="px-6 py-4 text-neutral-600">{l.duration}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${l.status === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${l.status === 'Approved' ? 'bg-success-soft text-green-800' : 'bg-warning-soft text-amber-800'}`}>
                     {l.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <Link to={`/admin/hr/leaves/${l.id}`} className="text-indigo-600 hover:text-indigo-900 font-medium">Review</Link>
+                  <Link to={`/admin/hr/leaves/${l.id}`} className="text-primary hover:text-indigo-900 font-medium">Review</Link>
                 </td>
               </tr>
             ))}
@@ -425,13 +425,13 @@ export const LeaveDetail = () => {
             <p className="text-sm text-neutral-500 mt-1">Employee: {leave.employee} | Type: {leave.type}</p>
           </div>
           <div className="space-x-2">
-            <button className="px-4 py-2 border border-neutral-200 text-red-600 rounded hover:bg-red-50">Reject</button>
+            <button className="px-4 py-2 border border-neutral-200 text-danger rounded hover:bg-danger-soft">Reject</button>
             <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Approve</button>
           </div>
         </div>
       </div>
       
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
         <h3 className="font-medium text-neutral-900 mb-4">Leave Details</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div><div className="text-neutral-500">Duration</div><div className="font-medium mt-1">{leave.duration}</div></div>
@@ -452,7 +452,7 @@ export const LeaveTypeCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Leave Types</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Leave Type</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -484,7 +484,7 @@ export const HolidayCalendar = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Holiday Calendar</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Holiday</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -520,7 +520,7 @@ export const PerformanceCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Performance Reviews</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">New Review</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -541,7 +541,7 @@ export const PerformanceCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{pr.rating}/5</td>
                 <td className="px-6 py-4 text-neutral-600">{pr.status}</td>
                 <td className="px-6 py-4 text-right">
-                  <Link to={`/admin/hr/performance/${pr.id}`} className="text-indigo-600 hover:text-indigo-900 font-medium">View</Link>
+                  <Link to={`/admin/hr/performance/${pr.id}`} className="text-primary hover:text-indigo-900 font-medium">View</Link>
                 </td>
               </tr>
             ))}
@@ -569,7 +569,7 @@ export const PerformanceDetail = () => {
         </div>
       </div>
       
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
         <h3 className="font-medium text-neutral-900 mb-4">Review Summary</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div><div className="text-neutral-500">Reviewer</div><div className="font-medium mt-1">{review.reviewer}</div></div>
@@ -586,7 +586,7 @@ export const WorkforceAnalytics = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-serif text-neutral-900">Workforce Analytics</h1>
-      <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
+      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm text-center">
         <BarChart2 className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
         <h3 className="font-medium text-neutral-900">Analytics Dashboard</h3>
         <p className="text-sm text-neutral-500 mt-1">Employee turnover, attendance trends, and performance distribution.</p>

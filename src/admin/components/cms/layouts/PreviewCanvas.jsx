@@ -13,7 +13,7 @@ export default function PreviewCanvas({ activeSection, device }) {
     <div className="bg-gray-100 rounded-xl border border-black/5 flex-1 relative overflow-hidden flex justify-center h-[calc(100vh-14rem)]">
       {/* Canvas Area */}
       <div className={cn(
-        "bg-white h-full shadow-2xl transition-all duration-300 overflow-y-auto overflow-x-hidden flex flex-col custom-scrollbar border-x border-black/5",
+        "bg-surface h-full shadow-2xl transition-all duration-300 overflow-y-auto overflow-x-hidden flex flex-col custom-scrollbar border-x border-black/5",
         getContainerWidth()
       )}>
         
@@ -27,7 +27,7 @@ export default function PreviewCanvas({ activeSection, device }) {
 
         {/* Header */}
         <header className={cn(
-          "border-b border-black/5 px-6 py-4 flex items-center justify-between shrink-0 sticky top-0 bg-white/95 backdrop-blur z-10 transition-colors",
+          "border-b border-black/5 px-6 py-4 flex items-center justify-between shrink-0 sticky top-0 bg-surface/95 backdrop-blur z-10 transition-colors",
           activeSection === 'header' && "ring-2 ring-blue-500 ring-inset bg-blue-50/10"
         )}>
           <div className="font-serif font-bold text-xl tracking-tight">LUXE</div>
@@ -35,9 +35,9 @@ export default function PreviewCanvas({ activeSection, device }) {
             "hidden md:flex items-center gap-6 text-sm font-medium transition-colors p-2 rounded",
             activeSection === 'mega-menu' && "ring-2 ring-blue-500 ring-inset bg-blue-50/10"
           )}>
-            <span className="text-[#1A1A1A] hover:text-[#A69076] cursor-pointer">Collections</span>
-            <span className="text-[#1A1A1A] hover:text-[#A69076] cursor-pointer">Designers</span>
-            <span className="text-[#1A1A1A] hover:text-[#A69076] cursor-pointer">About</span>
+            <span className="text-text-primary hover:text-[#A69076] cursor-pointer">Collections</span>
+            <span className="text-text-primary hover:text-[#A69076] cursor-pointer">Designers</span>
+            <span className="text-text-primary hover:text-[#A69076] cursor-pointer">About</span>
           </nav>
           <div className="flex gap-4 items-center">
              <div className="text-xs font-semibold uppercase hidden md:block">Search</div>
@@ -48,11 +48,11 @@ export default function PreviewCanvas({ activeSection, device }) {
 
         {/* Mock Content */}
         <div className="flex-1 flex flex-col opacity-50 pointer-events-none">
-          <div className="bg-[#F7F5F2] py-20 px-6 flex flex-col items-center justify-center text-center">
-            <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 max-w-2xl">
+          <div className="bg-background py-20 px-6 flex flex-col items-center justify-center text-center">
+            <h1 className="font-serif text-4xl md:text-5xl font-bold text-text-primary mb-4 max-w-2xl">
               Elevate Your Space
             </h1>
-            <p className="text-gray-500 mb-8 max-w-lg font-sans">
+            <p className="text-text-muted mb-8 max-w-lg font-sans">
               Page content placeholder.
             </p>
           </div>
@@ -86,8 +86,8 @@ export default function PreviewCanvas({ activeSection, device }) {
              <div className="col-span-2">
                 <div className="text-white font-semibold mb-4 text-xs uppercase tracking-widest">Join the Club</div>
                 <div className="flex w-full gap-2">
-                   <div className="flex-1 bg-white/10 px-3 py-2 text-xs">Email address</div>
-                   <div className="bg-white text-black px-4 py-2 text-xs font-bold">JOIN</div>
+                   <div className="flex-1 bg-surface/10 px-3 py-2 text-xs">Email address</div>
+                   <div className="bg-surface text-black px-4 py-2 text-xs font-bold">JOIN</div>
                 </div>
              </div>
           </div>

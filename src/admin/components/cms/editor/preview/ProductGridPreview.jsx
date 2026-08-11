@@ -6,14 +6,14 @@ export default function ProductGridPreview() {
   ];
 
   return (
-    <div className="py-24 px-8 md:px-16 bg-white">
+    <div className="py-24 px-8 md:px-16 bg-surface">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-end mb-12">
           <div>
-            <h2 className="text-3xl font-serif font-bold text-[#1A1A1A] mb-2">New Arrivals</h2>
-            <p className="text-gray-500">The latest additions to our collection.</p>
+            <h2 className="text-3xl font-serif font-bold text-text-primary mb-2">New Arrivals</h2>
+            <p className="text-text-muted">The latest additions to our collection.</p>
           </div>
-          <button className="hidden md:block text-xs font-bold uppercase tracking-[0.2em] text-[#1A1A1A] border-b-2 border-[#1A1A1A] pb-1 hover:text-gray-500 hover:border-gray-500 transition-colors">
+          <button className="hidden md:block text-xs font-bold uppercase tracking-[0.2em] text-text-primary border-b-2 border-[#1A1A1A] pb-1 hover:text-text-muted hover:border-gray-500 transition-colors">
             View All
           </button>
         </div>
@@ -29,8 +29,8 @@ export default function ProductGridPreview() {
                 />
               </div>
               <div className="flex justify-between items-center">
-                <h3 className="font-serif font-bold text-[#1A1A1A] text-lg">{product.name}</h3>
-                <span className="text-sm font-medium text-gray-500">{product.price}</span>
+                <h3 className="font-serif font-bold text-text-primary text-lg">{product.name}</h3>
+                <span className="text-sm font-medium text-text-muted">{product.price}</span>
               </div>
             </div>
           ))}

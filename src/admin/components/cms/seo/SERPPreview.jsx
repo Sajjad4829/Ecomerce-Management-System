@@ -20,12 +20,12 @@ export default function SERPPreview({
   const truncatedDesc = description.length > 155 ? description.substring(0, 152) + "..." : description;
 
   return (
-    <div className="bg-white border border-black/10 rounded-xl p-4 shadow-2xs space-y-3">
+    <div className="bg-surface border border-black/10 rounded-xl p-4 shadow-2xs space-y-3">
       {/* Device Switcher Header */}
       <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
         <div className="flex items-center gap-2">
-          <FiGlobe className="text-gray-400" size={14} />
-          <span className="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider">
+          <FiGlobe className="text-text-muted" size={14} />
+          <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
             Google Search Preview
           </span>
         </div>
@@ -36,7 +36,7 @@ export default function SERPPreview({
             onClick={() => setDevice('desktop')}
             className={cn(
               "px-2.5 py-1 rounded-md text-[11px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer",
-              device === 'desktop' ? "bg-white text-[#1A1A1A] shadow-2xs font-bold" : "text-gray-500 hover:text-black"
+              device === 'desktop' ? "bg-surface text-text-primary shadow-2xs font-bold" : "text-text-muted hover:text-black"
             )}
           >
             <FiMonitor size={12} />
@@ -47,7 +47,7 @@ export default function SERPPreview({
             onClick={() => setDevice('mobile')}
             className={cn(
               "px-2.5 py-1 rounded-md text-[11px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer",
-              device === 'mobile' ? "bg-white text-[#1A1A1A] shadow-2xs font-bold" : "text-gray-500 hover:text-black"
+              device === 'mobile' ? "bg-surface text-text-primary shadow-2xs font-bold" : "text-text-muted hover:text-black"
             )}
           >
             <FiSmartphone size={12} />
@@ -58,7 +58,7 @@ export default function SERPPreview({
 
       {/* Simulated Search Engine Container */}
       <div className={cn(
-        "bg-[#F8F9FA] border border-gray-200 rounded-xl p-4 transition-all duration-200 font-sans",
+        "bg-[#F8F9FA] border border-border rounded-xl p-4 transition-all duration-200 font-sans",
         device === 'mobile' ? "max-w-sm mx-auto shadow-md" : "w-full"
       )}>
         {/* SERP Item Card */}
@@ -83,35 +83,35 @@ export default function SERPPreview({
             "text-[#1a0dab] hover:underline cursor-pointer font-normal leading-snug tracking-normal pt-1",
             device === 'mobile' ? "text-base font-medium" : "text-lg"
           )}>
-            {truncatedTitle || <span className="italic text-gray-400">Specify SEO Title...</span>}
+            {truncatedTitle || <span className="italic text-text-muted">Specify SEO Title...</span>}
           </h3>
 
           {/* Description Snippet */}
           <p className="text-[#4d5156] text-xs leading-relaxed max-w-2xl pt-0.5">
-            {truncatedDesc || <span className="italic text-gray-400">Add meta description snippet...</span>}
+            {truncatedDesc || <span className="italic text-text-muted">Add meta description snippet...</span>}
           </p>
         </div>
       </div>
 
       {/* Length Validation Metrics */}
       <div className="grid grid-cols-2 gap-3 pt-1 text-[11px]">
-        <div className="flex items-center justify-between px-2.5 py-1.5 bg-gray-50 rounded-lg border border-black/5">
-          <span className="text-gray-500">Title Length:</span>
+        <div className="flex items-center justify-between px-2.5 py-1.5 bg-background rounded-lg border border-black/5">
+          <span className="text-text-muted">Title Length:</span>
           <span className={cn(
             "font-mono font-bold",
-            title.length === 0 ? "text-gray-400" :
-            title.length >= 30 && title.length <= 60 ? "text-green-600" : "text-amber-600"
+            title.length === 0 ? "text-text-muted" :
+            title.length >= 30 && title.length <= 60 ? "text-success" : "text-warning"
           )}>
             {title.length} / 60 chars
           </span>
         </div>
 
-        <div className="flex items-center justify-between px-2.5 py-1.5 bg-gray-50 rounded-lg border border-black/5">
-          <span className="text-gray-500">Description Length:</span>
+        <div className="flex items-center justify-between px-2.5 py-1.5 bg-background rounded-lg border border-black/5">
+          <span className="text-text-muted">Description Length:</span>
           <span className={cn(
             "font-mono font-bold",
-            description.length === 0 ? "text-gray-400" :
-            description.length >= 120 && description.length <= 160 ? "text-green-600" : "text-amber-600"
+            description.length === 0 ? "text-text-muted" :
+            description.length >= 120 && description.length <= 160 ? "text-success" : "text-warning"
           )}>
             {description.length} / 160 chars
           </span>

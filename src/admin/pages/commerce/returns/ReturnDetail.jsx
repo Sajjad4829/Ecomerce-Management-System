@@ -15,8 +15,8 @@ export default function ReturnDetail() {
   if (!returnReq) {
     return (
       <div className="p-8 text-center">
-        <h2 className="text-xl font-bold text-gray-900">Return request not found</h2>
-        <button onClick={() => navigate('/admin/returns')} className="text-blue-600 hover:underline mt-2">Return to list</button>
+        <h2 className="text-xl font-bold text-text-primary">Return request not found</h2>
+        <button onClick={() => navigate('/admin/returns')} className="text-primary hover:underline mt-2">Return to list</button>
       </div>
     );
   }
@@ -50,17 +50,17 @@ export default function ReturnDetail() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link to="/admin/returns" className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-            <FiArrowLeft size={20} className="text-gray-600" />
+          <Link to="/admin/returns" className="p-2 border border-border rounded-lg hover:bg-background transition-colors">
+            <FiArrowLeft size={20} className="text-text-secondary" />
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">{returnReq.id}</h1>
+              <h1 className="text-2xl font-bold text-text-primary">{returnReq.id}</h1>
               <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800`}>
                 {returnReq.status}
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">Order: <Link to={`/admin/orders/${returnReq.orderId}`} className="text-blue-600 hover:underline">{returnReq.orderId}</Link></p>
+            <p className="text-sm text-text-muted mt-1">Order: <Link to={`/admin/orders/${returnReq.orderId}`} className="text-primary hover:underline">{returnReq.orderId}</Link></p>
           </div>
         </div>
         
@@ -72,7 +72,7 @@ export default function ReturnDetail() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   action === 'Approved' ? 'bg-green-600 text-white hover:bg-green-700' :
                   action === 'Rejected' ? 'bg-red-600 text-white hover:bg-red-700' :
-                  'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                  'bg-surface border border-border-hover text-text-secondary hover:bg-background'
                 }`}
              >
                 {action}
@@ -87,27 +87,27 @@ export default function ReturnDetail() {
         <div className="lg:col-span-2 space-y-6">
           
           {/* Customer & Product Info */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2"><FiBox /> Return Items</h2>
+          <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-border flex justify-between items-center">
+              <h2 className="text-lg font-bold text-text-primary flex items-center gap-2"><FiBox /> Return Items</h2>
             </div>
             <div className="divide-y divide-gray-100">
               {returnReq.items.map(item => (
                 <div key={item.id} className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="font-medium text-gray-900">{item.name}</h3>
-                      <p className="text-sm text-gray-500">SKU: {item.productId} • Qty: {item.quantity}</p>
+                      <h3 className="font-medium text-text-primary">{item.name}</h3>
+                      <p className="text-sm text-text-muted">SKU: {item.productId} • Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-2">
+                  <div className="bg-background p-4 rounded-lg border border-gray-100 space-y-2">
                     <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold">Return Reason</p>
-                      <p className="text-sm font-medium text-gray-900">{item.reason}</p>
+                      <p className="text-xs text-text-muted uppercase font-semibold">Return Reason</p>
+                      <p className="text-sm font-medium text-text-primary">{item.reason}</p>
                     </div>
                     <div>
-                       <p className="text-xs text-gray-500 uppercase font-semibold">Reported Condition</p>
-                       <p className="text-sm font-medium text-gray-900">{item.condition}</p>
+                       <p className="text-xs text-text-muted uppercase font-semibold">Reported Condition</p>
+                       <p className="text-sm font-medium text-text-primary">{item.condition}</p>
                     </div>
                   </div>
                 </div>
@@ -117,29 +117,29 @@ export default function ReturnDetail() {
 
           {/* Reverse Logistics / Pickup */}
           {(returnReq.status === 'Approved' || returnReq.status === 'Pickup Scheduled' || returnReq.pickup) && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><FiTruck /> Reverse Logistics</h2>
+            <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+              <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2"><FiTruck /> Reverse Logistics</h2>
               <PickupManager returnReq={returnReq} />
             </div>
           )}
 
           {/* Inspection Workspace */}
           {(returnReq.status === 'Inspection Pending' || returnReq.inspection) && (
-             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-               <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><FiSearch /> Product Inspection</h2>
+             <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+               <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2"><FiSearch /> Product Inspection</h2>
                <InspectionWorkspace returnReq={returnReq} />
              </div>
           )}
 
            {/* Resolution Prep */}
            {returnReq.status === 'Resolution Pending' && (
-             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-               <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><FiDollarSign /> Resolution Actions</h2>
+             <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+               <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2"><FiDollarSign /> Resolution Actions</h2>
                <div className="flex gap-4">
                  <button className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">
                    Initiate Refund Placeholder
                  </button>
-                 <button className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+                 <button className="flex-1 py-3 border border-border-hover text-text-secondary rounded-lg font-semibold hover:bg-background transition-colors">
                    Process Exchange Placeholder
                  </button>
                </div>
@@ -151,17 +151,17 @@ export default function ReturnDetail() {
         {/* Sidebar */}
         <div className="space-y-6">
           
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Customer Details</h2>
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+            <h2 className="text-lg font-bold text-text-primary mb-4">Customer Details</h2>
             <div className="space-y-1">
-              <p className="font-medium text-gray-900">{returnReq.customer.name}</p>
-              <p className="text-sm text-gray-600">{returnReq.customer.email}</p>
+              <p className="font-medium text-text-primary">{returnReq.customer.name}</p>
+              <p className="text-sm text-text-secondary">{returnReq.customer.email}</p>
             </div>
           </div>
 
           {/* Timeline */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-             <h2 className="text-lg font-bold text-gray-900 mb-6">Return Timeline</h2>
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+             <h2 className="text-lg font-bold text-text-primary mb-6">Return Timeline</h2>
              <ReturnTimeline events={returnReq.timeline} />
           </div>
 

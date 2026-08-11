@@ -3,7 +3,7 @@ import { useExperience } from '../../context/experience/ExperienceContext';
 
 // Reusable Placeholder Wrapper
 const PlaceholderView = ({ title, description }) => (
-  <div className="bg-white rounded-lg border border-neutral-200 p-8">
+  <div className="bg-surface rounded-lg border border-neutral-200 p-8">
     <div className="flex justify-between items-center mb-6">
       <div>
         <h1 className="text-2xl font-bold text-neutral-900">{title}</h1>
@@ -17,7 +17,7 @@ const PlaceholderView = ({ title, description }) => (
     <div className="bg-neutral-50 rounded-lg border border-neutral-200 border-dashed p-12 text-center">
       <h3 className="text-lg font-medium text-neutral-900 mb-2">No data configured yet</h3>
       <p className="text-neutral-500 mb-6">Get started by creating your first {title.toLowerCase()} configuration.</p>
-      <button className="px-4 py-2 bg-white border border-neutral-300 text-neutral-700 rounded-md text-sm font-medium hover:bg-neutral-50">
+      <button className="px-4 py-2 bg-surface border border-neutral-300 text-neutral-700 rounded-md text-sm font-medium hover:bg-neutral-50">
         + Add {title.split(' ')[0]}
       </button>
     </div>

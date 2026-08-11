@@ -7,7 +7,7 @@ export default function OrderSummary({ order }) {
   const total = subtotal + shipping + tax;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+    <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
       <h3 className="text-lg font-serif text-neutral-900 mb-4">Summary</h3>
       
       <div className="space-y-3 text-sm">

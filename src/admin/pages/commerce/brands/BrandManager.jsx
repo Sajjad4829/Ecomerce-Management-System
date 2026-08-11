@@ -61,15 +61,15 @@ export default function BrandManager() {
 
   return (
     <div className="p-6 space-y-6 max-w-[1400px] mx-auto relative pb-24">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-stone-200">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] uppercase font-bold">
+            <span className="px-2 py-0.5 rounded bg-warning-soft text-amber-900 font-mono text-[10px] uppercase font-bold">
               Catalog Management
             </span>
           </div>
-          <h1 className="font-serif font-bold text-2xl text-stone-900 mt-1">Brands</h1>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <h1 className="font-serif font-bold text-2xl text-text-primary mt-1">Brands</h1>
+          <p className="text-xs text-text-muted mt-0.5">
             Manage partner brands, designers, and manufacturers.
           </p>
         </div>
@@ -97,20 +97,20 @@ export default function BrandManager() {
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredBrands.map(brand => (
-                <div key={brand.id} className="bg-white border border-stone-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow relative group">
+                <div key={brand.id} className="bg-surface border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow relative group">
                   <div className="absolute top-2 left-2 z-10">
                     <input 
                       type="checkbox" 
                       checked={selectedBrands.includes(brand.id)}
                       onChange={(e) => handleSelectOne(brand.id, e.target.checked)}
-                      className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900 shadow-sm"
+                      className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900 shadow-sm"
                     />
                   </div>
                   
                   <div className="absolute top-2 right-2 z-10">
                     <button 
                       onClick={(e) => toggleMenu(brand.id, e)}
-                      className="p-1 bg-white/90 backdrop-blur rounded shadow-sm text-stone-600 hover:text-stone-900"
+                      className="p-1 bg-surface/90 backdrop-blur rounded shadow-sm text-text-secondary hover:text-text-primary"
                     >
                       <FiMoreVertical size={16} />
                     </button>
@@ -120,16 +120,16 @@ export default function BrandManager() {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className="absolute right-0 top-full mt-1 w-40 bg-white border border-stone-200 rounded-lg shadow-xl z-20 py-1"
+                          className="absolute right-0 top-full mt-1 w-40 bg-surface border border-border rounded-lg shadow-xl z-20 py-1"
                         >
-                          <button onClick={() => { navigate(`/admin/catalog/brands/${brand.id}`); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                          <button onClick={() => { navigate(`/admin/catalog/brands/${brand.id}`); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                             <FiEdit2 size={12} /> Edit
                           </button>
-                          <button onClick={() => { setPreviewBrand(brand); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                          <button onClick={() => { setPreviewBrand(brand); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                             <FiEye size={12} /> Preview
                           </button>
                           <div className="h-px bg-stone-100 my-1" />
-                          <button className="w-full text-left px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 flex items-center gap-2">
+                          <button className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
                             <FiTrash2 size={12} /> Delete
                           </button>
                         </motion.div>
@@ -137,40 +137,40 @@ export default function BrandManager() {
                     </AnimatePresence>
                   </div>
 
-                  <div className="aspect-[4/3] bg-stone-50 p-8 flex items-center justify-center border-b border-stone-100 cursor-pointer" onClick={() => navigate(`/admin/catalog/brands/${brand.id}`)}>
-                    <img src={brand.logo} alt={brand.name} className="w-24 h-24 object-contain rounded-full shadow-sm bg-white" />
+                  <div className="aspect-[4/3] bg-background p-8 flex items-center justify-center border-b border-stone-100 cursor-pointer" onClick={() => navigate(`/admin/catalog/brands/${brand.id}`)}>
+                    <img src={brand.logo} alt={brand.name} className="w-24 h-24 object-contain rounded-full shadow-sm bg-surface" />
                   </div>
 
                   <div className="p-4 cursor-pointer" onClick={() => navigate(`/admin/catalog/brands/${brand.id}`)}>
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-serif font-bold text-stone-900 text-sm line-clamp-1">{brand.name}</h3>
+                      <h3 className="font-serif font-bold text-text-primary text-sm line-clamp-1">{brand.name}</h3>
                       <CatalogStatusBadge status={brand.status} />
                     </div>
-                    <div className="flex items-center justify-between text-xs text-stone-500">
+                    <div className="flex items-center justify-between text-xs text-text-muted">
                       <span>{brand.productCount} Products</span>
-                      {brand.featured && <span className="text-amber-600 font-medium">Featured</span>}
+                      {brand.featured && <span className="text-warning font-medium">Featured</span>}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+            <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-stone-50 border-b border-stone-200">
+                    <tr className="bg-background border-b border-border">
                       <th className="p-4 w-10">
                         <input 
                           type="checkbox" 
                           onChange={(e) => handleSelectAll(e.target.checked)}
                           checked={brands.length > 0 && selectedBrands.length === brands.length}
-                          className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+                          className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900"
                         />
                       </th>
-                      <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Brand</th>
-                      <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Status</th>
-                      <th className="p-4 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">Products</th>
+                      <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Brand</th>
+                      <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
+                      <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Products</th>
                       <th className="p-4 w-10"></th>
                     </tr>
                   </thead>
@@ -178,7 +178,7 @@ export default function BrandManager() {
                     {filteredBrands.map(brand => (
                       <tr 
                         key={brand.id}
-                        className={`hover:bg-stone-50 transition-colors group cursor-pointer ${selectedBrands.includes(brand.id) ? 'bg-stone-50' : ''}`}
+                        className={`hover:bg-background transition-colors group cursor-pointer ${selectedBrands.includes(brand.id) ? 'bg-background' : ''}`}
                         onClick={(e) => {
                           if (e.target.type !== 'checkbox' && !e.target.closest('button')) {
                             navigate(`/admin/catalog/brands/${brand.id}`);
@@ -190,33 +190,33 @@ export default function BrandManager() {
                             type="checkbox"
                             checked={selectedBrands.includes(brand.id)}
                             onChange={(e) => handleSelectOne(brand.id, e.target.checked)}
-                            className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900"
+                            className="w-4 h-4 rounded border-border-hover text-text-primary focus:ring-stone-900"
                           />
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-stone-50 border border-stone-200 overflow-hidden shrink-0 flex items-center justify-center p-1">
+                            <div className="w-10 h-10 rounded-full bg-background border border-border overflow-hidden shrink-0 flex items-center justify-center p-1">
                               <img src={brand.logo} alt={brand.name} className="w-full h-full object-contain" />
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <p className="font-semibold text-stone-900 text-sm group-hover:text-amber-700 transition-colors">{brand.name}</p>
-                                {brand.featured && <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Featured</span>}
+                                <p className="font-semibold text-text-primary text-sm group-hover:text-warning transition-colors">{brand.name}</p>
+                                {brand.featured && <span className="text-[10px] bg-warning-soft text-amber-800 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Featured</span>}
                               </div>
-                              <p className="text-xs text-stone-500 font-mono">/{brand.slug}</p>
+                              <p className="text-xs text-text-muted font-mono">/{brand.slug}</p>
                             </div>
                           </div>
                         </td>
                         <td className="p-4">
                           <CatalogStatusBadge status={brand.status} />
                         </td>
-                        <td className="p-4 text-sm text-stone-600">
+                        <td className="p-4 text-sm text-text-secondary">
                           {brand.productCount}
                         </td>
                         <td className="p-4 relative" onClick={e => e.stopPropagation()}>
                           <button 
                             onClick={(e) => toggleMenu(brand.id, e)}
-                            className="p-1.5 text-stone-400 hover:text-stone-900 hover:bg-stone-200 rounded transition-colors"
+                            className="p-1.5 text-text-muted hover:text-text-primary hover:bg-stone-200 rounded transition-colors"
                           >
                             <FiMoreVertical size={16} />
                           </button>
@@ -227,16 +227,16 @@ export default function BrandManager() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
-                                className="absolute right-0 top-full mt-1 w-40 bg-white border border-stone-200 rounded-lg shadow-xl z-10 py-1"
+                                className="absolute right-0 top-full mt-1 w-40 bg-surface border border-border rounded-lg shadow-xl z-10 py-1"
                               >
-                                <button onClick={() => { navigate(`/admin/catalog/brands/${brand.id}`); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                                <button onClick={() => { navigate(`/admin/catalog/brands/${brand.id}`); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                                   <FiEdit2 size={12} /> Edit
                                 </button>
-                                <button onClick={() => { setPreviewBrand(brand); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 flex items-center gap-2">
+                                <button onClick={() => { setPreviewBrand(brand); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                                   <FiEye size={12} /> Preview
                                 </button>
                                 <div className="h-px bg-stone-100 my-1" />
-                                <button className="w-full text-left px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 flex items-center gap-2">
+                                <button className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
                                   <FiTrash2 size={12} /> Delete
                                 </button>
                               </motion.div>
@@ -247,7 +247,7 @@ export default function BrandManager() {
                     ))}
                     {filteredBrands.length === 0 && (
                       <tr>
-                        <td colSpan="5" className="p-8 text-center text-stone-500 text-sm">
+                        <td colSpan="5" className="p-8 text-center text-text-muted text-sm">
                           No brands found.
                         </td>
                       </tr>

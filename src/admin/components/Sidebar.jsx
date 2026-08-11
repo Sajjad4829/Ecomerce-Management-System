@@ -88,7 +88,7 @@ const SubMenuItem = ({ item, isOpen }) => {
           onClick={() => setIsExpanded(!isExpanded)}
           className={cn(
             "flex items-center justify-between w-full py-2 px-3 rounded-lg transition-colors group",
-            isActive && !isExpanded ? "text-white font-medium" : "text-white/70 hover:text-white"
+            isActive && !isExpanded ? "text-primary font-medium" : "text-text-secondary hover:text-text-primary"
           )}
         >
           <span className="text-sm">{item.label}</span>
@@ -100,7 +100,7 @@ const SubMenuItem = ({ item, isOpen }) => {
           end={item.path === '/admin/experience'}
           className={({ isActive }) => cn(
             "flex items-center w-full py-2 px-3 rounded-lg transition-colors group text-sm",
-            isActive ? "text-white font-medium bg-white/5" : "text-white/70 hover:text-white hover:bg-white/5"
+            isActive ? "text-primary font-medium bg-primary-soft" : "text-text-secondary hover:text-text-primary hover:bg-background"
           )}
         >
           {item.label}
@@ -108,7 +108,7 @@ const SubMenuItem = ({ item, isOpen }) => {
       )}
       
       {hasSubItems && isExpanded && (
-        <div className="mt-1 space-y-1 border-l border-white/10 ml-4 pl-2">
+        <div className="mt-1 space-y-1 border-l border-border ml-4 pl-2">
           {item.subItems.map((subItem, index) => (
             <SubMenuItem key={index} item={subItem} isOpen={isOpen} />
           ))}
@@ -124,17 +124,17 @@ export default function Sidebar({ isOpen, setIsOpen }) {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-30 flex flex-col bg-[#1A1A1A] text-white/70 transition-all duration-300 ease-in-out lg:static lg:translate-x-0",
+        "fixed inset-y-0 left-0 z-30 flex flex-col bg-surface border-r border-border text-text-secondary transition-all duration-300 ease-in-out lg:static lg:translate-x-0",
         isOpen ? "w-64 translate-x-0" : "w-64 -translate-x-full lg:w-20"
       )}
     >
       {/* Logo Area */}
-      <div className="flex items-center justify-between h-20 px-6 border-b border-white/10 shrink-0">
+      <div className="flex items-center justify-between h-20 px-6 border-b border-border shrink-0">
         <div className={cn("flex items-center gap-3 overflow-hidden", !isOpen && "lg:hidden")}>
-          <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center shrink-0">
-            <span className="text-[#1A1A1A] font-serif font-bold text-lg leading-none">A</span>
+          <div className="w-8 h-8 bg-primary rounded-sm flex items-center justify-center shrink-0">
+            <span className="text-surface font-serif font-bold text-lg leading-none">A</span>
           </div>
-          <span className="font-serif tracking-[0.2em] uppercase text-sm text-white font-bold whitespace-nowrap">
+          <span className="font-serif tracking-[0.2em] uppercase text-sm text-text-primary font-bold whitespace-nowrap">
             Aurelian
           </span>
         </div>
@@ -142,8 +142,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         {/* Only show logo in collapsed state on desktop */}
         {!isOpen && (
           <div className="hidden lg:flex w-full items-center justify-center">
-            <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center shrink-0">
-              <span className="text-[#1A1A1A] font-serif font-bold text-lg leading-none">A</span>
+            <div className="w-8 h-8 bg-primary rounded-sm flex items-center justify-center shrink-0">
+              <span className="text-surface font-serif font-bold text-lg leading-none">A</span>
             </div>
           </div>
         )}
@@ -168,15 +168,15 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                       className={({ isActive }) => cn(
                         "flex items-center gap-4 px-3 py-3 rounded-lg transition-colors group mb-1",
                         isActive
-                          ? "bg-white/10 text-white"
-                          : "hover:bg-white/5 hover:text-white"
+                          ? "bg-primary-soft text-primary"
+                          : "hover:bg-background hover:text-text-primary"
                       )}
                     >
                       <Icon className="shrink-0 text-lg" />
                       <span className="text-sm font-medium tracking-wide whitespace-nowrap">{item.label}</span>
                     </NavLink>
                     {isActive && (
-                      <div className="ml-7 border-l border-white/10 space-y-1 pl-2">
+                      <div className="ml-7 border-l border-border space-y-1 pl-2">
                         {item.subItems.map((subItem, index) => (
                           <SubMenuItem key={index} item={subItem} isOpen={isOpen} />
                         ))}
@@ -190,8 +190,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                     className={({ isActive }) => cn(
                       "flex items-center gap-4 px-3 py-3 rounded-lg transition-colors group",
                       isActive
-                        ? "bg-white/10 text-white"
-                        : "hover:bg-white/5 hover:text-white"
+                        ? "bg-primary-soft text-primary"
+                        : "hover:bg-background hover:text-text-primary"
                     )}
                     title={!isOpen ? item.label : undefined}
                   >
@@ -218,10 +218,10 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       </div>
 
       {/* Collapse Button (Desktop Only) */}
-      <div className="hidden lg:flex p-4 border-t border-white/10 shrink-0">
+      <div className="hidden lg:flex p-4 border-t border-border shrink-0">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-center w-full p-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="flex items-center justify-center w-full p-2 rounded-lg hover:bg-background transition-colors"
         >
           <FiChevronLeft className={cn("text-xl transition-transform duration-300", !isOpen && "rotate-180")} />
         </button>

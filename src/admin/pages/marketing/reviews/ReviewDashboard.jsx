@@ -13,10 +13,10 @@ const MOCK_REVIEWS = [
 ];
 
 const KPI_CARDS = [
-  { label: 'Total Reviews', value: '1,245', icon: FiMessageSquare, bg: 'bg-blue-50', color: 'text-blue-600' },
-  { label: 'Average Rating', value: '4.8', icon: FiStar, bg: 'bg-amber-50', color: 'text-amber-500' },
+  { label: 'Total Reviews', value: '1,245', icon: FiMessageSquare, bg: 'bg-blue-50', color: 'text-primary' },
+  { label: 'Average Rating', value: '4.8', icon: FiStar, bg: 'bg-warning-soft', color: 'text-amber-500' },
   { label: 'Pending Moderation', value: '12', icon: FiShield, bg: 'bg-purple-50', color: 'text-purple-600' },
-  { label: 'Reported', value: '3', icon: FiAlertTriangle, bg: 'bg-red-50', color: 'text-red-600' }
+  { label: 'Reported', value: '3', icon: FiAlertTriangle, bg: 'bg-danger-soft', color: 'text-danger' }
 ];
 
 export default function ReviewDashboard() {
@@ -25,10 +25,10 @@ export default function ReviewDashboard() {
 
   const getStatusBadge = (status) => {
     switch(status) {
-      case 'published': return <span className="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider rounded">Published</span>;
+      case 'published': return <span className="px-2 py-1 bg-success-soft text-green-800 text-[10px] font-bold uppercase tracking-wider rounded">Published</span>;
       case 'pending': return <span className="px-2 py-1 bg-purple-100 text-purple-800 text-[10px] font-bold uppercase tracking-wider rounded">Pending</span>;
-      case 'reported': return <span className="px-2 py-1 bg-red-100 text-red-800 text-[10px] font-bold uppercase tracking-wider rounded">Reported</span>;
-      case 'featured': return <span className="px-2 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold uppercase tracking-wider rounded">Featured</span>;
+      case 'reported': return <span className="px-2 py-1 bg-danger-soft text-red-800 text-[10px] font-bold uppercase tracking-wider rounded">Reported</span>;
+      case 'featured': return <span className="px-2 py-1 bg-warning-soft text-amber-800 text-[10px] font-bold uppercase tracking-wider rounded">Featured</span>;
       default: return <span className="px-2 py-1 bg-gray-100 text-gray-800 text-[10px] font-bold uppercase tracking-wider rounded">{status}</span>;
     }
   };
@@ -43,8 +43,8 @@ export default function ReviewDashboard() {
               Marketing Workspace
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Reviews & Ratings</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Reviews & Ratings</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage customer feedback, moderate reviews, and analyze product sentiment.
           </p>
         </div>
@@ -52,7 +52,7 @@ export default function ReviewDashboard() {
         <div className="flex gap-3">
           <Link 
             to="/admin/marketing/reviews/settings"
-            className="px-4 py-2 bg-white border border-black/10 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm"
+            className="px-4 py-2 bg-surface border border-black/10 text-text-secondary rounded-lg text-sm font-medium hover:bg-background transition-colors flex items-center gap-2 shadow-sm"
           >
             <FiSettings size={16} /> Settings
           </Link>
@@ -68,20 +68,20 @@ export default function ReviewDashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {KPI_CARDS.map((stat, idx) => (
-          <div key={idx} className="bg-white p-5 rounded-xl border border-black/5 flex items-center gap-4 shadow-sm">
+          <div key={idx} className="bg-surface p-5 rounded-xl border border-black/5 flex items-center gap-4 shadow-sm">
             <div className={`w-12 h-12 ${stat.bg} rounded-full flex items-center justify-center shrink-0`}>
               <stat.icon className={`${stat.color}`} size={20} />
             </div>
             <div>
-              <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">{stat.label}</p>
-              <p className="text-2xl font-bold text-[#1A1A1A] mt-0.5">{stat.value}</p>
+              <p className="text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">{stat.label}</p>
+              <p className="text-2xl font-bold text-text-primary mt-0.5">{stat.value}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Main Table Area */}
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-black/5 flex flex-col md:flex-row justify-between gap-4">
           <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
             {['all', 'pending', 'published', 'reported', 'featured'].map(tab => (
@@ -89,7 +89,7 @@ export default function ReviewDashboard() {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors capitalize whitespace-nowrap ${
-                  activeTab === tab ? 'bg-[#F7F5F2] text-[#1A1A1A]' : 'text-gray-500 hover:bg-gray-50'
+                  activeTab === tab ? 'bg-background text-text-primary' : 'text-text-muted hover:bg-background'
                 }`}
               >
                 {tab}
@@ -99,16 +99,16 @@ export default function ReviewDashboard() {
           
           <div className="flex gap-3">
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
               <input 
                 type="text" 
                 placeholder="Search reviews..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-[#F7F5F2] border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full md:w-64"
+                className="pl-10 pr-4 py-2 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full md:w-64"
               />
             </div>
-            <button className="px-4 py-2 bg-[#F7F5F2] text-[#1A1A1A] rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 shrink-0">
+            <button className="px-4 py-2 bg-background text-text-primary rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 shrink-0">
               <FiFilter size={16} /> Filter
             </button>
           </div>
@@ -117,40 +117,40 @@ export default function ReviewDashboard() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-black/5">
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider w-12">
-                  <input type="checkbox" className="rounded border-gray-300" />
+              <tr className="bg-background border-b border-black/5">
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider w-12">
+                  <input type="checkbox" className="rounded border-border-hover" />
                 </th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Reviewer</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Rating</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider max-w-md">Review</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Product</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Reviewer</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Rating</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider max-w-md">Review</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Product</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
                 <th className="p-4 text-right"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/5">
               {MOCK_REVIEWS.map(review => (
-                <tr key={review.id} className="hover:bg-gray-50 transition-colors group">
+                <tr key={review.id} className="hover:bg-background transition-colors group">
                   <td className="p-4">
-                    <input type="checkbox" className="rounded border-gray-300" />
+                    <input type="checkbox" className="rounded border-border-hover" />
                   </td>
                   <td className="p-4">
-                    <p className="text-sm font-bold text-[#1A1A1A]">{review.reviewer}</p>
+                    <p className="text-sm font-bold text-text-primary">{review.reviewer}</p>
                     <div className="mt-1">
                       <VerifiedBadge status={review.verified} />
                     </div>
                   </td>
                   <td className="p-4">
                     <RatingStars rating={review.rating} />
-                    <span className="text-xs text-gray-400 mt-1 block">{review.date}</span>
+                    <span className="text-xs text-text-muted mt-1 block">{review.date}</span>
                   </td>
                   <td className="p-4 max-w-md">
-                    <p className="text-sm font-bold text-[#1A1A1A] truncate">{review.title}</p>
-                    <p className="text-sm text-gray-600 line-clamp-2 mt-1">{review.content}</p>
+                    <p className="text-sm font-bold text-text-primary truncate">{review.title}</p>
+                    <p className="text-sm text-text-secondary line-clamp-2 mt-1">{review.content}</p>
                   </td>
                   <td className="p-4">
-                    <span className="text-sm font-medium text-gray-900">{review.product}</span>
+                    <span className="text-sm font-medium text-text-primary">{review.product}</span>
                   </td>
                   <td className="p-4">
                     {getStatusBadge(review.status)}
@@ -158,7 +158,7 @@ export default function ReviewDashboard() {
                   <td className="p-4 text-right">
                     <Link 
                       to={`/admin/marketing/reviews/moderation/${review.id}`}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       Moderate <FiArrowRight size={12} />
                     </Link>
@@ -169,11 +169,11 @@ export default function ReviewDashboard() {
           </table>
         </div>
         
-        <div className="p-4 border-t border-black/5 bg-gray-50 flex items-center justify-between">
-          <span className="text-xs font-medium text-gray-500">Showing 4 of 1,245 reviews</span>
+        <div className="p-4 border-t border-black/5 bg-background flex items-center justify-between">
+          <span className="text-xs font-medium text-text-muted">Showing 4 of 1,245 reviews</span>
           <div className="flex gap-2">
-            <button className="px-3 py-1 bg-white border border-black/10 rounded text-sm text-gray-600 hover:bg-gray-50">Prev</button>
-            <button className="px-3 py-1 bg-white border border-black/10 rounded text-sm text-gray-600 hover:bg-gray-50">Next</button>
+            <button className="px-3 py-1 bg-surface border border-black/10 rounded text-sm text-text-secondary hover:bg-background">Prev</button>
+            <button className="px-3 py-1 bg-surface border border-black/10 rounded text-sm text-text-secondary hover:bg-background">Next</button>
           </div>
         </div>
       </div>

@@ -15,12 +15,12 @@ export default function MediaGrid({
 
   if (assets.length === 0) {
     return (
-      <div className="bg-white border border-black/5 rounded-xl p-12 text-center flex flex-col items-center justify-center my-6 shadow-xs">
-        <div className="w-16 h-16 rounded-full bg-gray-50 border border-black/5 flex items-center justify-center text-gray-300 mb-4">
+      <div className="bg-surface border border-black/5 rounded-xl p-12 text-center flex flex-col items-center justify-center my-6 shadow-xs">
+        <div className="w-16 h-16 rounded-full bg-background border border-black/5 flex items-center justify-center text-gray-300 mb-4">
           <FiImage size={28} />
         </div>
-        <h3 className="text-sm font-bold text-[#1A1A1A]">No Assets Found</h3>
-        <p className="text-xs text-gray-400 mt-1 max-w-sm leading-relaxed">
+        <h3 className="text-sm font-bold text-text-primary">No Assets Found</h3>
+        <p className="text-xs text-text-muted mt-1 max-w-sm leading-relaxed">
           No media files match your current search criteria or folder filters. Try adjusting filters or uploading new files.
         </p>
       </div>
@@ -30,16 +30,16 @@ export default function MediaGrid({
   return (
     <div className="space-y-4">
       {/* Selection Control Bar */}
-      <div className="flex items-center justify-between text-xs text-gray-500 font-medium px-1">
+      <div className="flex items-center justify-between text-xs text-text-muted font-medium px-1">
         <button
           onClick={onSelectAll}
-          className="flex items-center gap-2 hover:text-[#1A1A1A] transition-colors cursor-pointer"
+          className="flex items-center gap-2 hover:text-text-primary transition-colors cursor-pointer"
         >
-          {allSelected ? <FiCheckSquare size={16} className="text-[#1A1A1A]" /> : <FiSquare size={16} />}
+          {allSelected ? <FiCheckSquare size={16} className="text-text-primary" /> : <FiSquare size={16} />}
           <span>{allSelected ? "Deselect All" : "Select All On Screen"}</span>
         </button>
 
-        <span className="text-[11px] font-mono text-gray-400">
+        <span className="text-[11px] font-mono text-text-muted">
           Showing {assets.length} items
         </span>
       </div>
@@ -60,10 +60,10 @@ export default function MediaGrid({
         </div>
       ) : (
         /* List View */
-        <div className="bg-white border border-black/5 rounded-xl overflow-hidden shadow-xs">
+        <div className="bg-surface border border-black/5 rounded-xl overflow-hidden shadow-xs">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-black/5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+              <tr className="bg-background border-b border-black/5 text-[10px] font-bold text-text-muted uppercase tracking-widest">
                 <th className="p-3 w-10 text-center">
                   <input
                     type="checkbox"
@@ -87,7 +87,7 @@ export default function MediaGrid({
                   <tr 
                     key={asset.id} 
                     className={cn(
-                      "hover:bg-gray-50/80 transition-colors group cursor-pointer",
+                      "hover:bg-background/80 transition-colors group cursor-pointer",
                       isSelected && "bg-blue-50/40"
                     )}
                     onClick={() => onPreviewAsset(asset)}
@@ -104,40 +104,40 @@ export default function MediaGrid({
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden shrink-0 border border-black/5 flex items-center justify-center">
                           {asset.type === 'document' ? (
-                            <FiFileText size={18} className="text-gray-400" />
+                            <FiFileText size={18} className="text-text-muted" />
                           ) : (
                             <img src={asset.url} alt={asset.title} className="w-full h-full object-cover" />
                           )}
                         </div>
                         <div>
-                          <div className="font-bold text-[#1A1A1A] truncate max-w-[180px]">{asset.title}</div>
-                          <div className="text-[10px] font-mono text-gray-400">{asset.fileName}</div>
+                          <div className="font-bold text-text-primary truncate max-w-[180px]">{asset.title}</div>
+                          <div className="text-[10px] font-mono text-text-muted">{asset.fileName}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="p-3 hidden sm:table-cell text-gray-500 font-medium">
+                    <td className="p-3 hidden sm:table-cell text-text-muted font-medium">
                       {asset.folder}
                     </td>
-                    <td className="p-3 hidden md:table-cell font-mono text-gray-500 text-[11px]">
+                    <td className="p-3 hidden md:table-cell font-mono text-text-muted text-[11px]">
                       {asset.dimensions || 'N/A'}
                     </td>
-                    <td className="p-3 font-mono text-gray-500 text-[11px]">
+                    <td className="p-3 font-mono text-text-muted text-[11px]">
                       {asset.size}
                     </td>
-                    <td className="p-3 hidden lg:table-cell text-gray-400 text-[11px]">
+                    <td className="p-3 hidden lg:table-cell text-text-muted text-[11px]">
                       {asset.createdAt}
                     </td>
                     <td className="p-3 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1 opacity-80 group-hover:opacity-100">
                         <button
                           onClick={() => onToggleFavorite(asset.id)}
-                          className={cn("p-1.5 rounded hover:bg-black/5", asset.favorite ? "text-amber-500" : "text-gray-400")}
+                          className={cn("p-1.5 rounded hover:bg-black/5", asset.favorite ? "text-amber-500" : "text-text-muted")}
                         >
                           <FiStar size={14} className={asset.favorite ? "fill-amber-500" : ""} />
                         </button>
                         <button
                           onClick={() => onPreviewAsset(asset)}
-                          className="p-1.5 rounded hover:bg-black/5 text-gray-500 hover:text-[#1A1A1A]"
+                          className="p-1.5 rounded hover:bg-black/5 text-text-muted hover:text-text-primary"
                           title="Preview"
                         >
                           <FiEye size={14} />

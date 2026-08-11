@@ -46,10 +46,10 @@ export function BrandingSettings() {
         <SettingsCard>
           <SettingsField label="Primary Logo" description="Used on your storefront header and transactional emails.">
             <div className="flex items-center gap-4">
-              <div className="w-32 h-16 bg-stone-100 border border-stone-200 rounded-lg flex items-center justify-center text-stone-400">
+              <div className="w-32 h-16 bg-stone-100 border border-border rounded-lg flex items-center justify-center text-text-muted">
                 <FiImage size={24} />
               </div>
-              <button className="px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors">
+              <button className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-colors">
                 Select from Media
               </button>
             </div>
@@ -57,10 +57,10 @@ export function BrandingSettings() {
           
           <SettingsField label="Favicon" description="Small icon displayed in the browser tab (32x32px recommended).">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-stone-100 border border-stone-200 rounded-lg flex items-center justify-center text-stone-400">
+              <div className="w-12 h-12 bg-stone-100 border border-border rounded-lg flex items-center justify-center text-text-muted">
                 <FiImage size={16} />
               </div>
-              <button className="px-4 py-2 bg-stone-100 text-stone-700 text-sm font-medium rounded-lg hover:bg-stone-200 transition-colors">
+              <button className="px-4 py-2 bg-stone-100 text-text-secondary text-sm font-medium rounded-lg hover:bg-stone-200 transition-colors">
                 Select
               </button>
             </div>
@@ -68,7 +68,7 @@ export function BrandingSettings() {
 
           <SettingsField label="Default Social Image (OG Image)" description="The default image shown when your store is shared on social media.">
             <div className="flex items-center gap-4">
-              <button className="px-4 py-2 bg-stone-100 text-stone-700 text-sm font-medium rounded-lg hover:bg-stone-200 transition-colors">
+              <button className="px-4 py-2 bg-stone-100 text-text-secondary text-sm font-medium rounded-lg hover:bg-stone-200 transition-colors">
                 Select from Media
               </button>
             </div>

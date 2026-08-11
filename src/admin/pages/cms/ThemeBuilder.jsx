@@ -41,13 +41,13 @@ export default function ThemeBuilder() {
         className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 shrink-0"
       >
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">Theme Builder</span>
+            <span className="text-text-primary font-semibold">Theme Builder</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Global Theme</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Global Theme</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Configure the visual identity, global layouts, and component styles that will be inherited across your entire website.
           </p>
         </div>

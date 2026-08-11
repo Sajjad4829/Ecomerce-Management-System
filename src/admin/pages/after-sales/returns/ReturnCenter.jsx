@@ -8,9 +8,9 @@ export default function ReturnCenter() {
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'Approved': return 'bg-green-100 text-green-800';
+      case 'Approved': return 'bg-success-soft text-green-800';
       case 'Requested': return 'bg-blue-100 text-blue-800';
-      case 'Rejected': return 'bg-red-100 text-red-800';
+      case 'Rejected': return 'bg-danger-soft text-red-800';
       default: return 'bg-neutral-100 text-neutral-800';
     }
   };
@@ -24,13 +24,13 @@ export default function ReturnCenter() {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input 
             type="text" 
             placeholder="Search returns..." 
-            className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+            className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" 
           />
         </div>
         <button className="px-4 py-2 border border-neutral-200 rounded-md text-neutral-700 hover:bg-neutral-50 flex items-center gap-2">
@@ -38,7 +38,7 @@ export default function ReturnCenter() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>

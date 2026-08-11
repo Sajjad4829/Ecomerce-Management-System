@@ -52,7 +52,7 @@ export function CustomerNotes() {
           </div>
         ) : (
           notes.map(note => (
-            <div key={note.id} className="p-4 border border-neutral-200 rounded-lg bg-white">
+            <div key={note.id} className="p-4 border border-neutral-200 rounded-lg bg-surface">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-neutral-900">Admin</span>
                 <span className="text-xs text-neutral-500">{new Date(note.createdAt).toLocaleString()}</span>

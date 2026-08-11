@@ -41,13 +41,13 @@ export default function LayoutBuilder() {
         className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 shrink-0"
       >
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">Layout Builder</span>
+            <span className="text-text-primary font-semibold">Layout Builder</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Global Layouts</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Global Layouts</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage the structural foundation of your website. Configure headers, footers, mega menus, and other global regions.
           </p>
         </div>

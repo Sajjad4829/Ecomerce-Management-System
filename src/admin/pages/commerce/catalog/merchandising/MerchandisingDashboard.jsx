@@ -30,8 +30,8 @@ export default function MerchandisingDashboard() {
               Discovery Engine
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Merchandising Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Merchandising Dashboard</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Control product visibility, orchestrate discovery campaigns, and dictate search result behaviors.
           </p>
         </div>
@@ -55,26 +55,26 @@ export default function MerchandisingDashboard() {
       {/* Recent Rules */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">Active Merchandising Rules</h2>
-          <a href="/admin/catalog/merchandising/rules/new" className="text-sm font-medium text-blue-600 hover:underline">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-text-muted">Active Merchandising Rules</h2>
+          <a href="/admin/catalog/merchandising/rules/new" className="text-sm font-medium text-primary hover:underline">
             Create Rule
           </a>
         </div>
-        <div className="bg-white rounded-xl border border-black/5 overflow-hidden shadow-sm">
+        <div className="bg-surface rounded-xl border border-black/5 overflow-hidden shadow-sm">
           <DataTable 
             data={merchandisingRules}
             searchPlaceholder="Search rules..."
             columns={[
               { key: 'name', label: 'Rule Name', render: (val) => <span className="font-medium">{val}</span> },
-              { key: 'condition', label: 'When', render: (val) => <span className="text-gray-600 text-sm bg-gray-50 px-2 py-1 rounded">{val}</span> },
+              { key: 'condition', label: 'When', render: (val) => <span className="text-text-secondary text-sm bg-background px-2 py-1 rounded">{val}</span> },
               { key: 'action', label: 'Action', render: (val) => <span className="font-medium text-sm text-blue-700">{val}</span> },
-              { key: 'target', label: 'Target', render: (val) => <span className="text-gray-600 text-sm">{val}</span> },
+              { key: 'target', label: 'Target', render: (val) => <span className="text-text-secondary text-sm">{val}</span> },
               { 
                 key: 'status', 
                 label: 'Status',
                 render: (val) => (
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    val === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    val === 'Active' ? 'bg-success-soft text-green-800' : 'bg-gray-100 text-gray-800'
                   }`}>
                     {val}
                   </span>

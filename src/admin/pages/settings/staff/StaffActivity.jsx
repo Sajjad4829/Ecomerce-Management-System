@@ -15,16 +15,16 @@ export default function StaffActivity() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center gap-4 mb-8">
-        <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-black">
+        <button onClick={() => navigate(-1)} className="text-text-muted hover:text-black">
           <FiArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">Staff Activity Log</h1>
-          <p className="text-gray-500 text-sm mt-1">Recent actions performed by {staffId}</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Staff Activity Log</h1>
+          <p className="text-text-muted text-sm mt-1">Recent actions performed by {staffId}</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm p-6">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-6">
         <div className="space-y-8">
           {activity.map((item, index) => {
             const Icon = item.icon;
@@ -37,9 +37,9 @@ export default function StaffActivity() {
                   <Icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">{item.action}</h4>
-                  <p className="text-sm text-gray-500 mt-0.5">{item.details}</p>
-                  <p className="text-xs text-gray-400 mt-2">{new Date(item.date).toLocaleString()}</p>
+                  <h4 className="font-medium text-text-primary">{item.action}</h4>
+                  <p className="text-sm text-text-muted mt-0.5">{item.details}</p>
+                  <p className="text-xs text-text-muted mt-2">{new Date(item.date).toLocaleString()}</p>
                 </div>
               </div>
             );

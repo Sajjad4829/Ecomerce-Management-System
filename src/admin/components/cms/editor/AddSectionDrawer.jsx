@@ -41,22 +41,22 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
         animate={{ x: 0 }} 
         exit={{ x: '-100%' }} 
         transition={{ type: "spring", damping: 25, stiffness: 200 }} 
-        className="fixed inset-y-0 left-0 w-96 bg-white shadow-2xl z-[70] flex flex-col border-r border-black/10"
+        className="fixed inset-y-0 left-0 w-96 bg-surface shadow-2xl z-[70] flex flex-col border-r border-black/10"
       >
-        <div className="h-16 border-b border-black/10 flex items-center justify-between px-6 shrink-0 bg-[#F7F5F2]">
-          <h2 className="text-sm font-bold font-serif text-[#1A1A1A]">Section Library</h2>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/5 text-gray-500 transition-colors">
+        <div className="h-16 border-b border-black/10 flex items-center justify-between px-6 shrink-0 bg-background">
+          <h2 className="text-sm font-bold font-serif text-text-primary">Section Library</h2>
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/5 text-text-muted transition-colors">
             <FiX size={18} />
           </button>
         </div>
         
-        <div className="p-4 border-b border-black/5 bg-white space-y-4">
+        <div className="p-4 border-b border-black/5 bg-surface space-y-4">
           <div className="flex bg-gray-100 p-1 rounded-lg">
             <button
               onClick={() => setActiveTab('sections')}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition-all",
-                activeTab === 'sections' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+                activeTab === 'sections' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
               )}
             >
               <FiLayout size={14} /> Sections
@@ -65,7 +65,7 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
               onClick={() => setActiveTab('blocks')}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition-all",
-                activeTab === 'blocks' ? "bg-white text-[#1A1A1A] shadow-sm" : "text-gray-500 hover:text-[#1A1A1A]"
+                activeTab === 'blocks' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
               )}
             >
               <FiGlobe size={14} /> Global Blocks
@@ -73,19 +73,19 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
           </div>
 
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder={`Search ${activeTab === 'sections' ? 'sections' : 'blocks'}...`} className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-black/5 rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+            <input type="text" placeholder={`Search ${activeTab === 'sections' ? 'sections' : 'blocks'}...`} className="w-full pl-9 pr-3 py-2 bg-background border border-black/5 rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20" />
           </div>
         </div>
         
         <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
            {currentList.map((sec, idx) => (
-             <div key={idx} className="border border-black/10 rounded-xl overflow-hidden group hover:border-black/30 transition-colors bg-white hover:shadow-md">
+             <div key={idx} className="border border-black/10 rounded-xl overflow-hidden group hover:border-black/30 transition-colors bg-surface hover:shadow-md">
                 <div className="h-36 bg-gray-100 relative">
                   {sec.image ? (
                     <img src={sec.image} alt={sec.name} className="w-full h-full object-cover object-top" />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-[#F7F5F2]">
+                    <div className="w-full h-full flex flex-col items-center justify-center text-text-muted bg-background">
                       <span className="text-xs font-bold uppercase tracking-widest">{sec.category}</span>
                       <span className="text-[10px] mt-1">Preview</span>
                     </div>
@@ -93,7 +93,7 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <button 
                       onClick={() => onAdd(sec)} 
-                      className="px-5 py-2.5 bg-white text-[#1A1A1A] text-xs font-bold uppercase tracking-widest rounded-lg hover:scale-105 transition-transform flex items-center gap-2 shadow-xl"
+                      className="px-5 py-2.5 bg-surface text-text-primary text-xs font-bold uppercase tracking-widest rounded-lg hover:scale-105 transition-transform flex items-center gap-2 shadow-xl"
                     >
                       <FiPlus size={16} /> Add to Page
                     </button>
@@ -101,12 +101,12 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
                 </div>
                 <div className="p-4">
                   <div className="flex justify-between items-start mb-1">
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{sec.category}</div>
+                    <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest">{sec.category}</div>
                     {activeTab === 'blocks' && (
-                      <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-blue-50 text-blue-600">Global</span>
+                      <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-blue-50 text-primary">Global</span>
                     )}
                   </div>
-                  <h3 className="text-sm font-bold text-[#1A1A1A] font-serif">{sec.name}</h3>
+                  <h3 className="text-sm font-bold text-text-primary font-serif">{sec.name}</h3>
                 </div>
              </div>
            ))}

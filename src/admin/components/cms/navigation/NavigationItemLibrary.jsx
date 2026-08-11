@@ -33,17 +33,17 @@ export default function NavigationItemLibrary() {
   const [search, setSearch] = useState('');
 
   return (
-    <div className="bg-white border border-black/5 rounded-xl flex flex-col h-full overflow-hidden shadow-sm">
-      <div className="p-4 border-b border-black/5 shrink-0 bg-gray-50/50">
-        <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest mb-4">Add Items</h3>
+    <div className="bg-surface border border-black/5 rounded-xl flex flex-col h-full overflow-hidden shadow-sm">
+      <div className="p-4 border-b border-black/5 shrink-0 bg-background/50">
+        <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-4">Add Items</h3>
         <div className="relative">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
           <input 
             type="text" 
             placeholder="Search item types..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white border border-black/10 rounded-lg text-sm focus:outline-none focus:border-black/30 transition-colors"
+            className="w-full pl-10 pr-4 py-2 bg-surface border border-black/10 rounded-lg text-sm focus:outline-none focus:border-black/30 transition-colors"
           />
         </div>
       </div>
@@ -51,20 +51,20 @@ export default function NavigationItemLibrary() {
       <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-6">
         {LIBRARY_CATEGORIES.map((cat, i) => (
           <div key={i}>
-            <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">{cat.title}</h4>
+            <h4 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-3">{cat.title}</h4>
             <div className="space-y-2">
               {cat.items.map((item) => (
                 <div 
                   key={item.id}
-                  className="group flex items-start gap-3 p-3 rounded-lg border border-black/5 bg-gray-50 hover:bg-white hover:border-black/20 hover:shadow-sm cursor-grab transition-all"
+                  className="group flex items-start gap-3 p-3 rounded-lg border border-black/5 bg-background hover:bg-surface hover:border-black/20 hover:shadow-sm cursor-grab transition-all"
                   draggable
                 >
-                  <div className="mt-0.5 text-gray-400 group-hover:text-[#1A1A1A] transition-colors">
+                  <div className="mt-0.5 text-text-muted group-hover:text-text-primary transition-colors">
                     <item.icon size={16} />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#1A1A1A]">{item.label}</div>
-                    <div className="text-[10px] text-gray-500 mt-0.5">{item.desc}</div>
+                    <div className="text-xs font-bold text-text-primary">{item.label}</div>
+                    <div className="text-[10px] text-text-muted mt-0.5">{item.desc}</div>
                   </div>
                 </div>
               ))}

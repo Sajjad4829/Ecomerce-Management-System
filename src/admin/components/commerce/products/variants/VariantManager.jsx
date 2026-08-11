@@ -32,16 +32,16 @@ export default function VariantManager({ productData, setProductData }) {
   if (!hasVariants && !isGenerating) {
     return (
       <div className="p-12 flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mb-6 border border-stone-200">
-          <FiGrid size={24} className="text-stone-400" />
+        <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mb-6 border border-border">
+          <FiGrid size={24} className="text-text-muted" />
         </div>
-        <h3 className="font-serif font-bold text-xl text-stone-900 mb-2">Product Variants</h3>
-        <p className="text-sm text-stone-500 max-w-md mb-8">
+        <h3 className="font-serif font-bold text-xl text-text-primary mb-2">Product Variants</h3>
+        <p className="text-sm text-text-muted max-w-md mb-8">
           This product has no variants. Add variants if this product comes in multiple options, like different sizes, colors, or materials.
         </p>
         <button 
           onClick={() => setIsGenerating(true)}
-          className="px-6 py-2.5 bg-stone-900 text-white rounded-lg text-sm font-semibold hover:bg-stone-800 transition-colors shadow-sm flex items-center gap-2"
+          className="px-6 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors shadow-sm flex items-center gap-2"
         >
           <FiPlus size={16} /> Add Variants
         </button>
@@ -61,27 +61,27 @@ export default function VariantManager({ productData, setProductData }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#F7F5F2]">
+    <div className="flex flex-col h-full bg-background">
       {/* Top Header */}
-      <div className="p-6 bg-white border-b border-stone-200 flex items-center justify-between">
+      <div className="p-6 bg-surface border-b border-border flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">Variant Manager</h2>
-          <p className="text-xs text-stone-500">
+          <h2 className="text-lg font-serif font-bold text-text-primary mb-1">Variant Manager</h2>
+          <p className="text-xs text-text-muted">
             {variants.length} active variants based on {selectedAttributes.length} attributes.
           </p>
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="flex bg-stone-100 p-1 rounded-lg border border-stone-200">
+          <div className="flex bg-stone-100 p-1 rounded-lg border border-border">
             <button 
               onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-900'}`}
+              className={`p-1.5 rounded-md transition-colors ${viewMode === 'table' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`}
             >
               <FiList size={16} />
             </button>
             <button 
               onClick={() => setViewMode('matrix')}
-              className={`p-1.5 rounded-md transition-colors ${viewMode === 'matrix' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-900'}`}
+              className={`p-1.5 rounded-md transition-colors ${viewMode === 'matrix' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`}
             >
               <FiGrid size={16} />
             </button>
@@ -89,7 +89,7 @@ export default function VariantManager({ productData, setProductData }) {
           
           <button 
             onClick={() => setIsGenerating(true)}
-            className="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-lg text-sm font-semibold hover:bg-stone-50 transition-colors shadow-sm flex items-center gap-2"
+            className="px-4 py-2 bg-surface border border-border text-text-secondary rounded-lg text-sm font-semibold hover:bg-background transition-colors shadow-sm flex items-center gap-2"
           >
             <FiSettings size={14} /> Configure Options
           </button>
@@ -116,7 +116,7 @@ export default function VariantManager({ productData, setProductData }) {
           )}
         </div>
         
-        <div className="w-full lg:w-[400px] shrink-0 border-t lg:border-t-0 lg:border-l border-stone-200 bg-white p-6 overflow-y-auto">
+        <div className="w-full lg:w-[400px] shrink-0 border-t lg:border-t-0 lg:border-l border-border bg-surface p-6 overflow-y-auto">
           <VariantSelectorPreview variants={variants} attributes={selectedAttributes} />
         </div>
       </div>

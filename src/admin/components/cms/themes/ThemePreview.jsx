@@ -14,17 +14,17 @@ export default function ThemePreview({ activeSection, device }) {
     <div className="bg-gray-100 rounded-xl border border-black/5 flex-1 relative overflow-hidden flex justify-center h-[calc(100vh-14rem)]">
       {/* Canvas Area */}
       <div className={cn(
-        "bg-white h-full shadow-2xl transition-all duration-300 overflow-y-auto overflow-x-hidden flex flex-col custom-scrollbar border-x border-black/5",
+        "bg-surface h-full shadow-2xl transition-all duration-300 overflow-y-auto overflow-x-hidden flex flex-col custom-scrollbar border-x border-black/5",
         getContainerWidth()
       )}>
         
         {/* Mock Header */}
-        <header className="border-b border-black/5 px-6 py-4 flex items-center justify-between shrink-0 sticky top-0 bg-white/90 backdrop-blur z-10">
+        <header className="border-b border-black/5 px-6 py-4 flex items-center justify-between shrink-0 sticky top-0 bg-surface/90 backdrop-blur z-10">
           <div className="font-serif font-bold text-xl tracking-tight">LUXE</div>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <span className="text-[#1A1A1A] hover:text-[#A69076] cursor-pointer transition-colors">Collections</span>
-            <span className="text-[#1A1A1A] hover:text-[#A69076] cursor-pointer transition-colors">Designers</span>
-            <span className="text-[#1A1A1A] hover:text-[#A69076] cursor-pointer transition-colors">About</span>
+            <span className="text-text-primary hover:text-[#A69076] cursor-pointer transition-colors">Collections</span>
+            <span className="text-text-primary hover:text-[#A69076] cursor-pointer transition-colors">Designers</span>
+            <span className="text-text-primary hover:text-[#A69076] cursor-pointer transition-colors">About</span>
           </nav>
           <div className="flex gap-4 items-center">
             <div className="w-4 h-4 rounded-full bg-black/10"></div>
@@ -35,11 +35,11 @@ export default function ThemePreview({ activeSection, device }) {
         {/* Mock Content */}
         <div className="flex-1 flex flex-col">
           {/* Hero */}
-          <div className="bg-[#F7F5F2] py-20 px-6 flex flex-col items-center justify-center text-center">
-            <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 max-w-2xl">
+          <div className="bg-background py-20 px-6 flex flex-col items-center justify-center text-center">
+            <h1 className="font-serif text-4xl md:text-5xl font-bold text-text-primary mb-4 max-w-2xl">
               Elevate Your Living Space
             </h1>
-            <p className="text-gray-500 mb-8 max-w-lg font-sans">
+            <p className="text-text-muted mb-8 max-w-lg font-sans">
               Discover our new collection of premium, handcrafted furniture designed for modern comfort and timeless style.
             </p>
             <button className="px-8 py-3 bg-[#1A1A1A] text-white text-xs font-bold uppercase tracking-widest hover:bg-black/80 transition-colors">
@@ -50,7 +50,7 @@ export default function ThemePreview({ activeSection, device }) {
           {/* Cards / Products */}
           <div className="py-16 px-6 max-w-5xl mx-auto w-full">
             <div className="flex items-center justify-between mb-8">
-               <h2 className="font-serif text-2xl font-bold text-[#1A1A1A]">New Arrivals</h2>
+               <h2 className="font-serif text-2xl font-bold text-text-primary">New Arrivals</h2>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -62,8 +62,8 @@ export default function ThemePreview({ activeSection, device }) {
                   </div>
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-semibold text-[#1A1A1A] text-sm">Minimalist Oak Chair</h3>
-                      <p className="text-gray-500 text-xs mt-1">Dining Collection</p>
+                      <h3 className="font-semibold text-text-primary text-sm">Minimalist Oak Chair</h3>
+                      <p className="text-text-muted text-xs mt-1">Dining Collection</p>
                     </div>
                     <span className="font-mono text-sm">$899</span>
                   </div>
@@ -74,10 +74,10 @@ export default function ThemePreview({ activeSection, device }) {
 
           {/* Form / Newsletter */}
           <div className="border-t border-black/5 py-16 px-6 flex flex-col items-center text-center">
-             <h2 className="font-serif text-2xl font-bold text-[#1A1A1A] mb-2">Join the Club</h2>
-             <p className="text-gray-500 text-sm mb-6 max-w-md">Subscribe to receive updates, access to exclusive deals, and more.</p>
+             <h2 className="font-serif text-2xl font-bold text-text-primary mb-2">Join the Club</h2>
+             <p className="text-text-muted text-sm mb-6 max-w-md">Subscribe to receive updates, access to exclusive deals, and more.</p>
              <div className="flex w-full max-w-md gap-2">
-               <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 bg-gray-50 border border-black/10 text-sm focus:outline-none focus:border-black/30 transition-colors" />
+               <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 bg-background border border-black/10 text-sm focus:outline-none focus:border-black/30 transition-colors" />
                <button className="px-6 py-3 bg-[#1A1A1A] text-white text-xs font-bold uppercase tracking-widest hover:bg-black/80 transition-colors shrink-0">
                  Subscribe
                </button>

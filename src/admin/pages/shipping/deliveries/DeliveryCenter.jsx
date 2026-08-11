@@ -24,7 +24,7 @@ export const DeliveryCenter = () => {
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -37,7 +37,7 @@ export const DeliveryCenter = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -53,7 +53,7 @@ export const DeliveryCenter = () => {
             {filteredDeliveries.map((del) => (
               <tr key={del.id} className="hover:bg-neutral-50 transition-colors">
                 <td className="px-6 py-4 font-medium text-neutral-900">{del.id}</td>
-                <td className="px-6 py-4 text-indigo-600 hover:underline cursor-pointer">{del.shipmentId}</td>
+                <td className="px-6 py-4 text-primary hover:underline cursor-pointer">{del.shipmentId}</td>
                 <td className="px-6 py-4 text-neutral-600">{del.customer}</td>
                 <td className="px-6 py-4 text-neutral-600">{del.agent}</td>
                 <td className="px-6 py-4 text-neutral-600">{del.scheduledDate}</td>
@@ -61,7 +61,7 @@ export const DeliveryCenter = () => {
                   <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                     del.status === 'Delivered' ? 'bg-emerald-100 text-emerald-800' :
                     del.status === 'Out for Delivery' ? 'bg-blue-100 text-blue-800' :
-                    'bg-amber-100 text-amber-800'
+                    'bg-warning-soft text-amber-800'
                   }`}>
                     {del.status}
                   </span>

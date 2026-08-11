@@ -28,24 +28,24 @@ export default function SectionItem({ section, isActive, onClick, index }) {
       className={cn(
         "group flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-all mb-2",
         isActive 
-          ? "border-[#1A1A1A] bg-gray-50 shadow-sm" 
-          : "border-black/5 hover:border-black/10 hover:bg-gray-50/50"
+          ? "border-[#1A1A1A] bg-background shadow-sm" 
+          : "border-black/5 hover:border-black/10 hover:bg-background/50"
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="cursor-grab text-gray-300 hover:text-gray-500">
+        <div className="cursor-grab text-gray-300 hover:text-text-muted">
           <FiMoreVertical size={14} className="-mr-1.5" />
           <FiMoreVertical size={14} />
         </div>
         <div className={cn(
-          "w-8 h-8 rounded bg-white border flex items-center justify-center shrink-0 transition-colors",
-          isActive ? "border-black/20 text-[#1A1A1A]" : "border-black/5 text-gray-400"
+          "w-8 h-8 rounded bg-surface border flex items-center justify-center shrink-0 transition-colors",
+          isActive ? "border-black/20 text-text-primary" : "border-black/5 text-text-muted"
         )}>
           {getIcon(section.type)}
         </div>
         <div>
-          <div className="text-xs font-semibold text-[#1A1A1A]">{section.name}</div>
-          <div className="text-[10px] text-gray-500 uppercase tracking-widest">{section.type}</div>
+          <div className="text-xs font-semibold text-text-primary">{section.name}</div>
+          <div className="text-[10px] text-text-muted uppercase tracking-widest">{section.type}</div>
         </div>
       </div>
       
@@ -53,13 +53,13 @@ export default function SectionItem({ section, isActive, onClick, index }) {
         "flex items-center gap-1 transition-opacity",
         isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
       )}>
-        <button className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-black/5 rounded transition-colors" title="Duplicate">
+        <button className="p-1.5 text-text-muted hover:text-text-primary hover:bg-black/5 rounded transition-colors" title="Duplicate">
           <FiCopy size={12} />
         </button>
-        <button className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-black/5 rounded transition-colors" title="Hide">
+        <button className="p-1.5 text-text-muted hover:text-text-primary hover:bg-black/5 rounded transition-colors" title="Hide">
           <FiEyeOff size={12} />
         </button>
-        <button className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Delete">
+        <button className="p-1.5 text-text-muted hover:text-danger hover:bg-danger-soft rounded transition-colors" title="Delete">
           <FiTrash2 size={12} />
         </button>
       </div>

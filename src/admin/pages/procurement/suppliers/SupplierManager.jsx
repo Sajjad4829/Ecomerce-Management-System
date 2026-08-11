@@ -25,7 +25,7 @@ export const SupplierManager = () => {
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -41,7 +41,7 @@ export const SupplierManager = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
@@ -73,7 +73,7 @@ export const SupplierManager = () => {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                      supplier.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                      supplier.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                     }`}>
                       {supplier.status}
                     </span>
@@ -81,7 +81,7 @@ export const SupplierManager = () => {
                   <td className="px-6 py-4 text-right">
                     <button 
                       onClick={() => navigate(`/admin/procurement/suppliers/${supplier.id}`)}
-                      className="inline-flex items-center justify-center p-2 text-neutral-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                      className="inline-flex items-center justify-center p-2 text-neutral-400 hover:text-primary hover:bg-primary-soft rounded transition-colors"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </button>

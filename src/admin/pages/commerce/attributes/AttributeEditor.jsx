@@ -87,23 +87,23 @@ export default function AttributeEditor() {
   const hasValues = ['select', 'multi_select', 'radio', 'color', 'image_swatch'].includes(formData.type);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-[#F7F5F2]">
-      <header className="shrink-0 bg-white border-b border-stone-200 px-6 py-4 flex items-center justify-between z-10">
+    <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-background">
+      <header className="shrink-0 bg-surface border-b border-border px-6 py-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate('/admin/catalog/attributes')}
-            className="p-2 -ml-2 text-stone-400 hover:text-stone-900 transition-colors rounded-lg hover:bg-stone-50"
+            className="p-2 -ml-2 text-text-muted hover:text-text-primary transition-colors rounded-lg hover:bg-background"
           >
             <FiArrowLeft size={20} />
           </button>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="font-serif font-bold text-xl text-stone-900">
+              <h1 className="font-serif font-bold text-xl text-text-primary">
                 {isNew ? 'Create Attribute' : formData.name}
               </h1>
               {!isNew && <CatalogStatusBadge status={formData.status} />}
             </div>
-            <p className="text-xs text-stone-500 font-mono mt-1">
+            <p className="text-xs text-text-muted font-mono mt-1">
               {isNew ? 'New Attribute' : `Slug: /${formData.slug}`}
             </p>
           </div>
@@ -113,21 +113,21 @@ export default function AttributeEditor() {
           <select 
             value={formData.status}
             onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
-            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-900"
+            className="px-3 py-2 bg-background border border-border rounded-lg text-sm font-semibold text-text-secondary focus:outline-none focus:ring-2 focus:ring-stone-900"
           >
             <option value="draft">Draft</option>
             <option value="published">Published</option>
             <option value="archived">Archived</option>
           </select>
           <button 
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-lg text-sm font-semibold hover:bg-stone-50 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-surface border border-border text-text-secondary rounded-lg text-sm font-semibold hover:bg-background transition-colors shadow-sm"
           >
             <FiEye size={16} /> Preview
           </button>
           <button 
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 px-6 py-2 bg-stone-900 text-white rounded-lg text-sm font-semibold hover:bg-stone-800 transition-colors shadow-sm disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors shadow-sm disabled:opacity-50"
           >
             {isSaving ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -140,7 +140,7 @@ export default function AttributeEditor() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <nav className="w-64 shrink-0 bg-white border-r border-stone-200 overflow-y-auto py-6">
+        <nav className="w-64 shrink-0 bg-surface border-r border-border overflow-y-auto py-6">
           <ul className="space-y-1 px-4">
             {TABS.map(tab => {
               if (tab.id === 'values' && !hasValues) return null;
@@ -153,11 +153,11 @@ export default function AttributeEditor() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                       isActive 
-                        ? 'bg-amber-50 text-amber-900' 
-                        : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                        ? 'bg-warning-soft text-amber-900' 
+                        : 'text-text-secondary hover:bg-background hover:text-text-primary'
                     }`}
                   >
-                    <Icon size={18} className={isActive ? 'text-amber-600' : 'text-stone-400'} />
+                    <Icon size={18} className={isActive ? 'text-warning' : 'text-text-muted'} />
                     {tab.label}
                   </button>
                 </li>
@@ -175,43 +175,43 @@ export default function AttributeEditor() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="bg-white rounded-xl border border-stone-200 shadow-sm p-8"
+                className="bg-surface rounded-xl border border-border shadow-sm p-8"
               >
                 {activeTab === 'basic' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">Basic Information</h2>
-                      <p className="text-sm text-stone-500">Core details for this product attribute.</p>
+                      <h2 className="text-lg font-serif font-bold text-text-primary mb-1">Basic Information</h2>
+                      <p className="text-sm text-text-muted">Core details for this product attribute.</p>
                     </div>
                     
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Attribute Name</label>
+                        <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Attribute Name</label>
                         <input 
                           type="text" 
                           value={formData.name}
                           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                          className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
+                          className="w-full px-4 py-2.5 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-text-primary"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">URL Slug</label>
+                        <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">URL Slug</label>
                         <input 
                           type="text" 
                           value={formData.slug}
                           onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-                          className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-mono text-stone-900"
+                          className="w-full px-4 py-2.5 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-mono text-text-primary"
                         />
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Attribute Type</label>
+                          <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Attribute Type</label>
                           <select 
                             value={formData.type}
                             onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-                            className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
+                            className="w-full px-4 py-2.5 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-text-primary"
                           >
                             <option value="text">Text (Single Line)</option>
                             <option value="long_text">Text (Multi Line)</option>
@@ -229,11 +229,11 @@ export default function AttributeEditor() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Attribute Group</label>
+                          <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Attribute Group</label>
                           <select 
                             value={formData.group}
                             onChange={(e) => setFormData(prev => ({ ...prev, group: e.target.value }))}
-                            className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-stone-900"
+                            className="w-full px-4 py-2.5 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm font-medium text-text-primary"
                           >
                             <option value="General">General</option>
                             <option value="Materials">Materials</option>
@@ -247,13 +247,13 @@ export default function AttributeEditor() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-2">Description / Tooltip</label>
+                        <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Description / Tooltip</label>
                         <textarea 
                           rows={3}
                           value={formData.description}
                           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                           placeholder="Optional help text to display next to the attribute."
-                          className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm text-stone-900 resize-none"
+                          className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 text-sm text-text-primary resize-none"
                         />
                       </div>
                     </div>
@@ -263,8 +263,8 @@ export default function AttributeEditor() {
                 {activeTab === 'behavior' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">Behavior & Usage</h2>
-                      <p className="text-sm text-stone-500">Configure how this attribute operates within the catalog.</p>
+                      <h2 className="text-lg font-serif font-bold text-text-primary mb-1">Behavior & Usage</h2>
+                      <p className="text-sm text-text-muted">Configure how this attribute operates within the catalog.</p>
                     </div>
 
                     <div className="space-y-1 divide-y divide-stone-100">
@@ -281,8 +281,8 @@ export default function AttributeEditor() {
                       ].map((item) => (
                         <div key={item.key} className="py-4 flex items-start justify-between">
                           <div>
-                            <p className="text-sm font-bold text-stone-900">{item.label}</p>
-                            <p className="text-xs text-stone-500 mt-0.5">{item.desc}</p>
+                            <p className="text-sm font-bold text-text-primary">{item.label}</p>
+                            <p className="text-xs text-text-muted mt-0.5">{item.desc}</p>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input 
@@ -291,7 +291,7 @@ export default function AttributeEditor() {
                               checked={formData[item.key]}
                               onChange={(e) => setFormData(prev => ({ ...prev, [item.key]: e.target.checked }))}
                             />
-                            <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-stone-900 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-stone-900"></div>
+                            <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-stone-900 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-border-hover after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                           </label>
                         </div>
                       ))}
@@ -302,8 +302,8 @@ export default function AttributeEditor() {
                 {activeTab === 'values' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">Attribute Values</h2>
-                      <p className="text-sm text-stone-500">Manage the predefined list of choices for this attribute.</p>
+                      <h2 className="text-lg font-serif font-bold text-text-primary mb-1">Attribute Values</h2>
+                      <p className="text-sm text-text-muted">Manage the predefined list of choices for this attribute.</p>
                     </div>
 
                     <AttributeValueEditor 
@@ -317,12 +317,12 @@ export default function AttributeEditor() {
                 {activeTab === 'display' && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-lg font-serif font-bold text-stone-900 mb-1">Display Settings</h2>
-                      <p className="text-sm text-stone-500">Configure how this attribute visually renders on the storefront.</p>
+                      <h2 className="text-lg font-serif font-bold text-text-primary mb-1">Display Settings</h2>
+                      <p className="text-sm text-text-muted">Configure how this attribute visually renders on the storefront.</p>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-mono font-bold text-stone-500 uppercase mb-3">Storefront Representation</label>
+                      <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-3">Storefront Representation</label>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {[
                           { id: 'text', label: 'Plain Text' },
@@ -340,8 +340,8 @@ export default function AttributeEditor() {
                               checked={formData.displayType === type.id}
                               onChange={() => setFormData(prev => ({ ...prev, displayType: type.id }))}
                             />
-                            <div className="px-4 py-3 rounded-xl border-2 peer-checked:border-stone-900 peer-checked:bg-stone-50 border-stone-200 hover:border-stone-300 transition-all text-center">
-                              <span className="text-sm font-semibold text-stone-900">{type.label}</span>
+                            <div className="px-4 py-3 rounded-xl border-2 peer-checked:border-stone-900 peer-checked:bg-background border-border hover:border-border-hover transition-all text-center">
+                              <span className="text-sm font-semibold text-text-primary">{type.label}</span>
                             </div>
                           </label>
                         ))}

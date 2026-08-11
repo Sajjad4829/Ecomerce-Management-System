@@ -53,13 +53,13 @@ export default function DesignSystem() {
         className="flex flex-col lg:flex-row lg:items-end justify-between gap-6"
       >
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">Design System</span>
+            <span className="text-text-primary font-semibold">Design System</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Design System Manager</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Design System Manager</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Manage the visual design foundations and tokens for your entire platform. This serves as the single source of truth for themes and UI elements.
           </p>
         </div>

@@ -12,10 +12,10 @@ export default function LayoutPresets() {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {PRESETS.map(preset => (
         <div key={preset.id} className={cn(
-          "bg-white border rounded-xl overflow-hidden hover:shadow-lg transition-all group flex flex-col",
+          "bg-surface border rounded-xl overflow-hidden hover:shadow-lg transition-all group flex flex-col",
           preset.active ? "border-[#1A1A1A] shadow-md" : "border-black/5"
         )}>
-          <div className="w-full aspect-[16/9] bg-gray-50 border-b border-black/5 relative p-4 flex flex-col justify-between">
+          <div className="w-full aspect-[16/9] bg-background border-b border-black/5 relative p-4 flex flex-col justify-between">
              {/* Abstract Wireframe Representation */}
              <div className="w-full h-3 bg-gray-300 rounded-full opacity-50 mb-2"></div>
              <div className="flex justify-between items-center mb-auto">
@@ -36,7 +36,7 @@ export default function LayoutPresets() {
              )}
 
              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 rounded-t-xl">
-                <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform shadow-lg" title="Preview Layout">
+                <button className="w-10 h-10 bg-surface rounded-full flex items-center justify-center text-text-primary hover:scale-110 transition-transform shadow-lg" title="Preview Layout">
                   <FiEye size={18} />
                 </button>
              </div>
@@ -44,27 +44,27 @@ export default function LayoutPresets() {
           
           <div className="p-5 flex flex-col flex-1">
              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-sm font-bold text-[#1A1A1A] font-serif">{preset.name}</h3>
+                <h3 className="text-sm font-bold text-text-primary font-serif">{preset.name}</h3>
              </div>
-             <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-6">
+             <p className="text-xs text-text-muted line-clamp-2 leading-relaxed mb-6">
                 {preset.description}
              </p>
 
              <div className="mt-auto flex items-center justify-between pt-4 border-t border-black/5">
-                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+                <span className="text-[10px] font-semibold text-text-muted uppercase tracking-widest">
                   Updated {preset.updated}
                 </span>
                 
                 <div className="flex items-center gap-1">
                   {!preset.active && (
-                     <button className="px-3 py-1 bg-gray-100 text-[#1A1A1A] text-xs font-semibold rounded hover:bg-gray-200 transition-colors mr-2">
+                     <button className="px-3 py-1 bg-gray-100 text-text-primary text-xs font-semibold rounded hover:bg-gray-200 transition-colors mr-2">
                        Apply
                      </button>
                   )}
-                  <button className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-100 rounded" title="Duplicate">
+                  <button className="p-1.5 text-text-muted hover:text-text-primary hover:bg-gray-100 rounded" title="Duplicate">
                     <FiCopy size={14} />
                   </button>
-                  <button className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-100 rounded" title="Export">
+                  <button className="p-1.5 text-text-muted hover:text-text-primary hover:bg-gray-100 rounded" title="Export">
                     <FiDownload size={14} />
                   </button>
                 </div>

@@ -61,22 +61,22 @@ export default function PromotionBuilder() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-theme(spacing.20))]">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-[#F7F5F2] pt-4 pb-4 border-b border-black/5 flex items-center justify-between shrink-0">
+      <div className="sticky top-0 z-20 bg-background pt-4 pb-4 border-b border-black/5 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-4">
-          <Link to="/admin/marketing/promotions" className="p-2 bg-white border border-black/10 rounded-lg text-gray-500 hover:text-black hover:border-black/20 transition-all shadow-sm">
+          <Link to="/admin/marketing/promotions" className="p-2 bg-surface border border-black/10 rounded-lg text-text-muted hover:text-black hover:border-black/20 transition-all shadow-sm">
             <FiArrowLeft size={18} />
           </Link>
           <div>
-            <h1 className="text-xl font-serif font-bold text-[#1A1A1A]">
+            <h1 className="text-xl font-serif font-bold text-text-primary">
               {formData.name || 'Untitled Promotion'}
             </h1>
-            <p className="text-xs text-gray-500 mt-0.5">Promotion Builder</p>
+            <p className="text-xs text-text-muted mt-0.5">Promotion Builder</p>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
           <button 
-            className="px-4 py-2 text-gray-600 hover:text-black text-sm font-medium transition-colors"
+            className="px-4 py-2 text-text-secondary hover:text-black text-sm font-medium transition-colors"
           >
             Save as Draft
           </button>
@@ -103,16 +103,16 @@ export default function PromotionBuilder() {
                   onClick={() => setActiveStep(step.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium text-left ${
                     isActive 
-                      ? 'bg-white shadow-sm border border-black/5 text-[#1A1A1A]' 
-                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900 border border-transparent'
+                      ? 'bg-surface shadow-sm border border-black/5 text-text-primary' 
+                      : 'text-text-muted hover:bg-gray-100 hover:text-text-primary border border-transparent'
                   }`}
                 >
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border ${
                     isActive 
-                      ? 'border-[#1A1A1A] text-[#1A1A1A]' 
+                      ? 'border-[#1A1A1A] text-text-primary' 
                       : isPast
                         ? 'bg-[#1A1A1A] border-[#1A1A1A] text-white'
-                        : 'border-gray-300 text-gray-400'
+                        : 'border-border-hover text-text-muted'
                   }`}>
                     {isPast ? <FiCheck size={12} /> : <step.icon size={12} />}
                   </div>
@@ -133,31 +133,31 @@ export default function PromotionBuilder() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="bg-white rounded-xl border border-black/5 shadow-sm p-8"
+                className="bg-surface rounded-xl border border-black/5 shadow-sm p-8"
               >
                 {activeStep === 'basic' && (
                   <div className="space-y-8">
                     <div>
-                      <h2 className="text-lg font-serif font-bold text-[#1A1A1A] mb-1">Basic Information</h2>
-                      <p className="text-sm text-gray-500">Name and type of the promotion.</p>
+                      <h2 className="text-lg font-serif font-bold text-text-primary mb-1">Basic Information</h2>
+                      <p className="text-sm text-text-muted">Name and type of the promotion.</p>
                     </div>
 
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Promotion Name</label>
+                        <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Promotion Name</label>
                         <input 
                           type="text" 
                           value={formData.name}
                           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                           placeholder="e.g. Summer Sale 2026"
-                          className="w-full px-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:bg-white transition-all text-sm font-medium text-[#1A1A1A]"
+                          className="w-full px-4 py-2.5 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:bg-surface transition-all text-sm font-medium text-text-primary"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-3">Method</label>
+                        <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-3">Method</label>
                         <div className="grid grid-cols-2 gap-4">
-                          <label className={`border rounded-xl p-4 cursor-pointer transition-all ${formData.type === 'discount_code' ? 'border-[#1A1A1A] bg-gray-50 shadow-sm' : 'border-black/10 hover:border-black/30'}`}>
+                          <label className={`border rounded-xl p-4 cursor-pointer transition-all ${formData.type === 'discount_code' ? 'border-[#1A1A1A] bg-background shadow-sm' : 'border-black/10 hover:border-black/30'}`}>
                             <div className="flex items-start gap-3">
                               <div className="pt-1">
                                 <input 
@@ -165,16 +165,16 @@ export default function PromotionBuilder() {
                                   name="promoType" 
                                   checked={formData.type === 'discount_code'}
                                   onChange={() => setFormData(prev => ({ ...prev, type: 'discount_code' }))}
-                                  className="w-4 h-4 text-[#1A1A1A] focus:ring-[#1A1A1A]" 
+                                  className="w-4 h-4 text-text-primary focus:ring-[#1A1A1A]" 
                                 />
                               </div>
                               <div>
-                                <p className="text-sm font-bold text-[#1A1A1A]">Discount Code</p>
-                                <p className="text-xs text-gray-500 mt-1">Customers must enter this code at checkout.</p>
+                                <p className="text-sm font-bold text-text-primary">Discount Code</p>
+                                <p className="text-xs text-text-muted mt-1">Customers must enter this code at checkout.</p>
                               </div>
                             </div>
                           </label>
-                          <label className={`border rounded-xl p-4 cursor-pointer transition-all ${formData.type === 'automatic' ? 'border-[#1A1A1A] bg-gray-50 shadow-sm' : 'border-black/10 hover:border-black/30'}`}>
+                          <label className={`border rounded-xl p-4 cursor-pointer transition-all ${formData.type === 'automatic' ? 'border-[#1A1A1A] bg-background shadow-sm' : 'border-black/10 hover:border-black/30'}`}>
                             <div className="flex items-start gap-3">
                               <div className="pt-1">
                                 <input 
@@ -182,12 +182,12 @@ export default function PromotionBuilder() {
                                   name="promoType" 
                                   checked={formData.type === 'automatic'}
                                   onChange={() => setFormData(prev => ({ ...prev, type: 'automatic' }))}
-                                  className="w-4 h-4 text-[#1A1A1A] focus:ring-[#1A1A1A]" 
+                                  className="w-4 h-4 text-text-primary focus:ring-[#1A1A1A]" 
                                 />
                               </div>
                               <div>
-                                <p className="text-sm font-bold text-[#1A1A1A]">Automatic Discount</p>
-                                <p className="text-xs text-gray-500 mt-1">Applies automatically in cart and checkout.</p>
+                                <p className="text-sm font-bold text-text-primary">Automatic Discount</p>
+                                <p className="text-xs text-text-muted mt-1">Applies automatically in cart and checkout.</p>
                               </div>
                             </div>
                           </label>
@@ -196,18 +196,18 @@ export default function PromotionBuilder() {
 
                       {formData.type === 'discount_code' && (
                         <div className="pt-4 border-t border-black/5">
-                          <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Discount Code</label>
+                          <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Discount Code</label>
                           <div className="flex gap-3">
                             <input 
                               type="text" 
                               value={formData.code}
                               onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase().replace(/\s/g, '') }))}
                               placeholder="e.g. SUMMER20"
-                              className="flex-1 px-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:bg-white transition-all text-sm font-mono font-bold text-[#1A1A1A]"
+                              className="flex-1 px-4 py-2.5 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:bg-surface transition-all text-sm font-mono font-bold text-text-primary"
                             />
                             <button 
                               onClick={() => setFormData(prev => ({ ...prev, code: Math.random().toString(36).substring(2, 10).toUpperCase() }))}
-                              className="px-4 py-2 bg-gray-100 text-[#1A1A1A] rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
+                              className="px-4 py-2 bg-gray-100 text-text-primary rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
                             >
                               Generate
                             </button>
@@ -237,7 +237,7 @@ export default function PromotionBuilder() {
               <button 
                 onClick={prevStep}
                 disabled={currentStepIndex === 0}
-                className="px-6 py-2.5 bg-white border border-black/10 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2.5 bg-surface border border-black/10 text-text-secondary rounded-lg text-sm font-medium hover:bg-background transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous Step
               </button>

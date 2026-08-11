@@ -87,11 +87,11 @@ export default function MediaUploader({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/50 backdrop-blur-sm">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100">
-          <h2 className="text-lg font-bold text-stone-900">Upload Media</h2>
-          <button onClick={onClose} className="p-2 text-stone-400 hover:text-stone-900 rounded-lg transition-colors">
+          <h2 className="text-lg font-bold text-text-primary">Upload Media</h2>
+          <button onClick={onClose} className="p-2 text-text-muted hover:text-text-primary rounded-lg transition-colors">
             <FiX size={20} />
           </button>
         </div>
@@ -99,18 +99,18 @@ export default function MediaUploader({ onClose }) {
         <div className="p-6 overflow-y-auto flex-1">
           <div 
             className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center text-center transition-colors ${
-              dragActive ? 'border-stone-900 bg-stone-50' : 'border-stone-200 hover:border-stone-300'
+              dragActive ? 'border-stone-900 bg-background' : 'border-border hover:border-border-hover'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            <FiUploadCloud size={48} className={`mb-4 ${dragActive ? 'text-stone-900' : 'text-stone-300'}`} />
-            <h3 className="text-lg font-medium text-stone-900 mb-2">Drag and drop your files here</h3>
-            <p className="text-sm text-stone-500 mb-6">Support for JPG, PNG, WebP, MP4, PDF up to 50MB</p>
+            <FiUploadCloud size={48} className={`mb-4 ${dragActive ? 'text-text-primary' : 'text-stone-300'}`} />
+            <h3 className="text-lg font-medium text-text-primary mb-2">Drag and drop your files here</h3>
+            <p className="text-sm text-text-muted mb-6">Support for JPG, PNG, WebP, MP4, PDF up to 50MB</p>
             
-            <label className="px-6 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors cursor-pointer">
+            <label className="px-6 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-colors cursor-pointer">
               Browse Files
               <input type="file" multiple className="hidden" onChange={handleChange} />
             </label>
@@ -118,34 +118,34 @@ export default function MediaUploader({ onClose }) {
 
           {files.length > 0 && (
             <div className="mt-8 space-y-3">
-              <h4 className="text-xs font-bold text-stone-900 uppercase tracking-widest">Upload Queue ({files.length})</h4>
+              <h4 className="text-xs font-bold text-text-primary uppercase tracking-widest">Upload Queue ({files.length})</h4>
               {files.map(fileObj => (
-                <div key={fileObj.id} className="bg-stone-50 border border-stone-200 rounded-lg p-3 flex items-center gap-4">
-                  <div className="w-10 h-10 rounded bg-white border border-stone-200 flex items-center justify-center shrink-0 text-stone-500">
+                <div key={fileObj.id} className="bg-background border border-border rounded-lg p-3 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded bg-surface border border-border flex items-center justify-center shrink-0 text-text-muted">
                     <FiFile />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start mb-1">
-                      <span className="text-sm font-medium text-stone-900 truncate">{fileObj.file.name}</span>
+                      <span className="text-sm font-medium text-text-primary truncate">{fileObj.file.name}</span>
                       {fileObj.status === 'success' ? (
                         <FiCheckCircle className="text-green-500 shrink-0" />
                       ) : fileObj.status === 'error' ? (
-                        <FiAlertCircle className="text-red-500 shrink-0" />
+                        <FiAlertCircle className="text-danger shrink-0" />
                       ) : (
-                        <span className="text-xs text-stone-500">{(fileObj.file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        <span className="text-xs text-text-muted">{(fileObj.file.size / 1024 / 1024).toFixed(2)} MB</span>
                       )}
                     </div>
                     {fileObj.status === 'uploading' || fileObj.status === 'success' ? (
                       <div className="w-full bg-stone-200 rounded-full h-1.5 overflow-hidden">
                         <div 
-                          className="bg-stone-900 h-1.5 rounded-full transition-all duration-300" 
+                          className="bg-primary h-1.5 rounded-full transition-all duration-300" 
                           style={{ width: `${fileObj.progress}%` }}
                         ></div>
                       </div>
                     ) : null}
                   </div>
                   {fileObj.status === 'pending' && !uploading && (
-                    <button onClick={() => removeFile(fileObj.id)} className="p-2 text-stone-400 hover:text-red-500 transition-colors shrink-0">
+                    <button onClick={() => removeFile(fileObj.id)} className="p-2 text-text-muted hover:text-danger transition-colors shrink-0">
                       <FiX />
                     </button>
                   )}
@@ -155,8 +155,8 @@ export default function MediaUploader({ onClose }) {
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-stone-100 bg-stone-50 flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 text-stone-600 font-medium text-sm hover:text-stone-900">
+        <div className="px-6 py-4 border-t border-stone-100 bg-background flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 text-text-secondary font-medium text-sm hover:text-text-primary">
             Cancel
           </button>
           <button 
@@ -164,8 +164,8 @@ export default function MediaUploader({ onClose }) {
             disabled={files.length === 0 || uploading}
             className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${
               files.length === 0 || uploading 
-                ? 'bg-stone-200 text-stone-400 cursor-not-allowed' 
-                : 'bg-stone-900 text-white hover:bg-stone-800'
+                ? 'bg-stone-200 text-text-muted cursor-not-allowed' 
+                : 'bg-primary text-white hover:bg-primary-hover'
             }`}
           >
             {uploading ? 'Uploading...' : 'Upload Files'}

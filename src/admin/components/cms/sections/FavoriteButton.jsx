@@ -11,8 +11,8 @@ export default function FavoriteButton({ isFavorite, onClick }) {
       className={cn(
         "p-2 rounded-full transition-all border",
         isFavorite 
-          ? "bg-red-50 text-red-500 border-red-100 hover:bg-red-100" 
-          : "bg-white text-gray-400 border-black/10 hover:border-black/20 hover:text-[#1A1A1A] hover:bg-gray-50"
+          ? "bg-danger-soft text-danger border-red-100 hover:bg-danger-soft" 
+          : "bg-surface text-text-muted border-black/10 hover:border-black/20 hover:text-text-primary hover:bg-background"
       )}
       title={isFavorite ? "Remove from favorites" : "Add to favorites"}
     >

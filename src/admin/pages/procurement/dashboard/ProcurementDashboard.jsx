@@ -26,7 +26,7 @@ export const ProcurementDashboard = () => {
           <p className="text-sm text-neutral-500 mt-1">Overview of purchasing, suppliers, and receiving</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 text-neutral-600 bg-white border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 text-neutral-600 bg-surface border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
             <Download className="w-4 h-4" /> Export Report
           </button>
           <button 
@@ -40,9 +40,9 @@ export const ProcurementDashboard = () => {
 
       {/* Primary KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded">
+            <div className="p-2 bg-primary-soft text-primary rounded">
               <ShoppingCart className="w-5 h-5" />
             </div>
             <p className="text-sm font-medium text-neutral-500">Open PO Value</p>
@@ -51,9 +51,9 @@ export const ProcurementDashboard = () => {
           <p className="text-xs text-neutral-400 mt-auto pt-2">*Backend Dependent</p>
         </div>
         
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-amber-50 text-amber-600 rounded">
+            <div className="p-2 bg-warning-soft text-warning rounded">
               <AlertCircle className="w-5 h-5" />
             </div>
             <p className="text-sm font-medium text-neutral-500">Pending Actions</p>
@@ -65,9 +65,9 @@ export const ProcurementDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-blue-50 text-blue-600 rounded">
+            <div className="p-2 bg-blue-50 text-primary rounded">
               <Truck className="w-5 h-5" />
             </div>
             <p className="text-sm font-medium text-neutral-500">Receiving Pipeline</p>
@@ -79,9 +79,9 @@ export const ProcurementDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex flex-col">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-green-50 text-green-600 rounded">
+            <div className="p-2 bg-success-soft text-success rounded">
               <Building2 className="w-5 h-5" />
             </div>
             <p className="text-sm font-medium text-neutral-500">Active Suppliers</p>
@@ -89,7 +89,7 @@ export const ProcurementDashboard = () => {
           <p className="text-2xl font-serif text-neutral-900 mt-2">{activeSuppliersCount}</p>
           <button 
             onClick={() => navigate('/admin/procurement/suppliers')}
-            className="text-xs text-indigo-600 font-medium hover:text-indigo-800 mt-auto pt-2 text-left"
+            className="text-xs text-primary font-medium hover:text-indigo-800 mt-auto pt-2 text-left"
           >
             Manage Suppliers &rarr;
           </button>
@@ -98,12 +98,12 @@ export const ProcurementDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Purchase Orders */}
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm flex flex-col">
           <div className="p-5 border-b border-neutral-200 flex items-center justify-between">
             <h2 className="font-medium text-neutral-900">Recent Purchase Orders</h2>
             <button 
               onClick={() => navigate('/admin/procurement/purchase-orders')}
-              className="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1"
+              className="text-sm text-primary hover:text-indigo-800 font-medium flex items-center gap-1"
             >
               View All <ArrowRight className="w-4 h-4" />
             </button>
@@ -118,9 +118,9 @@ export const ProcurementDashboard = () => {
                 <div className="text-right">
                   <span className={`inline-flex px-2 py-1 rounded text-xs font-medium ${
                     po.status === 'Sent' || po.status === 'Acknowledged' ? 'bg-blue-100 text-blue-800' :
-                    po.status === 'Pending Approval' ? 'bg-amber-100 text-amber-800' :
+                    po.status === 'Pending Approval' ? 'bg-warning-soft text-amber-800' :
                     po.status === 'Partially Received' ? 'bg-indigo-100 text-indigo-800' :
-                    po.status === 'Received' || po.status === 'Closed' ? 'bg-green-100 text-green-800' :
+                    po.status === 'Received' || po.status === 'Closed' ? 'bg-success-soft text-green-800' :
                     'bg-neutral-100 text-neutral-800'
                   }`}>
                     {po.status}
@@ -138,18 +138,18 @@ export const ProcurementDashboard = () => {
         </div>
 
         {/* Action Center */}
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm flex flex-col">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm flex flex-col">
           <div className="p-5 border-b border-neutral-200">
             <h2 className="font-medium text-neutral-900">Procurement Actions required</h2>
           </div>
           <div className="p-5 space-y-4 flex-1">
             
             {pendingPOCount > 0 && (
-              <div className="flex items-start gap-4 p-4 border border-amber-200 bg-amber-50 rounded-lg">
-                <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+              <div className="flex items-start gap-4 p-4 border border-amber-200 bg-warning-soft rounded-lg">
+                <AlertCircle className="w-5 h-5 text-warning mt-0.5 shrink-0" />
                 <div className="flex-1">
                   <h4 className="text-sm font-medium text-amber-900">{pendingPOCount} POs pending approval</h4>
-                  <p className="text-xs text-amber-700 mt-1">Purchase orders are waiting for financial authorization.</p>
+                  <p className="text-xs text-warning mt-1">Purchase orders are waiting for financial authorization.</p>
                 </div>
                 <button 
                   onClick={() => navigate('/admin/procurement/purchase-orders')}
@@ -161,15 +161,15 @@ export const ProcurementDashboard = () => {
             )}
 
             {pendingRequestsCount > 0 && (
-              <div className="flex items-start gap-4 p-4 border border-indigo-200 bg-indigo-50 rounded-lg">
-                <FileEdit className="w-5 h-5 text-indigo-600 mt-0.5 shrink-0" />
+              <div className="flex items-start gap-4 p-4 border border-indigo-200 bg-primary-soft rounded-lg">
+                <FileEdit className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                 <div className="flex-1">
                   <h4 className="text-sm font-medium text-indigo-900">{pendingRequestsCount} Purchase Requests</h4>
                   <p className="text-xs text-indigo-700 mt-1">New inventory requests from warehouse staff require review.</p>
                 </div>
                 <button 
                   onClick={() => navigate('/admin/procurement/requests')}
-                  className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 transition-colors whitespace-nowrap"
+                  className="px-3 py-1.5 text-xs font-medium text-white bg-primary rounded hover:bg-primary-hover transition-colors whitespace-nowrap"
                 >
                   View
                 </button>
@@ -178,14 +178,14 @@ export const ProcurementDashboard = () => {
 
             {partiallyReceivedCount > 0 && (
               <div className="flex items-start gap-4 p-4 border border-blue-200 bg-blue-50 rounded-lg">
-                <Truck className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                <Truck className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                 <div className="flex-1">
                   <h4 className="text-sm font-medium text-blue-900">{partiallyReceivedCount} Partial Receipts</h4>
                   <p className="text-xs text-blue-700 mt-1">Some shipments have arrived incomplete and require follow-up.</p>
                 </div>
                 <button 
                   onClick={() => navigate('/admin/procurement/receiving')}
-                  className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors whitespace-nowrap"
+                  className="px-3 py-1.5 text-xs font-medium text-white bg-primary rounded hover:bg-blue-700 transition-colors whitespace-nowrap"
                 >
                   Track
                 </button>

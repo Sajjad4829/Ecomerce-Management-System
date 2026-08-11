@@ -8,9 +8,9 @@ export default function BannerPreview() {
         <input 
           type="email" 
           placeholder="Enter your email" 
-          className="flex-1 px-4 py-3 bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors"
+          className="flex-1 px-4 py-3 bg-surface/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-white transition-colors"
         />
-        <button className="px-6 py-3 bg-white text-[#1A1A1A] text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors">
+        <button className="px-6 py-3 bg-surface text-text-primary text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors">
           Subscribe
         </button>
       </div>

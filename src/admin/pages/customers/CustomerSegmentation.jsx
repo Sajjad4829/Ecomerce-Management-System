@@ -8,12 +8,12 @@ export default function CustomerSegmentation() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <Link to="/admin/customers" className="text-sm font-medium text-gray-500 hover:text-black">Customers</Link>
+            <Link to="/admin/customers" className="text-sm font-medium text-text-muted hover:text-black">Customers</Link>
             <span className="text-gray-300">/</span>
-            <span className="text-sm font-medium text-gray-900">Segments</span>
+            <span className="text-sm font-medium text-text-primary">Segments</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Customer Segmentation</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Customer Segmentation</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Build dynamic segments based on behavior, purchase history, and demographics.
           </p>
         </div>
@@ -28,46 +28,46 @@ export default function CustomerSegmentation() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Filters Sidebar */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white rounded-xl border border-black/5 shadow-sm p-6">
-            <h3 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2 mb-6">
-              <FiFilter className="text-gray-400" /> Segment Rules
+          <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-6">
+            <h3 className="text-sm font-bold text-text-primary flex items-center gap-2 mb-6">
+              <FiFilter className="text-text-muted" /> Segment Rules
             </h3>
 
             <div className="space-y-6">
               <FilterSection title="Purchase Behavior" icon={FiShoppingBag}>
                 <label className="flex items-center gap-2 mb-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]" />
-                  <span className="text-sm text-gray-700">Has placed an order</span>
+                  <input type="checkbox" className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]" />
+                  <span className="text-sm text-text-secondary">Has placed an order</span>
                 </label>
                 <label className="flex items-center gap-2 mb-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]" />
-                  <span className="text-sm text-gray-700">Total spent &gt; $1,000</span>
+                  <input type="checkbox" className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]" />
+                  <span className="text-sm text-text-secondary">Total spent &gt; $1,000</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]" />
-                  <span className="text-sm text-gray-700">Abandoned cart (30d)</span>
+                  <input type="checkbox" className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]" />
+                  <span className="text-sm text-text-secondary">Abandoned cart (30d)</span>
                 </label>
               </FilterSection>
 
               <FilterSection title="Demographics" icon={FiUsers}>
                 <label className="flex items-center gap-2 mb-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]" />
-                  <span className="text-sm text-gray-700">Is VIP Group</span>
+                  <input type="checkbox" className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]" />
+                  <span className="text-sm text-text-secondary">Is VIP Group</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]" />
-                  <span className="text-sm text-gray-700">Is B2B / Wholesale</span>
+                  <input type="checkbox" className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]" />
+                  <span className="text-sm text-text-secondary">Is B2B / Wholesale</span>
                 </label>
               </FilterSection>
 
               <FilterSection title="Location" icon={FiMapPin}>
                 <label className="flex items-center gap-2 mb-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]" />
-                  <span className="text-sm text-gray-700">United States</span>
+                  <input type="checkbox" className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]" />
+                  <span className="text-sm text-text-secondary">United States</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]" />
-                  <span className="text-sm text-gray-700">International</span>
+                  <input type="checkbox" className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]" />
+                  <span className="text-sm text-text-secondary">International</span>
                 </label>
               </FilterSection>
             </div>
@@ -76,15 +76,15 @@ export default function CustomerSegmentation() {
 
         {/* Results */}
         <div className="lg:col-span-3">
-          <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-black/5 bg-[#F7F5F2]">
-              <h2 className="text-lg font-serif font-bold text-[#1A1A1A]">Preview Segment</h2>
-              <p className="text-sm text-gray-500 mt-1">1,402 customers match your criteria.</p>
+          <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-black/5 bg-background">
+              <h2 className="text-lg font-serif font-bold text-text-primary">Preview Segment</h2>
+              <p className="text-sm text-text-muted mt-1">1,402 customers match your criteria.</p>
             </div>
             
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-8 text-center text-text-muted">
               <FiUsers size={48} className="mx-auto text-gray-300 mb-4" />
-              <h3 className="text-base font-bold text-[#1A1A1A] mb-1">Customer list placeholder</h3>
+              <h3 className="text-base font-bold text-text-primary mb-1">Customer list placeholder</h3>
               <p className="text-sm">The matching customers will appear here when rules are applied.</p>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function CustomerSegmentation() {
 function FilterSection({ title, icon: Icon, children }) {
   return (
     <div>
-      <h4 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2 mb-3">
+      <h4 className="text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider flex items-center gap-2 mb-3">
         <Icon /> {title}
       </h4>
       <div className="pl-6">

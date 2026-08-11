@@ -11,12 +11,12 @@ export default function SessionManager() {
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">Active Sessions</h1>
-          <p className="text-gray-500 text-sm mt-1">Monitor and revoke staff sessions</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Active Sessions</h1>
+          <p className="text-text-muted text-sm mt-1">Monitor and revoke staff sessions</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <DataTable 
           data={sessions}
           columns={[
@@ -25,12 +25,12 @@ export default function SessionManager() {
             { key: 'location', label: 'Location', render: (val, row) => (
               <div>
                 <div>{val}</div>
-                <div className="text-xs text-gray-500">{row.ip}</div>
+                <div className="text-xs text-text-muted">{row.ip}</div>
               </div>
             )},
             { key: 'started', label: 'Started', render: (val) => new Date(val).toLocaleString() },
             { key: 'actions', label: '', render: () => (
-              <button className="text-red-600 hover:underline text-sm font-medium">Revoke</button>
+              <button className="text-danger hover:underline text-sm font-medium">Revoke</button>
             )}
           ]}
         />

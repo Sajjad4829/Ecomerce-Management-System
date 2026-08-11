@@ -20,17 +20,17 @@ export default function TypographyPreview() {
   return (
     <div className="space-y-8">
       {/* Global Typography Settings */}
-      <div className="bg-white border border-black/5 rounded-xl p-6 shadow-sm">
-        <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
+      <div className="bg-surface border border-black/5 rounded-xl p-6 shadow-sm">
+        <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
           Global Font Families
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Heading Font</label>
+            <label className="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Heading Font</label>
             <select 
               value={fontFamilyHeading}
               onChange={(e) => setFontFamilyHeading(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-black/10 rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/30 transition-all appearance-none"
+              className="w-full px-4 py-2.5 bg-background border border-black/10 rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/30 transition-all appearance-none"
             >
               <option value="Playfair Display">Playfair Display (Serif)</option>
               <option value="Merriweather">Merriweather (Serif)</option>
@@ -39,11 +39,11 @@ export default function TypographyPreview() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Body Font</label>
+            <label className="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Body Font</label>
             <select 
               value={fontFamilyBody}
               onChange={(e) => setFontFamilyBody(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-black/10 rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/30 transition-all appearance-none"
+              className="w-full px-4 py-2.5 bg-background border border-black/10 rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/30 transition-all appearance-none"
             >
               <option value="Inter">Inter (Sans)</option>
               <option value="Roboto">Roboto (Sans)</option>
@@ -52,20 +52,20 @@ export default function TypographyPreview() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Base Root Size</label>
+            <label className="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Base Root Size</label>
             <input 
               type="text" 
               value={baseSize}
               onChange={(e) => setBaseSize(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-black/10 rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/30 transition-all"
+              className="w-full px-4 py-2.5 bg-background border border-black/10 rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/30 transition-all"
             />
           </div>
         </div>
       </div>
 
       {/* Typography Scale Preview */}
-      <div className="bg-white border border-black/5 rounded-xl p-6 shadow-sm overflow-hidden">
-        <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
+      <div className="bg-surface border border-black/5 rounded-xl p-6 shadow-sm overflow-hidden">
+        <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-6 border-b border-black/5 pb-2">
           Typography Scale
         </h3>
         
@@ -73,8 +73,8 @@ export default function TypographyPreview() {
           {TYPOGRAPHY_SCALES.map(scale => (
             <div key={scale.id} className="flex flex-col md:flex-row md:items-center gap-6 border-b border-black/5 pb-8 last:border-0 last:pb-0">
               <div className="w-full md:w-48 shrink-0">
-                <div className="text-sm font-bold text-[#1A1A1A] mb-1">{scale.name}</div>
-                <div className="text-xs text-gray-500 font-mono space-y-1">
+                <div className="text-sm font-bold text-text-primary mb-1">{scale.name}</div>
+                <div className="text-xs text-text-muted font-mono space-y-1">
                   <div>Size: {scale.size}</div>
                   <div>Weight: {scale.weight}</div>
                   <div>Line Height: {scale.lineHeight}</div>
@@ -82,7 +82,7 @@ export default function TypographyPreview() {
               </div>
               <div className="flex-1 overflow-hidden">
                 <div 
-                  className="text-[#1A1A1A] truncate"
+                  className="text-text-primary truncate"
                   style={{
                     fontSize: scale.size,
                     fontWeight: scale.weight,

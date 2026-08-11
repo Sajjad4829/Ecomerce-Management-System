@@ -29,40 +29,40 @@ export default function CustomerNotes() {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-black/5 shadow-sm p-6">
+    <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2">
-          <FiMessageSquare className="text-gray-400" /> Internal Notes
+        <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+          <FiMessageSquare className="text-text-muted" /> Internal Notes
         </h3>
         <button 
           onClick={() => setIsAdding(!isAdding)}
-          className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+          className="text-xs text-primary hover:text-blue-800 font-medium flex items-center gap-1"
         >
           <FiPlus size={14} /> Add Note
         </button>
       </div>
 
       {isAdding && (
-        <form onSubmit={handleAdd} className="mb-4 bg-gray-50 p-3 rounded-lg border border-black/5">
+        <form onSubmit={handleAdd} className="mb-4 bg-background p-3 rounded-lg border border-black/5">
           <textarea
             value={newNote}
             onChange={(e) => setNewNote(e.target.value)}
             placeholder="Write an internal note..."
-            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-black/20 mb-2"
+            className="w-full px-3 py-2 bg-surface border border-border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-black/20 mb-2"
             rows={3}
           />
           <div className="flex items-center justify-between">
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className="text-xs border-gray-200 rounded-md bg-white px-2 py-1"
+              className="text-xs border-border rounded-md bg-surface px-2 py-1"
             >
               <option value="Normal">Normal</option>
               <option value="Important">Important</option>
               <option value="Urgent">Urgent</option>
             </select>
             <div className="flex gap-2">
-              <button type="button" onClick={() => setIsAdding(false)} className="px-3 py-1.5 text-gray-600 text-xs font-medium hover:bg-gray-100 rounded-md">Cancel</button>
+              <button type="button" onClick={() => setIsAdding(false)} className="px-3 py-1.5 text-text-secondary text-xs font-medium hover:bg-gray-100 rounded-md">Cancel</button>
               <button type="submit" className="px-3 py-1.5 bg-[#1A1A1A] text-white rounded-md text-xs font-medium hover:bg-black">Save Note</button>
             </div>
           </div>
@@ -71,11 +71,11 @@ export default function CustomerNotes() {
 
       <div className="space-y-3">
         {notes.map(note => (
-          <div key={note.id} className={`p-3 rounded-lg border ${note.priority === 'Urgent' ? 'bg-red-50 border-red-100' : note.priority === 'Important' ? 'bg-amber-50 border-amber-100' : 'bg-[#F7F5F2] border-black/5'}`}>
+          <div key={note.id} className={`p-3 rounded-lg border ${note.priority === 'Urgent' ? 'bg-danger-soft border-red-100' : note.priority === 'Important' ? 'bg-warning-soft border-amber-100' : 'bg-background border-black/5'}`}>
             <div className="flex justify-between items-start mb-1">
-              <span className="text-[10px] font-bold text-gray-500 uppercase">{note.author} • {note.date}</span>
+              <span className="text-[10px] font-bold text-text-muted uppercase">{note.author} • {note.date}</span>
               {note.priority !== 'Normal' && (
-                <span className={`text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 ${note.priority === 'Urgent' ? 'text-red-600' : 'text-amber-600'}`}>
+                <span className={`text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 ${note.priority === 'Urgent' ? 'text-danger' : 'text-warning'}`}>
                   <FiAlertCircle size={10} /> {note.priority}
                 </span>
               )}
@@ -84,7 +84,7 @@ export default function CustomerNotes() {
           </div>
         ))}
         {notes.length === 0 && !isAdding && (
-          <p className="text-sm text-gray-500 text-center py-4">No internal notes yet.</p>
+          <p className="text-sm text-text-muted text-center py-4">No internal notes yet.</p>
         )}
       </div>
     </div>

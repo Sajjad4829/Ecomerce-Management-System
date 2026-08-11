@@ -12,7 +12,7 @@ export function CustomerSegments() {
           Create Segment
         </button>
       </div>
-      <div className="bg-white p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
+      <div className="bg-surface p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
         Segment list and builder mock placeholder.
       </div>
     </div>
@@ -28,7 +28,7 @@ export function CustomerLoyaltyManager() {
           <p className="text-sm text-neutral-500 mt-1">Manage loyalty tiers and point rules</p>
         </div>
       </div>
-      <div className="bg-white p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
+      <div className="bg-surface p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
         Loyalty program settings mock placeholder.
       </div>
     </div>
@@ -44,7 +44,7 @@ export function CustomerImport() {
           <p className="text-sm text-neutral-500 mt-1">Bulk import customer profiles via CSV</p>
         </div>
       </div>
-      <div className="bg-white p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
+      <div className="bg-surface p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
         CSV upload interface mock placeholder.
       </div>
     </div>
@@ -60,7 +60,7 @@ export function CustomerAnalyticsInsights() {
           <p className="text-sm text-neutral-500 mt-1">Insights on customer growth and engagement</p>
         </div>
       </div>
-      <div className="bg-white p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
+      <div className="bg-surface p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
         Customer analytics dashboard mock placeholder.
       </div>
     </div>
@@ -76,7 +76,7 @@ export function CustomerExport() {
           <p className="text-sm text-neutral-500 mt-1">Export customer data to CSV or Excel</p>
         </div>
       </div>
-      <div className="bg-white p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
+      <div className="bg-surface p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
         Export configuration and history placeholder.
       </div>
     </div>
@@ -92,7 +92,7 @@ export function CustomerMergeManager() {
           <p className="text-sm text-neutral-500 mt-1">Identify and merge duplicate customer profiles</p>
         </div>
       </div>
-      <div className="bg-white p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
+      <div className="bg-surface p-8 text-center text-neutral-500 rounded-lg shadow-sm border border-neutral-200">
         Duplicate detection and merge resolution interface placeholder.
       </div>
     </div>

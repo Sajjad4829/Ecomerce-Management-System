@@ -43,33 +43,33 @@ export default function MediaPicker({ onSelect, onClose, multiSelect = false, ty
 
   const getIcon = (type) => {
     switch (type) {
-      case 'Image': return <FiImage className="text-stone-500" />;
-      case 'Video': return <FiVideo className="text-stone-500" />;
-      default: return <FiFileText className="text-stone-500" />;
+      case 'Image': return <FiImage className="text-text-muted" />;
+      case 'Video': return <FiVideo className="text-text-muted" />;
+      default: return <FiFileText className="text-text-muted" />;
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-stone-900/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/50 backdrop-blur-sm">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-stone-900">Select Media</h2>
-            <p className="text-xs text-stone-500">Choose {multiSelect ? 'assets' : 'an asset'} from your library.</p>
+            <h2 className="text-lg font-bold text-text-primary">Select Media</h2>
+            <p className="text-xs text-text-muted">Choose {multiSelect ? 'assets' : 'an asset'} from your library.</p>
           </div>
-          <button onClick={onClose} className="p-2 text-stone-400 hover:text-stone-900 rounded-lg transition-colors">
+          <button onClick={onClose} className="p-2 text-text-muted hover:text-text-primary rounded-lg transition-colors">
             <FiX size={20} />
           </button>
         </div>
 
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-48 border-r border-stone-100 p-4 overflow-y-auto shrink-0 bg-stone-50/50 hidden md:block">
-            <h3 className="text-xs font-bold text-stone-900 uppercase tracking-widest mb-3 px-2">Folders</h3>
+          <div className="w-48 border-r border-stone-100 p-4 overflow-y-auto shrink-0 bg-background/50 hidden md:block">
+            <h3 className="text-xs font-bold text-text-primary uppercase tracking-widest mb-3 px-2">Folders</h3>
             <div className="space-y-1">
               <button 
                 onClick={() => setActiveFolder('all')} 
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeFolder === 'all' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-600 hover:bg-white/50'}`}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeFolder === 'all' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-secondary hover:bg-surface/50'}`}
               >
                 All Media
               </button>
@@ -77,7 +77,7 @@ export default function MediaPicker({ onSelect, onClose, multiSelect = false, ty
                 <button 
                   key={f.id}
                   onClick={() => setActiveFolder(f.id)} 
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeFolder === f.id ? 'bg-white shadow-sm text-stone-900' : 'text-stone-600 hover:bg-white/50'}`}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeFolder === f.id ? 'bg-surface shadow-sm text-text-primary' : 'text-text-secondary hover:bg-surface/50'}`}
                 >
                   {f.name}
                 </button>
@@ -85,17 +85,17 @@ export default function MediaPicker({ onSelect, onClose, multiSelect = false, ty
             </div>
             
             <div className="mt-8 px-2">
-              <button onClick={() => setIsUploaderOpen(true)} className="w-full py-2 bg-stone-900 text-white text-xs font-bold rounded-lg hover:bg-stone-800 transition-colors">
+              <button onClick={() => setIsUploaderOpen(true)} className="w-full py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary-hover transition-colors">
                 Upload New
               </button>
             </div>
           </div>
 
           {/* Grid */}
-          <div className="flex-1 flex flex-col min-w-0 bg-white">
+          <div className="flex-1 flex flex-col min-w-0 bg-surface">
             <div className="p-4 border-b border-stone-100 flex items-center gap-4 shrink-0">
-              <div className="flex-1 flex items-center bg-stone-50 rounded-lg px-3 py-2 border border-stone-200">
-                <FiSearch className="text-stone-400 mr-2" />
+              <div className="flex-1 flex items-center bg-background rounded-lg px-3 py-2 border border-border">
+                <FiSearch className="text-text-muted mr-2" />
                 <input 
                   type="text" 
                   placeholder="Search..." 
@@ -108,7 +108,7 @@ export default function MediaPicker({ onSelect, onClose, multiSelect = false, ty
 
             <div className="flex-1 p-6 overflow-y-auto">
                {filteredAssets.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-stone-500">
+                <div className="h-full flex flex-col items-center justify-center text-text-muted">
                   <FiImage size={40} className="text-stone-300 mb-3" />
                   <p className="text-sm">No assets found matching your criteria.</p>
                 </div>
@@ -121,7 +121,7 @@ export default function MediaPicker({ onSelect, onClose, multiSelect = false, ty
                         key={asset.id} 
                         onClick={() => handleSelect(asset)}
                         className={`group relative aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${
-                          isSelected ? 'border-stone-900 shadow-md scale-[0.98]' : 'border-transparent bg-stone-100 hover:border-stone-300'
+                          isSelected ? 'border-stone-900 shadow-md scale-[0.98]' : 'border-transparent bg-stone-100 hover:border-border-hover'
                         }`}
                       >
                         {asset.type === 'Image' || asset.type === 'Video' ? (
@@ -129,12 +129,12 @@ export default function MediaPicker({ onSelect, onClose, multiSelect = false, ty
                         ) : (
                           <div className="w-full h-full flex flex-col items-center justify-center">
                             {getIcon(asset.type)}
-                            <span className="text-[10px] text-stone-500 mt-2 truncate w-3/4 text-center">{asset.filename}</span>
+                            <span className="text-[10px] text-text-muted mt-2 truncate w-3/4 text-center">{asset.filename}</span>
                           </div>
                         )}
                         
                         {isSelected && (
-                          <div className="absolute top-2 right-2 w-6 h-6 bg-stone-900 text-white rounded-full flex items-center justify-center shadow-sm">
+                          <div className="absolute top-2 right-2 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center shadow-sm">
                             <FiCheck size={14} />
                           </div>
                         )}
@@ -153,19 +153,19 @@ export default function MediaPicker({ onSelect, onClose, multiSelect = false, ty
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-stone-100 bg-stone-50 flex items-center justify-between shrink-0">
-          <div className="text-sm font-medium text-stone-600">
+        <div className="px-6 py-4 border-t border-stone-100 bg-background flex items-center justify-between shrink-0">
+          <div className="text-sm font-medium text-text-secondary">
             {selectedIds.length} {selectedIds.length === 1 ? 'asset' : 'assets'} selected
           </div>
           <div className="flex gap-3">
-            <button onClick={onClose} className="px-4 py-2 text-stone-600 font-medium text-sm hover:text-stone-900">
+            <button onClick={onClose} className="px-4 py-2 text-text-secondary font-medium text-sm hover:text-text-primary">
               Cancel
             </button>
             <button 
               onClick={handleConfirm}
               disabled={selectedIds.length === 0}
               className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${
-                selectedIds.length === 0 ? 'bg-stone-200 text-stone-400 cursor-not-allowed' : 'bg-stone-900 text-white hover:bg-stone-800'
+                selectedIds.length === 0 ? 'bg-stone-200 text-text-muted cursor-not-allowed' : 'bg-primary text-white hover:bg-primary-hover'
               }`}
             >
               Confirm Selection

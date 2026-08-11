@@ -20,13 +20,13 @@ export default function SecurityEvents() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-24">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-stone-900">Security Events</h1>
-        <p className="text-sm text-stone-500 mt-1">High-risk actions, failed authentications, and policy changes</p>
+        <h1 className="text-2xl font-serif font-bold text-text-primary">Security Events</h1>
+        <p className="text-sm text-text-muted mt-1">High-risk actions, failed authentications, and policy changes</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-red-50 p-6 rounded-xl border border-red-100">
-          <div className="flex items-center gap-3 text-red-600 mb-2">
+        <div className="bg-danger-soft p-6 rounded-xl border border-red-100">
+          <div className="flex items-center gap-3 text-danger mb-2">
             <FiAlertTriangle />
             <h3 className="font-medium text-sm">Critical Security Alerts</h3>
           </div>
@@ -41,8 +41,8 @@ export default function SecurityEvents() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-stone-200 shadow-sm p-6">
-        <h3 className="font-serif font-bold text-lg text-stone-900 mb-6">Event Timeline</h3>
+      <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+        <h3 className="font-serif font-bold text-lg text-text-primary mb-6">Event Timeline</h3>
         {loading ? (
           <div className="animate-pulse h-40 bg-stone-100 rounded-lg"></div>
         ) : (

@@ -19,14 +19,14 @@ export function CustomerDashboard() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {metrics.map((metric, i) => (
-          <div key={i} className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200">
+          <div key={i} className="bg-surface p-6 rounded-lg shadow-sm border border-neutral-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center text-neutral-500">
                 <metric.icon className="w-5 h-5 mr-2" />
                 <span className="text-sm font-medium">{metric.label}</span>
               </div>
               {metric.trend && (
-                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                <span className="text-xs font-medium text-success bg-success-soft px-2 py-1 rounded-full">
                   {metric.trend}
                 </span>
               )}
@@ -39,7 +39,7 @@ export function CustomerDashboard() {
         ))}
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200">
         <div className="p-4 border-b border-neutral-200 flex items-center justify-between">
           <div className="relative w-96">
             <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -75,7 +75,7 @@ export function CustomerDashboard() {
                 </td>
                 <td className="p-4">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                    customer.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    customer.status === 'active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
                   }`}>
                     {customer.status}
                   </span>
@@ -94,7 +94,7 @@ export function CustomerDashboard() {
                 <td className="p-4 text-right">
                   <Link 
                     to={`/admin/customers/${customer.id}`}
-                    className="text-indigo-600 hover:text-indigo-900 font-medium"
+                    className="text-primary hover:text-indigo-900 font-medium"
                   >
                     View 360
                   </Link>

@@ -12,7 +12,7 @@ export default function SectionCard({ section, view, onPreview }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "bg-white border border-black/5 rounded-xl overflow-hidden hover:shadow-lg transition-all group flex",
+        "bg-surface border border-black/5 rounded-xl overflow-hidden hover:shadow-lg transition-all group flex",
         isList ? "flex-row items-stretch" : "flex-col"
       )}
     >
@@ -34,7 +34,7 @@ export default function SectionCard({ section, view, onPreview }) {
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
           <button 
             onClick={() => onPreview(section)}
-            className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform shadow-lg"
+            className="w-10 h-10 bg-surface rounded-full flex items-center justify-center text-text-primary hover:scale-110 transition-transform shadow-lg"
             title="Preview Section"
           >
             <FiEye size={18} />
@@ -58,14 +58,14 @@ export default function SectionCard({ section, view, onPreview }) {
         <div>
           <div className="flex justify-between items-start mb-2">
             <div>
-              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{section.category}</div>
-              <h3 className="text-sm font-bold text-[#1A1A1A] font-serif">{section.name}</h3>
+              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1">{section.category}</div>
+              <h3 className="text-sm font-bold text-text-primary font-serif">{section.name}</h3>
             </div>
-            <div className="text-[10px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded">
+            <div className="text-[10px] text-text-muted font-mono bg-background px-1.5 py-0.5 rounded">
               v{section.version || '1.0'}
             </div>
           </div>
-          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-4">
+          <p className="text-xs text-text-muted line-clamp-2 leading-relaxed mb-4">
             {section.description}
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function SectionCard({ section, view, onPreview }) {
             <TagBadge key={tag} label={tag} />
           ))}
           {section.tags?.length > 3 && (
-             <span className="text-[10px] text-gray-400 font-medium">+{section.tags.length - 3}</span>
+             <span className="text-[10px] text-text-muted font-medium">+{section.tags.length - 3}</span>
           )}
         </div>
       </div>

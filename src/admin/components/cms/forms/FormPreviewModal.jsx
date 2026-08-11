@@ -22,15 +22,15 @@ export default function FormPreviewModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-black/10 overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-black/10 overflow-hidden">
         
         {/* Top Header */}
-        <div className="p-4 bg-gray-50 border-b border-black/5 flex items-center justify-between shrink-0">
+        <div className="p-4 bg-background border-b border-black/5 flex items-center justify-between shrink-0">
           <div>
-            <h3 className="font-serif font-bold text-base text-[#1A1A1A]">
+            <h3 className="font-serif font-bold text-base text-text-primary">
               Live Preview — {formName}
             </h3>
-            <p className="text-xs text-gray-500">Interactive frontend simulation with device layout frames.</p>
+            <p className="text-xs text-text-muted">Interactive frontend simulation with device layout frames.</p>
           </div>
 
           {/* Device Switcher */}
@@ -40,7 +40,7 @@ export default function FormPreviewModal({
               onClick={() => setDevice('desktop')}
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                device === 'desktop' ? "bg-white text-black shadow-2xs" : "text-gray-600 hover:text-black"
+                device === 'desktop' ? "bg-surface text-black shadow-2xs" : "text-text-secondary hover:text-black"
               )}
             >
               <FiMonitor size={14} /> Desktop
@@ -50,7 +50,7 @@ export default function FormPreviewModal({
               onClick={() => setDevice('tablet')}
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                device === 'tablet' ? "bg-white text-black shadow-2xs" : "text-gray-600 hover:text-black"
+                device === 'tablet' ? "bg-surface text-black shadow-2xs" : "text-text-secondary hover:text-black"
               )}
             >
               <FiTablet size={14} /> Tablet
@@ -60,7 +60,7 @@ export default function FormPreviewModal({
               onClick={() => setDevice('mobile')}
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                device === 'mobile' ? "bg-white text-black shadow-2xs" : "text-gray-600 hover:text-black"
+                device === 'mobile' ? "bg-surface text-black shadow-2xs" : "text-text-secondary hover:text-black"
               )}
             >
               <FiSmartphone size={14} /> Mobile
@@ -69,7 +69,7 @@ export default function FormPreviewModal({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-black hover:bg-black/5 rounded-lg transition-colors"
+            className="p-1.5 text-text-muted hover:text-black hover:bg-black/5 rounded-lg transition-colors"
           >
             <FiX size={18} />
           </button>
@@ -78,7 +78,7 @@ export default function FormPreviewModal({
         {/* Device Frame Viewport Container */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-gray-100 flex justify-center items-start">
           <div className={cn(
-            "bg-white rounded-2xl border border-black/10 shadow-lg transition-all duration-300 p-6 my-auto",
+            "bg-surface rounded-2xl border border-black/10 shadow-lg transition-all duration-300 p-6 my-auto",
             device === 'desktop' && "w-full max-w-2xl",
             device === 'tablet' && "w-[580px]",
             device === 'mobile' && "w-[360px]"
@@ -86,17 +86,17 @@ export default function FormPreviewModal({
             
             {submitted ? (
               <div className="text-center py-12 space-y-4 animate-in zoom-in-95">
-                <div className="w-14 h-14 bg-green-100 text-green-700 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-14 h-14 bg-success-soft text-success rounded-full flex items-center justify-center mx-auto">
                   <FiCheckCircle size={32} />
                 </div>
-                <h4 className="font-serif font-bold text-xl text-[#1A1A1A]">Submission Received!</h4>
-                <p className="text-xs text-gray-600 leading-relaxed max-w-md mx-auto">
+                <h4 className="font-serif font-bold text-xl text-text-primary">Submission Received!</h4>
+                <p className="text-xs text-text-secondary leading-relaxed max-w-md mx-auto">
                   {settings.successMessage || 'Thank you for your inquiry. Our interior consultants will respond shortly.'}
                 </p>
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
-                  className="px-4 py-2 bg-gray-100 border border-black/10 rounded-lg text-xs font-bold text-gray-700 flex items-center gap-1.5 mx-auto hover:bg-gray-200 cursor-pointer"
+                  className="px-4 py-2 bg-gray-100 border border-black/10 rounded-lg text-xs font-bold text-text-secondary flex items-center gap-1.5 mx-auto hover:bg-gray-200 cursor-pointer"
                 >
                   <FiRefreshCw size={13} /> Reset Test Submission
                 </button>
@@ -104,8 +104,8 @@ export default function FormPreviewModal({
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="border-b border-black/10 pb-3 mb-2">
-                  <h3 className="font-serif font-bold text-lg text-[#1A1A1A]">{formName}</h3>
-                  <p className="text-xs text-gray-500">Please fill in all requested specifications below.</p>
+                  <h3 className="font-serif font-bold text-lg text-text-primary">{formName}</h3>
+                  <p className="text-xs text-text-muted">Please fill in all requested specifications below.</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

@@ -25,22 +25,22 @@ export default function ReviewEditor() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-theme(spacing.20))] pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-[#F7F5F2] pt-4 pb-4 border-b border-black/5 flex items-center justify-between shrink-0">
+      <div className="sticky top-0 z-20 bg-background pt-4 pb-4 border-b border-black/5 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-4">
-          <Link to="/admin/marketing/reviews" className="p-2 bg-white border border-black/10 rounded-lg text-gray-500 hover:text-black hover:border-black/20 transition-all shadow-sm">
+          <Link to="/admin/marketing/reviews" className="p-2 bg-surface border border-black/10 rounded-lg text-text-muted hover:text-black hover:border-black/20 transition-all shadow-sm">
             <FiArrowLeft size={18} />
           </Link>
           <div>
-            <h1 className="text-xl font-serif font-bold text-[#1A1A1A]">
+            <h1 className="text-xl font-serif font-bold text-text-primary">
               Submit Review (Preview)
             </h1>
-            <p className="text-xs text-gray-500 mt-0.5">Frontend Submission Preview</p>
+            <p className="text-xs text-text-muted mt-0.5">Frontend Submission Preview</p>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
           <button 
-            className="px-4 py-2 text-gray-600 hover:text-black text-sm font-medium transition-colors"
+            className="px-4 py-2 text-text-secondary hover:text-black text-sm font-medium transition-colors"
           >
             Cancel
           </button>
@@ -56,9 +56,9 @@ export default function ReviewEditor() {
       <div className="max-w-3xl mx-auto w-full mt-8 space-y-8">
         
         {/* Rating */}
-        <div className="bg-white rounded-xl border border-black/5 shadow-sm p-8 text-center">
-          <h2 className="text-xl font-serif font-bold text-[#1A1A1A] mb-2">Overall Rating</h2>
-          <p className="text-sm text-gray-500 mb-6">How would you rate this product?</p>
+        <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-8 text-center">
+          <h2 className="text-xl font-serif font-bold text-text-primary mb-2">Overall Rating</h2>
+          <p className="text-sm text-text-muted mb-6">How would you rate this product?</p>
           
           <div className="flex items-center justify-center gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
@@ -80,22 +80,22 @@ export default function ReviewEditor() {
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-xl border border-black/5 shadow-sm p-8">
+        <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-8">
           <div className="flex items-center gap-3 mb-6">
-            <FiInfo className="text-gray-400" size={20} />
+            <FiInfo className="text-text-muted" size={20} />
             <div>
-              <h2 className="text-lg font-serif font-bold text-[#1A1A1A]">Review Details</h2>
-              <p className="text-sm text-gray-500">Share your experience with this product.</p>
+              <h2 className="text-lg font-serif font-bold text-text-primary">Review Details</h2>
+              <p className="text-sm text-text-muted">Share your experience with this product.</p>
             </div>
           </div>
           
           <div className="space-y-6">
             <div>
-              <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Product</label>
+              <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Product</label>
               <select 
                 value={formData.product}
                 onChange={(e) => setFormData(prev => ({ ...prev, product: e.target.value }))}
-                className="w-full px-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-[#1A1A1A]"
+                className="w-full px-4 py-2.5 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-text-primary"
               >
                 <option value="">Select a product...</option>
                 <option value="1">Oasis Lounge Chair - Black / Leather</option>
@@ -105,46 +105,46 @@ export default function ReviewEditor() {
             </div>
 
             <div>
-              <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Review Title</label>
+              <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Review Title</label>
               <input 
                 type="text" 
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 placeholder="Summarize your experience..."
-                className="w-full px-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-[#1A1A1A]"
+                className="w-full px-4 py-2.5 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-text-primary"
               />
             </div>
             
             <div>
-              <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Review Content</label>
+              <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Review Content</label>
               <textarea 
                 value={formData.content}
                 onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
                 placeholder="What did you like or dislike? How did you use the product?"
-                className="w-full px-4 py-3 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm"
+                className="w-full px-4 py-3 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm"
                 rows={5}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Pros (Optional)</label>
+                <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Pros (Optional)</label>
                 <input 
                   type="text" 
                   value={formData.pros}
                   onChange={(e) => setFormData(prev => ({ ...prev, pros: e.target.value }))}
                   placeholder="e.g. Comfortable, stylish"
-                  className="w-full px-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm"
+                  className="w-full px-4 py-2.5 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Cons (Optional)</label>
+                <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Cons (Optional)</label>
                 <input 
                   type="text" 
                   value={formData.cons}
                   onChange={(e) => setFormData(prev => ({ ...prev, cons: e.target.value }))}
                   placeholder="e.g. Difficult to assemble"
-                  className="w-full px-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm"
+                  className="w-full px-4 py-2.5 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm"
                 />
               </div>
             </div>
@@ -152,35 +152,35 @@ export default function ReviewEditor() {
         </div>
 
         {/* Media */}
-        <div className="bg-white rounded-xl border border-black/5 shadow-sm p-8">
+        <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-8">
           <div className="flex items-center gap-3 mb-6">
-            <FiImage className="text-gray-400" size={20} />
+            <FiImage className="text-text-muted" size={20} />
             <div>
-              <h2 className="text-lg font-serif font-bold text-[#1A1A1A]">Add Photos</h2>
-              <p className="text-sm text-gray-500">Show the product in your space.</p>
+              <h2 className="text-lg font-serif font-bold text-text-primary">Add Photos</h2>
+              <p className="text-sm text-text-muted">Show the product in your space.</p>
             </div>
           </div>
 
-          <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer">
-            <div className="w-12 h-12 bg-[#F7F5F2] rounded-full flex items-center justify-center text-gray-400 mb-4">
+          <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-background transition-colors cursor-pointer">
+            <div className="w-12 h-12 bg-background rounded-full flex items-center justify-center text-text-muted mb-4">
               <FiUploadCloud size={24} />
             </div>
-            <p className="text-sm font-bold text-[#1A1A1A]">Click to upload photos</p>
-            <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
+            <p className="text-sm font-bold text-text-primary">Click to upload photos</p>
+            <p className="text-xs text-text-muted mt-1">PNG, JPG up to 5MB</p>
           </div>
         </div>
 
         {/* Verification Simulation */}
-        <div className="bg-green-50 rounded-xl border border-green-100 shadow-sm p-6 flex items-center justify-between">
+        <div className="bg-success-soft rounded-xl border border-green-100 shadow-sm p-6 flex items-center justify-between">
           <div>
             <h3 className="text-sm font-bold text-green-900">Purchase Verification</h3>
-            <p className="text-xs text-green-700 mt-0.5">Simulate submitting as a verified buyer.</p>
+            <p className="text-xs text-success mt-0.5">Simulate submitting as a verified buyer.</p>
           </div>
           <input 
             type="checkbox" 
             checked={formData.isVerified}
             onChange={(e) => setFormData(prev => ({ ...prev, isVerified: e.target.checked }))}
-            className="w-5 h-5 rounded border-green-300 text-green-600 focus:ring-green-600" 
+            className="w-5 h-5 rounded border-green-300 text-success focus:ring-green-600" 
           />
         </div>
 

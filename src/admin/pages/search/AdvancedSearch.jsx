@@ -31,18 +31,18 @@ export default function AdvancedSearch() {
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-light text-[#1A1A1A] tracking-wide mb-2">Advanced Search</h1>
-        <p className="text-sm text-stone-500">Build complex queries across specific enterprise modules.</p>
+        <h1 className="text-3xl font-light text-text-primary tracking-wide mb-2">Advanced Search</h1>
+        <p className="text-sm text-text-muted">Build complex queries across specific enterprise modules.</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-        <div className="p-6 border-b border-stone-100 bg-stone-50">
-          <label className="text-xs font-bold text-stone-900 uppercase tracking-widest block mb-3">Target Module</label>
+      <div className="bg-surface rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+        <div className="p-6 border-b border-stone-100 bg-background">
+          <label className="text-xs font-bold text-text-primary uppercase tracking-widest block mb-3">Target Module</label>
           <div className="flex items-center gap-4">
             <select 
               value={module}
               onChange={(e) => setModule(e.target.value)}
-              className="p-3 bg-white border border-stone-200 rounded-xl text-sm font-medium text-stone-900 focus:outline-none focus:border-stone-400 w-64"
+              className="p-3 bg-surface border border-border rounded-xl text-sm font-medium text-text-primary focus:outline-none focus:border-primary w-64"
             >
               <option value="Products">Products</option>
               <option value="Orders">Orders</option>
@@ -55,10 +55,10 @@ export default function AdvancedSearch() {
 
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-stone-900 uppercase tracking-widest">Query Builder</h3>
+            <h3 className="text-xs font-bold text-text-primary uppercase tracking-widest">Query Builder</h3>
             <div className="flex items-center gap-2 bg-stone-100 p-1 rounded-lg">
-              <button onClick={() => setLogicalOperator('AND')} className={`px-4 py-1.5 text-xs font-bold rounded-md ${logicalOperator === 'AND' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-700'}`}>AND</button>
-              <button onClick={() => setLogicalOperator('OR')} className={`px-4 py-1.5 text-xs font-bold rounded-md ${logicalOperator === 'OR' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-700'}`}>OR</button>
+              <button onClick={() => setLogicalOperator('AND')} className={`px-4 py-1.5 text-xs font-bold rounded-md ${logicalOperator === 'AND' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-secondary'}`}>AND</button>
+              <button onClick={() => setLogicalOperator('OR')} className={`px-4 py-1.5 text-xs font-bold rounded-md ${logicalOperator === 'OR' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-secondary'}`}>OR</button>
             </div>
           </div>
 
@@ -68,7 +68,7 @@ export default function AdvancedSearch() {
                 <select
                   value={cond.field}
                   onChange={(e) => updateCondition(i, 'field', e.target.value)}
-                  className="w-1/3 p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-stone-400"
+                  className="w-1/3 p-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:border-primary"
                 >
                   <option value="">Select Field...</option>
                   <option value="Price">Price</option>
@@ -79,7 +79,7 @@ export default function AdvancedSearch() {
                 <select
                   value={cond.operator}
                   onChange={(e) => updateCondition(i, 'operator', e.target.value)}
-                  className="w-1/4 p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-stone-400"
+                  className="w-1/4 p-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:border-primary"
                 >
                   <option value="Equals">Equals (=)</option>
                   <option value="Not Equals">Not Equals (!=)</option>
@@ -92,26 +92,26 @@ export default function AdvancedSearch() {
                   value={cond.value}
                   onChange={(e) => updateCondition(i, 'value', e.target.value)}
                   placeholder="Value"
-                  className="flex-1 p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-stone-400"
+                  className="flex-1 p-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:border-primary"
                 />
-                <button onClick={() => removeCondition(i)} className="p-3 text-stone-400 hover:text-red-500 transition-colors">
+                <button onClick={() => removeCondition(i)} className="p-3 text-text-muted hover:text-danger transition-colors">
                   <FiTrash2 />
                 </button>
               </div>
             ))}
           </div>
 
-          <button onClick={addCondition} className="flex items-center gap-2 text-sm font-medium text-stone-600 hover:text-stone-900">
+          <button onClick={addCondition} className="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary">
             <FiPlus /> Add Condition
           </button>
         </div>
         
-        <div className="p-6 bg-stone-50 border-t border-stone-100 flex items-center justify-between">
-          <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-stone-700 bg-white border border-stone-200 rounded-xl hover:bg-stone-100 transition-colors">
+        <div className="p-6 bg-background border-t border-stone-100 flex items-center justify-between">
+          <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-secondary bg-surface border border-border rounded-xl hover:bg-stone-100 transition-colors">
             <FiSave /> Save Query
           </button>
           
-          <button onClick={handleSearch} className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-stone-900 rounded-xl hover:bg-stone-800 transition-colors">
+          <button onClick={handleSearch} className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary-hover transition-colors">
             <FiSearch /> Run Search
           </button>
         </div>

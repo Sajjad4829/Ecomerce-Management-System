@@ -20,20 +20,20 @@ export const CouponForm = () => {
             <p className="text-sm text-neutral-500 mt-1">Generate a new discount code</p>
           </div>
         </div>
-        <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-medium flex items-center gap-2">
+        <button className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover font-medium flex items-center gap-2">
           <Save className="w-4 h-4" /> Save Coupon
         </button>
       </div>
 
-      <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6 space-y-6">
+      <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
-            <label className="text-sm font-medium text-neutral-700">Coupon Code <span className="text-red-500">*</span></label>
-            <input type="text" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono uppercase" placeholder="e.g. SAVE20" />
+            <label className="text-sm font-medium text-neutral-700">Coupon Code <span className="text-danger">*</span></label>
+            <input type="text" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary font-mono uppercase" placeholder="e.g. SAVE20" />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-neutral-700">Link to Promotion <span className="text-red-500">*</span></label>
-            <select className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            <label className="text-sm font-medium text-neutral-700">Link to Promotion <span className="text-danger">*</span></label>
+            <select className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-surface">
               <option value="">Select a promotion...</option>
               <option>15% Off Summer Collection</option>
               <option>Free White-Glove Delivery</option>
@@ -46,11 +46,11 @@ export const CouponForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
             <label className="text-sm font-medium text-neutral-700">Total Usage Limit</label>
-            <input type="number" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Unlimited if blank" />
+            <input type="number" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Unlimited if blank" />
           </div>
           <div className="space-y-1">
             <label className="text-sm font-medium text-neutral-700">Limit Per Customer</label>
-            <input type="number" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Unlimited if blank" />
+            <input type="number" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Unlimited if blank" />
           </div>
         </div>
       </div>

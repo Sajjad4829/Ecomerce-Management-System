@@ -90,20 +90,20 @@ export default function RoleEditor() {
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-theme(spacing.20))] pb-24">
-      <div className="sticky top-0 z-20 bg-[#F7F5F2] pt-4 pb-4 border-b border-black/5 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
+      <div className="sticky top-0 z-20 bg-background pt-4 pb-4 border-b border-black/5 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
         <div className="flex items-center gap-4">
-          <Link to="/admin/roles" className="p-2 bg-white border border-black/10 rounded-lg text-gray-500 hover:text-black hover:border-black/20 transition-all shadow-sm">
+          <Link to="/admin/roles" className="p-2 bg-surface border border-black/10 rounded-lg text-text-muted hover:text-black hover:border-black/20 transition-all shadow-sm">
             <FiArrowLeft size={18} />
           </Link>
           <div>
-            <h1 className="text-xl font-serif font-bold text-[#1A1A1A]">
+            <h1 className="text-xl font-serif font-bold text-text-primary">
               {isNew ? 'Create Role' : `Edit Role: ${formData.name}`}
             </h1>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
-          <Link to="/admin/roles" className="px-4 py-2 text-gray-600 hover:text-black text-sm font-medium transition-colors">
+          <Link to="/admin/roles" className="px-4 py-2 text-text-secondary hover:text-black text-sm font-medium transition-colors">
             Cancel
           </Link>
           <button 
@@ -116,34 +116,34 @@ export default function RoleEditor() {
       </div>
 
       <div className="max-w-4xl mx-auto w-full mt-8 space-y-8">
-        <div className="bg-white rounded-xl border border-black/5 shadow-sm p-8">
-          <h2 className="text-lg font-serif font-bold text-[#1A1A1A] mb-6">Role Details</h2>
+        <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-8">
+          <h2 className="text-lg font-serif font-bold text-text-primary mb-6">Role Details</h2>
           <div className="space-y-6 max-w-2xl">
             <div>
-              <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Role Name</label>
+              <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Role Name</label>
               <input 
                 type="text" 
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium"
+                className="w-full px-4 py-2.5 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Description</label>
+              <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Description</label>
               <textarea 
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="w-full px-4 py-3 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium"
+                className="w-full px-4 py-3 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium"
                 rows={2}
               />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-black/5 shadow-sm p-8">
+        <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-serif font-bold text-[#1A1A1A]">Permission Matrix</h2>
-            <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+            <h2 className="text-lg font-serif font-bold text-text-primary">Permission Matrix</h2>
+            <span className="text-sm font-medium text-text-muted bg-gray-100 px-3 py-1 rounded-full">
               {formData.selectedPermissions.length} selected
             </span>
           </div>
@@ -155,16 +155,16 @@ export default function RoleEditor() {
 
               return (
                 <div key={module.id} className="border border-black/5 rounded-lg overflow-hidden">
-                  <div className="bg-[#F7F5F2] px-6 py-4 flex items-center justify-between border-b border-black/5">
+                  <div className="bg-background px-6 py-4 flex items-center justify-between border-b border-black/5">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input 
                         type="checkbox" 
                         checked={allSelected}
                         ref={input => { if (input) input.indeterminate = someSelected; }}
                         onChange={() => toggleModule(module)}
-                        className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]"
+                        className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]"
                       />
-                      <span className="font-bold text-[#1A1A1A]">{module.name}</span>
+                      <span className="font-bold text-text-primary">{module.name}</span>
                     </label>
                   </div>
                   <div className="px-6 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -174,9 +174,9 @@ export default function RoleEditor() {
                           type="checkbox"
                           checked={formData.selectedPermissions.includes(perm.id)}
                           onChange={() => togglePermission(perm.id)}
-                          className="rounded border-gray-300 text-[#1A1A1A] focus:ring-[#1A1A1A]"
+                          className="rounded border-border-hover text-text-primary focus:ring-[#1A1A1A]"
                         />
-                        <span className="text-sm text-gray-700 group-hover:text-black transition-colors">{perm.label}</span>
+                        <span className="text-sm text-text-secondary group-hover:text-black transition-colors">{perm.label}</span>
                       </label>
                     ))}
                   </div>

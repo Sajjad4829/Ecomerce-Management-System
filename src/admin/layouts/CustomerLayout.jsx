@@ -13,7 +13,7 @@ export default function CustomerLayout() {
 
   return (
     <div className="flex flex-col h-full bg-neutral-50">
-      <div className="bg-white border-b border-neutral-200 px-8 py-4 shrink-0">
+      <div className="bg-surface border-b border-neutral-200 px-8 py-4 shrink-0">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-serif text-neutral-900">Customer Experience Center</h1>

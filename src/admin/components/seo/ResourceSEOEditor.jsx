@@ -19,27 +19,27 @@ export function ResourceSEOEditor({ resourceType, resourceName, initialData, onS
   ];
 
   return (
-    <div className="bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200 bg-stone-50">
+    <div className="bg-surface border border-border rounded-xl overflow-hidden shadow-sm">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-background">
         <div>
-          <h3 className="font-bold text-stone-900">{resourceType} SEO Configuration</h3>
-          <p className="text-xs text-stone-500 mt-0.5">Editing SEO for: {resourceName}</p>
+          <h3 className="font-bold text-text-primary">{resourceType} SEO Configuration</h3>
+          <p className="text-xs text-text-muted mt-0.5">Editing SEO for: {resourceName}</p>
         </div>
         <button 
           onClick={() => onSave(seoData)}
-          className="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-colors"
         >
           <FiSave /> Save SEO
         </button>
       </div>
 
-      <div className="flex border-b border-stone-200">
+      <div className="flex border-b border-border">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === tab.id ? 'border-stone-900 text-stone-900' : 'border-transparent text-stone-500 hover:text-stone-700'
+              activeTab === tab.id ? 'border-stone-900 text-text-primary' : 'border-transparent text-text-muted hover:text-text-secondary'
             }`}
           >
             <tab.icon size={16} />
@@ -58,7 +58,7 @@ export function ResourceSEOEditor({ resourceType, resourceName, initialData, onS
                   value={seoData.title || ''}
                   onChange={(e) => handleChange('title', e.target.value)}
                   placeholder="e.g. Modern Leather Sofa | Aurora Furniture"
-                  className="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-400"
+                  className="w-full p-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
                 />
               </SEOFieldGroup>
 
@@ -68,7 +68,7 @@ export function ResourceSEOEditor({ resourceType, resourceName, initialData, onS
                   onChange={(e) => handleChange('description', e.target.value)}
                   placeholder="Discover our premium modern leather sofa..."
                   rows={3}
-                  className="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-400"
+                  className="w-full p-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
                 />
               </SEOFieldGroup>
 
@@ -98,7 +98,7 @@ export function ResourceSEOEditor({ resourceType, resourceName, initialData, onS
 
             <div className="space-y-6">
               <div>
-                <h4 className="font-bold text-stone-900 mb-4 text-sm">Search Result Preview</h4>
+                <h4 className="font-bold text-text-primary mb-4 text-sm">Search Result Preview</h4>
                 <SEOPreview 
                   title={seoData.title} 
                   description={seoData.description} 

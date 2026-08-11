@@ -10,8 +10,8 @@ const VERSIONS = [
 
 export default function VersionTimeline() {
   return (
-    <div className="bg-white border border-black/5 rounded-xl p-8 shadow-sm max-w-4xl">
-      <h3 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-widest mb-8 border-b border-black/5 pb-2">
+    <div className="bg-surface border border-black/5 rounded-xl p-8 shadow-sm max-w-4xl">
+      <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-8 border-b border-black/5 pb-2">
         Version History
       </h3>
       
@@ -19,31 +19,31 @@ export default function VersionTimeline() {
         {VERSIONS.map((v, i) => (
           <div key={v.id} className="relative">
             {/* Timeline dot */}
-            <div className={`absolute -left-[37px] top-1 w-6 h-6 rounded-full border-[3px] border-white flex items-center justify-center ${v.status === 'published' ? 'bg-green-500' : 'bg-gray-300'}`}>
+            <div className={`absolute -left-[37px] top-1 w-6 h-6 rounded-full border-[3px] border-white flex items-center justify-center ${v.status === 'published' ? 'bg-success-soft0' : 'bg-gray-300'}`}>
               {v.status === 'published' && <FiCheck className="text-white w-3 h-3" />}
             </div>
 
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                <div>
                   <div className="flex items-center gap-3 mb-1">
-                     <span className="text-sm font-bold text-[#1A1A1A]">{v.id}</span>
+                     <span className="text-sm font-bold text-text-primary">{v.id}</span>
                      {v.status === 'published' && (
-                       <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[9px] font-bold uppercase tracking-widest rounded">
+                       <span className="px-2 py-0.5 bg-success-soft text-success text-[9px] font-bold uppercase tracking-widest rounded">
                          Current Live
                        </span>
                      )}
                   </div>
-                  <div className="text-xs text-gray-500 font-mono mb-2">{v.date}</div>
-                  <p className="text-sm text-gray-700">{v.description}</p>
-                  <div className="text-xs text-gray-400 mt-2">Published by <span className="font-semibold text-gray-600">{v.author}</span></div>
+                  <div className="text-xs text-text-muted font-mono mb-2">{v.date}</div>
+                  <p className="text-sm text-text-secondary">{v.description}</p>
+                  <div className="text-xs text-text-muted mt-2">Published by <span className="font-semibold text-text-secondary">{v.author}</span></div>
                </div>
                
                <div className="flex items-center gap-2 shrink-0">
-                  <button className="p-2 border border-black/10 rounded-lg text-gray-500 hover:text-[#1A1A1A] hover:bg-gray-50 transition-colors" title="Preview Version">
+                  <button className="p-2 border border-black/10 rounded-lg text-text-muted hover:text-text-primary hover:bg-background transition-colors" title="Preview Version">
                     <FiEye size={14} />
                   </button>
                   {v.status !== 'published' && (
-                    <button className="px-3 py-2 border border-black/10 rounded-lg text-xs font-semibold text-gray-600 hover:text-[#1A1A1A] hover:bg-gray-50 transition-colors flex items-center gap-2">
+                    <button className="px-3 py-2 border border-black/10 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-background transition-colors flex items-center gap-2">
                       <FiRotateCcw size={14} /> Restore
                     </button>
                   )}

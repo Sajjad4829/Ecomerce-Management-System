@@ -54,41 +54,41 @@ export default function MediaPickerModal({
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
       
-      <div className="bg-white rounded-2xl border border-black/10 shadow-2xl w-full max-w-4xl h-[80vh] overflow-hidden flex flex-col">
+      <div className="bg-surface rounded-2xl border border-black/10 shadow-2xl w-full max-w-4xl h-[80vh] overflow-hidden flex flex-col">
         
         {/* Modal Top Header */}
-        <div className="p-4 border-b border-black/5 flex items-center justify-between bg-gray-50/50 shrink-0">
+        <div className="p-4 border-b border-black/5 flex items-center justify-between bg-background/50 shrink-0">
           <div>
-            <h3 className="font-serif font-bold text-base text-[#1A1A1A]">{title}</h3>
-            <p className="text-xs text-gray-500">
+            <h3 className="font-serif font-bold text-base text-text-primary">{title}</h3>
+            <p className="text-xs text-text-muted">
               {allowMultiple ? "Select one or more assets for your component." : "Select a single media asset."}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-black/5 rounded-lg transition-colors"
+            className="p-1.5 text-text-muted hover:text-text-primary hover:bg-black/5 rounded-lg transition-colors"
           >
             <FiX size={18} />
           </button>
         </div>
 
         {/* Toolbar Filter Line */}
-        <div className="p-3 border-b border-black/5 bg-white flex items-center gap-3 shrink-0">
+        <div className="p-3 border-b border-black/5 bg-surface flex items-center gap-3 shrink-0">
           <div className="relative flex-1">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={14} />
             <input
               type="text"
               placeholder="Search assets..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs focus:bg-white focus:outline-none focus:border-black/30"
+              className="w-full pl-9 pr-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs focus:bg-surface focus:outline-none focus:border-black/30"
             />
           </div>
 
           <select
             value={selectedFolder}
             onChange={(e) => setSelectedFolder(e.target.value)}
-            className="px-3 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs font-semibold text-gray-700"
+            className="px-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs font-semibold text-text-secondary"
           >
             <option value="all">All Folders</option>
             <option value="Sofas">Sofas</option>
@@ -100,7 +100,7 @@ export default function MediaPickerModal({
         </div>
 
         {/* Media Assets Picker Grid */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-gray-50/40">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-background/40">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {filteredAssets.map((asset) => {
               const isSelected = selectedItemIds.includes(asset.id);
@@ -109,7 +109,7 @@ export default function MediaPickerModal({
                   key={asset.id}
                   onClick={() => toggleSelect(asset.id)}
                   className={cn(
-                    "group relative bg-white border border-black/5 rounded-xl overflow-hidden shadow-2xs hover:shadow-md cursor-pointer transition-all flex flex-col",
+                    "group relative bg-surface border border-black/5 rounded-xl overflow-hidden shadow-2xs hover:shadow-md cursor-pointer transition-all flex flex-col",
                     isSelected && "ring-2 ring-black border-transparent"
                   )}
                 >
@@ -119,15 +119,15 @@ export default function MediaPickerModal({
                     {/* Check badge */}
                     <div className={cn(
                       "absolute top-2 left-2 w-5 h-5 rounded-md border flex items-center justify-center transition-all",
-                      isSelected ? "bg-[#1A1A1A] border-[#1A1A1A] text-white" : "bg-white/80 border-black/20 text-transparent"
+                      isSelected ? "bg-[#1A1A1A] border-[#1A1A1A] text-white" : "bg-surface/80 border-black/20 text-transparent"
                     )}>
                       <FiCheck size={12} strokeWidth={3} />
                     </div>
                   </div>
 
                   <div className="p-2.5">
-                    <h4 className="text-xs font-bold text-[#1A1A1A] truncate">{asset.title}</h4>
-                    <span className="text-[10px] font-mono text-gray-400">{asset.dimensions}</span>
+                    <h4 className="text-xs font-bold text-text-primary truncate">{asset.title}</h4>
+                    <span className="text-[10px] font-mono text-text-muted">{asset.dimensions}</span>
                   </div>
                 </div>
               );
@@ -136,15 +136,15 @@ export default function MediaPickerModal({
         </div>
 
         {/* Footer Confirmation Bar */}
-        <div className="p-4 border-t border-black/5 bg-white flex items-center justify-between shrink-0">
-          <span className="text-xs text-gray-500 font-medium">
+        <div className="p-4 border-t border-black/5 bg-surface flex items-center justify-between shrink-0">
+          <span className="text-xs text-text-muted font-medium">
             {selectedItemIds.length} asset(s) selected
           </span>
 
           <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-black/10 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50"
+              className="px-4 py-2 border border-black/10 rounded-lg text-xs font-semibold text-text-secondary hover:bg-background"
             >
               Cancel
             </button>
@@ -155,7 +155,7 @@ export default function MediaPickerModal({
                 "px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md",
                 selectedItemIds.length > 0
                   ? "bg-[#1A1A1A] text-white hover:bg-black/80 cursor-pointer"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-200 text-text-muted cursor-not-allowed"
               )}
             >
               Confirm Selection

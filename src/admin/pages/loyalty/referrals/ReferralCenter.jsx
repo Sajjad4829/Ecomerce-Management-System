@@ -17,7 +17,7 @@ export default function ReferralCenter() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -36,7 +36,7 @@ export default function ReferralCenter() {
                 <td className="px-6 py-4 text-neutral-600">{ref.referredName}</td>
                 <td className="px-6 py-4 font-medium text-neutral-900">{ref.reward}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${ref.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${ref.status === 'Pending' ? 'bg-warning-soft text-amber-800' : 'bg-success-soft text-green-800'}`}>
                     {ref.status}
                   </span>
                 </td>

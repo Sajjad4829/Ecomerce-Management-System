@@ -25,41 +25,41 @@ export default function StockAdjustmentModal({ isOpen, onClose, item }) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          className="relative w-full max-w-lg bg-surface rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         >
-          <div className="flex items-center justify-between p-6 border-b border-black/5 shrink-0 bg-[#F7F5F2]">
+          <div className="flex items-center justify-between p-6 border-b border-black/5 shrink-0 bg-background">
             <div>
-              <h2 className="text-xl font-serif font-bold text-[#1A1A1A]">Adjust Stock</h2>
-              <p className="text-sm text-gray-500 mt-1">{item.product} - {item.variant}</p>
+              <h2 className="text-xl font-serif font-bold text-text-primary">Adjust Stock</h2>
+              <p className="text-sm text-text-muted mt-1">{item.product} - {item.variant}</p>
             </div>
             <button 
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-900 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-sm"
+              className="p-2 text-text-muted hover:text-text-primary bg-surface rounded-full hover:bg-gray-100 transition-colors shadow-sm"
             >
               <FiX size={20} />
             </button>
           </div>
           
           <div className="p-6 overflow-y-auto">
-            <div className="mb-6 p-4 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center">
+            <div className="mb-6 p-4 bg-background border border-gray-100 rounded-xl flex justify-between items-center">
               <div>
-                <p className="text-xs font-mono font-bold text-gray-500 uppercase">Current Available</p>
-                <p className="text-xl font-bold text-[#1A1A1A] mt-1">{item.onHand - item.reserved}</p>
+                <p className="text-xs font-mono font-bold text-text-muted uppercase">Current Available</p>
+                <p className="text-xl font-bold text-text-primary mt-1">{item.onHand - item.reserved}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-mono font-bold text-gray-500 uppercase">Location</p>
-                <p className="text-sm font-medium text-gray-900 mt-1">{item.warehouse}</p>
+                <p className="text-xs font-mono font-bold text-text-muted uppercase">Location</p>
+                <p className="text-sm font-medium text-text-primary mt-1">{item.warehouse}</p>
               </div>
             </div>
 
             <div className="space-y-6">
               <div>
-                <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-3">Adjustment Type</label>
+                <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-3">Adjustment Type</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button 
                     onClick={() => setAdjustmentType('add')}
                     className={`px-4 py-2.5 rounded-lg text-sm font-bold border transition-colors ${
-                      adjustmentType === 'add' ? 'bg-green-50 border-green-600 text-green-700' : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
+                      adjustmentType === 'add' ? 'bg-success-soft border-green-600 text-success' : 'bg-surface border-border text-text-secondary hover:border-border-hover'
                     }`}
                   >
                     + Add
@@ -67,7 +67,7 @@ export default function StockAdjustmentModal({ isOpen, onClose, item }) {
                   <button 
                     onClick={() => setAdjustmentType('remove')}
                     className={`px-4 py-2.5 rounded-lg text-sm font-bold border transition-colors ${
-                      adjustmentType === 'remove' ? 'bg-red-50 border-red-600 text-red-700' : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
+                      adjustmentType === 'remove' ? 'bg-danger-soft border-red-600 text-red-700' : 'bg-surface border-border text-text-secondary hover:border-border-hover'
                     }`}
                   >
                     - Remove
@@ -77,21 +77,21 @@ export default function StockAdjustmentModal({ isOpen, onClose, item }) {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Quantity</label>
+                  <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Quantity</label>
                   <input 
                     type="number" 
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                     placeholder="0"
-                    className="w-full px-4 py-2.5 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-lg font-bold text-[#1A1A1A]"
+                    className="w-full px-4 py-2.5 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-lg font-bold text-text-primary"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Reason</label>
+                  <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Reason</label>
                   <select 
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-[#1A1A1A]"
+                    className="w-full px-4 py-3 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm font-medium text-text-primary"
                   >
                     <option value="correction">Inventory Correction</option>
                     <option value="received">Received New Stock</option>
@@ -103,22 +103,22 @@ export default function StockAdjustmentModal({ isOpen, onClose, item }) {
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-2">Notes</label>
+                <label className="block text-xs font-mono font-bold text-text-muted uppercase mb-2">Notes</label>
                 <textarea 
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Optional reference or details..."
-                  className="w-full px-4 py-3 bg-[#F7F5F2] border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm"
+                  className="w-full px-4 py-3 bg-background border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm"
                   rows={3}
                 />
               </div>
             </div>
           </div>
           
-          <div className="p-6 border-t border-black/5 bg-[#F7F5F2] flex justify-end gap-3 shrink-0">
+          <div className="p-6 border-t border-black/5 bg-background flex justify-end gap-3 shrink-0">
             <button 
               onClick={onClose}
-              className="px-6 py-2.5 text-gray-600 font-medium hover:text-black transition-colors"
+              className="px-6 py-2.5 text-text-secondary font-medium hover:text-black transition-colors"
             >
               Cancel
             </button>

@@ -17,7 +17,7 @@ export default function OrderNotes({ orderId }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+    <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
       <h3 className="text-lg font-serif text-neutral-900 mb-2">Order Notes</h3>
       <p className="text-sm text-neutral-500 mb-6">Internal notes, not visible to customers.</p>
       

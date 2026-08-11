@@ -25,7 +25,7 @@ export const FinanceDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-neutral-500">Net Revenue*</h3>
             <div className="p-2 bg-emerald-50 text-emerald-600 rounded">
@@ -38,10 +38,10 @@ export const FinanceDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-neutral-500">Transactions</h3>
-            <div className="p-2 bg-blue-50 text-blue-600 rounded">
+            <div className="p-2 bg-blue-50 text-primary rounded">
               <ArrowLeftRight className="w-4 h-4" />
             </div>
           </div>
@@ -51,10 +51,10 @@ export const FinanceDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-neutral-500">Refunds</h3>
-            <div className="p-2 bg-amber-50 text-amber-600 rounded">
+            <div className="p-2 bg-warning-soft text-warning rounded">
               <RefreshCcw className="w-4 h-4" />
             </div>
           </div>
@@ -64,10 +64,10 @@ export const FinanceDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-neutral-500">Invoices</h3>
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded">
+            <div className="p-2 bg-primary-soft text-primary rounded">
               <FileText className="w-4 h-4" />
             </div>
           </div>
@@ -81,10 +81,10 @@ export const FinanceDashboard = () => {
       <p className="text-xs text-neutral-400">*Financial values are backend-dependent placeholders</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm">
           <div className="p-5 border-b border-neutral-200 flex items-center justify-between">
             <h2 className="font-medium text-neutral-900">Recent Transactions</h2>
-            <button onClick={() => navigate('/admin/finance/transactions')} className="text-sm text-indigo-600 font-medium">View All</button>
+            <button onClick={() => navigate('/admin/finance/transactions')} className="text-sm text-primary font-medium">View All</button>
           </div>
           <div className="divide-y divide-neutral-200">
             {transactions.slice(0, 5).map(txn => (
@@ -97,8 +97,8 @@ export const FinanceDashboard = () => {
                   <div className="font-medium text-neutral-900">${txn.amount.toLocaleString()}</div>
                   <div className={`text-xs font-medium mt-0.5 ${
                     txn.status === 'Paid' ? 'text-emerald-600' :
-                    txn.status === 'Pending' ? 'text-amber-600' :
-                    txn.status === 'Failed' ? 'text-red-600' : 'text-neutral-500'
+                    txn.status === 'Pending' ? 'text-warning' :
+                    txn.status === 'Failed' ? 'text-danger' : 'text-neutral-500'
                   }`}>
                     {txn.status}
                   </div>
@@ -108,10 +108,10 @@ export const FinanceDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm">
           <div className="p-5 border-b border-neutral-200 flex items-center justify-between">
             <h2 className="font-medium text-neutral-900">Recent Refunds</h2>
-            <button onClick={() => navigate('/admin/finance/refunds')} className="text-sm text-indigo-600 font-medium">View All</button>
+            <button onClick={() => navigate('/admin/finance/refunds')} className="text-sm text-primary font-medium">View All</button>
           </div>
           <div className="divide-y divide-neutral-200">
             {refunds.slice(0, 5).map(ref => (

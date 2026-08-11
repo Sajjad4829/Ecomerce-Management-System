@@ -12,11 +12,11 @@ export default function StaffManager() {
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">Staff Management</h1>
-          <p className="text-gray-500 text-sm mt-1">Manage enterprise staff access and roles</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Staff Management</h1>
+          <p className="text-text-muted text-sm mt-1">Manage enterprise staff access and roles</p>
         </div>
         <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-4 py-2 border border-black/10 rounded-lg hover:bg-gray-50 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 border border-black/10 rounded-lg hover:bg-background transition-colors">
             <FiDownload /> Export
           </button>
           <button 
@@ -28,7 +28,7 @@ export default function StaffManager() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <DataTable 
           data={staff}
           searchPlaceholder="Search staff by name, email, department..."
@@ -36,7 +36,7 @@ export default function StaffManager() {
             { key: 'name', label: 'Name', render: (val, row) => (
               <div>
                 <div className="font-medium">{val}</div>
-                <div className="text-xs text-gray-500">{row.email}</div>
+                <div className="text-xs text-text-muted">{row.email}</div>
               </div>
             )},
             { key: 'department', label: 'Department' },
@@ -44,7 +44,7 @@ export default function StaffManager() {
               <div className="flex flex-wrap gap-1">
                 {val.map(role => (
                   <span key={role} className="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-gray-800 text-xs">
-                    {role === 'super_admin' && <FiShield className="w-3 h-3 text-red-500" />}
+                    {role === 'super_admin' && <FiShield className="w-3 h-3 text-danger" />}
                     {role}
                   </span>
                 ))}
@@ -52,8 +52,8 @@ export default function StaffManager() {
             )},
             { key: 'status', label: 'Status', render: (val) => (
               <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                val === 'Active' ? 'bg-green-100 text-green-800' :
-                val === 'Suspended' ? 'bg-red-100 text-red-800' :
+                val === 'Active' ? 'bg-success-soft text-green-800' :
+                val === 'Suspended' ? 'bg-danger-soft text-red-800' :
                 'bg-gray-100 text-gray-800'
               }`}>
                 {val}

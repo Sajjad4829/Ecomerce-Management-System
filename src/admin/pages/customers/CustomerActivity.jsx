@@ -11,9 +11,9 @@ export function CustomerActivity() {
   const getIcon = (type) => {
     switch (type) {
       case 'order_placed': return <ShoppingBag className="w-4 h-4 text-emerald-600" />;
-      case 'profile_updated': return <Edit className="w-4 h-4 text-blue-600" />;
+      case 'profile_updated': return <Edit className="w-4 h-4 text-primary" />;
       case 'wishlist_added': return <Heart className="w-4 h-4 text-rose-600" />;
-      case 'review_submitted': return <MessageSquare className="w-4 h-4 text-amber-600" />;
+      case 'review_submitted': return <MessageSquare className="w-4 h-4 text-warning" />;
       default: return <Activity className="w-4 h-4 text-neutral-600" />;
     }
   };
@@ -30,7 +30,7 @@ export function CustomerActivity() {
         <div className="relative border-l border-neutral-200 ml-4 space-y-8 pb-4">
           {activities.map((activity, index) => (
             <div key={activity.id} className="relative pl-6">
-              <span className="absolute -left-3 top-1 w-6 h-6 bg-white border border-neutral-200 rounded-full flex items-center justify-center shadow-sm">
+              <span className="absolute -left-3 top-1 w-6 h-6 bg-surface border border-neutral-200 rounded-full flex items-center justify-center shadow-sm">
                 {getIcon(activity.type)}
               </span>
               <div>

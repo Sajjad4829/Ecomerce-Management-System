@@ -25,7 +25,7 @@ export const TransactionDetail = () => {
             {txn.id}
             <span className={`text-sm font-sans font-medium px-2.5 py-0.5 rounded-full ${
               txn.status === 'Paid' ? 'bg-emerald-100 text-emerald-800' :
-              txn.status === 'Pending' ? 'bg-amber-100 text-amber-800' :
+              txn.status === 'Pending' ? 'bg-warning-soft text-amber-800' :
               'bg-neutral-100 text-neutral-800'
             }`}>
               {txn.status}
@@ -34,11 +34,11 @@ export const TransactionDetail = () => {
           <p className="text-sm text-neutral-500 mt-1">Processed on {txn.date}</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
+          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-surface rounded-md hover:bg-neutral-50 transition-colors flex items-center gap-2">
             <FileText className="w-4 h-4" /> View Order
           </button>
           {txn.status === 'Paid' && (
-            <button className="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2">
+            <button className="px-4 py-2 text-white bg-primary rounded-md hover:bg-primary-hover transition-colors flex items-center gap-2">
               <RefreshCcw className="w-4 h-4" /> Request Refund
             </button>
           )}
@@ -46,13 +46,13 @@ export const TransactionDetail = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6 space-y-6">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6 space-y-6">
           <div>
             <h3 className="font-medium text-neutral-900 mb-4">Transaction Details</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-neutral-500">Order ID</span>
-                <span className="font-medium text-indigo-600 cursor-pointer hover:underline">{txn.orderId}</span>
+                <span className="font-medium text-primary cursor-pointer hover:underline">{txn.orderId}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-500">Customer</span>
@@ -79,12 +79,12 @@ export const TransactionDetail = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm p-6">
           <h3 className="font-medium text-neutral-900 mb-4">Financial Timeline</h3>
           <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-neutral-200 before:to-transparent">
             
             <div className="relative flex items-center gap-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 text-blue-600 shadow shrink-0">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 text-primary shadow shrink-0">
                 <Clock className="w-5 h-5"/>
               </div>
               <div className="flex-1 p-3 rounded border border-neutral-100 bg-neutral-50">

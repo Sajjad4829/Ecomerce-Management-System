@@ -8,22 +8,22 @@ const MOCK_REVIEWS = [
 
 export default function CustomerReviewHistory() {
   return (
-    <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+    <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
       <div className="p-6 border-b border-black/5 flex items-center justify-between">
-        <h3 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2">
-          <FiStar className="text-gray-400" /> Review History
+        <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+          <FiStar className="text-text-muted" /> Review History
         </h3>
-        <Link to="/admin/marketing/reviews" className="text-xs text-blue-600 hover:text-blue-800 font-medium">
+        <Link to="/admin/marketing/reviews" className="text-xs text-primary hover:text-blue-800 font-medium">
           Manage Reviews
         </Link>
       </div>
 
       <div className="divide-y divide-black/5">
         {MOCK_REVIEWS.map(review => (
-          <div key={review.id} className="p-6 hover:bg-gray-50 transition-colors">
+          <div key={review.id} className="p-6 hover:bg-background transition-colors">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-sm font-bold text-[#1A1A1A]">{review.product}</h4>
-              <span className="text-xs text-gray-500">{review.date}</span>
+              <h4 className="text-sm font-bold text-text-primary">{review.product}</h4>
+              <span className="text-xs text-text-muted">{review.date}</span>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center text-amber-400">
@@ -32,12 +32,12 @@ export default function CustomerReviewHistory() {
                 ))}
               </div>
               <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                review.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                review.status === 'Published' ? 'bg-success-soft text-green-800' : 'bg-gray-100 text-gray-800'
               }`}>
                 {review.status}
               </span>
               {review.verified && (
-                <span className="text-xs text-green-600 flex items-center gap-1 font-medium">
+                <span className="text-xs text-success flex items-center gap-1 font-medium">
                   <FiCheckCircle size={12} /> Verified Buyer
                 </span>
               )}

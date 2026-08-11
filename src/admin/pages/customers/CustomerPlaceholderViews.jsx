@@ -72,7 +72,7 @@ export function CustomerCommunication() {
             <p className="text-sm font-medium text-neutral-900">Email Marketing</p>
             <p className="text-xs text-neutral-500">Promotions and newsletters</p>
           </div>
-          <span className={`px-2 py-1 rounded text-xs font-medium ${comm.email ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
+          <span className={`px-2 py-1 rounded text-xs font-medium ${comm.email ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
             {comm.email ? 'Subscribed' : 'Unsubscribed'}
           </span>
         </div>
@@ -81,7 +81,7 @@ export function CustomerCommunication() {
             <p className="text-sm font-medium text-neutral-900">SMS Notifications</p>
             <p className="text-xs text-neutral-500">Order updates via text message</p>
           </div>
-          <span className={`px-2 py-1 rounded text-xs font-medium ${comm.sms ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
+          <span className={`px-2 py-1 rounded text-xs font-medium ${comm.sms ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
             {comm.sms ? 'Subscribed' : 'Unsubscribed'}
           </span>
         </div>
@@ -90,7 +90,7 @@ export function CustomerCommunication() {
             <p className="text-sm font-medium text-neutral-900">Push Notifications</p>
             <p className="text-xs text-neutral-500">App notifications</p>
           </div>
-          <span className={`px-2 py-1 rounded text-xs font-medium ${comm.push ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
+          <span className={`px-2 py-1 rounded text-xs font-medium ${comm.push ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
             {comm.push ? 'Subscribed' : 'Unsubscribed'}
           </span>
         </div>
@@ -106,11 +106,11 @@ export function CustomerLoyaltyProfile() {
     <div className="space-y-6">
       <h3 className="text-lg font-serif text-neutral-900">Loyalty & Rewards</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-indigo-50 p-6 rounded-lg border border-indigo-100">
+        <div className="bg-primary-soft p-6 rounded-lg border border-indigo-100">
           <p className="text-sm text-indigo-800 font-medium uppercase tracking-wider mb-2">Current Tier</p>
           <p className="text-3xl font-serif text-indigo-900">{customer.loyaltyTier}</p>
         </div>
-        <div className="bg-amber-50 p-6 rounded-lg border border-amber-100">
+        <div className="bg-warning-soft p-6 rounded-lg border border-amber-100">
           <p className="text-sm text-amber-800 font-medium uppercase tracking-wider mb-2">Reward Points</p>
           <p className="text-3xl font-serif text-amber-900">{customer.points}</p>
         </div>

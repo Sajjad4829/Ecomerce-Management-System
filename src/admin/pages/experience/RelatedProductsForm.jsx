@@ -121,7 +121,7 @@ export const RelatedProductsForm = () => {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-md flex items-start gap-3">
+        <div className="bg-danger-soft border border-red-200 text-red-700 p-4 rounded-md flex items-start gap-3">
           <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
           <p>{error}</p>
         </div>
@@ -129,7 +129,7 @@ export const RelatedProductsForm = () => {
 
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
-          <div className="bg-white rounded-lg border border-neutral-200 p-6 space-y-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 p-6 space-y-6">
             <h2 className="text-lg font-medium text-neutral-900 border-b border-neutral-200 pb-2">Basic Details</h2>
             
             <div>
@@ -181,7 +181,7 @@ export const RelatedProductsForm = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-neutral-200 p-6 space-y-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 p-6 space-y-6">
             <h2 className="text-lg font-medium text-neutral-900 border-b border-neutral-200 pb-2">Related Products</h2>
             <p className="text-sm text-neutral-500">Select the products that should appear in this relationship module. Order is determined by Priority.</p>
             
@@ -221,7 +221,7 @@ export const RelatedProductsForm = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-lg border border-neutral-200 p-6 space-y-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 p-6 space-y-6">
             <h2 className="text-lg font-medium text-neutral-900 border-b border-neutral-200 pb-2">Configuration</h2>
             
             <div>
@@ -267,7 +267,7 @@ export const RelatedProductsForm = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-neutral-200 p-6 space-y-6">
+          <div className="bg-surface rounded-lg border border-neutral-200 p-6 space-y-6">
             <h2 className="text-lg font-medium text-neutral-900 border-b border-neutral-200 pb-2">Schedule</h2>
             
             <div>

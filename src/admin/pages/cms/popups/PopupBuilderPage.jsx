@@ -72,12 +72,12 @@ export default function PopupBuilderPage() {
     <div className="space-y-4 pb-12">
       
       {/* Top Header */}
-      <div className="bg-white border border-black/10 rounded-xl p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-surface border border-black/10 rounded-xl p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => navigate('/admin/cms/popups')}
-            className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
             title="Back to Popups"
           >
             <FiArrowLeft size={18} />
@@ -85,29 +85,29 @@ export default function PopupBuilderPage() {
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded bg-black/5 text-[9px] font-mono font-bold uppercase text-gray-600">
+              <span className="px-2 py-0.5 rounded bg-black/5 text-[9px] font-mono font-bold uppercase text-text-secondary">
                 Popup Builder
               </span>
               <input
                 type="text"
                 value={campaignName}
                 onChange={(e) => setCampaignName(e.target.value)}
-                className="font-serif font-bold text-base text-[#1A1A1A] border-b border-dashed border-gray-300 focus:border-black focus:outline-none bg-transparent"
+                className="font-serif font-bold text-base text-text-primary border-b border-dashed border-border-hover focus:border-black focus:outline-none bg-transparent"
               />
             </div>
-            <p className="text-xs text-gray-400 font-mono">Format: {layout.popupType} • Trigger: {trigger.type}</p>
+            <p className="text-xs text-text-muted font-mono">Format: {layout.popupType} • Trigger: {trigger.type}</p>
           </div>
         </div>
 
         {/* Tab Controls */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-gray-100 p-1 rounded-xl border border-black/5 text-xs font-bold text-gray-600">
+          <div className="flex items-center bg-gray-100 p-1 rounded-xl border border-black/5 text-xs font-bold text-text-secondary">
             <button
               type="button"
               onClick={() => setActiveTab('content')}
               className={cn(
                 "px-3 py-1.5 rounded-lg transition-all cursor-pointer",
-                activeTab === 'content' ? "bg-white text-black shadow-2xs font-bold" : "hover:text-black"
+                activeTab === 'content' ? "bg-surface text-black shadow-2xs font-bold" : "hover:text-black"
               )}
             >
               Content
@@ -117,7 +117,7 @@ export default function PopupBuilderPage() {
               onClick={() => setActiveTab('layout')}
               className={cn(
                 "px-3 py-1.5 rounded-lg transition-all cursor-pointer",
-                activeTab === 'layout' ? "bg-white text-black shadow-2xs font-bold" : "hover:text-black"
+                activeTab === 'layout' ? "bg-surface text-black shadow-2xs font-bold" : "hover:text-black"
               )}
             >
               Layout
@@ -127,7 +127,7 @@ export default function PopupBuilderPage() {
               onClick={() => setActiveTab('triggers')}
               className={cn(
                 "px-3 py-1.5 rounded-lg transition-all cursor-pointer",
-                activeTab === 'triggers' ? "bg-white text-black shadow-2xs font-bold" : "hover:text-black"
+                activeTab === 'triggers' ? "bg-surface text-black shadow-2xs font-bold" : "hover:text-black"
               )}
             >
               Triggers
@@ -137,7 +137,7 @@ export default function PopupBuilderPage() {
               onClick={() => setActiveTab('rules')}
               className={cn(
                 "px-3 py-1.5 rounded-lg transition-all cursor-pointer",
-                activeTab === 'rules' ? "bg-white text-black shadow-2xs font-bold" : "hover:text-black"
+                activeTab === 'rules' ? "bg-surface text-black shadow-2xs font-bold" : "hover:text-black"
               )}
             >
               Rules
@@ -147,7 +147,7 @@ export default function PopupBuilderPage() {
           <button
             type="button"
             onClick={() => setIsPreviewOpen(true)}
-            className="px-3 py-2 bg-white border border-black/10 rounded-xl text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="px-3 py-2 bg-surface border border-black/10 rounded-xl text-xs font-bold text-text-secondary hover:bg-background flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <FiEye size={14} /> Preview
           </button>
@@ -200,7 +200,7 @@ export default function PopupBuilderPage() {
 
         {/* Right Live Preview Canvas Column (7 cols) */}
         <div className="lg:col-span-7 bg-stone-100 border border-black/10 rounded-xl p-6 shadow-2xs min-h-[580px] flex flex-col justify-center items-center relative overflow-hidden">
-          <div className="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase text-gray-400">
+          <div className="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase text-text-muted">
             Realtime Canvas Rendering
           </div>
 

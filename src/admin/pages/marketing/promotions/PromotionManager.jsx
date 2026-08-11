@@ -22,8 +22,8 @@ export default function PromotionManager() {
               Marketing Engine
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mt-2">Promotions & Campaigns</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Promotions & Campaigns</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Create and manage promotional campaigns, discount codes, and special offers.
           </p>
         </div>
@@ -39,7 +39,7 @@ export default function PromotionManager() {
       </div>
 
       {/* Main Content */}
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         {/* Toolbar */}
         <div className="p-4 border-b border-black/5 flex flex-col md:flex-row justify-between gap-4">
           <div className="flex gap-2">
@@ -48,7 +48,7 @@ export default function PromotionManager() {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors capitalize ${
-                  activeTab === tab ? 'bg-[#F7F5F2] text-[#1A1A1A]' : 'text-gray-500 hover:bg-gray-50'
+                  activeTab === tab ? 'bg-background text-text-primary' : 'text-text-muted hover:bg-background'
                 }`}
               >
                 {tab}
@@ -58,14 +58,14 @@ export default function PromotionManager() {
           
           <div className="flex gap-3">
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
               <input 
                 type="text" 
                 placeholder="Search promotions..." 
-                className="pl-10 pr-4 py-2 bg-[#F7F5F2] border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20 focus:ring-1 focus:ring-black/20 w-64"
+                className="pl-10 pr-4 py-2 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 w-64"
               />
             </div>
-            <button className="px-4 py-2 bg-[#F7F5F2] text-[#1A1A1A] rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2">
+            <button className="px-4 py-2 bg-background text-text-primary rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2">
               <FiFilter size={16} /> Filter
             </button>
           </div>
@@ -75,27 +75,27 @@ export default function PromotionManager() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-black/5">
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Promotion details</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Discount</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Usage</th>
+              <tr className="bg-background border-b border-black/5">
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Promotion details</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Discount</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Usage</th>
                 <th className="p-4 text-right"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/5">
               {MOCK_PROMOTIONS.map(promo => (
-                <tr key={promo.id} className="hover:bg-gray-50 transition-colors group">
+                <tr key={promo.id} className="hover:bg-background transition-colors group">
                   <td className="p-4">
-                    <Link to={`/admin/marketing/promotions/${promo.id}`} className="text-sm font-bold text-[#1A1A1A] hover:text-blue-600 transition-colors">
+                    <Link to={`/admin/marketing/promotions/${promo.id}`} className="text-sm font-bold text-text-primary hover:text-primary transition-colors">
                       {promo.name}
                     </Link>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-500">{promo.type}</span>
+                      <span className="text-xs text-text-muted">{promo.type}</span>
                       {promo.code && (
                         <>
                           <span className="text-gray-300">•</span>
-                          <span className="text-[10px] font-mono bg-gray-100 px-1.5 py-0.5 rounded text-gray-600 border border-gray-200">
+                          <span className="text-[10px] font-mono bg-gray-100 px-1.5 py-0.5 rounded text-text-secondary border border-border">
                             {promo.code}
                           </span>
                         </>
@@ -103,13 +103,13 @@ export default function PromotionManager() {
                     </div>
                   </td>
                   <td className="p-4">
-                    <span className="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 text-xs font-bold rounded">
+                    <span className="inline-flex items-center px-2 py-1 bg-success-soft text-success text-xs font-bold rounded">
                       {promo.discount}
                     </span>
                   </td>
                   <td className="p-4">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
-                      promo.status === 'active' ? 'bg-green-100 text-green-800' :
+                      promo.status === 'active' ? 'bg-success-soft text-green-800' :
                       promo.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>
@@ -119,11 +119,11 @@ export default function PromotionManager() {
                     </span>
                   </td>
                   <td className="p-4">
-                    <p className="text-sm text-[#1A1A1A] font-medium">{promo.usage}</p>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Ends: {promo.endDate}</p>
+                    <p className="text-sm text-text-primary font-medium">{promo.usage}</p>
+                    <p className="text-[10px] text-text-muted uppercase tracking-wider mt-0.5">Ends: {promo.endDate}</p>
                   </td>
                   <td className="p-4 text-right">
-                    <button className="p-2 text-gray-400 hover:text-[#1A1A1A] rounded-lg hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <button className="p-2 text-text-muted hover:text-text-primary rounded-lg hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-all">
                       <FiMoreVertical size={16} />
                     </button>
                   </td>

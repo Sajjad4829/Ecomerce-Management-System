@@ -134,13 +134,13 @@ export default function FormsManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">Forms & Lead Capture</span>
+            <span className="text-text-primary font-semibold">Forms & Lead Capture</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Enterprise Form Builder</h1>
-          <p className="text-sm text-gray-500 mt-1 max-w-xl">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Enterprise Form Builder</h1>
+          <p className="text-sm text-text-muted mt-1 max-w-xl">
             Design, deploy, and embed custom lead generation forms, quote inquiries, and showroom booking widgets.
           </p>
         </div>
@@ -156,57 +156,57 @@ export default function FormsManager() {
 
       {/* Analytics KPI Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-gray-400 block mb-1">Active Forms</span>
-          <div className="text-2xl font-serif font-bold text-[#1A1A1A]">
-            {forms.filter(f => f.status === 'active').length} <span className="text-xs text-gray-400 font-sans font-normal">/ {forms.length} total</span>
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-text-muted block mb-1">Active Forms</span>
+          <div className="text-2xl font-serif font-bold text-text-primary">
+            {forms.filter(f => f.status === 'active').length} <span className="text-xs text-text-muted font-sans font-normal">/ {forms.length} total</span>
           </div>
-          <div className="text-[10px] text-green-600 font-semibold mt-1 flex items-center gap-1">
+          <div className="text-[10px] text-success font-semibold mt-1 flex items-center gap-1">
             <FiCheckCircle size={10} /> Ready for embedding
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-gray-400 block mb-1">Total Submissions</span>
-          <div className="text-2xl font-serif font-bold text-[#1A1A1A]">
-            1,100 <span className="text-xs text-gray-400 font-sans font-normal">entries</span>
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-text-muted block mb-1">Total Submissions</span>
+          <div className="text-2xl font-serif font-bold text-text-primary">
+            1,100 <span className="text-xs text-text-muted font-sans font-normal">entries</span>
           </div>
-          <div className="text-[10px] text-gray-400 font-medium mt-1">
+          <div className="text-[10px] text-text-muted font-medium mt-1">
             Placeholder analytics
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-gray-400 block mb-1">Avg Conversion Rate</span>
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-text-muted block mb-1">Avg Conversion Rate</span>
           <div className="text-2xl font-serif font-bold text-emerald-700">
             18.9%
           </div>
-          <div className="text-[10px] text-green-600 font-semibold mt-1">
+          <div className="text-[10px] text-success font-semibold mt-1">
             +2.4% vs last quarter
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-gray-400 block mb-1">Lead Storage Engine</span>
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-text-muted block mb-1">Lead Storage Engine</span>
           <div className="text-xl font-serif font-bold text-blue-800">
             Frontend Ready
           </div>
-          <div className="text-[10px] text-gray-400 font-medium mt-1">
+          <div className="text-[10px] text-text-muted font-medium mt-1">
             Backend API ready
           </div>
         </div>
       </div>
 
       {/* Toolbar & Filters */}
-      <div className="bg-white border border-black/5 rounded-xl p-3 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="bg-surface border border-black/5 rounded-xl p-3 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="relative flex-1 min-w-[220px]">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={14} />
           <input
             type="text"
             placeholder="Search forms by name or type..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs focus:bg-white focus:outline-none"
+            className="w-full pl-9 pr-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs focus:bg-surface focus:outline-none"
           />
         </div>
 
@@ -217,7 +217,7 @@ export default function FormsManager() {
               onClick={() => setTypeFilter(t)}
               className={cn(
                 "px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap cursor-pointer transition-all",
-                typeFilter === t ? "bg-[#1A1A1A] text-white shadow-2xs" : "bg-gray-100 text-gray-600 hover:text-black"
+                typeFilter === t ? "bg-[#1A1A1A] text-white shadow-2xs" : "bg-gray-100 text-text-secondary hover:text-black"
               )}
             >
               {t === 'all' ? 'All Types' : t}
@@ -227,10 +227,10 @@ export default function FormsManager() {
       </div>
 
       {/* Forms Table */}
-      <div className="bg-white border border-black/5 rounded-xl overflow-hidden shadow-2xs">
+      <div className="bg-surface border border-black/5 rounded-xl overflow-hidden shadow-2xs">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50/80 border-b border-black/5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <tr className="bg-background/80 border-b border-black/5 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               <th className="p-3.5">Form Name & Type</th>
               <th className="p-3.5 font-mono">Status</th>
               <th className="p-3.5 font-mono hidden md:table-cell">Fields</th>
@@ -241,27 +241,27 @@ export default function FormsManager() {
           </thead>
           <tbody className="divide-y divide-black/5 text-xs">
             {filteredForms.map((form) => (
-              <tr key={form.id} className="hover:bg-gray-50/80 transition-colors">
+              <tr key={form.id} className="hover:bg-background/80 transition-colors">
                 <td className="p-3.5">
-                  <div className="font-bold text-[#1A1A1A]">{form.name}</div>
-                  <div className="text-[10px] text-gray-400 font-mono mt-0.5">
-                    Category: <span className="text-gray-700 font-bold">{form.type}</span> • Updated {form.updatedAt}
+                  <div className="font-bold text-text-primary">{form.name}</div>
+                  <div className="text-[10px] text-text-muted font-mono mt-0.5">
+                    Category: <span className="text-text-secondary font-bold">{form.type}</span> • Updated {form.updatedAt}
                   </div>
                 </td>
 
                 <td className="p-3.5 font-mono text-[11px]">
                   {form.status === 'active' ? (
-                    <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 font-bold text-[10px] uppercase">
+                    <span className="px-2.5 py-0.5 rounded-full bg-success-soft text-green-800 font-bold text-[10px] uppercase">
                       Active
                     </span>
                   ) : (
-                    <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 font-bold text-[10px] uppercase">
+                    <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-text-secondary font-bold text-[10px] uppercase">
                       Draft
                     </span>
                   )}
                 </td>
 
-                <td className="p-3.5 font-mono hidden md:table-cell text-gray-600">
+                <td className="p-3.5 font-mono hidden md:table-cell text-text-secondary">
                   {form.fields.length} inputs
                 </td>
 
@@ -278,7 +278,7 @@ export default function FormsManager() {
                     <button
                       type="button"
                       onClick={() => setPreviewForm(form)}
-                      className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                       title="Live Preview"
                     >
                       <FiEye size={15} />
@@ -286,7 +286,7 @@ export default function FormsManager() {
                     <button
                       type="button"
                       onClick={() => navigate(`/admin/cms/forms/builder?id=${form.id}`)}
-                      className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                       title="Edit Form"
                     >
                       <FiEdit2 size={15} />
@@ -294,7 +294,7 @@ export default function FormsManager() {
                     <button
                       type="button"
                       onClick={() => handleDuplicate(form)}
-                      className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                       title="Duplicate"
                     >
                       <FiCopy size={15} />
@@ -302,7 +302,7 @@ export default function FormsManager() {
                     <button
                       type="button"
                       onClick={() => handleDelete(form.id)}
-                      className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-danger hover:text-red-700 hover:bg-danger-soft rounded-lg transition-colors cursor-pointer"
                       title="Delete"
                     >
                       <FiTrash2 size={15} />

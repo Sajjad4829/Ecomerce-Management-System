@@ -26,20 +26,20 @@ export default function InspectionWorkspace({ returnReq }) {
   if (returnReq.inspection) {
     return (
       <div className="space-y-4">
-        <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex justify-between items-center">
+        <div className="bg-background rounded-lg p-4 border border-gray-100 flex justify-between items-center">
           <div>
-            <p className="text-xs text-gray-500 uppercase font-semibold">Assessed Condition</p>
-            <p className="font-bold text-gray-900 mt-1">{returnReq.inspection.condition}</p>
+            <p className="text-xs text-text-muted uppercase font-semibold">Assessed Condition</p>
+            <p className="font-bold text-text-primary mt-1">{returnReq.inspection.condition}</p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-gray-500 uppercase font-semibold">Inspected On</p>
-            <p className="font-medium text-gray-900 mt-1">{new Date(returnReq.inspection.inspectedAt).toLocaleDateString()}</p>
+            <p className="text-xs text-text-muted uppercase font-semibold">Inspected On</p>
+            <p className="font-medium text-text-primary mt-1">{new Date(returnReq.inspection.inspectedAt).toLocaleDateString()}</p>
           </div>
         </div>
         
         <div>
-          <p className="text-sm font-medium text-gray-700 mb-2">Checklist Findings</p>
-          <ul className="text-sm text-gray-600 space-y-1">
+          <p className="text-sm font-medium text-text-secondary mb-2">Checklist Findings</p>
+          <ul className="text-sm text-text-secondary space-y-1">
             <li>Packaging Intact: {returnReq.inspection.checklist.packaging ? 'Yes' : 'No'}</li>
             <li>Surface Damage: {returnReq.inspection.checklist.surface ? 'Yes' : 'No'}</li>
             <li>Structural Damage: {returnReq.inspection.checklist.structural ? 'Yes' : 'No'}</li>
@@ -48,8 +48,8 @@ export default function InspectionWorkspace({ returnReq }) {
         </div>
         
         <div>
-          <p className="text-sm font-medium text-gray-700 mb-1">Inspector Notes</p>
-          <p className="text-sm text-gray-600 bg-white p-3 border border-gray-200 rounded-lg">{returnReq.inspection.notes || 'No notes provided.'}</p>
+          <p className="text-sm font-medium text-text-secondary mb-1">Inspector Notes</p>
+          <p className="text-sm text-text-secondary bg-surface p-3 border border-border rounded-lg">{returnReq.inspection.notes || 'No notes provided.'}</p>
         </div>
       </div>
     );
@@ -59,31 +59,31 @@ export default function InspectionWorkspace({ returnReq }) {
     <form onSubmit={handleComplete} className="space-y-6">
       
       <div className="space-y-3">
-        <p className="text-sm font-medium text-gray-700">Inspection Checklist</p>
+        <p className="text-sm font-medium text-text-secondary">Inspection Checklist</p>
         <label className="flex items-center gap-3">
-          <input type="checkbox" checked={checklist.packaging} onChange={e => setChecklist(prev => ({...prev, packaging: e.target.checked}))} className="rounded border-gray-300" />
-          <span className="text-sm text-gray-900">Original packaging is intact</span>
+          <input type="checkbox" checked={checklist.packaging} onChange={e => setChecklist(prev => ({...prev, packaging: e.target.checked}))} className="rounded border-border-hover" />
+          <span className="text-sm text-text-primary">Original packaging is intact</span>
         </label>
         <label className="flex items-center gap-3">
-          <input type="checkbox" checked={checklist.surface} onChange={e => setChecklist(prev => ({...prev, surface: e.target.checked}))} className="rounded border-gray-300" />
-          <span className="text-sm text-gray-900">Surface damage (scratches, dents) detected</span>
+          <input type="checkbox" checked={checklist.surface} onChange={e => setChecklist(prev => ({...prev, surface: e.target.checked}))} className="rounded border-border-hover" />
+          <span className="text-sm text-text-primary">Surface damage (scratches, dents) detected</span>
         </label>
         <label className="flex items-center gap-3">
-          <input type="checkbox" checked={checklist.structural} onChange={e => setChecklist(prev => ({...prev, structural: e.target.checked}))} className="rounded border-gray-300" />
-          <span className="text-sm text-gray-900">Structural damage or defect detected</span>
+          <input type="checkbox" checked={checklist.structural} onChange={e => setChecklist(prev => ({...prev, structural: e.target.checked}))} className="rounded border-border-hover" />
+          <span className="text-sm text-text-primary">Structural damage or defect detected</span>
         </label>
         <label className="flex items-center gap-3">
-          <input type="checkbox" checked={checklist.accessories} onChange={e => setChecklist(prev => ({...prev, accessories: e.target.checked}))} className="rounded border-gray-300" />
-          <span className="text-sm text-gray-900">All accessories and manuals are present</span>
+          <input type="checkbox" checked={checklist.accessories} onChange={e => setChecklist(prev => ({...prev, accessories: e.target.checked}))} className="rounded border-border-hover" />
+          <span className="text-sm text-text-primary">All accessories and manuals are present</span>
         </label>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Overall Condition</label>
+        <label className="block text-sm font-medium text-text-secondary mb-1">Overall Condition</label>
         <select 
           value={condition}
           onChange={(e) => setCondition(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] text-sm bg-white"
+          className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] text-sm bg-surface"
         >
           <option>New / Unopened</option>
           <option>Like New</option>
@@ -95,11 +95,11 @@ export default function InspectionWorkspace({ returnReq }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Inspector Notes</label>
+        <label className="block text-sm font-medium text-text-secondary mb-1">Inspector Notes</label>
         <textarea 
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] text-sm"
+          className="w-full px-3 py-2 border border-border-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] text-sm"
           rows="3"
           placeholder="Detailed notes on the condition..."
         />

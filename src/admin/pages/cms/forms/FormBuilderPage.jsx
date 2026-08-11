@@ -98,12 +98,12 @@ export default function FormBuilderPage() {
     <div className="space-y-4 pb-12">
       
       {/* Builder Navigation Top Bar */}
-      <div className="bg-white border border-black/10 rounded-xl p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-surface border border-black/10 rounded-xl p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => navigate('/admin/cms/forms')}
-            className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
             title="Back to Forms"
           >
             <FiArrowLeft size={18} />
@@ -111,26 +111,26 @@ export default function FormBuilderPage() {
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded bg-black/5 text-[9px] font-mono font-bold uppercase text-gray-600">
+              <span className="px-2 py-0.5 rounded bg-black/5 text-[9px] font-mono font-bold uppercase text-text-secondary">
                 Form Builder
               </span>
-              <h2 className="font-serif font-bold text-base text-[#1A1A1A]">
+              <h2 className="font-serif font-bold text-base text-text-primary">
                 {formSettings.name}
               </h2>
             </div>
-            <p className="text-xs text-gray-400 font-mono">Category: {formSettings.type}</p>
+            <p className="text-xs text-text-muted font-mono">Category: {formSettings.type}</p>
           </div>
         </div>
 
         {/* Workspace Tab Toggle */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-gray-100 p-1 rounded-xl border border-black/5 text-xs font-bold text-gray-600">
+          <div className="flex items-center bg-gray-100 p-1 rounded-xl border border-black/5 text-xs font-bold text-text-secondary">
             <button
               type="button"
               onClick={() => setActiveTab('canvas')}
               className={cn(
                 "px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer",
-                activeTab === 'canvas' ? "bg-white text-black shadow-2xs font-bold" : "hover:text-black"
+                activeTab === 'canvas' ? "bg-surface text-black shadow-2xs font-bold" : "hover:text-black"
               )}
             >
               <FiGrid size={14} /> Field Layout
@@ -140,7 +140,7 @@ export default function FormBuilderPage() {
               onClick={() => setActiveTab('settings')}
               className={cn(
                 "px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer",
-                activeTab === 'settings' ? "bg-white text-black shadow-2xs font-bold" : "hover:text-black"
+                activeTab === 'settings' ? "bg-surface text-black shadow-2xs font-bold" : "hover:text-black"
               )}
             >
               <FiSliders size={14} /> Form Settings
@@ -150,7 +150,7 @@ export default function FormBuilderPage() {
           <button
             type="button"
             onClick={() => setIsPreviewOpen(true)}
-            className="px-3 py-2 bg-white border border-black/10 rounded-xl text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="px-3 py-2 bg-surface border border-black/10 rounded-xl text-xs font-bold text-text-secondary hover:bg-background flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <FiEye size={14} /> Preview
           </button>

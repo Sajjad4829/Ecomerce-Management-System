@@ -14,7 +14,7 @@ export default function AfterSalesCaseCenter() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -33,7 +33,7 @@ export default function AfterSalesCaseCenter() {
                 <td className="px-6 py-4 text-neutral-600">{cas.customerName}</td>
                 <td className="px-6 py-4 text-neutral-600">{cas.type}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${cas.priority === 'High' ? 'bg-red-100 text-red-800' : 'bg-neutral-100 text-neutral-800'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${cas.priority === 'High' ? 'bg-danger-soft text-red-800' : 'bg-neutral-100 text-neutral-800'}`}>
                     {cas.priority}
                   </span>
                 </td>

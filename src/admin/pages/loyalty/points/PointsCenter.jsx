@@ -18,7 +18,7 @@ export default function PointsCenter() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -39,13 +39,13 @@ export default function PointsCenter() {
                 </td>
                 <td className="px-6 py-4 text-neutral-600">{pt.type}</td>
                 <td className="px-6 py-4">
-                  <span className={`font-medium ${pt.points > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <span className={`font-medium ${pt.points > 0 ? 'text-success' : 'text-danger'}`}>
                     {pt.points > 0 ? '+' : ''}{pt.points}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-neutral-500">{pt.reference}</td>
                 <td className="px-6 py-4">
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-success-soft text-green-800">
                     {pt.status}
                   </span>
                 </td>

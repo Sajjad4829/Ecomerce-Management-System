@@ -43,7 +43,7 @@ export default function FolderSidebar({ selectedFolder, setSelectedFolder, activ
         
         {/* Quick System Filters */}
         <div>
-          <h3 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3 pl-3">
+          <h3 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted mb-3 pl-3">
             Library Quick Views
           </h3>
           <ul className="space-y-1">
@@ -54,7 +54,7 @@ export default function FolderSidebar({ selectedFolder, setSelectedFolder, activ
                   "w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors",
                   activeFilter === 'all' && !selectedFolder
                     ? "bg-[#1A1A1A] text-white shadow-sm"
-                    : "text-gray-600 hover:bg-black/5 hover:text-[#1A1A1A]"
+                    : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 )}
               >
                 <div className="flex items-center gap-2.5">
@@ -71,7 +71,7 @@ export default function FolderSidebar({ selectedFolder, setSelectedFolder, activ
                   "w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors",
                   activeFilter === 'favorites'
                     ? "bg-[#1A1A1A] text-white shadow-sm"
-                    : "text-gray-600 hover:bg-black/5 hover:text-[#1A1A1A]"
+                    : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 )}
               >
                 <div className="flex items-center gap-2.5">
@@ -88,7 +88,7 @@ export default function FolderSidebar({ selectedFolder, setSelectedFolder, activ
                   "w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors",
                   activeFilter === 'recent'
                     ? "bg-[#1A1A1A] text-white shadow-sm"
-                    : "text-gray-600 hover:bg-black/5 hover:text-[#1A1A1A]"
+                    : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 )}
               >
                 <div className="flex items-center gap-2.5">
@@ -104,11 +104,11 @@ export default function FolderSidebar({ selectedFolder, setSelectedFolder, activ
         {/* Directory Folder Tree */}
         <div>
           <div className="flex items-center justify-between mb-3 px-3">
-            <h3 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400">
+            <h3 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-text-muted">
               Folders
             </h3>
             <button 
-              className="text-gray-400 hover:text-[#1A1A1A] transition-colors p-1 rounded hover:bg-black/5" 
+              className="text-text-muted hover:text-text-primary transition-colors p-1 rounded hover:bg-black/5" 
               title="Create New Folder"
             >
               <FiFolderPlus size={14} />
@@ -128,21 +128,21 @@ export default function FolderSidebar({ selectedFolder, setSelectedFolder, activ
                       "w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer group",
                       isSelected
                         ? "bg-[#1A1A1A] text-white shadow-sm"
-                        : "text-gray-600 hover:bg-black/5 hover:text-[#1A1A1A]"
+                        : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                     )}
                   >
                     <div className="flex items-center gap-2 truncate">
                       {folder.children ? (
                         <button 
                           onClick={(e) => toggleExpand(folder.id, e)}
-                          className="text-gray-400 group-hover:text-gray-600 p-0.5 rounded hover:bg-black/10"
+                          className="text-text-muted group-hover:text-text-secondary p-0.5 rounded hover:bg-black/10"
                         >
                           {isExpanded ? <FiChevronDown size={12} /> : <FiChevronRight size={12} />}
                         </button>
                       ) : (
                         <span className="w-3" />
                       )}
-                      <FiFolder size={14} className={isSelected ? "text-white" : "text-amber-600/80"} />
+                      <FiFolder size={14} className={isSelected ? "text-white" : "text-warning/80"} />
                       <span className="truncate">{folder.name}</span>
                     </div>
                     <span className="text-[10px] font-mono opacity-70 ml-2">{folder.count}</span>
@@ -160,15 +160,15 @@ export default function FolderSidebar({ selectedFolder, setSelectedFolder, activ
                               className={cn(
                                 "w-full text-left px-2.5 py-1.5 rounded-md text-xs font-medium flex items-center justify-between transition-colors",
                                 isSubSelected
-                                  ? "bg-black/10 text-[#1A1A1A] font-bold"
-                                  : "text-gray-500 hover:bg-black/5 hover:text-[#1A1A1A]"
+                                  ? "bg-black/10 text-text-primary font-bold"
+                                  : "text-text-muted hover:bg-black/5 hover:text-text-primary"
                               )}
                             >
                               <div className="flex items-center gap-2 truncate">
-                                <FiFolder size={12} className={isSubSelected ? "text-[#1A1A1A]" : "text-gray-400"} />
+                                <FiFolder size={12} className={isSubSelected ? "text-text-primary" : "text-text-muted"} />
                                 <span className="truncate">{sub.name}</span>
                               </div>
-                              <span className="text-[10px] font-mono text-gray-400">{sub.count}</span>
+                              <span className="text-[10px] font-mono text-text-muted">{sub.count}</span>
                             </button>
                           </li>
                         );
@@ -182,18 +182,18 @@ export default function FolderSidebar({ selectedFolder, setSelectedFolder, activ
         </div>
 
         {/* Storage Capacity Indicator */}
-        <div className="bg-gray-50 border border-black/5 rounded-xl p-3.5 space-y-2">
-          <div className="flex items-center justify-between text-xs font-semibold text-gray-700">
+        <div className="bg-background border border-black/5 rounded-xl p-3.5 space-y-2">
+          <div className="flex items-center justify-between text-xs font-semibold text-text-secondary">
             <div className="flex items-center gap-1.5">
-              <FiHardDrive size={13} className="text-gray-400" />
+              <FiHardDrive size={13} className="text-text-muted" />
               <span>Storage Used</span>
             </div>
-            <span className="font-mono text-[11px] text-gray-500">42.8 GB / 100 GB</span>
+            <span className="font-mono text-[11px] text-text-muted">42.8 GB / 100 GB</span>
           </div>
           <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
             <div className="bg-[#1A1A1A] h-full w-[42.8%]" />
           </div>
-          <p className="text-[10px] text-gray-400">CDN Storage Tier: Enterprise Premium</p>
+          <p className="text-[10px] text-text-muted">CDN Storage Tier: Enterprise Premium</p>
         </div>
 
       </div>

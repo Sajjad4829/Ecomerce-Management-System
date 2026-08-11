@@ -50,7 +50,7 @@ export function CustomerProfile() {
       <section>
         <div className="flex items-center justify-between mb-4 border-b border-neutral-200 pb-2">
           <h3 className="text-lg font-serif text-neutral-900">Addresses</h3>
-          <button className="text-sm text-indigo-600 font-medium hover:text-indigo-800">Add Address</button>
+          <button className="text-sm text-primary font-medium hover:text-indigo-800">Add Address</button>
         </div>
         
         {customer.addresses && customer.addresses.length > 0 ? (

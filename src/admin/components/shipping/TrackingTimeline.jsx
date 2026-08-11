@@ -17,11 +17,11 @@ export default function TrackingTimeline({ events }) {
   };
 
   const getColor = (status, isLast) => {
-    if (!isLast) return 'text-gray-400 bg-gray-100 border-gray-200';
+    if (!isLast) return 'text-text-muted bg-gray-100 border-border';
     switch (status) {
-      case 'Delivered': return 'text-green-600 bg-green-100 border-green-200';
-      case 'Delayed': case 'Failed Delivery': return 'text-red-600 bg-red-100 border-red-200';
-      default: return 'text-blue-600 bg-blue-100 border-blue-200';
+      case 'Delivered': return 'text-success bg-success-soft border-green-200';
+      case 'Delayed': case 'Failed Delivery': return 'text-danger bg-danger-soft border-red-200';
+      default: return 'text-primary bg-blue-100 border-blue-200';
     }
   };
 
@@ -45,12 +45,12 @@ export default function TrackingTimeline({ events }) {
             
             {/* Content */}
             <div>
-              <p className={`text-sm font-bold ${isLast ? 'text-gray-900' : 'text-gray-600'}`}>
+              <p className={`text-sm font-bold ${isLast ? 'text-text-primary' : 'text-text-secondary'}`}>
                 {ev.status}
               </p>
-              <p className="text-xs text-gray-500 font-medium mt-0.5">{ev.location}</p>
-              <p className="text-xs text-gray-400 mt-1">{new Date(ev.timestamp).toLocaleString()}</p>
-              <p className="text-sm text-gray-700 mt-2">{ev.description}</p>
+              <p className="text-xs text-text-muted font-medium mt-0.5">{ev.location}</p>
+              <p className="text-xs text-text-muted mt-1">{new Date(ev.timestamp).toLocaleString()}</p>
+              <p className="text-sm text-text-secondary mt-2">{ev.description}</p>
             </div>
           </div>
         );

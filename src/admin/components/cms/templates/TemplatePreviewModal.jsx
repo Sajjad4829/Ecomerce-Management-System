@@ -19,11 +19,11 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col justify-between overflow-hidden">
       {/* Top Controls Bar */}
-      <div className="h-14 bg-stone-900 border-b border-stone-800 px-6 flex items-center justify-between text-white shrink-0">
+      <div className="h-14 bg-primary border-b border-stone-800 px-6 flex items-center justify-between text-white shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={onClose}
-            className="p-2 text-stone-400 hover:text-white rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold"
+            className="p-2 text-text-muted hover:text-white rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold"
           >
             <FiArrowLeft size={16} /> Back to Dashboard
           </button>
@@ -41,7 +41,7 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
           <button
             onClick={() => setDevice('desktop')}
             className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium transition-all ${
-              device === 'desktop' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-400 hover:text-white'
+              device === 'desktop' ? 'bg-warning-soft0 text-stone-950 font-bold' : 'text-text-muted hover:text-white'
             }`}
           >
             <FiMonitor size={14} /> Desktop
@@ -49,7 +49,7 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
           <button
             onClick={() => setDevice('tablet')}
             className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium transition-all ${
-              device === 'tablet' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-400 hover:text-white'
+              device === 'tablet' ? 'bg-warning-soft0 text-stone-950 font-bold' : 'text-text-muted hover:text-white'
             }`}
           >
             <FiTablet size={14} /> Tablet
@@ -57,7 +57,7 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
           <button
             onClick={() => setDevice('mobile')}
             className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium transition-all ${
-              device === 'mobile' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-400 hover:text-white'
+              device === 'mobile' ? 'bg-warning-soft0 text-stone-950 font-bold' : 'text-text-muted hover:text-white'
             }`}
           >
             <FiSmartphone size={14} /> Mobile
@@ -66,7 +66,7 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
 
         <button
           onClick={onClose}
-          className="p-2 text-stone-400 hover:text-white rounded-lg transition-colors"
+          className="p-2 text-text-muted hover:text-white rounded-lg transition-colors"
         >
           <FiX size={20} />
         </button>
@@ -74,10 +74,10 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
 
       {/* Main Preview Frame */}
       <div className="flex-1 overflow-y-auto p-6 bg-stone-950 flex items-start justify-center">
-        <div className={`bg-white shadow-2xl rounded-t-xl overflow-hidden transition-all duration-300 ${deviceWidths[device]} my-2 min-h-[700px]`}>
+        <div className={`bg-surface shadow-2xl rounded-t-xl overflow-hidden transition-all duration-300 ${deviceWidths[device]} my-2 min-h-[700px]`}>
           
           {/* Mock Global Header */}
-          <header className="bg-stone-900 text-stone-100 p-4 border-b border-stone-800 flex items-center justify-between text-xs">
+          <header className="bg-primary text-stone-100 p-4 border-b border-stone-800 flex items-center justify-between text-xs">
             <div className="font-serif font-bold text-base tracking-widest text-amber-200 uppercase">
               Aurelian & Co.
             </div>
@@ -103,18 +103,18 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
                   {/* Left: Product Gallery Placeholder */}
                   <div className="space-y-3">
                     <div className="h-96 bg-stone-100 rounded-xl border-2 border-dashed border-amber-300 p-4 flex flex-col items-center justify-center text-center relative">
-                      <FiImage size={36} className="text-amber-600 mb-2" />
-                      <span className="font-serif font-bold text-stone-900 text-sm">Product Gallery Dynamic Slot</span>
-                      <span className="text-xs text-stone-500 mt-1">
+                      <FiImage size={36} className="text-warning mb-2" />
+                      <span className="font-serif font-bold text-text-primary text-sm">Product Gallery Dynamic Slot</span>
+                      <span className="text-xs text-text-muted mt-1">
                         [PRODUCT_GALLERY] Dynamic high-res carousel & 3D model viewport
                       </span>
-                      <span className="absolute bottom-3 right-3 bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded">
+                      <span className="absolute bottom-3 right-3 bg-warning-soft text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded">
                         Runtime Data
                       </span>
                     </div>
                     <div className="grid grid-cols-4 gap-2">
                       {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="h-16 bg-stone-50 border border-stone-200 rounded-lg flex items-center justify-center text-[10px] text-stone-400 font-mono">
+                        <div key={i} className="h-16 bg-background border border-border rounded-lg flex items-center justify-center text-[10px] text-text-muted font-mono">
                           Thumb {i}
                         </div>
                       ))}
@@ -123,26 +123,26 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
 
                   {/* Right: Product Purchase Meta Placeholder */}
                   <div className="space-y-4">
-                    <div className="p-4 bg-amber-50/40 border-2 border-dashed border-amber-300 rounded-xl space-y-2">
+                    <div className="p-4 bg-warning-soft/40 border-2 border-dashed border-amber-300 rounded-xl space-y-2">
                       <div className="text-[10px] font-mono uppercase text-amber-800 font-bold">
                         [PRODUCT_TITLE & PRICING]
                       </div>
-                      <h1 className="font-serif font-bold text-2xl text-stone-900">
+                      <h1 className="font-serif font-bold text-2xl text-text-primary">
                         The Aurelian Sovereign Curved Sofa
                       </h1>
                       <div className="flex items-center gap-3">
-                        <span className="text-xl font-serif font-bold text-stone-900">$12,850 USD</span>
+                        <span className="text-xl font-serif font-bold text-text-primary">$12,850 USD</span>
                         <span className="text-xs text-emerald-700 bg-emerald-100 font-mono font-bold px-2 py-0.5 rounded">
                           In Stock • Trade Discount Eligible
                         </span>
                       </div>
                     </div>
 
-                    <div className="p-4 border-2 border-dashed border-amber-300 rounded-xl bg-amber-50/20 space-y-2">
+                    <div className="p-4 border-2 border-dashed border-amber-300 rounded-xl bg-warning-soft/20 space-y-2">
                       <div className="text-[10px] font-mono uppercase text-amber-800 font-bold">
                         [PRODUCT_VARIANTS & SWATCHES]
                       </div>
-                      <div className="text-xs text-stone-700 font-medium">Material: Italian Bouclé (Cream)</div>
+                      <div className="text-xs text-text-secondary font-medium">Material: Italian Bouclé (Cream)</div>
                       <div className="flex gap-2">
                         <div className="w-8 h-8 rounded-full bg-stone-200 border-2 border-stone-900 ring-2 ring-stone-900/20" />
                         <div className="w-8 h-8 rounded-full bg-stone-800" />
@@ -150,21 +150,21 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
                       </div>
                     </div>
 
-                    <button className="w-full py-3.5 bg-stone-900 text-white font-mono text-xs uppercase tracking-widest font-bold rounded-xl shadow-lg">
+                    <button className="w-full py-3.5 bg-primary text-white font-mono text-xs uppercase tracking-widest font-bold rounded-xl shadow-lg">
                       Request Bespoke Consultation
                     </button>
                   </div>
                 </div>
 
                 {/* Specs Table Placeholder */}
-                <div className="p-6 bg-stone-50 border-2 border-dashed border-stone-300 rounded-xl space-y-3">
+                <div className="p-6 bg-background border-2 border-dashed border-border-hover rounded-xl space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-serif font-bold text-stone-900 text-sm">
+                    <span className="font-serif font-bold text-text-primary text-sm">
                       [PRODUCT_SPECS] Craftsmanship & Technical Specs
                     </span>
-                    <span className="text-xs font-mono text-stone-500">Dynamic Slot</span>
+                    <span className="text-xs font-mono text-text-muted">Dynamic Slot</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-xs font-mono text-stone-600">
+                  <div className="grid grid-cols-3 gap-4 text-xs font-mono text-text-secondary">
                     <div>Timber: Kiln-dried FSC Oak</div>
                     <div>Martindale Rub Count: 100,000+</div>
                     <div>Origin: Florence, Italy</div>
@@ -174,7 +174,7 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
             ) : (
               /* Collection / Page Generic Mock */
               <div className="space-y-6">
-                <div className="p-12 bg-stone-900 text-white rounded-2xl border-2 border-dashed border-amber-400 text-center space-y-3">
+                <div className="p-12 bg-primary text-white rounded-2xl border-2 border-dashed border-amber-400 text-center space-y-3">
                   <span className="text-[10px] font-mono text-amber-400 uppercase font-bold tracking-widest">
                     [COLLECTION_HEADER] Dynamic Hero Banner
                   </span>
@@ -187,14 +187,14 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
                 </div>
 
                 {/* Grid Placeholder */}
-                <div className="p-6 border-2 border-dashed border-amber-300 rounded-xl bg-amber-50/20 space-y-4">
-                  <div className="flex items-center justify-between text-xs font-mono font-bold text-stone-900">
+                <div className="p-6 border-2 border-dashed border-amber-300 rounded-xl bg-warning-soft/20 space-y-4">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-text-primary">
                     <span>[PRODUCT_GRID] Catalog Grid Slot</span>
                     <span>showing 12 items</span>
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     {[1, 2, 3, 4, 5, 6].map((idx) => (
-                      <div key={idx} className="h-44 bg-stone-100 border border-stone-200 rounded-lg p-3 flex flex-col justify-between">
+                      <div key={idx} className="h-44 bg-stone-100 border border-border rounded-lg p-3 flex flex-col justify-between">
                         <div className="h-24 bg-stone-200 rounded" />
                         <div className="h-3 bg-stone-300 rounded w-3/4" />
                         <div className="h-3 bg-stone-300 rounded w-1/2" />
@@ -207,7 +207,7 @@ export default function TemplatePreviewModal({ template, isOpen, onClose }) {
           </div>
 
           {/* Mock Global Footer */}
-          <footer className="bg-stone-950 text-stone-400 p-8 border-t border-stone-800 text-xs text-center font-mono">
+          <footer className="bg-stone-950 text-text-muted p-8 border-t border-stone-800 text-xs text-center font-mono">
             Aurelian Global Storefront Architecture • Dynamic Hydration Ready
           </footer>
         </div>

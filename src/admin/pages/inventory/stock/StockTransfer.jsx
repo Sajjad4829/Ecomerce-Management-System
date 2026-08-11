@@ -70,7 +70,7 @@ export default function StockTransfer() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-neutral-200 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm overflow-hidden">
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
@@ -80,7 +80,7 @@ export default function StockTransfer() {
               <select
                 value={formData.productId}
                 onChange={(e) => setFormData({ ...formData, productId: e.target.value })}
-                className={`w-full p-2.5 bg-white border ${errors.productId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
+                className={`w-full p-2.5 bg-surface border ${errors.productId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
               >
                 <option value="">Select a product...</option>
                 {uniqueProducts.map(p => (
@@ -89,7 +89,7 @@ export default function StockTransfer() {
                   </option>
                 ))}
               </select>
-              {errors.productId && <p className="text-xs text-red-600">{errors.productId}</p>}
+              {errors.productId && <p className="text-xs text-danger">{errors.productId}</p>}
             </div>
 
             {/* Source Warehouse Selection */}
@@ -98,14 +98,14 @@ export default function StockTransfer() {
               <select
                 value={formData.sourceWarehouseId}
                 onChange={(e) => setFormData({ ...formData, sourceWarehouseId: e.target.value })}
-                className={`w-full p-2.5 bg-white border ${errors.sourceWarehouseId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
+                className={`w-full p-2.5 bg-surface border ${errors.sourceWarehouseId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
               >
                 <option value="">Select origin...</option>
                 {warehouses.map(w => (
                   <option key={w.id} value={w.id}>{w.name}</option>
                 ))}
               </select>
-              {errors.sourceWarehouseId && <p className="text-xs text-red-600">{errors.sourceWarehouseId}</p>}
+              {errors.sourceWarehouseId && <p className="text-xs text-danger">{errors.sourceWarehouseId}</p>}
               
               {selectedProduct && (
                 <div className="mt-2 text-sm text-neutral-500 flex items-center gap-1">
@@ -121,7 +121,7 @@ export default function StockTransfer() {
               <select
                 value={formData.destinationWarehouseId}
                 onChange={(e) => setFormData({ ...formData, destinationWarehouseId: e.target.value })}
-                className={`w-full p-2.5 bg-white border ${errors.destinationWarehouseId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
+                className={`w-full p-2.5 bg-surface border ${errors.destinationWarehouseId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
               >
                 <option value="">Select destination...</option>
                 {warehouses.map(w => (
@@ -130,9 +130,9 @@ export default function StockTransfer() {
                   </option>
                 ))}
               </select>
-              {errors.destinationWarehouseId && <p className="text-xs text-red-600">{errors.destinationWarehouseId}</p>}
+              {errors.destinationWarehouseId && <p className="text-xs text-danger">{errors.destinationWarehouseId}</p>}
               
-              <div className="hidden md:flex absolute -left-5 top-10 items-center justify-center bg-white border border-neutral-200 rounded-full w-8 h-8 z-10 text-neutral-400">
+              <div className="hidden md:flex absolute -left-5 top-10 items-center justify-center bg-surface border border-neutral-200 rounded-full w-8 h-8 z-10 text-neutral-400">
                 <ArrowRight className="w-4 h-4" />
               </div>
             </div>
@@ -146,9 +146,9 @@ export default function StockTransfer() {
                 max={sourceAvailable > 0 ? sourceAvailable : undefined}
                 value={formData.quantity}
                 onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value, 10) || '' })}
-                className={`w-full p-2.5 bg-white border ${errors.quantity ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
+                className={`w-full p-2.5 bg-surface border ${errors.quantity ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
               />
-              {errors.quantity && <p className="text-xs text-red-600">{errors.quantity}</p>}
+              {errors.quantity && <p className="text-xs text-danger">{errors.quantity}</p>}
             </div>
 
             {/* Reason */}
@@ -158,7 +158,7 @@ export default function StockTransfer() {
                 type="text"
                 value={formData.reason}
                 onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                className="w-full p-2.5 bg-white border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                className="w-full p-2.5 bg-surface border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900"
                 placeholder="e.g., Load balancing, fulfillment..."
               />
             </div>
@@ -169,13 +169,13 @@ export default function StockTransfer() {
             <button
               type="button"
               onClick={() => navigate('/admin/inventory')}
-              className="px-4 py-2 text-neutral-700 bg-white border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors"
+              className="px-4 py-2 text-neutral-700 bg-surface border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2 text-white bg-primary rounded-md hover:bg-primary-hover transition-colors flex items-center gap-2"
             >
               <ArrowRight className="w-4 h-4" /> Execute Transfer
             </button>

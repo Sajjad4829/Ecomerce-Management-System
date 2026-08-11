@@ -153,13 +153,13 @@ export default function PopupManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">Popups & Campaigns</span>
+            <span className="text-text-primary font-semibold">Popups & Campaigns</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Promotional Popups & Banners</h1>
-          <p className="text-sm text-gray-500 mt-1 max-w-xl">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Promotional Popups & Banners</h1>
+          <p className="text-sm text-text-muted mt-1 max-w-xl">
             Create high-converting lead capture modals, exit-intent prompts, and top announcement bars.
           </p>
         </div>
@@ -175,57 +175,57 @@ export default function PopupManager() {
 
       {/* KPI Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-gray-400 block mb-1">Active Campaigns</span>
-          <div className="text-2xl font-serif font-bold text-[#1A1A1A]">
-            {popups.filter(p => p.status === 'active').length} <span className="text-xs text-gray-400 font-sans font-normal">/ {popups.length} total</span>
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-text-muted block mb-1">Active Campaigns</span>
+          <div className="text-2xl font-serif font-bold text-text-primary">
+            {popups.filter(p => p.status === 'active').length} <span className="text-xs text-text-muted font-sans font-normal">/ {popups.length} total</span>
           </div>
-          <div className="text-[10px] text-green-600 font-semibold mt-1 flex items-center gap-1">
+          <div className="text-[10px] text-success font-semibold mt-1 flex items-center gap-1">
             <FiCheckCircle size={10} /> Currently serving visitors
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-gray-400 block mb-1">Total Impressions</span>
-          <div className="text-2xl font-serif font-bold text-[#1A1A1A]">
-            68,200 <span className="text-xs text-gray-400 font-sans font-normal">views</span>
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-text-muted block mb-1">Total Impressions</span>
+          <div className="text-2xl font-serif font-bold text-text-primary">
+            68,200 <span className="text-xs text-text-muted font-sans font-normal">views</span>
           </div>
-          <div className="text-[10px] text-gray-400 font-medium mt-1">
+          <div className="text-[10px] text-text-muted font-medium mt-1">
             Across active store routes
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-gray-400 block mb-1">Captured Leads</span>
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-text-muted block mb-1">Captured Leads</span>
           <div className="text-2xl font-serif font-bold text-emerald-700">
-            7,410 <span className="text-xs text-gray-400 font-sans font-normal">subscribers</span>
+            7,410 <span className="text-xs text-text-muted font-sans font-normal">subscribers</span>
           </div>
-          <div className="text-[10px] text-green-600 font-semibold mt-1">
+          <div className="text-[10px] text-success font-semibold mt-1">
             +18% conversion rate average
           </div>
         </div>
 
-        <div className="bg-white border border-black/5 rounded-xl p-4 shadow-2xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-gray-400 block mb-1">Trigger Engine</span>
+        <div className="bg-surface border border-black/5 rounded-xl p-4 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-text-muted block mb-1">Trigger Engine</span>
           <div className="text-xl font-serif font-bold text-purple-800">
             Exit Intent & Delay
           </div>
-          <div className="text-[10px] text-gray-400 font-medium mt-1">
+          <div className="text-[10px] text-text-muted font-medium mt-1">
             Client-side reactive triggers
           </div>
         </div>
       </div>
 
       {/* Search & Filters */}
-      <div className="bg-white border border-black/5 rounded-xl p-3 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="bg-surface border border-black/5 rounded-xl p-3 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="relative flex-1 min-w-[220px]">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={14} />
           <input
             type="text"
             placeholder="Search campaign name or format..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-black/10 rounded-lg text-xs focus:bg-white focus:outline-none"
+            className="w-full pl-9 pr-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs focus:bg-surface focus:outline-none"
           />
         </div>
 
@@ -236,7 +236,7 @@ export default function PopupManager() {
               onClick={() => setTypeFilter(t)}
               className={cn(
                 "px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap cursor-pointer transition-all",
-                typeFilter === t ? "bg-[#1A1A1A] text-white shadow-2xs" : "bg-gray-100 text-gray-600 hover:text-black"
+                typeFilter === t ? "bg-[#1A1A1A] text-white shadow-2xs" : "bg-gray-100 text-text-secondary hover:text-black"
               )}
             >
               {t === 'all' ? 'All Formats' : t}
@@ -246,10 +246,10 @@ export default function PopupManager() {
       </div>
 
       {/* Campaigns Table */}
-      <div className="bg-white border border-black/5 rounded-xl overflow-hidden shadow-2xs">
+      <div className="bg-surface border border-black/5 rounded-xl overflow-hidden shadow-2xs">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50/80 border-b border-black/5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <tr className="bg-background/80 border-b border-black/5 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               <th className="p-3.5">Campaign Name & Format</th>
               <th className="p-3.5 font-mono">Trigger</th>
               <th className="p-3.5 font-mono">Status</th>
@@ -260,15 +260,15 @@ export default function PopupManager() {
           </thead>
           <tbody className="divide-y divide-black/5 text-xs">
             {filteredPopups.map((popup) => (
-              <tr key={popup.id} className="hover:bg-gray-50/80 transition-colors">
+              <tr key={popup.id} className="hover:bg-background/80 transition-colors">
                 <td className="p-3.5">
-                  <div className="font-bold text-[#1A1A1A]">{popup.name}</div>
-                  <div className="text-[10px] text-gray-400 font-mono mt-0.5">
-                    Format: <span className="text-gray-700 font-bold">{popup.popupType}</span> • Updated {popup.updatedAt}
+                  <div className="font-bold text-text-primary">{popup.name}</div>
+                  <div className="text-[10px] text-text-muted font-mono mt-0.5">
+                    Format: <span className="text-text-secondary font-bold">{popup.popupType}</span> • Updated {popup.updatedAt}
                   </div>
                 </td>
 
-                <td className="p-3.5 text-gray-600 text-xs">
+                <td className="p-3.5 text-text-secondary text-xs">
                   <span className="px-2 py-0.5 rounded bg-gray-100 text-[10px] font-mono font-semibold">
                     {popup.triggerSummary}
                   </span>
@@ -280,20 +280,20 @@ export default function PopupManager() {
                     onClick={() => handleToggleStatus(popup.id)}
                     className={cn(
                       "px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase transition-colors cursor-pointer",
-                      popup.status === 'active' ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"
+                      popup.status === 'active' ? "bg-success-soft text-green-800" : "bg-gray-100 text-text-secondary"
                     )}
                   >
                     {popup.status}
                   </button>
                 </td>
 
-                <td className="p-3.5 font-mono hidden md:table-cell text-gray-600">
+                <td className="p-3.5 font-mono hidden md:table-cell text-text-secondary">
                   {popup.viewsCount.toLocaleString()}
                 </td>
 
                 <td className="p-3.5 font-mono hidden lg:table-cell">
                   <span className="font-bold text-emerald-700">{popup.conversionsCount.toLocaleString()}</span>
-                  <span className="text-[10px] text-gray-400 block font-normal">({popup.conversionRate})</span>
+                  <span className="text-[10px] text-text-muted block font-normal">({popup.conversionRate})</span>
                 </td>
 
                 <td className="p-3.5 text-right">
@@ -301,7 +301,7 @@ export default function PopupManager() {
                     <button
                       type="button"
                       onClick={() => setPreviewCampaign(popup)}
-                      className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                       title="Live Preview"
                     >
                       <FiEye size={15} />
@@ -309,7 +309,7 @@ export default function PopupManager() {
                     <button
                       type="button"
                       onClick={() => navigate(`/admin/cms/popups/builder?id=${popup.id}`)}
-                      className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                       title="Edit Campaign"
                     >
                       <FiEdit2 size={15} />
@@ -317,7 +317,7 @@ export default function PopupManager() {
                     <button
                       type="button"
                       onClick={() => handleDuplicate(popup)}
-                      className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                       title="Duplicate"
                     >
                       <FiCopy size={15} />
@@ -325,7 +325,7 @@ export default function PopupManager() {
                     <button
                       type="button"
                       onClick={() => handleDelete(popup.id)}
-                      className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-danger hover:text-red-700 hover:bg-danger-soft rounded-lg transition-colors cursor-pointer"
                       title="Delete"
                     >
                       <FiTrash2 size={15} />

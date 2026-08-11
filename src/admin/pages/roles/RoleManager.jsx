@@ -18,8 +18,8 @@ export default function RoleManager() {
     <div className="space-y-8 pb-12">
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A] mb-2">Roles & Permissions</h1>
-          <p className="text-sm text-gray-500 max-w-xl">
+          <h1 className="text-3xl font-serif font-bold text-text-primary mb-2">Roles & Permissions</h1>
+          <p className="text-sm text-text-muted max-w-xl">
             Manage administrative roles and configure granular access control.
           </p>
         </div>
@@ -31,16 +31,16 @@ export default function RoleManager() {
         </PermissionGate>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-black/5 flex flex-col md:flex-row justify-between gap-4">
           <div className="relative flex-1 max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
             <input 
               type="text" 
               placeholder="Search roles..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-[#F7F5F2] border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full"
+              className="pl-10 pr-4 py-2 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full"
             />
           </div>
         </div>
@@ -48,43 +48,43 @@ export default function RoleManager() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-black/5">
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Role</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Users</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Permissions</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Status</th>
+              <tr className="bg-background border-b border-black/5">
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Role</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Users</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Permissions</th>
+                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
                 <th className="p-4 text-right"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/5">
               {MOCK_ROLES.map(role => (
-                <tr key={role.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={role.id} className="hover:bg-background transition-colors">
                   <td className="p-4">
-                    <p className="text-sm font-bold text-[#1A1A1A]">{role.name}</p>
-                    <p className="text-xs text-gray-500 mt-1">{role.description}</p>
+                    <p className="text-sm font-bold text-text-primary">{role.name}</p>
+                    <p className="text-xs text-text-muted mt-1">{role.description}</p>
                   </td>
                   <td className="p-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-                      <FiUsers className="text-gray-400" /> {role.users}
+                    <div className="flex items-center gap-2 text-sm text-text-secondary font-medium">
+                      <FiUsers className="text-text-muted" /> {role.users}
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-                      <FiShield className="text-gray-400" /> {role.permissions}
+                    <div className="flex items-center gap-2 text-sm text-text-secondary font-medium">
+                      <FiShield className="text-text-muted" /> {role.permissions}
                     </div>
                   </td>
                   <td className="p-4">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border bg-green-100 text-green-800 border-green-200">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border bg-success-soft text-green-800 border-green-200">
                       {role.status}
                     </span>
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <PermissionGate permission="roles.manage" fallback={<span className="text-xs text-gray-400">View Only</span>}>
-                        <Link to={`/admin/roles/${role.id}/edit`} className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
+                      <PermissionGate permission="roles.manage" fallback={<span className="text-xs text-text-muted">View Only</span>}>
+                        <Link to={`/admin/roles/${role.id}/edit`} className="p-2 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
                           <FiEdit2 size={16} />
                         </Link>
-                        <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
+                        <button className="p-2 text-text-muted hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
                           <FiMoreVertical size={16} />
                         </button>
                       </PermissionGate>

@@ -10,12 +10,12 @@ export default function AccessRequests() {
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">Access Requests</h1>
-          <p className="text-gray-500 text-sm mt-1">Manage staff requests for elevated permissions</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Access Requests</h1>
+          <p className="text-text-muted text-sm mt-1">Manage staff requests for elevated permissions</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <DataTable 
           data={requests}
           columns={[

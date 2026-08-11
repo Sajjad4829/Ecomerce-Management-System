@@ -14,48 +14,48 @@ export default function InventorySummary() {
   return (
     <div className="pt-6 border-t border-stone-100">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-bold text-stone-900">Inventory Allocation</h3>
+        <h3 className="text-sm font-bold text-text-primary">Inventory Allocation</h3>
         <Link 
           to="/admin/catalog/inventory"
-          className="text-xs font-semibold text-stone-600 hover:text-stone-900 flex items-center gap-1"
+          className="text-xs font-semibold text-text-secondary hover:text-text-primary flex items-center gap-1"
         >
           Manage Inventory <FiArrowRight size={14} />
         </Link>
       </div>
       
-      <div className="bg-stone-50 rounded-xl border border-stone-200 overflow-hidden mb-6">
-        <div className="grid grid-cols-3 divide-x divide-stone-200 border-b border-stone-200 bg-white p-4">
+      <div className="bg-background rounded-xl border border-border overflow-hidden mb-6">
+        <div className="grid grid-cols-3 divide-x divide-stone-200 border-b border-border bg-surface p-4">
           <div className="text-center">
-            <p className="text-[10px] font-mono font-bold text-stone-500 uppercase">Available</p>
-            <p className="text-2xl font-bold text-green-600 mt-1">{totalAvailable}</p>
+            <p className="text-[10px] font-mono font-bold text-text-muted uppercase">Available</p>
+            <p className="text-2xl font-bold text-success mt-1">{totalAvailable}</p>
           </div>
           <div className="text-center">
-            <p className="text-[10px] font-mono font-bold text-stone-500 uppercase">Reserved</p>
-            <p className="text-2xl font-bold text-stone-900 mt-1">{totalReserved}</p>
+            <p className="text-[10px] font-mono font-bold text-text-muted uppercase">Reserved</p>
+            <p className="text-2xl font-bold text-text-primary mt-1">{totalReserved}</p>
           </div>
           <div className="text-center">
-            <p className="text-[10px] font-mono font-bold text-stone-500 uppercase">On Hand</p>
-            <p className="text-2xl font-bold text-stone-900 mt-1">{totalOnHand}</p>
+            <p className="text-[10px] font-mono font-bold text-text-muted uppercase">On Hand</p>
+            <p className="text-2xl font-bold text-text-primary mt-1">{totalOnHand}</p>
           </div>
         </div>
 
         <div className="p-4">
-          <h4 className="text-xs font-mono font-bold text-stone-500 uppercase mb-3">Stock By Location</h4>
+          <h4 className="text-xs font-mono font-bold text-text-muted uppercase mb-3">Stock By Location</h4>
           <div className="space-y-3">
             {MOCK_LOCATIONS.map(loc => (
-              <div key={loc.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-stone-100 shadow-sm">
+              <div key={loc.id} className="flex items-center justify-between bg-surface p-3 rounded-lg border border-stone-100 shadow-sm">
                 <div className="flex items-center gap-2">
-                  <FiMapPin className="text-stone-400" size={16} />
-                  <span className="text-sm font-bold text-stone-900">{loc.name}</span>
+                  <FiMapPin className="text-text-muted" size={16} />
+                  <span className="text-sm font-bold text-text-primary">{loc.name}</span>
                 </div>
-                <div className="flex items-center gap-6 text-sm text-stone-600">
+                <div className="flex items-center gap-6 text-sm text-text-secondary">
                   <div className="flex flex-col items-end">
-                    <span className="text-[10px] font-mono uppercase text-stone-400">Available</span>
-                    <span className="font-bold text-stone-900">{loc.onHand - loc.reserved}</span>
+                    <span className="text-[10px] font-mono uppercase text-text-muted">Available</span>
+                    <span className="font-bold text-text-primary">{loc.onHand - loc.reserved}</span>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-[10px] font-mono uppercase text-stone-400">Incoming</span>
-                    <span className="font-medium text-blue-600">+{loc.incoming}</span>
+                    <span className="text-[10px] font-mono uppercase text-text-muted">Incoming</span>
+                    <span className="font-medium text-primary">+{loc.incoming}</span>
                   </div>
                 </div>
               </div>

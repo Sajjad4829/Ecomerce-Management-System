@@ -10,7 +10,7 @@ export default function GlobalBlockCard({ block, view, onPreview }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "bg-white border border-black/5 rounded-xl overflow-hidden hover:shadow-lg transition-all group flex relative",
+        "bg-surface border border-black/5 rounded-xl overflow-hidden hover:shadow-lg transition-all group flex relative",
         isList ? "flex-row items-stretch" : "flex-col"
       )}
     >
@@ -32,7 +32,7 @@ export default function GlobalBlockCard({ block, view, onPreview }) {
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
           <button 
             onClick={() => onPreview(block)}
-            className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform shadow-lg"
+            className="w-10 h-10 bg-surface rounded-full flex items-center justify-center text-text-primary hover:scale-110 transition-transform shadow-lg"
             title="Preview Block"
           >
             <FiEye size={18} />
@@ -45,38 +45,38 @@ export default function GlobalBlockCard({ block, view, onPreview }) {
         <div>
           <div className="flex justify-between items-start mb-2">
             <div>
-              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{block.category}</div>
-              <h3 className="text-sm font-bold text-[#1A1A1A] font-serif">{block.name}</h3>
+              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1">{block.category}</div>
+              <h3 className="text-sm font-bold text-text-primary font-serif">{block.name}</h3>
             </div>
             <div className="flex items-center gap-2">
               <span className={cn(
                 "text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded",
-                block.status === 'published' ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
+                block.status === 'published' ? "bg-success-soft text-success" : "bg-yellow-100 text-yellow-700"
               )}>
                 {block.status}
               </span>
             </div>
           </div>
-          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-4">
+          <p className="text-xs text-text-muted line-clamp-2 leading-relaxed mb-4">
             {block.description}
           </p>
         </div>
 
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-black/5">
-          <div className="flex items-center gap-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+          <div className="flex items-center gap-3 text-[10px] font-semibold text-text-muted uppercase tracking-widest">
             <span>Used on {block.usageCount} pages</span>
             <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
             <span>v{block.version}</span>
           </div>
           
           <div className="flex items-center gap-1">
-             <button className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-100 rounded" title="Edit">
+             <button className="p-1.5 text-text-muted hover:text-text-primary hover:bg-gray-100 rounded" title="Edit">
                 <FiEdit2 size={14} />
              </button>
-             <button className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-100 rounded" title="Duplicate">
+             <button className="p-1.5 text-text-muted hover:text-text-primary hover:bg-gray-100 rounded" title="Duplicate">
                 <FiCopy size={14} />
              </button>
-             <button className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded" title="Delete">
+             <button className="p-1.5 text-text-muted hover:text-danger hover:bg-danger-soft rounded" title="Delete">
                 <FiTrash2 size={14} />
              </button>
           </div>

@@ -10,34 +10,34 @@ export const MarketingDashboard = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Marketing Dashboard</h1>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="text-sm text-neutral-500 mb-2">Active Campaigns</div>
           <div className="text-3xl font-bold text-neutral-900">8</div>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="text-sm text-neutral-500 mb-2">Audience Reach</div>
           <div className="text-3xl font-bold text-neutral-900">125K</div>
           <div className="text-xs text-neutral-400 mt-2">Placeholder</div>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="text-sm text-neutral-500 mb-2">Conversions</div>
           <div className="text-3xl font-bold text-neutral-900">1,240</div>
           <div className="text-xs text-neutral-400 mt-2">Placeholder</div>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="text-sm text-neutral-500 mb-2">Marketing Spend</div>
           <div className="text-3xl font-bold text-neutral-900">$15K</div>
           <div className="text-xs text-neutral-400 mt-2">Placeholder</div>
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm min-h-[300px] flex flex-col">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm min-h-[300px] flex flex-col">
           <h3 className="font-medium text-neutral-900 mb-4">Campaign Performance</h3>
           <div className="flex-1 border-2 border-dashed border-neutral-100 flex items-center justify-center bg-neutral-50">
             <span className="text-neutral-400">Chart Visualization Placeholder</span>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm min-h-[300px] flex flex-col">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm min-h-[300px] flex flex-col">
           <h3 className="font-medium text-neutral-900 mb-4">Channel Distribution</h3>
           <div className="flex-1 border-2 border-dashed border-neutral-100 flex items-center justify-center bg-neutral-50">
             <span className="text-neutral-400">Chart Visualization Placeholder</span>
@@ -56,7 +56,7 @@ export const CampaignCenter = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Campaigns</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Campaign</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -76,7 +76,7 @@ export const CampaignCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{c.channel}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    c.status === 'Active' ? 'bg-green-100 text-green-800' : 
+                    c.status === 'Active' ? 'bg-success-soft text-green-800' : 
                     c.status === 'Scheduled' ? 'bg-blue-100 text-blue-800' : 'bg-neutral-100 text-neutral-800'
                   }`}>
                     {c.status}
@@ -84,7 +84,7 @@ export const CampaignCenter = () => {
                 </td>
                 <td className="px-6 py-4 text-neutral-600">{c.startDate} - {c.endDate}</td>
                 <td className="px-6 py-4 text-right">
-                  <Link to={`/admin/marketing/campaigns/${c.id}`} className="text-indigo-600 hover:text-indigo-900 font-medium">View</Link>
+                  <Link to={`/admin/marketing/campaigns/${c.id}`} className="text-primary hover:text-indigo-900 font-medium">View</Link>
                 </td>
               </tr>
             ))}
@@ -120,7 +120,7 @@ export const CampaignDetail = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+          <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
             <h3 className="font-medium text-neutral-900 mb-4">Overview</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div><div className="text-neutral-500">Objective</div><div className="font-medium mt-1">{campaign.objective}</div></div>
@@ -130,7 +130,7 @@ export const CampaignDetail = () => {
             </div>
           </div>
           
-          <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+          <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
             <h3 className="font-medium text-neutral-900 mb-4">Performance</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div><div className="text-neutral-500">Reach</div><div className="font-medium mt-1">{campaign.reach}</div></div>
@@ -143,7 +143,7 @@ export const CampaignDetail = () => {
         </div>
         
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+          <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
             <h3 className="font-medium text-neutral-900 mb-4">Owner</h3>
             <div className="text-sm font-medium">{campaign.owner}</div>
           </div>
@@ -161,7 +161,7 @@ export const CampaignTypes = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Campaign Types</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Type</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -190,7 +190,7 @@ export const Channels = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Marketing Channels</h1>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -222,7 +222,7 @@ export const Audiences = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Audiences</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Audience</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -258,7 +258,7 @@ export const MarketingLists = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Marketing Lists</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create List</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -294,7 +294,7 @@ export const Promotions = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Promotions</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Promotion</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -332,7 +332,7 @@ export const Banners = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Banner Campaigns</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Banner</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -368,7 +368,7 @@ export const MarketingAssets = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Marketing Assets</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Upload Asset</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -403,10 +403,10 @@ export const EmailCampaigns = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Email Campaigns</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">New Email</button>
       </div>
-      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
+      <div className="bg-warning-soft border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
         <strong>Backend email integration required.</strong> This view currently displays placeholders.
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <div className="p-8 text-center text-neutral-500">
           Email campaigns list will appear here once connected to an email provider.
         </div>
@@ -422,10 +422,10 @@ export const SMSCampaigns = () => {
         <h1 className="text-2xl font-serif text-neutral-900">SMS Campaigns</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">New SMS</button>
       </div>
-      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
+      <div className="bg-warning-soft border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
         <strong>Backend SMS provider integration required.</strong> This view currently displays placeholders.
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <div className="p-8 text-center text-neutral-500">
           SMS campaigns list will appear here once connected to an SMS provider.
         </div>
@@ -441,10 +441,10 @@ export const SocialCampaigns = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Social Campaigns</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">New Social Post</button>
       </div>
-      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
+      <div className="bg-warning-soft border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
         <strong>Social media API integrations required.</strong> This view currently displays placeholders.
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <div className="p-8 text-center text-neutral-500">
           Social campaigns list will appear here once connected to social platforms.
         </div>
@@ -461,7 +461,7 @@ export const Automations = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Marketing Automations</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Automation</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -499,7 +499,7 @@ export const MarketingTasks = () => {
         <h1 className="text-2xl font-serif text-neutral-900">Marketing Tasks</h1>
         <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Add Task</button>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -535,7 +535,7 @@ export const Calendar = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Campaign Calendar</h1>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 min-h-[500px] flex items-center justify-center">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 min-h-[500px] flex items-center justify-center">
         <span className="text-neutral-400">Calendar Integration Placeholder</span>
       </div>
     </div>
@@ -548,7 +548,7 @@ export const Analytics = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Marketing Analytics</h1>
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 min-h-[500px] flex items-center justify-center">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 min-h-[500px] flex items-center justify-center">
         <span className="text-neutral-400">Advanced Analytics Dashboards Placeholder</span>
       </div>
     </div>
@@ -561,21 +561,21 @@ export const MarketingROI = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Marketing ROI</h1>
       </div>
-      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
+      <div className="bg-warning-soft border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
         <strong>Backend attribution required.</strong> ROI calculation requires integration with order data and marketing spend data.
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="text-sm text-neutral-500 mb-2">Total Spend</div>
           <div className="text-3xl font-bold text-neutral-900">$15,000</div>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="text-sm text-neutral-500 mb-2">Attributed Revenue</div>
           <div className="text-3xl font-bold text-neutral-900">$162,500</div>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm">
           <div className="text-sm text-neutral-500 mb-2">ROI</div>
-          <div className="text-3xl font-bold text-green-600">983%</div>
+          <div className="text-3xl font-bold text-success">983%</div>
         </div>
       </div>
     </div>
@@ -588,10 +588,10 @@ export const Attribution = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Marketing Attribution</h1>
       </div>
-      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
+      <div className="bg-warning-soft border border-amber-200 text-amber-800 p-4 rounded-lg text-sm">
         <strong>Backend attribution engine required.</strong> This view requires backend tracking of customer journeys.
       </div>
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>

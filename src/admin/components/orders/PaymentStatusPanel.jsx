@@ -4,10 +4,10 @@ import { CreditCard, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
 export default function PaymentStatusPanel({ order }) {
   const getStatusIcon = (status) => {
     switch(status) {
-      case 'paid': return <CheckCircle2 className="w-5 h-5 text-green-600" />;
+      case 'paid': return <CheckCircle2 className="w-5 h-5 text-success" />;
       case 'refunded': return <RotateCcw className="w-5 h-5 text-neutral-600" />;
-      case 'failed': return <AlertCircle className="w-5 h-5 text-red-600" />;
-      default: return <Clock className="w-5 h-5 text-amber-600" />;
+      case 'failed': return <AlertCircle className="w-5 h-5 text-danger" />;
+      default: return <Clock className="w-5 h-5 text-warning" />;
     }
   };
 
@@ -21,7 +21,7 @@ export default function PaymentStatusPanel({ order }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+    <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-neutral-200 bg-neutral-50 flex items-center justify-between">
         <h3 className="text-lg font-serif text-neutral-900 flex items-center gap-2">
           <CreditCard className="w-5 h-5" /> Payment
@@ -60,10 +60,10 @@ export default function PaymentStatusPanel({ order }) {
         </div>
         
         <div className="mt-6 flex gap-3">
-          <button className="flex-1 px-4 py-2 text-neutral-600 bg-white border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors text-sm font-medium">
+          <button className="flex-1 px-4 py-2 text-neutral-600 bg-surface border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors text-sm font-medium">
             View Gateway
           </button>
-          <button className="flex-1 px-4 py-2 text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors text-sm font-medium">
+          <button className="flex-1 px-4 py-2 text-danger bg-surface border border-red-200 rounded-md hover:bg-danger-soft transition-colors text-sm font-medium">
             Refund
           </button>
         </div>

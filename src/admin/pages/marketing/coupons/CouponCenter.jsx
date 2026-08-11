@@ -20,7 +20,7 @@ export const CouponCenter = () => {
           <p className="text-sm text-neutral-500 mt-1">Manage discount codes and usage limits</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 flex items-center gap-2 text-sm font-medium">
+          <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-surface rounded-md hover:bg-neutral-50 flex items-center gap-2 text-sm font-medium">
             <Settings className="w-4 h-4" /> Bulk Generator
           </button>
           <button 
@@ -32,7 +32,7 @@ export const CouponCenter = () => {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
+      <div className="bg-surface p-4 rounded-lg border border-neutral-200 shadow-sm flex items-center gap-4 justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-5 h-5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -45,7 +45,7 @@ export const CouponCenter = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
             <tr>
@@ -61,7 +61,7 @@ export const CouponCenter = () => {
             {filteredCoupons.map((coupon) => (
               <tr key={coupon.id} className="hover:bg-neutral-50 transition-colors">
                 <td className="px-6 py-4 font-medium font-mono text-neutral-900">{coupon.code}</td>
-                <td className="px-6 py-4 text-indigo-600 hover:underline cursor-pointer">{coupon.promotionId}</td>
+                <td className="px-6 py-4 text-primary hover:underline cursor-pointer">{coupon.promotionId}</td>
                 <td className="px-6 py-4 text-neutral-900">{coupon.usage}</td>
                 <td className="px-6 py-4 text-neutral-600">{coupon.limit || 'Unlimited'}</td>
                 <td className="px-6 py-4 text-neutral-600 text-xs">{coupon.expiry}</td>

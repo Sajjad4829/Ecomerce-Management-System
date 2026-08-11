@@ -241,33 +241,33 @@ export default function ProductEditor() {
   };
 
   return (
-    <div className="min-h-screen h-screen bg-[#F7F7FC] font-sans text-[#111A4A] overflow-hidden flex flex-col relative">
+    <div className="min-h-screen h-screen bg-background font-sans text-text-primary overflow-hidden flex flex-col relative">
       
       {/* Top Header */}
       <header className="px-8 py-6 shrink-0 flex items-center justify-between">
         <div className="flex items-start gap-4">
           <button 
             onClick={() => navigate('/admin/catalog/products')}
-            className="mt-1 p-2 bg-white text-[#7C849F] hover:text-[#111A4A] transition-colors rounded-xl border border-[#E5E7F2] shadow-sm"
+            className="mt-1 p-2 bg-surface text-text-muted hover:text-text-primary transition-colors rounded-xl border border-border shadow-sm"
           >
             <FiArrowLeft size={20} />
           </button>
           <div>
-            <p className="text-[10px] font-bold text-[#7C849F] tracking-widest uppercase mb-1">
+            <p className="text-[10px] font-bold text-text-muted tracking-widest uppercase mb-1">
               Product Management
             </p>
             <div className="flex items-center gap-3">
-               <h1 className="font-serif text-3xl font-bold text-[#111A4A]">
+               <h1 className="font-serif text-3xl font-bold text-text-primary">
                  {isNew ? 'Create New Product' : formData.basicInfo.name || 'Untitled'}
                </h1>
                {!isNew && <ProductStatusBadge status={formData.status} />}
                {hasUnsavedChanges && (
-                  <span className="flex items-center gap-1 text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-1 rounded-full">
+                  <span className="flex items-center gap-1 text-xs font-semibold text-warning bg-warning-soft border border-amber-200 px-2 py-1 rounded-full">
                     <FiAlertCircle /> Unsaved Changes
                   </span>
                )}
             </div>
-            <p className="text-sm text-[#7C849F] mt-1">
+            <p className="text-sm text-text-muted mt-1">
               Add product details and publish to your store
             </p>
           </div>
@@ -277,9 +277,9 @@ export default function ProductEditor() {
           <button 
             onClick={handleSaveDraft}
             disabled={isSaving}
-            className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#4F46FF]/30 text-[#4F46FF] font-semibold text-sm rounded-xl hover:bg-[#EEF0FF] transition-colors shadow-sm"
+            className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-primary/30 text-primary font-semibold text-sm rounded-xl hover:bg-primary-soft transition-colors shadow-sm"
           >
-            {isSaving ? <div className="w-4 h-4 border-2 border-[#4F46FF] border-t-transparent rounded-full animate-spin" /> : <FiSave size={18} />}
+            {isSaving ? <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" /> : <FiSave size={18} />}
             {isSaving ? 'Saving...' : 'Save as Draft'}
           </button>
           <button 
@@ -294,7 +294,7 @@ export default function ProductEditor() {
       </header>
 
       {/* Step Navigation */}
-      <div className="px-8 pb-6 shrink-0 border-b border-[#E5E7F2]/50">
+      <div className="px-8 pb-6 shrink-0 border-b border-border/50">
         <div className="flex flex-wrap items-center gap-3">
           {STEPS.map(step => {
             const isActive = activeTab === step.id;
@@ -304,12 +304,12 @@ export default function ProductEditor() {
                 onClick={() => setActiveTab(step.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
                   isActive 
-                    ? 'bg-[#4F46FF] text-white border-[#4F46FF] shadow-sm' 
-                    : 'bg-white border-[#E5E7F2] text-[#111A4A] hover:bg-[#EEF0FF]/50'
+                    ? 'bg-primary text-white border-primary shadow-sm' 
+                    : 'bg-surface border-border text-text-primary hover:bg-primary-soft/50'
                 }`}
               >
                 <span className={`flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-bold ${
-                  isActive ? 'bg-white text-[#4F46FF]' : 'bg-[#F7F7FC] text-[#7C849F]'
+                  isActive ? 'bg-surface text-primary' : 'bg-background text-text-muted'
                 }`}>
                   {step.number}
                 </span>
@@ -336,62 +336,62 @@ export default function ProductEditor() {
             >
               {activeTab === 'basic' && (
                 <>
-                  <div className="bg-white rounded-2xl border border-[#E5E7F2] shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                  <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiInfo size={16} /></div>
-                      <h2 className="text-lg font-bold text-[#111A4A]">Basic Information</h2>
+                      <h2 className="text-lg font-bold text-text-primary">Basic Information</h2>
                     </div>
-                    <p className="text-sm text-[#7C849F] mb-6 ml-11">Enter the essential details about your product</p>
+                    <p className="text-sm text-text-muted mb-6 ml-11">Enter the essential details about your product</p>
                     
                     <div className="space-y-5">
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Product Name <span className="text-[#FF4D4F]">*</span></label>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Product Name <span className="text-[#FF4D4F]">*</span></label>
                         <input 
                           type="text" 
                           value={formData.basicInfo.name}
                           onChange={(e) => handleChange('basicInfo', 'name', e.target.value)}
                           placeholder="e.g. Modern Sofa Chair"
-                          className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] focus:ring-1 focus:ring-[#4F46FF] text-sm text-[#111A4A] placeholder-[#7C849F]"
+                          className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-5">
                         <div>
-                          <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Product Badge</label>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Product Badge</label>
                           <input 
                             type="text" 
                             value={formData.basicInfo.badge || ''}
                             onChange={(e) => handleChange('basicInfo', 'badge', e.target.value)}
                             placeholder="e.g. New Arrival"
-                            className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] focus:ring-1 focus:ring-[#4F46FF] text-sm text-[#111A4A] placeholder-[#7C849F]"
+                            className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-bold text-[#111A4A] mb-1.5">SKU <span className="text-[#FF4D4F]">*</span></label>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">SKU <span className="text-[#FF4D4F]">*</span></label>
                           <input 
                             type="text" 
                             value={formData.basicInfo.sku}
                             onChange={(e) => handleChange('basicInfo', 'sku', e.target.value)}
                             placeholder="e.g. DF-SF-001"
-                            className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] focus:ring-1 focus:ring-[#4F46FF] text-sm text-[#111A4A] placeholder-[#7C849F]"
+                            className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Short Description <span className="text-[#FF4D4F]">*</span></label>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Short Description <span className="text-[#FF4D4F]">*</span></label>
                         <textarea 
                           rows={2}
                           value={formData.basicInfo.shortDescription}
                           onChange={(e) => handleChange('basicInfo', 'shortDescription', e.target.value)}
                           placeholder="Write a short description for product..."
-                          className="w-full px-4 py-3 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] focus:ring-1 focus:ring-[#4F46FF] text-sm text-[#111A4A] placeholder-[#7C849F] resize-none"
+                          className="w-full px-4 py-3 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F] resize-none"
                         />
-                        <div className="text-right text-[10px] text-[#7C849F] mt-1">{formData.basicInfo.shortDescription.length}/160</div>
+                        <div className="text-right text-[10px] text-text-muted mt-1">{formData.basicInfo.shortDescription.length}/160</div>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Full Description <span className="text-[#FF4D4F]">*</span></label>
-                        <div className="border border-[#E5E7F2] rounded-xl overflow-hidden bg-white focus-within:border-[#4F46FF] focus-within:ring-1 focus-within:ring-[#4F46FF] transition-all">
-                          <div className="flex items-center gap-4 px-4 py-2.5 bg-[#F7F7FC] border-b border-[#E5E7F2] text-[#7C849F]">
-                            <span className="text-xs font-bold text-[#111A4A] cursor-pointer">Paragraph ▾</span>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Full Description <span className="text-[#FF4D4F]">*</span></label>
+                        <div className="border border-border rounded-xl overflow-hidden bg-surface focus-within:border-primary focus-within:ring-1 focus-within:ring-[#4F46FF] transition-all">
+                          <div className="flex items-center gap-4 px-4 py-2.5 bg-background border-b border-border text-text-muted">
+                            <span className="text-xs font-bold text-text-primary cursor-pointer">Paragraph ▾</span>
                             <span className="font-serif font-bold text-black cursor-pointer">B</span>
                             <span className="font-serif italic text-black cursor-pointer">I</span>
                             <span className="cursor-pointer">≡</span>
@@ -405,22 +405,22 @@ export default function ProductEditor() {
                             value={formData.basicInfo.description}
                             onChange={(e) => handleChange('basicInfo', 'description', e.target.value)}
                             placeholder="Write full product description..."
-                            className="w-full px-4 py-4 border-none focus:outline-none focus:ring-0 text-sm text-[#111A4A] placeholder-[#7C849F] resize-none"
+                            className="w-full px-4 py-4 border-none focus:outline-none focus:ring-0 text-sm text-text-primary placeholder-[#7C849F] resize-none"
                           />
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="bg-white rounded-2xl border border-[#E5E7F2] shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
-                    <h2 className="text-lg font-bold text-[#111A4A] mb-6">Organization</h2>
+                  <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                    <h2 className="text-lg font-bold text-text-primary mb-6">Organization</h2>
                     <div className="space-y-5">
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Category <span className="text-[#FF4D4F]">*</span></label>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Category <span className="text-[#FF4D4F]">*</span></label>
                         <select 
                           value={formData.organization.categoryId}
                           onChange={(e) => handleChange('organization', 'categoryId', e.target.value)}
-                          className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] focus:ring-1 focus:ring-[#4F46FF] text-sm text-[#111A4A]"
+                          className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary"
                         >
                           <option value="">Select a category</option>
                           {categories.map(cat => (
@@ -431,76 +431,76 @@ export default function ProductEditor() {
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-2xl border border-[#E5E7F2] shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
-                    <h2 className="text-lg font-bold text-[#111A4A] mb-6">Furniture Details & Dimensions</h2>
+                  <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                    <h2 className="text-lg font-bold text-text-primary mb-6">Furniture Details & Dimensions</h2>
                     
                     <div className="mb-6">
-                      <h3 className="text-sm font-bold text-[#111A4A] mb-3">Dimensions</h3>
+                      <h3 className="text-sm font-bold text-text-primary mb-3">Dimensions</h3>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
                         {['width', 'height', 'depth', 'seatHeight'].map(dim => (
                           <div key={dim}>
-                            <label className="block text-xs font-bold text-[#111A4A] mb-1.5 capitalize">{dim.replace(/([A-Z])/g, ' $1').trim()}</label>
+                            <label className="block text-xs font-bold text-text-primary mb-1.5 capitalize">{dim.replace(/([A-Z])/g, ' $1').trim()}</label>
                             <input type="text" value={formData.furnitureDetails.dimensions[dim] || ''} onChange={(e) => {
                               handleChange('furnitureDetails', 'dimensions', { ...formData.furnitureDetails.dimensions, [dim]: e.target.value });
-                            }} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A]" />
+                            }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
                           </div>
                         ))}
                       </div>
                     </div>
                     
                     <div className="mb-6">
-                      <h3 className="text-sm font-bold text-[#111A4A] mb-3">Materials</h3>
+                      <h3 className="text-sm font-bold text-text-primary mb-3">Materials</h3>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                         {['frameMaterial', 'woodType', 'woodFinish', 'upholsteryMaterial'].map(mat => (
                           <div key={mat}>
-                            <label className="block text-xs font-bold text-[#111A4A] mb-1.5 capitalize">{mat.replace(/([A-Z])/g, ' $1').trim()}</label>
+                            <label className="block text-xs font-bold text-text-primary mb-1.5 capitalize">{mat.replace(/([A-Z])/g, ' $1').trim()}</label>
                             <input type="text" value={formData.furnitureDetails.materials[mat] || ''} onChange={(e) => {
                               handleChange('furnitureDetails', 'materials', { ...formData.furnitureDetails.materials, [mat]: e.target.value });
-                            }} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A]" />
+                            }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
                           </div>
                         ))}
                       </div>
                     </div>
 
                     <div className="mb-6">
-                      <h3 className="text-sm font-bold text-[#111A4A] mb-3">Care Instructions</h3>
+                      <h3 className="text-sm font-bold text-text-primary mb-3">Care Instructions</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                          <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Furniture Care</label>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Furniture Care</label>
                           <textarea value={formData.furnitureDetails.care?.furniture || ''} onChange={(e) => {
                             handleChange('furnitureDetails', 'care', { ...formData.furnitureDetails.care, furniture: e.target.value });
-                          }} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A] resize-none" rows="3" />
+                          }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary resize-none" rows="3" />
                         </div>
                         <div>
-                          <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Upholstery Care</label>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Upholstery Care</label>
                           <textarea value={formData.furnitureDetails.care?.upholstery || ''} onChange={(e) => {
                             handleChange('furnitureDetails', 'care', { ...formData.furnitureDetails.care, upholstery: e.target.value });
-                          }} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A] resize-none" rows="3" />
+                          }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary resize-none" rows="3" />
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-bold text-[#111A4A] mb-3">Warranty & Story</h3>
+                      <h3 className="text-sm font-bold text-text-primary mb-3">Warranty & Story</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                         <div>
-                          <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Warranty Duration</label>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Warranty Duration</label>
                           <input type="text" value={formData.furnitureDetails.warranty?.duration || ''} onChange={(e) => {
                             handleChange('furnitureDetails', 'warranty', { ...formData.furnitureDetails.warranty, duration: e.target.value });
-                          }} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A]" />
+                          }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
                         </div>
                         <div>
-                          <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Return Policy</label>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Return Policy</label>
                           <input type="text" value={formData.furnitureDetails.warranty?.returnPolicy || ''} onChange={(e) => {
                             handleChange('furnitureDetails', 'warranty', { ...formData.furnitureDetails.warranty, returnPolicy: e.target.value });
-                          }} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A]" />
+                          }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Product Story</label>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Product Story</label>
                         <textarea value={formData.furnitureDetails.story || ''} onChange={(e) => {
                           handleChange('furnitureDetails', 'story', e.target.value);
-                        }} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A] resize-none" rows="3" />
+                        }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary resize-none" rows="3" />
                       </div>
                     </div>
                   </div>
@@ -512,70 +512,70 @@ export default function ProductEditor() {
               )}
 
               {activeTab === 'variants' && (
-                <div className="bg-white rounded-2xl border border-[#E5E7F2] shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
                    <div className="flex items-center gap-3 mb-6">
                       <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiBox size={16} /></div>
-                      <h2 className="text-lg font-bold text-[#111A4A]">Product Variants</h2>
+                      <h2 className="text-lg font-bold text-text-primary">Product Variants</h2>
                    </div>
                    <VariantManager productData={{ variants: formData.variants }} setProductData={updateVariants} />
                 </div>
               )}
 
               {activeTab === 'pricing' && (
-                <div className="bg-white rounded-2xl border border-[#E5E7F2] shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiDollarSign size={16} /></div>
-                    <h2 className="text-lg font-bold text-[#111A4A]">Pricing & Stock</h2>
+                    <h2 className="text-lg font-bold text-text-primary">Pricing & Stock</h2>
                   </div>
-                  <p className="text-sm text-[#7C849F] mb-6 ml-11">Manage product pricing and availability</p>
+                  <p className="text-sm text-text-muted mb-6 ml-11">Manage product pricing and availability</p>
                   
                   <div className="space-y-6">
                      <div className="grid grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Regular Price ($)</label>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Regular Price ($)</label>
                         <div className="relative">
-                          <FiDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7C849F]" />
+                          <FiDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
                           <input 
                             type="number" 
                             value={formData.pricing.regularPrice}
                             onChange={(e) => handleChange('pricing', 'regularPrice', Number(e.target.value))}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm font-semibold text-[#111A4A]"
+                            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm font-semibold text-text-primary"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Sale Price ($)</label>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Sale Price ($)</label>
                         <div className="relative">
-                          <FiDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7C849F]" />
+                          <FiDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
                           <input 
                             type="number" 
                             value={formData.pricing.salePrice || ''}
                             onChange={(e) => handleChange('pricing', 'salePrice', Number(e.target.value))}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm font-semibold text-[#111A4A]"
+                            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm font-semibold text-text-primary"
                           />
                         </div>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">EMI ($)</label>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">EMI ($)</label>
                         <div className="relative">
-                          <FiDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7C849F]" />
+                          <FiDollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
                           <input 
                             type="number" 
                             value={formData.pricing.emi || ''}
                             onChange={(e) => handleChange('pricing', 'emi', Number(e.target.value))}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm font-semibold text-[#111A4A]"
+                            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm font-semibold text-text-primary"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Stock Quantity</label>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Stock Quantity</label>
                         <input 
                           type="number" 
                           value={formData.inventory.totalStock || ''}
                           onChange={(e) => handleChange('inventory', 'totalStock', Number(e.target.value))}
-                          className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm font-semibold text-[#111A4A]"
+                          className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm font-semibold text-text-primary"
                         />
                       </div>
                     </div>
@@ -585,35 +585,35 @@ export default function ProductEditor() {
 
               {activeTab === 'seo' && (
                 <div className="space-y-6">
-                  <div className="bg-white rounded-2xl border border-[#E5E7F2] shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                  <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiSearch size={16} /></div>
-                      <h2 className="text-lg font-bold text-[#111A4A]">SEO & Publishing</h2>
+                      <h2 className="text-lg font-bold text-text-primary">SEO & Publishing</h2>
                     </div>
-                    <p className="text-sm text-[#7C849F] mb-6 ml-11">Optimize how this product appears in search engines</p>
+                    <p className="text-sm text-text-muted mb-6 ml-11">Optimize how this product appears in search engines</p>
                     
                     <div className="space-y-5">
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">SEO Title</label>
-                        <input type="text" value={formData.seo.metaTitle} onChange={(e) => handleChange('seo', 'metaTitle', e.target.value)} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A]" />
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">SEO Title</label>
+                        <input type="text" value={formData.seo.metaTitle} onChange={(e) => handleChange('seo', 'metaTitle', e.target.value)} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Meta Description</label>
-                        <textarea rows={3} value={formData.seo.metaDescription} onChange={(e) => handleChange('seo', 'metaDescription', e.target.value)} className="w-full px-4 py-3 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A] resize-none" />
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Meta Description</label>
+                        <textarea rows={3} value={formData.seo.metaDescription} onChange={(e) => handleChange('seo', 'metaDescription', e.target.value)} className="w-full px-4 py-3 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary resize-none" />
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-2xl border border-[#E5E7F2] shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
-                    <h2 className="text-lg font-bold text-[#111A4A] mb-6">Organization</h2>
+                  <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                    <h2 className="text-lg font-bold text-text-primary mb-6">Organization</h2>
                     <div className="grid grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Main Category</label>
-                        <input type="text" value={formData.organization.mainCategory} onChange={(e) => handleChange('organization', 'mainCategory', e.target.value)} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A]" />
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Main Category</label>
+                        <input type="text" value={formData.organization.mainCategory} onChange={(e) => handleChange('organization', 'mainCategory', e.target.value)} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-[#111A4A] mb-1.5">Collection</label>
-                        <input type="text" value={formData.organization.collection} onChange={(e) => handleChange('organization', 'collection', e.target.value)} className="w-full px-4 py-2.5 bg-white border border-[#E5E7F2] rounded-xl focus:outline-none focus:border-[#4F46FF] text-sm text-[#111A4A]" />
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Collection</label>
+                        <input type="text" value={formData.organization.collection} onChange={(e) => handleChange('organization', 'collection', e.target.value)} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
                       </div>
                     </div>
                   </div>
@@ -627,29 +627,29 @@ export default function ProductEditor() {
         <div className="w-[45%] h-full flex flex-col relative pr-8 pb-6">
           <div className="absolute inset-0 bg-gradient-to-br from-[#4F46FF]/5 to-[#6D63FF]/5 rounded-[24px] pointer-events-none blur-3xl opacity-50" />
           
-          <div className="relative flex-1 bg-white rounded-[24px] shadow-[0_8px_32px_rgba(17,26,74,0.06)] border border-[#E5E7F2] flex flex-col overflow-hidden">
+          <div className="relative flex-1 bg-surface rounded-[24px] shadow-[0_8px_32px_rgba(17,26,74,0.06)] border border-border flex flex-col overflow-hidden">
             
-            <div className="px-6 py-4 border-b border-[#E5E7F2] flex items-center justify-between bg-white shrink-0 z-20">
-               <div className="flex items-center gap-2.5 px-3 py-1.5 bg-[#E8FFF3] rounded-full">
-                 <div className="w-2 h-2 rounded-full bg-[#20C77A] animate-pulse" />
-                 <span className="text-[11px] font-bold text-[#111A4A] uppercase tracking-wide">Live Preview</span>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-surface shrink-0 z-20">
+               <div className="flex items-center gap-2.5 px-3 py-1.5 bg-success-soft rounded-full">
+                 <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                 <span className="text-[11px] font-bold text-text-primary uppercase tracking-wide">Live Preview</span>
                </div>
                
-               <div className="flex items-center gap-1 bg-[#F7F7FC] p-1 rounded-lg">
-                 <button onClick={() => setPreviewMode('desktop')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'desktop' ? 'bg-white shadow-sm text-[#111A4A]' : 'text-[#7C849F] hover:text-[#111A4A]'}`} title="Desktop View"><FiMonitor size={14} /></button>
-                 <button onClick={() => setPreviewMode('tablet')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'tablet' ? 'bg-white shadow-sm text-[#111A4A]' : 'text-[#7C849F] hover:text-[#111A4A]'}`} title="Tablet View"><FiTablet size={14} /></button>
-                 <button onClick={() => setPreviewMode('mobile')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'mobile' ? 'bg-white shadow-sm text-[#111A4A]' : 'text-[#7C849F] hover:text-[#111A4A]'}`} title="Mobile View"><FiSmartphone size={14} /></button>
+               <div className="flex items-center gap-1 bg-background p-1 rounded-lg">
+                 <button onClick={() => setPreviewMode('desktop')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'desktop' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Desktop View"><FiMonitor size={14} /></button>
+                 <button onClick={() => setPreviewMode('tablet')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'tablet' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Tablet View"><FiTablet size={14} /></button>
+                 <button onClick={() => setPreviewMode('mobile')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'mobile' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Mobile View"><FiSmartphone size={14} /></button>
                </div>
             </div>
             
             <div className="flex-1 overflow-y-auto bg-stone-100 flex justify-center no-scrollbar items-start pt-4 pb-12">
-              <div className={`bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)] transition-all duration-300 ease-in-out border border-stone-200 overflow-hidden ${
+              <div className={`bg-surface shadow-[0_8px_40px_rgba(0,0,0,0.08)] transition-all duration-300 ease-in-out border border-border overflow-hidden ${
                 previewMode === 'mobile' ? 'w-[375px] rounded-[32px] min-h-[812px]' : 
                 previewMode === 'tablet' ? 'w-[768px] rounded-2xl min-h-[1024px]' : 
                 'w-full h-full border-t-0 border-b-0 border-r-0'
               }`}>
                 <div className="bg-[#F4F6FB] font-sans h-full overflow-y-auto min-h-full no-scrollbar p-4 md:p-6">
-                  <div className="bg-white rounded-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden pb-8">
+                  <div className="bg-surface rounded-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden pb-8">
                     {previewLayout === 'card' ? (
                       <div className="flex items-center justify-center min-h-[500px]">
                         <ProductCard product={formData} />
@@ -682,16 +682,16 @@ export default function ProductEditor() {
             </div>
 
             {/* Hidden Controls (Still accessible for switching modes logically if needed) */}
-            <div className="absolute top-20 right-4 flex bg-white rounded-lg p-1 shadow-md border border-stone-200 z-30 opacity-0 hover:opacity-100 transition-opacity">
+            <div className="absolute top-20 right-4 flex bg-surface rounded-lg p-1 shadow-md border border-border z-30 opacity-0 hover:opacity-100 transition-opacity">
                 <button 
                   onClick={() => setPreviewLayout('page')}
-                  className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-colors ${previewLayout === 'page' ? 'bg-[#111A4A] text-white' : 'text-[#7C849F] hover:text-[#111A4A]'}`}
+                  className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-colors ${previewLayout === 'page' ? 'bg-[#111A4A] text-white' : 'text-text-muted hover:text-text-primary'}`}
                 >
                   Page
                 </button>
                 <button 
                   onClick={() => setPreviewLayout('card')}
-                  className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-colors ${previewLayout === 'card' ? 'bg-[#111A4A] text-white' : 'text-[#7C849F] hover:text-[#111A4A]'}`}
+                  className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-colors ${previewLayout === 'card' ? 'bg-[#111A4A] text-white' : 'text-text-muted hover:text-text-primary'}`}
                 >
                   Card
                 </button>

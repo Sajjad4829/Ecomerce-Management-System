@@ -45,16 +45,16 @@ export const FIELD_TYPES = [
 
 export default function FieldLibrary({ onAddField }) {
   return (
-    <div className="bg-white border border-black/10 rounded-xl p-4 shadow-2xs space-y-5 h-full flex flex-col">
+    <div className="bg-surface border border-black/10 rounded-xl p-4 shadow-2xs space-y-5 h-full flex flex-col">
       <div>
-        <h3 className="font-serif font-bold text-sm text-[#1A1A1A]">Field Library</h3>
-        <p className="text-[11px] text-gray-500 mt-0.5">Click any component to append it into your form layout.</p>
+        <h3 className="font-serif font-bold text-sm text-text-primary">Field Library</h3>
+        <p className="text-[11px] text-text-muted mt-0.5">Click any component to append it into your form layout.</p>
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 space-y-4">
         {FIELD_TYPES.map((cat, idx) => (
           <div key={idx} className="space-y-2">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block font-mono">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest block font-mono">
               {cat.category}
             </span>
 
@@ -66,10 +66,10 @@ export default function FieldLibrary({ onAddField }) {
                     key={item.type}
                     type="button"
                     onClick={() => onAddField(item)}
-                    className="flex items-center justify-between p-2.5 bg-gray-50 hover:bg-black hover:text-white border border-black/5 rounded-lg text-xs font-semibold text-gray-700 transition-all cursor-pointer group text-left"
+                    className="flex items-center justify-between p-2.5 bg-background hover:bg-black hover:text-white border border-black/5 rounded-lg text-xs font-semibold text-text-secondary transition-all cursor-pointer group text-left"
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon size={14} className="text-gray-500 group-hover:text-amber-400 shrink-0" />
+                      <Icon size={14} className="text-text-muted group-hover:text-amber-400 shrink-0" />
                       <span>{item.label}</span>
                     </div>
                     <FiPlus size={13} className="opacity-0 group-hover:opacity-100 transition-opacity" />

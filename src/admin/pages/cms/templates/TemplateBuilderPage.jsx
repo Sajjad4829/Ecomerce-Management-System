@@ -86,11 +86,11 @@ export default function TemplateBuilderPage({ template, onSave, onBack, onPrevie
   return (
     <div className="h-screen flex flex-col bg-stone-100 overflow-hidden">
       {/* Top Builder Bar */}
-      <header className="h-16 bg-stone-900 border-b border-stone-800 px-6 flex items-center justify-between text-white shrink-0 z-20">
+      <header className="h-16 bg-primary border-b border-stone-800 px-6 flex items-center justify-between text-white shrink-0 z-20">
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
-            className="p-2 text-stone-400 hover:text-white rounded-lg transition-colors flex items-center gap-1.5 text-xs font-semibold"
+            className="p-2 text-text-muted hover:text-white rounded-lg transition-colors flex items-center gap-1.5 text-xs font-semibold"
           >
             <FiArrowLeft size={16} /> Exit Builder
           </button>
@@ -103,7 +103,7 @@ export default function TemplateBuilderPage({ template, onSave, onBack, onPrevie
               className="bg-stone-800 border border-stone-700 text-white font-serif font-bold text-base px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
             <StatusBadge status={templateState.status} />
-            <span className="text-[10px] font-mono text-stone-400">v{templateState.version}</span>
+            <span className="text-[10px] font-mono text-text-muted">v{templateState.version}</span>
           </div>
         </div>
 
@@ -116,7 +116,7 @@ export default function TemplateBuilderPage({ template, onSave, onBack, onPrevie
           </button>
           <button
             onClick={handleSave}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-lg text-xs transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-warning-soft0 hover:bg-amber-400 text-stone-950 font-bold rounded-lg text-xs transition-colors shadow-sm"
           >
             {isSaving ? <FiCheck size={16} /> : <FiSave size={16} />}
             {isSaving ? 'Saved' : 'Save Template Blueprint'}
@@ -127,16 +127,16 @@ export default function TemplateBuilderPage({ template, onSave, onBack, onPrevie
       {/* Main Workspace Body */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Library Sidebar */}
-        <aside className="w-80 bg-white border-r border-stone-200 flex flex-col justify-between overflow-y-auto p-4 space-y-4 shrink-0">
+        <aside className="w-80 bg-surface border-r border-border flex flex-col justify-between overflow-y-auto p-4 space-y-4 shrink-0">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-stone-200 mb-3">
-              <h3 className="font-serif font-bold text-stone-900 text-sm">Blueprint Slot Library</h3>
-              <span className="text-[10px] font-mono text-stone-400 font-bold uppercase">Drag & Drop</span>
+            <div className="flex items-center justify-between pb-3 border-b border-border mb-3">
+              <h3 className="font-serif font-bold text-text-primary text-sm">Blueprint Slot Library</h3>
+              <span className="text-[10px] font-mono text-text-muted font-bold uppercase">Drag & Drop</span>
             </div>
 
             {/* Dynamic Content Placeholders List */}
             <div className="space-y-3">
-              <div className="text-[10px] font-mono font-bold text-amber-900 uppercase tracking-wider bg-amber-50 p-1.5 rounded border border-amber-200">
+              <div className="text-[10px] font-mono font-bold text-amber-900 uppercase tracking-wider bg-warning-soft p-1.5 rounded border border-amber-200">
                 Commerce Dynamic Slots
               </div>
 
@@ -146,15 +146,15 @@ export default function TemplateBuilderPage({ template, onSave, onBack, onPrevie
                   <button
                     key={key}
                     onClick={() => handleAddDynamicSlot(key)}
-                    className="w-full text-left p-2.5 rounded-lg border border-stone-200 hover:border-amber-400 hover:bg-amber-50/40 transition-all flex items-center justify-between group"
+                    className="w-full text-left p-2.5 rounded-lg border border-border hover:border-amber-400 hover:bg-warning-soft/40 transition-all flex items-center justify-between group"
                   >
                     <div>
-                      <div className="font-serif font-bold text-xs text-stone-900 group-hover:text-amber-900">
+                      <div className="font-serif font-bold text-xs text-text-primary group-hover:text-amber-900">
                         {item.label}
                       </div>
-                      <div className="text-[10px] text-stone-500 font-mono">[{key}]</div>
+                      <div className="text-[10px] text-text-muted font-mono">[{key}]</div>
                     </div>
-                    <FiPlus size={14} className="text-stone-400 group-hover:text-amber-800" />
+                    <FiPlus size={14} className="text-text-muted group-hover:text-amber-800" />
                   </button>
                 );
               })}
@@ -164,7 +164,7 @@ export default function TemplateBuilderPage({ template, onSave, onBack, onPrevie
 
         {/* Center Visual Canvas */}
         <main className="flex-1 p-8 overflow-y-auto bg-stone-100 flex flex-col items-center">
-          <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl border border-stone-200 overflow-hidden space-y-0">
+          <div className="w-full max-w-4xl bg-surface shadow-xl rounded-2xl border border-border overflow-hidden space-y-0">
             {/* Announcement & Global Header Marker */}
             <div className="p-3 bg-stone-950 text-stone-300 text-center text-[10px] font-mono uppercase tracking-widest border-b border-stone-800">
               Global Header Frame (Managed by Theme System)
@@ -181,24 +181,24 @@ export default function TemplateBuilderPage({ template, onSave, onBack, onPrevie
                       onClick={() => setSelectedSlotIndex(idx)}
                     />
                   ) : (
-                    <div className="p-4 border-2 border-stone-200 rounded-xl bg-stone-50 flex items-center justify-between">
+                    <div className="p-4 border-2 border-border rounded-xl bg-background flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <FiGrid className="text-stone-400" size={18} />
+                        <FiGrid className="text-text-muted" size={18} />
                         <div>
-                          <span className="text-[9px] font-mono uppercase bg-stone-200 text-stone-700 px-1.5 py-0.5 rounded font-bold">
+                          <span className="text-[9px] font-mono uppercase bg-stone-200 text-text-secondary px-1.5 py-0.5 rounded font-bold">
                             Static Section
                           </span>
-                          <h4 className="font-serif font-bold text-sm text-stone-900">{sec.title}</h4>
+                          <h4 className="font-serif font-bold text-sm text-text-primary">{sec.title}</h4>
                         </div>
                       </div>
                     </div>
                   )}
 
                   {/* Slot Controls Overlay */}
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-white p-1 rounded-lg border border-stone-200 shadow-md">
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-surface p-1 rounded-lg border border-border shadow-md">
                     <button
                       onClick={() => handleRemoveSection(idx)}
-                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                      className="p-1 text-danger hover:bg-danger-soft rounded"
                       title="Remove Slot"
                     >
                       <FiTrash2 size={14} />
@@ -209,7 +209,7 @@ export default function TemplateBuilderPage({ template, onSave, onBack, onPrevie
             </div>
 
             {/* Global Footer Marker */}
-            <div className="p-3 bg-stone-950 text-stone-400 text-center text-[10px] font-mono uppercase tracking-widest border-t border-stone-800">
+            <div className="p-3 bg-stone-950 text-text-muted text-center text-[10px] font-mono uppercase tracking-widest border-t border-stone-800">
               Global Footer Frame
             </div>
           </div>

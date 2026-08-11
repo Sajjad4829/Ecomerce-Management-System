@@ -11,15 +11,15 @@ export default function TemporaryAccess() {
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#1A1A1A]">Temporary Access</h1>
-          <p className="text-gray-500 text-sm mt-1">Manage time-bound roles and permissions</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Temporary Access</h1>
+          <p className="text-text-muted text-sm mt-1">Manage time-bound roles and permissions</p>
         </div>
         <button className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800">
           <FiPlus /> Grant Access
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
         <DataTable 
           data={access}
           columns={[

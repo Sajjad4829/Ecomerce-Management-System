@@ -9,12 +9,12 @@ export default function ProductReviewSummary({
   mediaCount = 45 
 }) {
   return (
-    <div className="bg-white rounded-xl border border-black/5 shadow-sm p-6 mb-8">
+    <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-6 mb-8">
       <div className="flex flex-col md:flex-row gap-8">
         
         {/* Top Level Summary */}
         <div className="flex flex-col justify-center border-b md:border-b-0 md:border-r border-black/5 pb-6 md:pb-0 md:pr-8 shrink-0 text-center md:text-left">
-          <div className="text-5xl font-serif font-bold text-[#1A1A1A] mb-2">
+          <div className="text-5xl font-serif font-bold text-text-primary mb-2">
             {averageRating.toFixed(1)}
           </div>
           <div className="flex items-center justify-center md:justify-start gap-1 mb-2 text-amber-400">
@@ -26,16 +26,16 @@ export default function ProductReviewSummary({
               />
             ))}
           </div>
-          <p className="text-sm text-gray-500 font-medium mb-4">Based on {totalReviews} reviews</p>
+          <p className="text-sm text-text-muted font-medium mb-4">Based on {totalReviews} reviews</p>
           
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-sm text-gray-600 justify-center md:justify-start">
-              <FiCheckCircle className="text-green-600" />
-              <span className="font-bold text-[#1A1A1A]">{verifiedPercentage}%</span> Verified Buyers
+            <div className="flex items-center gap-2 text-sm text-text-secondary justify-center md:justify-start">
+              <FiCheckCircle className="text-success" />
+              <span className="font-bold text-text-primary">{verifiedPercentage}%</span> Verified Buyers
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 justify-center md:justify-start">
-              <FiImage className="text-blue-600" />
-              <span className="font-bold text-[#1A1A1A]">{mediaCount}</span> Review Photos
+            <div className="flex items-center gap-2 text-sm text-text-secondary justify-center md:justify-start">
+              <FiImage className="text-primary" />
+              <span className="font-bold text-text-primary">{mediaCount}</span> Review Photos
             </div>
           </div>
         </div>
@@ -49,8 +49,8 @@ export default function ProductReviewSummary({
               
               return (
                 <div key={stars} className="flex items-center gap-3 text-sm">
-                  <span className="w-12 font-medium text-gray-600 flex items-center justify-end gap-1 shrink-0">
-                    {stars} <FiStar size={12} className="fill-current text-gray-400" />
+                  <span className="w-12 font-medium text-text-secondary flex items-center justify-end gap-1 shrink-0">
+                    {stars} <FiStar size={12} className="fill-current text-text-muted" />
                   </span>
                   <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                     <div 
@@ -58,7 +58,7 @@ export default function ProductReviewSummary({
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
-                  <span className="w-12 text-right font-medium text-gray-900 shrink-0">{percentage}%</span>
+                  <span className="w-12 text-right font-medium text-text-primary shrink-0">{percentage}%</span>
                 </div>
               );
             })}

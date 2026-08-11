@@ -26,7 +26,7 @@ export default function MembershipDetail() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-6 md:col-span-2">
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
             <h3 className="text-sm font-medium text-neutral-900 mb-4">Loyalty Balance</h3>
             <div className="flex items-center gap-8">
               <div>
@@ -39,12 +39,12 @@ export default function MembershipDetail() {
               </div>
               <div>
                 <div className="text-sm text-neutral-500">Expiring Soon</div>
-                <div className="text-xl font-serif text-red-600 mt-1">0</div>
+                <div className="text-xl font-serif text-danger mt-1">0</div>
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
              <h3 className="text-sm font-medium text-neutral-900 mb-4">Activity Placeholder</h3>
              <div className="text-center text-neutral-500 py-8">
                 <Clock className="w-8 h-8 mx-auto text-neutral-300 mb-2" />
@@ -54,7 +54,7 @@ export default function MembershipDetail() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">
             <h3 className="text-sm font-medium text-neutral-900 mb-4">Member Info</h3>
             <div className="space-y-3 text-sm">
               <div>

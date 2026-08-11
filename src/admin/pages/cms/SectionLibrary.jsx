@@ -124,13 +124,13 @@ export default function SectionLibrary() {
         className="flex flex-col lg:flex-row lg:items-end justify-between gap-6"
       >
         <div>
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
             <span>CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-[#1A1A1A] font-semibold">Library</span>
+            <span className="text-text-primary font-semibold">Library</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-[#1A1A1A]">Section Library</h1>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+          <h1 className="text-3xl font-serif font-bold text-text-primary">Section Library</h1>
+          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
             Browse, manage, and discover reusable layout sections. Add them directly to your pages in the Visual Editor.
           </p>
         </div>

@@ -19,11 +19,11 @@ export default function PreviewCanvas({
   
   const getContainerClasses = () => {
     switch (device) {
-      case 'mobile': return 'w-[375px] max-w-full min-h-[667px] shadow-2xl rounded-[2rem] border-[8px] border-[#1A1A1A] mx-auto overflow-hidden bg-white mt-8 transition-all duration-500 relative';
-      case 'tablet': return 'w-[768px] max-w-full min-h-[1024px] shadow-2xl rounded-xl border-[4px] border-[#1A1A1A]/10 mx-auto overflow-hidden bg-white mt-8 transition-all duration-500 relative';
+      case 'mobile': return 'w-[375px] max-w-full min-h-[667px] shadow-2xl rounded-[2rem] border-[8px] border-[#1A1A1A] mx-auto overflow-hidden bg-surface mt-8 transition-all duration-500 relative';
+      case 'tablet': return 'w-[768px] max-w-full min-h-[1024px] shadow-2xl rounded-xl border-[4px] border-[#1A1A1A]/10 mx-auto overflow-hidden bg-surface mt-8 transition-all duration-500 relative';
       case 'desktop': 
       default: 
-        return 'w-full min-h-full shadow-sm bg-white transition-all duration-500 relative';
+        return 'w-full min-h-full shadow-sm bg-surface transition-all duration-500 relative';
     }
   };
 
@@ -47,7 +47,7 @@ export default function PreviewCanvas({
       case 'testimonials': content = <TestimonialsPreview />; break;
       case 'faq': content = <FAQPreview />; break;
       case 'footer': content = <FooterPreview />; break;
-      default: content = <div className="p-20 text-center bg-gray-100 text-gray-400">Placeholder for {section.type}</div>;
+      default: content = <div className="p-20 text-center bg-gray-100 text-text-muted">Placeholder for {section.type}</div>;
     }
 
     return (
@@ -68,19 +68,19 @@ export default function PreviewCanvas({
             <div className="px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold border-r border-white/20">
               {section.name}
             </div>
-            <button onClick={(e) => { e.stopPropagation(); onSaveGlobalBlock(section.id); }} className="p-2 hover:bg-white/20 transition-colors" title="Save as Global Block">
+            <button onClick={(e) => { e.stopPropagation(); onSaveGlobalBlock(section.id); }} className="p-2 hover:bg-surface/20 transition-colors" title="Save as Global Block">
               <FiSave size={12} />
             </button>
-            <button onClick={(e) => { e.stopPropagation(); onMoveUp(section.id); }} disabled={isFirst} className="p-2 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-l border-white/20" title="Move Up">
+            <button onClick={(e) => { e.stopPropagation(); onMoveUp(section.id); }} disabled={isFirst} className="p-2 hover:bg-surface/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-l border-white/20" title="Move Up">
               <FiArrowUp size={12} />
             </button>
-            <button onClick={(e) => { e.stopPropagation(); onMoveDown(section.id); }} disabled={isLast} className="p-2 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" title="Move Down">
+            <button onClick={(e) => { e.stopPropagation(); onMoveDown(section.id); }} disabled={isLast} className="p-2 hover:bg-surface/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" title="Move Down">
               <FiArrowDown size={12} />
             </button>
-            <button onClick={(e) => { e.stopPropagation(); onDuplicate(section.id); }} className="p-2 hover:bg-white/20 transition-colors" title="Duplicate">
+            <button onClick={(e) => { e.stopPropagation(); onDuplicate(section.id); }} className="p-2 hover:bg-surface/20 transition-colors" title="Duplicate">
               <FiCopy size={12} />
             </button>
-            <button onClick={(e) => { e.stopPropagation(); onDelete(section.id); }} className="p-2 hover:bg-red-500 transition-colors bg-red-600/80" title="Delete">
+            <button onClick={(e) => { e.stopPropagation(); onDelete(section.id); }} className="p-2 hover:bg-danger-soft0 transition-colors bg-red-600/80" title="Delete">
               <FiTrash2 size={12} />
             </button>
           </div>

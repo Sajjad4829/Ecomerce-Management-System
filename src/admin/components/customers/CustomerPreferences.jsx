@@ -14,10 +14,10 @@ export default function CustomerPreferences() {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-black/5 shadow-sm p-6">
+    <div className="bg-surface rounded-xl border border-black/5 shadow-sm p-6">
       <div className="flex items-center gap-2 mb-6">
-        <FiSliders className="text-gray-400" />
-        <h3 className="text-sm font-bold text-[#1A1A1A]">Communication Preferences</h3>
+        <FiSliders className="text-text-muted" />
+        <h3 className="text-sm font-bold text-text-primary">Communication Preferences</h3>
       </div>
 
       <div className="space-y-4">
@@ -54,8 +54,8 @@ function ToggleRow({ label, description, checked, onChange }) {
   return (
     <label className="flex items-center justify-between cursor-pointer group">
       <div>
-        <span className="text-sm font-bold text-[#1A1A1A] block">{label}</span>
-        <span className="text-xs text-gray-500">{description}</span>
+        <span className="text-sm font-bold text-text-primary block">{label}</span>
+        <span className="text-xs text-text-muted">{description}</span>
       </div>
       <div className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${checked ? 'bg-[#1A1A1A]' : 'bg-gray-200'}`}>
         <input
@@ -64,7 +64,7 @@ function ToggleRow({ label, description, checked, onChange }) {
           checked={checked}
           onChange={onChange}
         />
-        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${checked ? 'translate-x-4.5' : 'translate-x-1'}`} />
+        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-surface transition-transform ${checked ? 'translate-x-4.5' : 'translate-x-1'}`} />
       </div>
     </label>
   );

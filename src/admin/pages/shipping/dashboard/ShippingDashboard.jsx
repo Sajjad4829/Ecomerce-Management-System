@@ -23,7 +23,7 @@ export const ShippingDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-2 text-neutral-500">
             <Package className="w-4 h-4" />
             <span className="text-sm font-medium">Total Shipments</span>
@@ -31,7 +31,7 @@ export const ShippingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">{totalShipments}</div>
         </div>
 
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-2 text-blue-500">
             <Clock className="w-4 h-4" />
             <span className="text-sm font-medium">Ready for Pickup</span>
@@ -39,7 +39,7 @@ export const ShippingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">{readyForPickup}</div>
         </div>
 
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-2 text-indigo-500">
             <Truck className="w-4 h-4" />
             <span className="text-sm font-medium">In Transit</span>
@@ -47,7 +47,7 @@ export const ShippingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">{inTransit}</div>
         </div>
 
-        <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-surface p-5 rounded-lg border border-neutral-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-2 text-emerald-500">
             <CheckCircle className="w-4 h-4" />
             <span className="text-sm font-medium">Delivered</span>
@@ -55,8 +55,8 @@ export const ShippingDashboard = () => {
           <div className="text-2xl font-serif text-neutral-900">{delivered}</div>
         </div>
 
-        <div className="bg-white p-5 rounded-lg border border-red-200 bg-red-50 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center gap-2 mb-2 text-red-600">
+        <div className="bg-surface p-5 rounded-lg border border-red-200 bg-danger-soft shadow-sm flex flex-col justify-between">
+          <div className="flex items-center gap-2 mb-2 text-danger">
             <AlertTriangle className="w-4 h-4" />
             <span className="text-sm font-medium">Exceptions/Delayed</span>
           </div>
@@ -65,10 +65,10 @@ export const ShippingDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm">
           <div className="p-5 border-b border-neutral-200 flex items-center justify-between">
             <h2 className="font-medium text-neutral-900">Active Shipments</h2>
-            <button onClick={() => navigate('/admin/shipping/shipments')} className="text-sm text-indigo-600 font-medium">View All</button>
+            <button onClick={() => navigate('/admin/shipping/shipments')} className="text-sm text-primary font-medium">View All</button>
           </div>
           <div className="divide-y divide-neutral-200">
             {shipments.slice(0, 5).map(ship => (
@@ -80,7 +80,7 @@ export const ShippingDashboard = () => {
                 <div className="text-right">
                   <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                     ship.status === 'Delivered' ? 'bg-emerald-100 text-emerald-800' :
-                    ship.status === 'Delayed' ? 'bg-red-100 text-red-800' :
+                    ship.status === 'Delayed' ? 'bg-danger-soft text-red-800' :
                     'bg-blue-100 text-blue-800'
                   }`}>
                     {ship.status}
@@ -92,10 +92,10 @@ export const ShippingDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-surface rounded-lg border border-neutral-200 shadow-sm">
           <div className="p-5 border-b border-neutral-200 flex items-center justify-between">
             <h2 className="font-medium text-neutral-900">Recent Exceptions</h2>
-            <button onClick={() => navigate('/admin/shipping/exceptions')} className="text-sm text-indigo-600 font-medium">View All</button>
+            <button onClick={() => navigate('/admin/shipping/exceptions')} className="text-sm text-primary font-medium">View All</button>
           </div>
           <div className="divide-y divide-neutral-200">
             {exceptions.map(exc => (
@@ -108,7 +108,7 @@ export const ShippingDashboard = () => {
                   <div className="text-xs text-neutral-400 mt-1">{exc.shipmentId} • {exc.date}</div>
                 </div>
                 <div className="text-right">
-                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-warning-soft text-amber-800">
                     {exc.status}
                   </span>
                 </div>

@@ -9,8 +9,8 @@ export default function SearchFacetManager() {
   const { facets } = useSearch();
 
   const columns = [
-    { key: 'name', label: 'Facet Name', render: (val) => <span className="font-medium text-gray-900">{val}</span> },
-    { key: 'field', label: 'Field Mapping', render: (val) => <span className="text-gray-500 font-mono text-xs">{val}</span> },
+    { key: 'name', label: 'Facet Name', render: (val) => <span className="font-medium text-text-primary">{val}</span> },
+    { key: 'field', label: 'Field Mapping', render: (val) => <span className="text-text-muted font-mono text-xs">{val}</span> },
     { key: 'type', label: 'UI Type' },
     { key: 'displayOrder', label: 'Order' },
     { 
@@ -18,7 +18,7 @@ export default function SearchFacetManager() {
       label: 'Status',
       render: (val) => (
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          val === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+          val === 'Active' ? 'bg-success-soft text-green-800' : 'bg-gray-100 text-gray-800'
         }`}>
           {val}
         </span>
@@ -29,10 +29,10 @@ export default function SearchFacetManager() {
       label: '',
       render: (_, item) => (
         <div className="flex items-center justify-end gap-2">
-          <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
+          <button className="p-2 text-text-muted hover:text-primary transition-colors">
             <FiEdit2 size={16} />
           </button>
-          <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
+          <button className="p-2 text-text-muted hover:text-danger transition-colors">
             <FiTrash2 size={16} />
           </button>
         </div>
@@ -58,7 +58,7 @@ export default function SearchFacetManager() {
         }
       />
       
-      <div className="bg-white rounded-xl border border-black/5 overflow-hidden shadow-sm">
+      <div className="bg-surface rounded-xl border border-black/5 overflow-hidden shadow-sm">
         <DataTable 
           data={facets}
           columns={columns}
