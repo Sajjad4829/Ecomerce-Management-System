@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiEdit2, FiPrinter, FiMoreHorizontal, FiMessageSquare } from 'react-icons/fi';
-import { useOrders } from '../../../context/OrderContext';
+import { useOrders } from '../../../context/orders/OrderContext';
+import { useFinance } from '../../../context/finance/FinanceContext';
 import OrderTimeline from '../../../components/orders/OrderTimeline';
 import OrderHoldModal from '../../../components/orders/OrderHoldModal';
 import OrderCancelModal from '../../../components/orders/OrderCancelModal';
@@ -10,7 +11,9 @@ export default function OrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getOrder, updateOrderStatus, addInternalNote } = useOrders();
+  const { calculateOrderFinancials } = useFinance();
   const order = getOrder(id);
+  const orderFinancials = order ? calculateOrderFinancials(order.id, order.total || 0) : null;
 
   const [isHoldModalOpen, setHoldModalOpen] = useState(false);
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
@@ -129,7 +132,7 @@ export default function OrderDetail() {
                 <div key={item.id} className="flex gap-4 border-b border-gray-100 pb-4 last:border-0 last:pb-0">
                   <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0"></div>
                   <div className="flex-1">
-                    <p className="font-medium text-text-primary">{item.product}</p>
+                    <p className="font-medium text-text-primary">{item.name}</p>
                     <p className="text-sm text-text-muted">SKU: {item.sku}</p>
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-sm font-semibold">${item.price.toFixed(2)}</span>
@@ -138,54 +141,71 @@ export default function OrderDetail() {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-text-primary">${(item.price * item.quantity).toFixed(2)}</p>
-                    <p className="text-xs text-text-muted mt-1">{item.fulfillmentStatus}</p>
                   </div>
                 </div>
               ))}
             </div>
             <div className="bg-background px-6 py-4 border-t border-border">
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between text-text-muted"><p>Subtotal</p><p>${order.totals.subtotal.toFixed(2)}</p></div>
-                <div className="flex justify-between text-text-muted"><p>Shipping</p><p>${order.totals.shipping.toFixed(2)}</p></div>
-                <div className="flex justify-between text-text-muted"><p>Tax</p><p>${order.totals.tax.toFixed(2)}</p></div>
-                <div className="flex justify-between font-bold text-text-primary pt-2 border-t border-border"><p>Grand Total</p><p>${order.totals.grandTotal.toFixed(2)}</p></div>
+                <div className="flex justify-between text-text-muted"><p>Subtotal</p><p>${order.total ? order.total.toFixed(2) : '0.00'}</p></div>
+                <div className="flex justify-between font-bold text-text-primary pt-2 border-t border-border"><p>Grand Total</p><p>${order.total ? order.total.toFixed(2) : '0.00'}</p></div>
               </div>
             </div>
           </div>
 
-          {/* Payment Status */}
+          {/* Payment Status (Dynamically Calculated) */}
           <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
-            <h2 className="text-lg font-bold text-text-primary mb-4">Payment Information</h2>
-            <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
+            <h2 className="text-lg font-bold text-text-primary mb-4">Financial Summary</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-b border-gray-100 pb-4 mb-4">
               <div>
                 <p className="text-sm text-text-muted">Payment Status</p>
-                <p className={`font-medium \${order.paymentStatus === 'Paid' ? 'text-success' : 'text-yellow-600'}`}>{order.paymentStatus}</p>
+                <p className={`font-medium ${orderFinancials.status === 'Paid' ? 'text-success' : orderFinancials.status === 'Refunded' ? 'text-gray-500' : 'text-yellow-600'}`}>{orderFinancials.status}</p>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-text-muted">Transactions</p>
-                <p className="font-medium text-text-primary">{order.transactions.length} record(s)</p>
+              <div>
+                <p className="text-sm text-text-muted">Gross Paid</p>
+                <p className="font-medium text-text-primary">${orderFinancials.grossPaid.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-text-muted">Refunded</p>
+                <p className="font-medium text-danger">${orderFinancials.refunded.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-text-muted">Balance Due</p>
+                <p className="font-medium text-text-primary">${orderFinancials.balanceDue.toFixed(2)}</p>
               </div>
             </div>
-            <div className="space-y-2">
-              {order.transactions.map(txn => (
-                <div key={txn.id} className="flex justify-between text-sm items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{txn.method}</span>
-                    <span className="text-text-muted font-mono text-xs">{txn.id}</span>
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-sm font-bold text-text-primary">Transaction History</h3>
+                <span className="text-xs text-text-muted">{orderFinancials.transactions.length} record(s)</span>
+              </div>
+              <div className="space-y-2">
+                {orderFinancials.transactions.map(txn => (
+                  <div key={txn.id} className="flex justify-between text-sm items-center p-2 bg-background rounded-lg border border-border">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 rounded-full ${txn.type === 'Refund' ? 'bg-danger' : 'bg-success'}`}></span>
+                      <span className="font-medium">{txn.type} ({txn.paymentMethod})</span>
+                      <span className="text-text-muted font-mono text-xs">{txn.id}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`font-medium ${txn.type === 'Refund' ? 'text-danger' : 'text-success'}`}>
+                        {txn.type === 'Refund' ? '-' : '+'}${txn.amount.toFixed(2)}
+                      </span>
+                      <span className="text-xs bg-gray-200 px-2 py-0.5 rounded text-gray-700">{txn.status}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">${txn.amount.toFixed(2)}</span>
-                    <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{txn.status}</span>
-                  </div>
-                </div>
-              ))}
+                ))}
+                {orderFinancials.transactions.length === 0 && (
+                  <p className="text-sm text-text-muted py-2">No transactions recorded.</p>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Timeline */}
           <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
             <h2 className="text-lg font-bold text-text-primary mb-6">Timeline</h2>
-            <OrderTimeline events={order.timeline} />
+            <OrderTimeline events={order.timeline || []} />
           </div>
         </div>
 

@@ -1,210 +1,312 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FiSearch, FiFilter, FiBox, FiAlertCircle, FiArrowRight, FiDownload, FiMapPin, FiTruck } from 'react-icons/fi';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import InventoryStatusBadge from '../../../components/commerce/inventory/InventoryStatusBadge';
-import StockAdjustmentModal from '../../../components/commerce/inventory/StockAdjustmentModal';
-import StockTransferModal from '../../../components/commerce/inventory/StockTransferModal';
+import { FiDownload, FiSearch, FiFilter, FiBox, FiAlertCircle, FiCheckCircle, FiArchive, FiDollarSign } from 'react-icons/fi';
+import { useInventory } from '../../../context/inventory/InventoryContext';
+import { useProducts } from '../../../context/commerce/ProductContext';
+import CatalogInventoryTable from './CatalogInventoryTable';
+import StockAdjustmentModal from './StockAdjustmentModal';
+import InventoryDetailsDrawer from './InventoryDetailsDrawer';
 
-const MOCK_INVENTORY = [
-  { id: '1', product: 'Oasis Lounge Chair', variant: 'Black / Leather', sku: 'OAS-LC-BLK-LTH', warehouse: 'Main Hub - LA', onHand: 45, reserved: 5, incoming: 20, threshold: 10, status: 'in-stock', updated: '2h ago' },
-  { id: '2', product: 'Oasis Lounge Chair', variant: 'Tan / Leather', sku: 'OAS-LC-TAN-LTH', warehouse: 'Main Hub - LA', onHand: 8, reserved: 2, incoming: 0, threshold: 10, status: 'low-stock', updated: '1d ago' },
-  { id: '3', product: 'Meridian Dining Table', variant: 'Walnut / 8 Seater', sku: 'MER-DT-WAL-8', warehouse: 'East Coast Center', onHand: 0, reserved: 0, incoming: 15, threshold: 5, status: 'out-of-stock', updated: '3d ago' },
-  { id: '4', product: 'Horizon Bookshelf', variant: 'Oak', sku: 'HOR-BS-OAK', warehouse: 'Main Hub - LA', onHand: 120, reserved: 15, incoming: 0, threshold: 20, status: 'in-stock', updated: '5h ago' },
-  { id: '5', product: 'Apex Standing Desk', variant: 'White / 60"', sku: 'APX-SD-WHT-60', warehouse: 'East Coast Center', onHand: 12, reserved: 10, incoming: 50, threshold: 15, status: 'low-stock', updated: '10m ago' }
-];
+export default function CommerceInventoryDashboard() {
+  const { inventory, warehouses } = useInventory();
+  // We use useProducts assuming it returns { products, resolvedProducts, etc. }
+  // depending on the exact context implementation. We'll access what's available.
+  const productContext = useProducts();
+  const products = productContext?.resolvedProducts || productContext?.products || [];
 
-export default function InventoryDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
-  const [adjustModalOpen, setAdjustModalOpen] = useState(false);
-  const [transferModalOpen, setTransferModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All Statuses');
+  const [warehouseFilter, setWarehouseFilter] = useState('All Warehouses');
+  const [categoryFilter, setCategoryFilter] = useState('All Categories');
+  const [variantFilter, setVariantFilter] = useState('All Variants');
+  const [typeFilter, setTypeFilter] = useState('All Types');
 
-  const handleAdjustClick = (item) => {
-    setSelectedItem(item);
-    setAdjustModalOpen(true);
-  };
+  const [selectedAdjustmentItem, setSelectedAdjustmentItem] = useState(null);
+  const [selectedDetailsItem, setSelectedDetailsItem] = useState(null);
 
-  const handleTransferClick = (item) => {
-    setSelectedItem(item);
-    setTransferModalOpen(true);
-  };
+  // Join inventory with product data to get images and categories
+  const joinedInventory = useMemo(() => {
+    return inventory.map(item => {
+      const product = products.find(p => p.id === item.productId || p.sku === item.sku);
+      return {
+        ...item,
+        image: product?.image || null,
+        category: product?.category || 'Uncategorized',
+        variant: product?.variant || null,
+        price: product?.price || 0,
+      };
+    });
+  }, [inventory, products]);
+
+  // Derive categories for filter
+  const categories = useMemo(() => {
+    const cats = new Set(joinedInventory.map(item => item.category).filter(Boolean));
+    return ['All Categories', ...Array.from(cats)];
+  }, [joinedInventory]);
+
+  const variants = useMemo(() => {
+    const vars = new Set(joinedInventory.map(item => item.variant).filter(Boolean));
+    return ['All Variants', ...Array.from(vars)];
+  }, [joinedInventory]);
+
+  // Product Type is often implicit or we can extract it, assuming it exists
+  const productTypes = useMemo(() => {
+    const types = new Set(joinedInventory.map(item => item.productType).filter(Boolean));
+    return ['All Types', ...Array.from(types)];
+  }, [joinedInventory]);
+
+  // Filter logic
+  const filteredData = useMemo(() => {
+    return joinedInventory.filter(item => {
+      const matchesSearch = 
+        item.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.sku.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesStatus = statusFilter === 'All Statuses' || item.status === statusFilter;
+      const matchesWarehouse = warehouseFilter === 'All Warehouses' || item.warehouseName === warehouseFilter;
+      const matchesCategory = categoryFilter === 'All Categories' || item.category === categoryFilter;
+      const matchesVariant = variantFilter === 'All Variants' || item.variant === variantFilter;
+      const matchesType = typeFilter === 'All Types' || item.productType === typeFilter;
+
+      return matchesSearch && matchesStatus && matchesWarehouse && matchesCategory && matchesVariant && matchesType;
+    });
+  }, [joinedInventory, searchQuery, statusFilter, warehouseFilter, categoryFilter, variantFilter, typeFilter]);
+
+  // Metrics calculation
+  const metrics = useMemo(() => {
+    let totalStock = 0;
+    let lowStockCount = 0;
+    let outOfStockCount = 0;
+    let reservedStock = 0;
+    let inventoryValue = 0;
+    const uniqueProducts = new Set();
+
+    joinedInventory.forEach(item => {
+      uniqueProducts.add(item.productId);
+      totalStock += item.available;
+      reservedStock += item.reserved;
+      inventoryValue += (item.available * (item.price || 0));
+
+      if (item.status === 'Low Stock') lowStockCount++;
+      if (item.status === 'Out of Stock') outOfStockCount++;
+    });
+
+    return {
+      totalProducts: uniqueProducts.size,
+      totalStock,
+      lowStockCount,
+      outOfStockCount,
+      reservedStock,
+      inventoryValue
+    };
+  }, [joinedInventory]);
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-warning-soft text-amber-900 font-mono text-[10px] uppercase font-bold">
-              Commerce Engine
-            </span>
+          <div className="flex items-center gap-2 text-sm text-text-muted mb-1">
+            <Link to="/admin/catalog" className="hover:text-primary transition-colors">Catalog</Link>
+            <span>/</span>
+            <span className="text-text-primary font-medium">Inventory</span>
           </div>
-          <h1 className="text-3xl font-serif font-bold text-text-primary mt-2">Inventory Management</h1>
-          <p className="text-sm text-text-muted mt-2 max-w-xl leading-relaxed">
-            Track stock levels, manage reservations, and coordinate warehouse transfers across your catalog.
-          </p>
+          <h1 className="text-3xl font-bold text-text-primary">Inventory</h1>
+          <p className="text-text-secondary mt-1">Manage product stock, availability, variants and inventory information.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 bg-surface border border-black/10 rounded-lg text-sm font-medium hover:bg-black/5 transition-colors">
+            <FiDownload className="w-4 h-4" />
+            Export
+          </button>
+          <button 
+            onClick={() => setSelectedAdjustmentItem(joinedInventory[0])} // Quick shortcut if needed, though usually triggered from row
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-surface rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors shadow-sm"
+          >
+            <FiBox className="w-4 h-4" />
+            Adjust Stock
+          </button>
+        </div>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="bg-surface p-4 rounded-xl shadow-sm border border-black/5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <FiBox className="w-4 h-4 text-primary" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-text-primary">{metrics.totalProducts}</div>
+          <div className="text-xs font-medium text-text-muted mt-1">Total Products</div>
         </div>
         
-        <div className="flex gap-3">
-          <Link 
-            to="/admin/catalog/inventory/movements"
-            className="px-4 py-2 bg-surface border border-black/10 text-text-secondary rounded-lg text-sm font-medium hover:bg-background transition-colors flex items-center gap-2"
-          >
-            <FiArrowRight size={16} /> Activity
-          </Link>
-          <Link 
-            to="/admin/catalog/inventory/low-stock"
-            className="px-4 py-2 bg-surface border border-black/10 text-text-secondary rounded-lg text-sm font-medium hover:bg-background transition-colors flex items-center gap-2"
-          >
-            <FiAlertCircle size={16} /> Alerts
-          </Link>
-          <Link 
-            to="/admin/catalog/warehouses"
-            className="px-4 py-2 bg-surface border border-black/10 text-text-secondary rounded-lg text-sm font-medium hover:bg-background transition-colors flex items-center gap-2"
-          >
-            <FiMapPin size={16} /> Warehouses
-          </Link>
+        <div className="bg-surface p-4 rounded-xl shadow-sm border border-black/5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
+              <FiCheckCircle className="w-4 h-4 text-green-600" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-text-primary">{metrics.totalStock}</div>
+          <div className="text-xs font-medium text-text-muted mt-1">Total Stock (Avail)</div>
+        </div>
+
+        <div className="bg-surface p-4 rounded-xl shadow-sm border border-black/5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
+              <FiAlertCircle className="w-4 h-4 text-orange-600" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-text-primary">{metrics.lowStockCount}</div>
+          <div className="text-xs font-medium text-text-muted mt-1">Low Stock SKUs</div>
+        </div>
+
+        <div className="bg-surface p-4 rounded-xl shadow-sm border border-black/5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
+              <FiAlertCircle className="w-4 h-4 text-red-600" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-text-primary">{metrics.outOfStockCount}</div>
+          <div className="text-xs font-medium text-text-muted mt-1">Out of Stock SKUs</div>
+        </div>
+
+        <div className="bg-surface p-4 rounded-xl shadow-sm border border-black/5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <FiArchive className="w-4 h-4 text-blue-600" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-text-primary">{metrics.reservedStock}</div>
+          <div className="text-xs font-medium text-text-muted mt-1">Reserved Stock</div>
+        </div>
+
+        <div className="bg-surface p-4 rounded-xl shadow-sm border border-black/5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+              <FiDollarSign className="w-4 h-4 text-purple-600" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-text-primary">
+            ${metrics.inventoryValue.toLocaleString()}
+          </div>
+          <div className="text-xs font-medium text-text-muted mt-1">Inventory Value</div>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {[
-          { label: 'Total Stock Units', value: '18,245', icon: FiBox, color: 'text-text-primary', bg: 'bg-gray-100' },
-          { label: 'Available Units', value: '16,500', icon: FiArrowRight, color: 'text-success', bg: 'bg-success-soft' },
-          { label: 'Reserved Units', value: '1,745', icon: FiTruck, color: 'text-primary', bg: 'bg-blue-50' },
-          { label: 'Low/Out of Stock', value: '24', icon: FiAlertCircle, color: 'text-danger', bg: 'bg-danger-soft' },
-        ].map((stat, idx) => (
-          <div key={idx} className="bg-surface p-5 rounded-xl border border-black/5 flex items-center gap-4">
-            <div className={`w-12 h-12 ${stat.bg} rounded-full flex items-center justify-center shrink-0`}>
-              <stat.icon className={`${stat.color}`} size={20} />
-            </div>
-            <div>
-              <p className="text-xs font-mono font-bold text-text-muted uppercase tracking-wider">{stat.label}</p>
-              <p className="text-2xl font-bold text-text-primary mt-1">{stat.value}</p>
-            </div>
+      {/* Filters and Search */}
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-surface p-2 rounded-xl shadow-sm border border-black/5">
+        <div className="relative w-full md:w-96">
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search products, SKU..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-background border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+          />
+        </div>
+        
+        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+          <div className="flex items-center gap-2 px-3 py-2 bg-background rounded-lg text-sm text-text-muted shrink-0 border border-black/5">
+            <FiFilter className="w-4 h-4" />
+            <span>Filters</span>
           </div>
-        ))}
-      </div>
 
-      {/* Main Table Area */}
-      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-black/5 flex flex-col md:flex-row justify-between gap-4">
-          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-            {['all', 'in-stock', 'low-stock', 'out-of-stock'].map(tab => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors capitalize whitespace-nowrap ${
-                  activeTab === tab ? 'bg-background text-text-primary' : 'text-text-muted hover:bg-background'
-                }`}
-              >
-                {tab.replace('-', ' ')}
-              </button>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="px-3 py-2 bg-background rounded-lg text-sm text-text-primary border border-black/5 focus:ring-2 focus:ring-primary/20 outline-none shrink-0"
+          >
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
             ))}
-          </div>
-          
-          <div className="flex gap-3">
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
-              <input 
-                type="text" 
-                placeholder="Search SKU or product..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-background border-transparent rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/20 focus:ring-1 focus:ring-black/20 w-full md:w-64"
-              />
-            </div>
-            <button className="px-4 py-2 bg-background text-text-primary rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 shrink-0">
-              <FiFilter size={16} /> Filter
-            </button>
-          </div>
-        </div>
+          </select>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-background border-b border-black/5">
-                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Product / Variant</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">SKU</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Warehouse</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider text-right">Available</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider text-right">Reserved</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider text-right">On Hand</th>
-                <th className="p-4 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">Status</th>
-                <th className="p-4 text-right"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/5">
-              {MOCK_INVENTORY.map(item => (
-                <tr key={item.id} className="hover:bg-background transition-colors group">
-                  <td className="p-4">
-                    <p className="text-sm font-bold text-text-primary">{item.product}</p>
-                    <p className="text-xs text-text-muted mt-0.5">{item.variant}</p>
-                  </td>
-                  <td className="p-4">
-                    <span className="text-[10px] font-mono bg-gray-100 px-1.5 py-0.5 rounded text-text-secondary border border-border">
-                      {item.sku}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
-                      <FiMapPin className="text-text-muted" size={14} />
-                      <span className="text-sm text-text-secondary">{item.warehouse}</span>
-                    </div>
-                  </td>
-                  <td className="p-4 text-right">
-                    <span className="text-sm font-bold text-text-primary">{item.onHand - item.reserved}</span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <span className="text-sm text-text-muted">{item.reserved}</span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <span className="text-sm font-medium text-text-primary">{item.onHand}</span>
-                  </td>
-                  <td className="p-4">
-                    <InventoryStatusBadge status={item.status} />
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button 
-                        onClick={() => handleAdjustClick(item)}
-                        className="text-xs font-medium text-primary hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-md"
-                      >
-                        Adjust
-                      </button>
-                      <button 
-                        onClick={() => handleTransferClick(item)}
-                        className="text-xs font-medium text-text-secondary hover:text-text-primary bg-gray-100 px-3 py-1.5 rounded-md"
-                      >
-                        Transfer
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+          {productTypes.length > 1 && (
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="px-3 py-2 bg-background rounded-lg text-sm text-text-primary border border-black/5 focus:ring-2 focus:ring-primary/20 outline-none shrink-0"
+            >
+              {productTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
               ))}
-            </tbody>
-          </table>
+            </select>
+          )}
+
+          {variants.length > 1 && (
+            <select
+              value={variantFilter}
+              onChange={(e) => setVariantFilter(e.target.value)}
+              className="px-3 py-2 bg-background rounded-lg text-sm text-text-primary border border-black/5 focus:ring-2 focus:ring-primary/20 outline-none shrink-0"
+            >
+              {variants.map(variant => (
+                <option key={variant} value={variant}>{variant}</option>
+              ))}
+            </select>
+          )}
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-2 bg-background rounded-lg text-sm text-text-primary border border-black/5 focus:ring-2 focus:ring-primary/20 outline-none shrink-0"
+          >
+            <option value="All Statuses">All Statuses</option>
+            <option value="In Stock">In Stock</option>
+            <option value="Low Stock">Low Stock</option>
+            <option value="Out of Stock">Out of Stock</option>
+            <option value="Pre-Order">Pre-Order</option>
+          </select>
+
+          <select
+            value={warehouseFilter}
+            onChange={(e) => setWarehouseFilter(e.target.value)}
+            className="px-3 py-2 bg-background rounded-lg text-sm text-text-primary border border-black/5 focus:ring-2 focus:ring-primary/20 outline-none shrink-0"
+          >
+            <option value="All Warehouses">All Warehouses</option>
+            {warehouses.map(w => (
+              <option key={w.id} value={w.name}>{w.name}</option>
+            ))}
+          </select>
+          
+          {(searchQuery || statusFilter !== 'All Statuses' || warehouseFilter !== 'All Warehouses' || categoryFilter !== 'All Categories' || variantFilter !== 'All Variants' || typeFilter !== 'All Types') && (
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setStatusFilter('All Statuses');
+                setWarehouseFilter('All Warehouses');
+                setCategoryFilter('All Categories');
+                setVariantFilter('All Variants');
+                setTypeFilter('All Types');
+              }}
+              className="px-3 py-2 text-sm text-primary hover:bg-primary/5 rounded-lg transition-colors shrink-0 whitespace-nowrap font-medium"
+            >
+              Clear Filters
+            </button>
+          )}
         </div>
       </div>
-      
-      {adjustModalOpen && (
-        <StockAdjustmentModal 
-          isOpen={adjustModalOpen} 
-          onClose={() => setAdjustModalOpen(false)} 
-          item={selectedItem} 
-        />
-      )}
-      
-      {transferModalOpen && (
-        <StockTransferModal 
-          isOpen={transferModalOpen} 
-          onClose={() => setTransferModalOpen(false)} 
-          item={selectedItem} 
-        />
-      )}
+
+      {/* Main Table */}
+      <CatalogInventoryTable 
+        data={filteredData}
+        onAdjustStock={setSelectedAdjustmentItem}
+        onViewDetails={setSelectedDetailsItem}
+      />
+
+      {/* Modals & Drawers */}
+      <StockAdjustmentModal 
+        isOpen={!!selectedAdjustmentItem}
+        onClose={() => setSelectedAdjustmentItem(null)}
+        selectedItem={selectedAdjustmentItem}
+      />
+
+      <InventoryDetailsDrawer
+        isOpen={!!selectedDetailsItem}
+        onClose={() => setSelectedDetailsItem(null)}
+        selectedItem={selectedDetailsItem}
+      />
     </div>
   );
 }

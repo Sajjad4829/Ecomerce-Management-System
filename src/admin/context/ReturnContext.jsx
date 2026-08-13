@@ -6,59 +6,39 @@ export function ReturnProvider({ children }) {
   const [returns, setReturns] = useState([
     {
       id: 'RET-2026-001',
-      orderId: 'ORD-8492',
-      customer: { name: 'Sarah Jenkins', email: 'sarah@example.com' },
+      orderId: 'ORD-5001',
+      customer: { name: 'Eleanor Rigby', email: 'eleanor.rigby@example.com' },
       items: [
-        { id: 'item_1', productId: 'prod_1', name: 'Modern Leather Sofa', quantity: 1, reason: 'Damaged Product', condition: 'Damaged' }
+        { id: 'item-1', productId: 'item-1', sku: 'SOFA-VEL-BLU', name: 'Velvet Sofa', quantity: 1, reason: 'Damaged Product', condition: null, warehouseId: null, price: 1200.00 }
       ],
-      status: 'Inspection Pending',
-      resolution: 'Replacement Pending',
+      status: 'Requested',
+      refundStatus: 'Not Requested',
+      refundAmount: 0,
       createdAt: '2026-08-06T10:00:00Z',
-      pickup: {
-        status: 'Picked Up',
-        address: '123 Main St, Apt 4B, New York, NY 10001',
-        scheduledDate: '2026-08-07',
-        trackingNumber: 'TRK-RET-001'
-      },
-      inspection: null,
+      pickup: null,
       timeline: [
-        { id: 'ev_1', status: 'Requested', actor: 'Sarah Jenkins', description: 'Return requested for Damaged Product', timestamp: '2026-08-06T10:00:00Z' },
-        { id: 'ev_2', status: 'Approved', actor: 'Admin', description: 'Return approved. Pickup scheduled.', timestamp: '2026-08-06T14:00:00Z' },
-        { id: 'ev_3', status: 'Picked Up', actor: 'Courier', description: 'Item picked up from customer', timestamp: '2026-08-07T09:30:00Z' }
+        { id: 'ev_1', status: 'Requested', actor: 'Eleanor Rigby', description: 'Return requested for Damaged Product', timestamp: '2026-08-06T10:00:00Z' }
       ]
     },
     {
       id: 'RET-2026-002',
-      orderId: 'ORD-7210',
-      customer: { name: 'Michael Chen', email: 'michael@example.com' },
+      orderId: 'ORD-5002',
+      customer: { name: 'John Doe', email: 'john.doe@example.com' },
       items: [
-        { id: 'item_2', productId: 'prod_2', name: 'Ceramic Table Lamp', quantity: 1, reason: 'Changed Mind', condition: 'New' }
+        { id: 'item-3', productId: 'item-3', sku: 'TAB-OAK-LG', name: 'Oak Dining Table', quantity: 1, reason: 'Changed Mind', condition: null, warehouseId: null, price: 3450.00 }
       ],
-      status: 'Requested',
-      resolution: 'Refund Pending',
+      status: 'Received',
+      refundStatus: 'Pending',
+      refundAmount: 0,
       createdAt: '2026-08-08T08:00:00Z',
       pickup: null,
-      inspection: null,
       timeline: [
-        { id: 'ev_4', status: 'Requested', actor: 'Michael Chen', description: 'Return requested. Reason: Changed Mind', timestamp: '2026-08-08T08:00:00Z' }
+        { id: 'ev_4', status: 'Requested', actor: 'John Doe', description: 'Return requested. Reason: Changed Mind', timestamp: '2026-08-08T08:00:00Z' },
+        { id: 'ev_5', status: 'Approved', actor: 'Admin', description: 'Return approved.', timestamp: '2026-08-08T09:00:00Z' },
+        { id: 'ev_6', status: 'Received', actor: 'Warehouse', description: 'Return received at WH-1.', timestamp: '2026-08-09T10:00:00Z' }
       ]
     }
   ]);
-
-  const [refunds, setRefunds] = useState([
-    {
-      id: 'REF-2026-001',
-      returnId: 'RET-2026-002',
-      orderId: 'ORD-7210',
-      customer: 'Michael Chen',
-      amount: 145.00,
-      method: 'Original Payment Method (Visa **** 1234)',
-      status: 'Pending',
-      createdAt: '2026-08-08T08:00:00Z'
-    }
-  ]);
-
-  const [exchanges, setExchanges] = useState([]);
 
   const [returnReasons, setReturnReasons] = useState([
     { id: 'RR-1', name: 'Damaged Product', description: 'Item arrived damaged or broken.', status: 'Active', sortOrder: 1, customerVisible: true },
@@ -87,35 +67,116 @@ export function ReturnProvider({ children }) {
     }));
   };
 
-  const schedulePickup = (id, details) => {
+  const markReturnReceived = (id, warehouseId) => {
     setReturns(prev => prev.map(r => {
       if (r.id === id) {
-        return { ...r, pickup: details };
+        const updatedItems = r.items.map(item => ({ ...item, warehouseId }));
+        const newEvent = {
+          id: `ev_${Date.now()}`,
+          status: 'Received',
+          actor: 'Warehouse',
+          description: `Items received at ${warehouseId}`,
+          timestamp: new Date().toISOString()
+        };
+        return { ...r, status: 'Received', items: updatedItems, timeline: [...r.timeline, newEvent] };
       }
       return r;
     }));
   };
 
-  const completeInspection = (id, inspectionDetails) => {
-     setReturns(prev => prev.map(r => {
-      if (r.id === id) {
-        return { ...r, inspection: inspectionDetails, status: 'Inspection Completed' };
+  const updateItemCondition = (returnId, itemId, condition, notes) => {
+    setReturns(prev => prev.map(r => {
+      if (r.id === returnId) {
+        const updatedItems = r.items.map(item => {
+          if (item.id === itemId) {
+            return { ...item, condition, inspectionNotes: notes };
+          }
+          return item;
+        });
+        return { ...r, items: updatedItems };
       }
       return r;
     }));
+  };
+
+  const completeInspection = (id, calculatedRefundAmount) => {
+     setReturns(prev => prev.map(r => {
+       if (r.id === id) {
+         const newEvent = {
+           id: `ev_${Date.now()}`,
+           status: 'Inspection Completed',
+           actor: 'Inspector',
+           description: `Inspection completed. Suggested refund: ৳${calculatedRefundAmount.toLocaleString()}`,
+           timestamp: new Date().toISOString()
+         };
+         return { 
+           ...r, 
+           status: 'Inspection Completed',
+           refundStatus: 'Pending',
+           refundAmount: calculatedRefundAmount,
+           timeline: [...r.timeline, newEvent] 
+         };
+       }
+       return r;
+     }));
+  };
+  
+  const approveRefund = (id) => {
+    setReturns(prev => prev.map(r => {
+      if (r.id === id) {
+        const newEvent = {
+          id: `ev_${Date.now()}`,
+          status: 'Approved for Refund',
+          actor: 'Admin',
+          description: `Refund of ৳${r.refundAmount.toLocaleString()} approved.`,
+          timestamp: new Date().toISOString()
+        };
+        return { 
+          ...r, 
+          status: 'Approved for Refund',
+          refundStatus: 'Approved',
+          timeline: [...r.timeline, newEvent] 
+        };
+      }
+      return r;
+    }));
+  };
+  
+  const processRefund = (id) => {
+    setReturns(prev => prev.map(r => {
+      if (r.id === id) {
+        const newEvent = {
+          id: `ev_${Date.now()}`,
+          status: 'Completed',
+          actor: 'System',
+          description: `Refund processed and return completed.`,
+          timestamp: new Date().toISOString()
+        };
+        return { 
+          ...r, 
+          status: 'Completed',
+          refundStatus: 'Completed',
+          timeline: [...r.timeline, newEvent] 
+        };
+      }
+      return r;
+    }));
+  };
+
+  const contextValue = {
+    returns,
+    returnReasons,
+    getReturn,
+    updateReturnStatus,
+    markReturnReceived,
+    updateItemCondition,
+    completeInspection,
+    approveRefund,
+    processRefund
   };
 
   return (
-    <ReturnContext.Provider value={{
-      returns,
-      refunds,
-      exchanges,
-      returnReasons,
-      getReturn,
-      updateReturnStatus,
-      schedulePickup,
-      completeInspection
-    }}>
+    <ReturnContext.Provider value={contextValue}>
       {children}
     </ReturnContext.Provider>
   );

@@ -314,42 +314,7 @@ export const AdjustmentCenter = () => {
   );
 };
 
-export const ReconciliationCenter = () => {
-  const { reconciliations } = useFinance();
-  return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-serif text-neutral-900">Payment Reconciliation</h1>
-      <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
-            <tr>
-              <th className="px-6 py-4 font-medium">Reconciliation ID</th>
-              <th className="px-6 py-4 font-medium">Period</th>
-              <th className="px-6 py-4 font-medium">Expected</th>
-              <th className="px-6 py-4 font-medium">Received</th>
-              <th className="px-6 py-4 font-medium">Difference</th>
-              <th className="px-6 py-4 font-medium">Status</th>
-              <th className="px-6 py-4 font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-neutral-200">
-            {reconciliations.map(rec => (
-              <tr key={rec.id} className="hover:bg-neutral-50">
-                <td className="px-6 py-4 font-medium text-neutral-900">{rec.id}</td>
-                <td className="px-6 py-4 text-neutral-600">{rec.period}</td>
-                <td className="px-6 py-4 text-neutral-600">${rec.expectedAmount}</td>
-                <td className="px-6 py-4 text-neutral-600">${rec.receivedAmount}</td>
-                <td className="px-6 py-4 text-neutral-600">${rec.difference}</td>
-                <td className="px-6 py-4 text-neutral-600">{rec.status}</td>
-                <td className="px-6 py-4"><Link to={`/admin/finance/reconciliation/${rec.id}`} className="text-primary hover:text-indigo-900">View</Link></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
+
 
 export const ReconciliationDetail = () => {
   const { reconciliationId } = useParams();

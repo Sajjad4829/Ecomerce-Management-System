@@ -22,7 +22,16 @@ const MENU_ITEMS = [
   { label: 'Communications', icon: FiMessageSquare, path: '/admin/communications/logs' },
 
   { label: 'Loyalty', icon: FiStar, path: '/admin/loyalty' },
-  { label: 'Payments', icon: FiDollarSign, path: '/admin/payments' },
+  { 
+    label: 'Finance', 
+    icon: FiDollarSign, 
+    path: '/admin/finance',
+    subItems: [
+      { label: 'Overview', path: '/admin/finance' },
+      { label: 'Transactions', path: '/admin/finance/transactions' },
+      { label: 'Reconciliation', path: '/admin/finance/reconciliation' }
+    ]
+  },
   { label: 'Procurement', icon: FiBox, path: '/admin/procurement' },
   { label: 'HR', icon: FiUsers, path: '/admin/hr' },
   { label: 'CRM', icon: FiUsers, path: '/admin/crm' },

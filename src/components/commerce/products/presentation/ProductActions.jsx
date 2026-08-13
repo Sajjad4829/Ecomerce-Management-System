@@ -1,12 +1,38 @@
 import React, { useState } from 'react';
 import { FiHeart, FiMinus, FiPlus, FiShare2, FiShoppingBag } from 'react-icons/fi';
+import { useInventory } from '../../../../admin/context/inventory/InventoryContext';
+import { useCommerce } from '../../../../storefront/context/CommerceContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProductActions({ product, activeVariant }) {
   const [quantity, setQuantity] = useState(1);
+  const { getProductInventory } = useInventory();
+  const { addToCart } = useCommerce();
+  const navigate = useNavigate();
   
-  const inventory = product?.inventory || {};
-  const stock = activeVariant ? activeVariant.stock : inventory.totalStock;
+  // Calculate true available stock across all warehouses
+  const productInventory = getProductInventory(product.id);
+  const totalAvailableStock = productInventory.reduce((sum, item) => sum + item.available, 0);
+
+  const fallbackStock = activeVariant ? activeVariant.stock : (product?.inventory?.totalStock || 0);
+  const stock = totalAvailableStock !== undefined && productInventory.length > 0 ? totalAvailableStock : fallbackStock;
   const isOutOfStock = stock <= 0;
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.id,
+      name: product.basicInfo?.name || product.name,
+      price: activeVariant ? activeVariant.price : product.price,
+      quantity: quantity,
+      sku: activeVariant ? activeVariant.sku : product.sku,
+      image: activeVariant?.image || product.media?.primaryImage
+    });
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    navigate('/cart');
+  };
 
   return (
     <div className="pt-2 space-y-4">
@@ -36,6 +62,7 @@ export default function ProductActions({ product, activeVariant }) {
 
         {/* Add to Cart / Sold Out */}
         <button 
+          onClick={handleAddToCart}
           disabled={isOutOfStock}
           className={`flex-1 h-full font-bold text-[13px] tracking-widest uppercase transition-all rounded-[12px] text-white shadow-md ${
             isOutOfStock 
@@ -49,6 +76,7 @@ export default function ProductActions({ product, activeVariant }) {
 
       <div className="flex gap-3 h-[52px]">
         <button 
+          onClick={handleBuyNow}
           disabled={isOutOfStock}
           className={`flex-1 h-full flex items-center justify-center gap-2 font-bold text-[13px] tracking-widest uppercase transition-all rounded-[12px] text-white shadow-md ${
             isOutOfStock 

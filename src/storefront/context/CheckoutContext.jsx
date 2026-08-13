@@ -1,6 +1,8 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { useCommerce } from './CommerceContext';
 import { useNavigate } from 'react-router-dom';
+import { useInventory } from '../../admin/context/inventory/InventoryContext';
+import { useOrders } from '../../admin/context/orders/OrderContext';
 
 export const CheckoutContext = createContext(null);
 
@@ -13,6 +15,8 @@ const MOCK_SHIPPING_METHODS = [
 export function CheckoutProvider({ children }) {
   const { cartItems, cartSubtotal, clearCart } = useCommerce();
   const navigate = useNavigate();
+  const { reserveStock } = useInventory();
+  const { addOrder } = useOrders();
 
   const [currentStep, setCurrentStep] = useState('information'); // information, delivery, review
   
@@ -100,13 +104,21 @@ export function CheckoutProvider({ children }) {
       id: `ORD-2026-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`,
       status: 'Pending',
       paymentStatus: transaction?.status === 'Succeeded' ? 'Paid' : 'Pending',
+      fulfillmentStatus: 'Unfulfilled',
       transaction,
-      createdAt: new Date().toISOString(),
+      date: new Date().toISOString(), // Changed to 'date' for Admin compatibility
       customer: contactInfo,
-      items: cartItems,
+      customerName: `${contactInfo.firstName} ${contactInfo.lastName}`,
+      email: contactInfo.email,
+      items: cartItems.map(item => ({
+        ...item,
+        productId: item.id // Ensure we have a standard productId format
+      })),
       shippingAddress,
       billingAddress: billingSameAsShipping ? shippingAddress : billingAddress,
-      shippingMethod,
+      shippingMethod: shippingMethod?.name || 'Standard Delivery',
+      total: grandTotal, // Add simple 'total' for Admin compatibility
+      currency: 'USD',
       totals: {
         subtotal: cartSubtotal,
         discount,
@@ -117,9 +129,28 @@ export function CheckoutProvider({ children }) {
       notes: orderNotes
     };
 
-    setIsProcessing(false);
-    clearCart();
-    navigate(`/order-confirmation/${mockOrder.id}`, { state: { order: mockOrder } });
+    try {
+      // 1. Reserve stock across necessary warehouses
+      const reservedItems = cartItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        sku: item.sku || `SKU-${item.id}`,
+        quantity: item.quantity
+      }));
+      
+      reserveStock(mockOrder.id, reservedItems);
+
+      // 2. Add to global orders
+      addOrder(mockOrder);
+
+      setIsProcessing(false);
+      clearCart();
+      navigate(`/order-confirmation/${mockOrder.id}`, { state: { order: mockOrder } });
+    } catch (error) {
+      setIsProcessing(false);
+      setValidationErrors([error.message || 'Failed to reserve stock. Some items may be out of stock.']);
+      setCurrentStep('review'); // Bring user back to see the error
+    }
   };
 
   const value = {

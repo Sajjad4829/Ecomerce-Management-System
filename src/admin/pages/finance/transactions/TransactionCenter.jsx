@@ -47,8 +47,9 @@ export const TransactionCenter = () => {
                 <th className="px-6 py-4 font-medium">Transaction ID</th>
                 <th className="px-6 py-4 font-medium">Order ID</th>
                 <th className="px-6 py-4 font-medium">Customer</th>
+                <th className="px-6 py-4 font-medium">Type</th>
                 <th className="px-6 py-4 font-medium">Payment Method</th>
-                <th className="px-6 py-4 font-medium text-right">Amount*</th>
+                <th className="px-6 py-4 font-medium text-right">Amount</th>
                 <th className="px-6 py-4 font-medium text-center">Status</th>
                 <th className="px-6 py-4 font-medium text-right">Actions</th>
               </tr>
@@ -59,17 +60,23 @@ export const TransactionCenter = () => {
                   <td className="px-6 py-4 font-medium text-neutral-900">{txn.id}</td>
                   <td className="px-6 py-4 text-primary hover:underline cursor-pointer">{txn.orderId}</td>
                   <td className="px-6 py-4 text-neutral-600">{txn.customer}</td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex px-2 py-1 rounded text-xs font-bold ${
+                      txn.type === 'Refund' ? 'bg-danger-soft text-danger' : 'bg-success-soft text-success'
+                    }`}>
+                      {txn.type}
+                    </span>
+                  </td>
                   <td className="px-6 py-4 text-neutral-600">
                     {txn.paymentMethod} <span className="text-xs text-neutral-400">({txn.gateway})</span>
                   </td>
-                  <td className="px-6 py-4 text-right font-medium text-neutral-900">
-                    ${txn.amount?.toLocaleString()} {txn.currency}
+                  <td className={`px-6 py-4 text-right font-medium ${txn.type === 'Refund' ? 'text-danger' : 'text-neutral-900'}`}>
+                    {txn.type === 'Refund' ? '-' : '+'}${txn.amount?.toLocaleString(undefined, {minimumFractionDigits: 2})} {txn.currency}
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                      txn.status === 'Paid' ? 'bg-emerald-100 text-emerald-800' :
+                      txn.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' :
                       txn.status === 'Pending' ? 'bg-warning-soft text-amber-800' :
-                      txn.status === 'Refunded' ? 'bg-neutral-100 text-neutral-800' :
                       txn.status === 'Failed' ? 'bg-danger-soft text-red-800' : 'bg-neutral-100 text-neutral-800'
                     }`}>
                       {txn.status}

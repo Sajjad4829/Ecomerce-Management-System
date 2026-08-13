@@ -22,8 +22,27 @@ export default function ReturnManager() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">Returns</h1>
-          <p className="text-sm text-text-muted mt-1">Manage customer return requests and reverse logistics.</p>
+          <h1 className="text-2xl font-bold text-text-primary">Returns & Refunds</h1>
+          <p className="text-sm text-text-muted mt-1">Manage customer returns, inspections, refunds and reverse inventory.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-surface rounded-xl border border-border p-4 shadow-sm">
+          <p className="text-sm text-text-secondary font-medium">Total Returns</p>
+          <p className="text-2xl font-bold text-text-primary mt-1">{returns.length}</p>
+        </div>
+        <div className="bg-surface rounded-xl border border-border p-4 shadow-sm">
+          <p className="text-sm text-text-secondary font-medium">Pending Review</p>
+          <p className="text-2xl font-bold text-text-primary mt-1">{returns.filter(r => r.status === 'Requested' || r.status === 'Under Review').length}</p>
+        </div>
+        <div className="bg-surface rounded-xl border border-border p-4 shadow-sm">
+          <p className="text-sm text-text-secondary font-medium">Awaiting Inspection</p>
+          <p className="text-2xl font-bold text-text-primary mt-1">{returns.filter(r => r.status === 'Received').length}</p>
+        </div>
+        <div className="bg-surface rounded-xl border border-border p-4 shadow-sm">
+          <p className="text-sm text-text-secondary font-medium">Refund Pending</p>
+          <p className="text-2xl font-bold text-text-primary mt-1">{returns.filter(r => r.refundStatus === 'Pending' || r.refundStatus === 'Approved').length}</p>
         </div>
       </div>
 
@@ -50,9 +69,11 @@ export default function ReturnManager() {
               <option value="Requested">Requested</option>
               <option value="Under Review">Under Review</option>
               <option value="Approved">Approved</option>
-              <option value="Inspection Pending">Inspection Pending</option>
+              <option value="In Transit">In Transit</option>
+              <option value="Received">Received</option>
+              <option value="Inspecting">Inspecting</option>
               <option value="Inspection Completed">Inspection Completed</option>
-              <option value="Resolution Pending">Resolution Pending</option>
+              <option value="Approved for Refund">Approved for Refund</option>
               <option value="Completed">Completed</option>
               <option value="Rejected">Rejected</option>
             </select>

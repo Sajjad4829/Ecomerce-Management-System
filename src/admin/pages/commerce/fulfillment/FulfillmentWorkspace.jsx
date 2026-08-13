@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiBox, FiCheckCircle, FiTruck, FiPrinter } from 'react-icons/fi';
-import { useOrders } from '../../../context/OrderContext';
+import { useOrders } from '../../../context/orders/OrderContext';
+import { useInventory } from '../../../context/inventory/InventoryContext';
 
 export default function FulfillmentWorkspace() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getOrder, updateFulfillmentStatus } = useOrders();
+  const { getOrder, fulfillOrder, updateOrderStatus } = useOrders();
+  const { fulfillReservation, reservations } = useInventory();
   const order = getOrder(id);
 
   const [selectedWarehouse, setSelectedWarehouse] = useState('Primary Warehouse');
@@ -21,15 +23,18 @@ export default function FulfillmentWorkspace() {
   }
 
   const handleStartFulfillment = () => {
-    updateFulfillmentStatus(id, 'Processing', `Assigned to \${selectedWarehouse}`);
+    updateOrderStatus(id, 'Processing');
   };
 
   const handleMarkPacked = () => {
-    updateFulfillmentStatus(id, 'Packed', 'All items packed and ready for shipment.');
+    updateOrderStatus(id, 'Packed');
   };
 
   const handleCreateShipment = () => {
-    updateFulfillmentStatus(id, 'Shipped', 'Shipment created and tracking generated (placeholder).');
+    // 1. Mark order as shipped in OrderContext
+    fulfillOrder(id);
+    // 2. Permanently deduct stock in InventoryContext
+    fulfillReservation(id);
   };
 
   return (
@@ -86,7 +91,11 @@ export default function FulfillmentWorkspace() {
                           {item.quantity}
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <span className="text-xs text-text-muted">{order.fulfillmentStatus}</span>
+                          <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                            order.status === 'Shipped' ? 'bg-success-soft text-green-800' : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {order.status === 'Shipped' ? 'Shipped' : 'Awaiting Fulfillment'}
+                          </span>
                         </td>
                       </tr>
                     ))}
@@ -94,19 +103,21 @@ export default function FulfillmentWorkspace() {
                </table>
 
                <div className="mt-6 flex justify-end gap-3">
-                  {order.fulfillmentStatus === 'Unfulfilled' && (
+                  {order.status === 'Pending' && (
                     <>
-                      <button onClick={() => updateFulfillmentStatus(id, 'Partially Fulfilled', 'Some items assigned to ' + selectedWarehouse)} className="px-4 py-2 border border-[#1A1A1A] text-text-primary rounded-lg text-sm font-medium hover:bg-background transition-colors">
-                        Partially Fulfill
-                      </button>
                       <button onClick={handleStartFulfillment} className="px-4 py-2 bg-[#1A1A1A] text-white rounded-lg text-sm font-medium hover:bg-black transition-colors">
-                        Fulfill All Items
+                        Start Fulfillment
                       </button>
                     </>
                   )}
-                  {['Partially Fulfilled', 'Processing'].includes(order.fulfillmentStatus) && (
-                    <button onClick={handleMarkPacked} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors flex items-center gap-2">
-                      <FiCheckCircle size={16}/> Mark as Packed
+                  {order.status === 'Processing' && (
+                    <button onClick={handleMarkPacked} className="px-4 py-2 bg-[#1A1A1A] text-white rounded-lg text-sm font-medium hover:bg-black transition-colors">
+                      Mark as Packed
+                    </button>
+                  )}
+                  {order.status === 'Packed' && (
+                    <button onClick={handleCreateShipment} className="px-4 py-2 bg-[#1A1A1A] text-white rounded-lg text-sm font-medium hover:bg-black transition-colors flex items-center justify-center gap-2">
+                      <FiPrinter /> Print Label & Ship
                     </button>
                   )}
                </div>
@@ -114,8 +125,8 @@ export default function FulfillmentWorkspace() {
           </div>
 
           {/* Shipment Preparation */}
-          {['Packed', 'Ready to Ship'].includes(order.fulfillmentStatus) && (
-            <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
+          {['Packed'].includes(order.status) && (
+             <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
                <h2 className="text-lg font-bold text-text-primary flex items-center gap-2 mb-4"><FiTruck /> Shipment Preparation</h2>
                <div className="grid grid-cols-2 gap-4 mb-6">
                  <div>

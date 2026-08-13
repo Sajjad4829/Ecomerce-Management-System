@@ -15,10 +15,24 @@ export default function ReturnTable({ returns }) {
       case 'Requested': return 'bg-yellow-100 text-yellow-800';
       case 'Under Review': return 'bg-orange-100 text-orange-800';
       case 'Approved': return 'bg-blue-100 text-blue-800';
-      case 'Inspection Pending': return 'bg-purple-100 text-purple-800';
+      case 'In Transit': return 'bg-indigo-100 text-indigo-800';
+      case 'Received': return 'bg-purple-100 text-purple-800';
+      case 'Inspecting': return 'bg-pink-100 text-pink-800';
+      case 'Inspection Completed': return 'bg-teal-100 text-teal-800';
+      case 'Approved for Refund': return 'bg-green-100 text-green-800';
       case 'Completed': return 'bg-success-soft text-green-800';
       case 'Rejected': return 'bg-danger-soft text-red-800';
       default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getRefundStatusColor = (status) => {
+    switch(status) {
+      case 'Pending': return 'text-yellow-600 font-medium';
+      case 'Approved': return 'text-blue-600 font-medium';
+      case 'Completed': return 'text-green-600 font-medium';
+      case 'Not Requested': return 'text-gray-400 font-medium';
+      default: return 'text-gray-500 font-medium';
     }
   };
 
@@ -33,6 +47,7 @@ export default function ReturnTable({ returns }) {
             <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Customer</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Product Info</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Status</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Refund Status</th>
             <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
@@ -63,9 +78,12 @@ export default function ReturnTable({ returns }) {
                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(ret.status)}`}>
                   {ret.status}
                 </span>
-                {ret.resolution && (
-                  <p className="text-xs text-text-muted mt-1 uppercase tracking-wider font-semibold">{ret.resolution}</p>
-                )}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`text-sm ${getRefundStatusColor(ret.refundStatus)}`}>
+                  {ret.refundStatus}
+                </span>
+                {ret.refundAmount > 0 && <p className="text-xs text-text-muted mt-1 font-semibold">৳{ret.refundAmount.toLocaleString()}</p>}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <Link to={`/admin/returns/${ret.id}`} className="text-primary hover:text-indigo-900">

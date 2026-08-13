@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiBox, FiCheckCircle, FiXCircle, FiTruck, FiSearch, FiDollarSign } from 'react-icons/fi';
 import { useReturns } from '../../../context/ReturnContext';
+import { useInventory } from '../../../context/inventory/InventoryContext';
 import ReturnTimeline from '../../../components/returns/ReturnTimeline';
 import PickupManager from '../../../components/returns/PickupManager';
 import InspectionWorkspace from '../../../components/returns/InspectionWorkspace';
@@ -10,6 +11,7 @@ export default function ReturnDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getReturn, updateReturnStatus } = useReturns();
+  const { processReturn } = useInventory();
   const returnReq = getReturn(id);
 
   if (!returnReq) {
@@ -26,15 +28,12 @@ export default function ReturnDetail() {
     switch (currentStatus) {
       case 'Requested': return ['Under Review', 'Approved', 'Rejected'];
       case 'Under Review': return ['Approved', 'Rejected'];
-      case 'Approved': return ['Pickup Scheduled', 'Cancelled'];
-      case 'Pickup Scheduled': return ['In Transit'];
+      case 'Approved': return ['In Transit', 'Received'];
       case 'In Transit': return ['Received'];
-      case 'Received': return ['Inspection Pending'];
-      case 'Inspection Pending': return []; // Needs inspection completion action
-      case 'Inspection Completed': return ['Resolution Pending'];
-      case 'Resolution Pending': return ['Refund Pending', 'Exchange Pending', 'Completed'];
-      case 'Refund Pending': return ['Completed'];
-      case 'Exchange Pending': return ['Completed'];
+      case 'Received': return ['Inspecting'];
+      case 'Inspection Completed': return ['Approved for Refund'];
+      case 'Approved for Refund': return ['Refund Processing', 'Completed'];
+      case 'Refund Processing': return ['Completed'];
       default: return [];
     }
   };
@@ -42,7 +41,30 @@ export default function ReturnDetail() {
   const availableActions = getAvailableActions(returnReq.status);
 
   const handleStatusChange = (newStatus) => {
-    updateReturnStatus(id, newStatus, `Manual status update to ${newStatus}`);
+    if (newStatus === 'Received') {
+      const warehouseId = window.prompt("Enter Warehouse ID to receive items (e.g. WH-1):", "WH-1");
+      if (warehouseId) {
+        // We'll simulate markReturnReceived here but we can also just use updateReturnStatus if we didn't export it
+        updateReturnStatus(id, newStatus, `Return received at ${warehouseId}`);
+      }
+    } else {
+      updateReturnStatus(id, newStatus, `Manual status update to ${newStatus}`);
+    }
+  };
+
+  const handleProcessRefund = () => {
+    // 1. Process restock or damage in InventoryContext based on inspected items
+    const itemsForInventory = returnReq.items.map(item => ({
+      productId: item.productId,
+      quantity: item.quantity,
+      warehouseId: item.warehouseId || 'WH-1', // Fallback to primary
+      condition: item.condition === 'restockable' ? 'restockable' : 'damaged'
+    }));
+
+    processReturn(returnReq.orderId, itemsForInventory);
+    
+    // 2. Mark as completed in ReturnContext
+    handleStatusChange('Completed');
   };
 
   return (
@@ -124,7 +146,7 @@ export default function ReturnDetail() {
           )}
 
           {/* Inspection Workspace */}
-          {(returnReq.status === 'Inspection Pending' || returnReq.inspection) && (
+          {(returnReq.status === 'Inspecting' || returnReq.status === 'Inspection Completed') && (
              <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
                <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2"><FiSearch /> Product Inspection</h2>
                <InspectionWorkspace returnReq={returnReq} />
@@ -132,15 +154,17 @@ export default function ReturnDetail() {
           )}
 
            {/* Resolution Prep */}
-           {returnReq.status === 'Resolution Pending' && (
+           {returnReq.status === 'Approved for Refund' && (
              <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
                <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2"><FiDollarSign /> Resolution Actions</h2>
+               <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4">
+                 <p className="text-sm text-blue-800 font-medium">Suggested Refund</p>
+                 <p className="text-2xl font-bold text-blue-900 mt-1">৳{returnReq.refundAmount?.toLocaleString()}</p>
+                 <p className="text-xs text-blue-700 mt-1">Based on returned item prices.</p>
+               </div>
                <div className="flex gap-4">
-                 <button className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">
-                   Initiate Refund Placeholder
-                 </button>
-                 <button className="flex-1 py-3 border border-border-hover text-text-secondary rounded-lg font-semibold hover:bg-background transition-colors">
-                   Process Exchange Placeholder
+                 <button onClick={handleProcessRefund} className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                   Process Refund & Sync Inventory
                  </button>
                </div>
              </div>

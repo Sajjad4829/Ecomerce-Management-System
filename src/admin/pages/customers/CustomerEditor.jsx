@@ -7,7 +7,7 @@ import { validateCustomer } from '../../services/customers/CustomerValidation';
 export default function CustomerEditor() {
   const { customerId } = useParams();
   const navigate = useNavigate();
-  const { customers } = useCustomers();
+  const { customers, addCustomer, updateCustomer } = useCustomers();
   
   const isEditing = Boolean(customerId);
   const existingCustomer = isEditing ? customers.find(c => c.id === customerId) : null;
@@ -27,8 +27,25 @@ export default function CustomerEditor() {
       setErrors(validationErrors);
       return;
     }
-    // In a real app, dispatch save action here
-    navigate('/admin/customers');
+    
+    try {
+      if (isEditing) {
+        // Prevent changing email to an existing one
+        if (formData.email !== existingCustomer.email) {
+          const duplicate = customers.find(c => c.email.toLowerCase() === formData.email.toLowerCase() && c.id !== customerId);
+          if (duplicate) {
+            setErrors({ email: 'Customer with this email already exists.' });
+            return;
+          }
+        }
+        updateCustomer(customerId, formData);
+      } else {
+        addCustomer(formData);
+      }
+      navigate('/admin/customers');
+    } catch (err) {
+      setErrors({ email: err.message });
+    }
   };
 
   return (
@@ -80,7 +97,7 @@ export default function CustomerEditor() {
                 errors.firstName ? 'border-red-300' : 'border-neutral-200'
               }`}
             />
-            {errors.firstName && <p className="text-sm text-danger">{errors.firstName}</p>}
+            {errors.firstName && <p className="text-sm text-error">{errors.firstName}</p>}
           </div>
 
           <div className="space-y-2">
@@ -93,7 +110,7 @@ export default function CustomerEditor() {
                 errors.lastName ? 'border-red-300' : 'border-neutral-200'
               }`}
             />
-            {errors.lastName && <p className="text-sm text-danger">{errors.lastName}</p>}
+            {errors.lastName && <p className="text-sm text-error">{errors.lastName}</p>}
           </div>
 
           <div className="space-y-2">
@@ -106,7 +123,7 @@ export default function CustomerEditor() {
                 errors.email ? 'border-red-300' : 'border-neutral-200'
               }`}
             />
-            {errors.email && <p className="text-sm text-danger">{errors.email}</p>}
+            {errors.email && <p className="text-sm text-error">{errors.email}</p>}
           </div>
 
           <div className="space-y-2">
@@ -130,9 +147,9 @@ export default function CustomerEditor() {
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
-              <option value="suspended">Suspended</option>
+              <option value="blocked">Blocked</option>
             </select>
-            {errors.status && <p className="text-sm text-danger">{errors.status}</p>}
+            {errors.status && <p className="text-sm text-error">{errors.status}</p>}
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useOrders } from '../../context/orders/OrderContext';
+import { useInventory } from '../../context/inventory/InventoryContext';
 import OrderHeader from '../../components/orders/OrderHeader';
 import OrderSummary from '../../components/orders/OrderSummary';
 import OrderItems from '../../components/orders/OrderItems';
@@ -14,6 +15,7 @@ export default function OrderDetail() {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { getOrder, cancelOrder } = useOrders();
+  const { releaseReservation } = useInventory();
   const order = getOrder(orderId);
 
   if (!order) {
@@ -33,6 +35,7 @@ export default function OrderDetail() {
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel this order? This action cannot be undone.')) {
       cancelOrder(order.id);
+      releaseReservation(order.id);
     }
   };
 
@@ -51,7 +54,7 @@ export default function OrderDetail() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <OrderItems items={order.items} />
+          <OrderItems items={order.items} orderId={order.id} />
           
           {/* Fulfillment Section Placeholder */}
           <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6">

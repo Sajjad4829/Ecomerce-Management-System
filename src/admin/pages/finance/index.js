@@ -1,6 +1,7 @@
-export { FinanceDashboard } from './dashboard/FinanceDashboard';
-export { TransactionCenter } from './transactions/TransactionCenter';
-export { TransactionDetail } from './transactions/TransactionDetail';
+export { default as ReconciliationCenter } from './Reconciliation';
+export { default as FinanceDashboard } from './FinanceDashboard';
+export { default as TransactionCenter } from './TransactionManager';
+export { default as TransactionDetail } from './TransactionDetail';
 export { RefundCenter } from './refunds/RefundCenter';
 export { RefundDetail } from './refunds/RefundDetail';
 export { InvoiceCenter } from './invoices/InvoiceCenter';
@@ -18,7 +19,6 @@ export {
   DiscountCenter,
   CustomerBalances,
   AdjustmentCenter,
-  ReconciliationCenter,
   ReconciliationDetail,
   ExpenseCenter,
   AccountCenter,

@@ -4,19 +4,25 @@ import { CircleDot } from 'lucide-react';
 export default function OrderTimeline({ order }) {
   const events = [
     { id: 1, title: 'Order Placed', date: order.date, description: 'Order was placed by customer.' },
-    { id: 2, title: 'Payment Confirmed', date: new Date(new Date(order.date).getTime() + 10000).toISOString(), description: 'Payment of $' + order.total.toFixed(2) + ' was successful.' },
+    { id: 2, title: 'Stock Reserved', date: new Date(new Date(order.date).getTime() + 1000).toISOString(), description: 'Inventory stock was successfully reserved.' },
+    { id: 3, title: 'Payment Confirmed', date: new Date(new Date(order.date).getTime() + 10000).toISOString(), description: 'Payment of $' + (order.total || 0).toFixed(2) + ' was successful.' },
   ];
 
-  if (['processing', 'shipped', 'delivered'].includes(order.status)) {
-    events.push({ id: 3, title: 'Processing', date: new Date(new Date(order.date).getTime() + 86400000).toISOString(), description: 'Order is being processed in warehouse.' });
+  if (['processing', 'shipped', 'delivered', 'Packed', 'Shipped'].includes(order.status)) {
+    events.push({ id: 4, title: 'Processing', date: new Date(new Date(order.date).getTime() + 86400000).toISOString(), description: 'Order is being processed in warehouse.' });
   }
 
-  if (['shipped', 'delivered'].includes(order.status)) {
-    events.push({ id: 4, title: 'Shipped', date: new Date(new Date(order.date).getTime() + 172800000).toISOString(), description: 'Order has been shipped via standard delivery.' });
+  if (['shipped', 'delivered', 'Shipped'].includes(order.status)) {
+    events.push({ id: 5, title: 'Shipped', date: new Date(new Date(order.date).getTime() + 172800000).toISOString(), description: 'Order has been shipped. Stock permanently deducted.' });
   }
 
   if (order.status === 'delivered') {
-    events.push({ id: 5, title: 'Delivered', date: new Date(new Date(order.date).getTime() + 345600000).toISOString(), description: 'Order was delivered to customer.' });
+    events.push({ id: 6, title: 'Delivered', date: new Date(new Date(order.date).getTime() + 345600000).toISOString(), description: 'Order was delivered to customer.' });
+  }
+
+  if (order.status === 'cancelled') {
+    events.push({ id: 7, title: 'Cancelled', date: new Date().toISOString(), description: 'Order was cancelled.' });
+    events.push({ id: 8, title: 'Reservation Released', date: new Date().toISOString(), description: 'Reserved stock was released back to available inventory.' });
   }
 
   return (

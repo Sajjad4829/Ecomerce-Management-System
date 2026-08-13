@@ -68,6 +68,92 @@ export const CustomerProvider = ({ children }) => {
   const updateCustomer = (id, data) => {
     setCustomers(customers.map(c => c.id === id ? { ...c, ...data } : c));
   };
+
+  const addCustomer = (customerData) => {
+    const existing = customers.find(c => c.email.toLowerCase() === customerData.email.toLowerCase());
+    if (existing) {
+      throw new Error('Customer with this email already exists.');
+    }
+    
+    const newCustomer = {
+      id: `CUST-${Date.now()}`,
+      joinedAt: new Date().toISOString(),
+      lastActivityAt: new Date().toISOString(),
+      status: 'active',
+      tags: [],
+      segmentIds: [],
+      lifetimeValue: 0,
+      orderCount: 0,
+      loyaltyTier: 'Member',
+      points: 0,
+      communication: { email: false, sms: false, push: false, marketingConsent: false },
+      addresses: [],
+      ...customerData
+    };
+    
+    setCustomers(prev => [newCustomer, ...prev]);
+    return newCustomer;
+  };
+
+  const addAddress = (customerId, addressData) => {
+    setCustomers(prev => prev.map(c => {
+      if (c.id === customerId) {
+        let newAddresses = [...(c.addresses || [])];
+        const newAddress = { id: `addr-${Date.now()}`, ...addressData };
+        
+        if (newAddress.isDefault) {
+          newAddresses = newAddresses.map(a => 
+            a.type === newAddress.type ? { ...a, isDefault: false } : a
+          );
+        }
+        
+        if (!newAddresses.some(a => a.type === newAddress.type)) {
+          newAddress.isDefault = true;
+        }
+
+        newAddresses.push(newAddress);
+        return { ...c, addresses: newAddresses };
+      }
+      return c;
+    }));
+  };
+
+  const updateAddress = (customerId, addressId, addressData) => {
+    setCustomers(prev => prev.map(c => {
+      if (c.id === customerId) {
+        let newAddresses = [...(c.addresses || [])];
+        
+        if (addressData.isDefault) {
+          const type = addressData.type || newAddresses.find(a => a.id === addressId)?.type;
+          newAddresses = newAddresses.map(a => 
+            a.type === type ? { ...a, isDefault: false } : a
+          );
+        }
+
+        newAddresses = newAddresses.map(a => a.id === addressId ? { ...a, ...addressData } : a);
+        return { ...c, addresses: newAddresses };
+      }
+      return c;
+    }));
+  };
+
+  const deleteAddress = (customerId, addressId) => {
+    setCustomers(prev => prev.map(c => {
+      if (c.id === customerId) {
+        const newAddresses = (c.addresses || []).filter(a => a.id !== addressId);
+        return { ...c, addresses: newAddresses };
+      }
+      return c;
+    }));
+  };
+  
+  const getCustomerType = (customer) => {
+    if (!customer) return 'New';
+    if (customer.lifetimeValue > 10000 || customer.orderCount > 10) return 'VIP';
+    if (customer.orderCount > 1) return 'Returning';
+    if (customer.orderCount === 1) return 'Regular';
+    return 'New';
+  };
   
   const addNote = (customerId, content) => {
     const newNote = {
@@ -90,6 +176,11 @@ export const CustomerProvider = ({ children }) => {
       getCustomerNotes,
       getCustomerActivity,
       updateCustomer,
+      addCustomer,
+      addAddress,
+      updateAddress,
+      deleteAddress,
+      getCustomerType,
       addNote
     }}>
       {children}

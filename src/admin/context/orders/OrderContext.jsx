@@ -90,14 +90,6 @@ export const OrderProvider = ({ children }) => {
      { id: 'SHP-202', orderId: 'ORD-5003', carrier: 'UPS', trackingNumber: '1Z9999999999999999', status: 'delivered', createdAt: '2024-05-10T19:00:00Z' }
   ]);
   
-  const [returns, setReturns] = useState([
-    { id: 'RET-301', orderId: 'ORD-5003', customerId: 'CUST-1003', status: 'requested', items: [{sku: 'VASE-CER-WHT', quantity: 1}], reason: 'Damaged in transit', createdAt: '2024-05-12T09:00:00Z' }
-  ]);
-
-  const [refunds, setRefunds] = useState([
-    { id: 'REF-401', orderId: 'ORD-5004', amount: 150.00, reason: 'Customer cancelled', status: 'completed', createdAt: '2024-05-09T12:00:00Z' }
-  ]);
-  
   const [invoices, setInvoices] = useState([
     { id: 'INV-5001', orderId: 'ORD-5001', date: '2024-05-12T14:30:00Z', status: 'paid', customerName: 'Eleanor Rigby' },
     { id: 'INV-5002', orderId: 'ORD-5002', date: '2024-05-11T09:15:00Z', status: 'paid', customerName: 'John Doe' },
@@ -111,23 +103,31 @@ export const OrderProvider = ({ children }) => {
     setOrders(orders.map(o => o.id === id ? { ...o, status } : o));
   };
   
+  const addOrder = (order) => {
+    setOrders([order, ...orders]);
+  };
+
+  const fulfillOrder = (id) => {
+    setOrders(orders.map(o => o.id === id ? { ...o, status: 'shipped', fulfillmentStatus: 'shipped' } : o));
+  };
+
   const cancelOrder = (id) => {
-    setOrders(orders.map(o => o.id === id ? { ...o, status: 'cancelled', paymentStatus: 'refunded' } : o));
+    setOrders(orders.map(o => o.id === id ? { ...o, status: 'cancelled', paymentStatus: 'refunded', fulfillmentStatus: 'cancelled' } : o));
   };
 
   const contextValue = useMemo(() => ({
     orders,
     fulfillments,
     shipments,
-    returns,
-    refunds,
     invoices,
     getOrder,
     getOrderFulfillments,
     getOrderShipments,
     updateOrderStatus,
-    cancelOrder
-  }), [orders, fulfillments, shipments, returns, refunds, invoices]);
+    cancelOrder,
+    addOrder,
+    fulfillOrder
+  }), [orders, fulfillments, shipments, invoices]);
 
   return (
     <OrderContext.Provider value={contextValue}>

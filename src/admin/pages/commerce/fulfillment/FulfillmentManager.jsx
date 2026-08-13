@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { FiSearch, FiFilter, FiBox, FiTruck } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { useOrders } from '../../../context/OrderContext';
+import { useOrders } from '../../../context/orders/OrderContext';
 
 export default function FulfillmentManager() {
   const { orders } = useOrders();
-  const [statusFilter, setStatusFilter] = useState('Unfulfilled');
+  const [statusFilter, setStatusFilter] = useState('Pending');
   
   // Filter for orders that require fulfillment actions
-  const fulfillableOrders = orders.filter(o => o.status !== 'Cancelled' && o.status !== 'On Hold');
+  const fulfillableOrders = orders.filter(o => !['Cancelled', 'On Hold', 'Delivered'].includes(o.status));
 
   const filteredOrders = fulfillableOrders.filter(order => {
     if (statusFilter === 'All') return true;
-    return order.fulfillmentStatus === statusFilter;
+    return order.status === statusFilter;
   });
 
   return (
@@ -28,20 +28,20 @@ export default function FulfillmentManager() {
         <div className="p-4 border-b border-border flex flex-col sm:flex-row gap-4 justify-between items-center bg-background/50">
           <div className="flex gap-4 items-center">
             <button 
-              onClick={() => setStatusFilter('Unfulfilled')}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors \${statusFilter === 'Unfulfilled' ? 'bg-[#1A1A1A] text-white' : 'text-text-secondary hover:bg-gray-100'}`}
+              onClick={() => setStatusFilter('Pending')}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'Pending' ? 'bg-[#1A1A1A] text-white' : 'text-text-secondary hover:bg-gray-100'}`}
             >
-              Unfulfilled
+              Pending
             </button>
             <button 
               onClick={() => setStatusFilter('Processing')}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors \${statusFilter === 'Processing' ? 'bg-[#1A1A1A] text-white' : 'text-text-secondary hover:bg-gray-100'}`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'Processing' ? 'bg-[#1A1A1A] text-white' : 'text-text-secondary hover:bg-gray-100'}`}
             >
               Processing
             </button>
              <button 
               onClick={() => setStatusFilter('All')}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors \${statusFilter === 'All' ? 'bg-[#1A1A1A] text-white' : 'text-text-secondary hover:bg-gray-100'}`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'All' ? 'bg-[#1A1A1A] text-white' : 'text-text-secondary hover:bg-gray-100'}`}
             >
               All
             </button>
@@ -93,13 +93,13 @@ export default function FulfillmentManager() {
                       {order.shippingMethod}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full \${
-                        order.fulfillmentStatus === 'Fulfilled' ? 'bg-success-soft text-green-800' :
-                        order.fulfillmentStatus === 'Processing' ? 'bg-blue-100 text-blue-800' :
-                        order.fulfillmentStatus === 'Unfulfilled' ? 'bg-gray-100 text-gray-800' :
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        order.status === 'Shipped' ? 'bg-success-soft text-green-800' :
+                        order.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
+                        order.status === 'Pending' ? 'bg-gray-100 text-gray-800' :
                         'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {order.fulfillmentStatus}
+                        {order.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
