@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { FiUsers, FiFilter, FiActivity, FiSearch, FiPlus, FiMoreVertical } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { useMarketing } from '../../../../context/MarketingContext';
+import { useCustomers } from '../../../../context/customers/CustomerContext';
 
 export default function CustomerSegmentation() {
-  const { segments } = useMarketing();
+  const { segments } = useCustomers();
   const [searchTerm, setSearchTerm] = useState('');
 
   const activeSegments = segments.filter(s => s.status === 'Active').length;

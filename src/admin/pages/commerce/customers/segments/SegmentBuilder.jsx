@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FiSave, FiArrowLeft, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
+import { useCustomers } from '../../../../context/customers/CustomerContext';
 
 const ATTRIBUTE_OPTIONS = [
   { group: 'Profile', options: [{ value: 'city', label: 'City' }, { value: 'country', label: 'Country' }, { value: 'customer_group', label: 'Customer Group' }] },
@@ -15,6 +16,7 @@ const OPERATOR_OPTIONS = {
 };
 
 export default function SegmentBuilder() {
+  const { segments, addSegment, updateSegment } = useCustomers();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

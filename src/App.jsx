@@ -90,9 +90,9 @@ import {
   CustomerWishlist,
   CustomerReviews as AdminCustomerReviews,
   CustomerTagsSegments,
-  CustomerCommunication,
-  CustomerLoyaltyProfile
+  CustomerCommunication
 } from './admin/pages/customers/CustomerPlaceholderViews';
+import { CustomerLoyaltyProfile } from './admin/pages/customers/CustomerLoyaltyProfile';
 import CustomerSegmentation from './admin/pages/commerce/customers/segments/CustomerSegmentation';
 import {
   CustomerSegments,

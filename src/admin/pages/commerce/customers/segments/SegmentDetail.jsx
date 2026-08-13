@@ -1,11 +1,11 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiEdit2, FiUsers, FiMail, FiDownload } from 'react-icons/fi';
-import { useMarketing } from '../../../../context/MarketingContext';
+import { useCustomers } from '../../../../context/customers/CustomerContext';
 
 export default function SegmentDetail() {
   const { id } = useParams();
-  const { getSegment } = useMarketing();
+  const { getSegment } = useCustomers();
   const segment = getSegment(id) || getSegment('seg_1'); // Fallback for preview
 
   if (!segment) return <div>Segment not found</div>;

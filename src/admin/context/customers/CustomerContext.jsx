@@ -64,9 +64,63 @@ export const CustomerProvider = ({ children }) => {
   const getCustomer = (id) => customers.find(c => c.id === id);
   const getCustomerNotes = (id) => notes.filter(n => n.customerId === id);
   const getCustomerActivity = (id) => activities.filter(a => a.customerId === id);
+  const getSegment = (id) => segments.find(s => s.id === id);
   
   const updateCustomer = (id, data) => {
     setCustomers(customers.map(c => c.id === id ? { ...c, ...data } : c));
+  };
+
+  const addSegment = (segmentData) => {
+    const newSegment = {
+      id: `seg-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      status: 'active',
+      customerCount: 0,
+      ...segmentData
+    };
+    setSegments([...segments, newSegment]);
+    return newSegment;
+  };
+
+  const updateSegment = (id, data) => {
+    setSegments(segments.map(s => s.id === id ? { ...s, ...data } : s));
+  };
+
+  const deleteSegment = (id) => {
+    setSegments(segments.filter(s => s.id !== id));
+  };
+
+  const evaluateSegments = (customerId) => {
+    const customer = getCustomer(customerId);
+    if (!customer) return;
+    
+    // In a real implementation, this would evaluate the 'conditions' array of each segment against the customer data
+    // For now, we mock the evaluation
+    const matchedSegmentIds = segments
+      .filter(s => s.status === 'active' || s.status === 'Active')
+      .filter(s => {
+        // Mock condition evaluation:
+        if (s.name.includes('VIP') && (customer.lifetimeValue > 10000 || customer.orderCount >= 10)) return true;
+        if (s.name.includes('New') && customer.orderCount === 0) return true;
+        if (s.name.includes('Returning') && customer.orderCount > 1) return true;
+        return false;
+      })
+      .map(s => s.id);
+
+    // Update customer segmentIds
+    updateCustomer(customerId, { segmentIds: matchedSegmentIds });
+
+    // Update segment customer counts (mocked)
+    setSegments(prevSegments => prevSegments.map(seg => {
+      const isMatched = matchedSegmentIds.includes(seg.id);
+      const currentlyHas = customer.segmentIds?.includes(seg.id);
+      
+      let countChange = 0;
+      if (isMatched && !currentlyHas) countChange = 1;
+      if (!isMatched && currentlyHas) countChange = -1;
+      
+      return countChange !== 0 ? { ...seg, customerCount: Math.max(0, seg.customerCount + countChange) } : seg;
+    }));
   };
 
   const addCustomer = (customerData) => {
@@ -181,7 +235,12 @@ export const CustomerProvider = ({ children }) => {
       updateAddress,
       deleteAddress,
       getCustomerType,
-      addNote
+      addNote,
+      getSegment,
+      addSegment,
+      updateSegment,
+      deleteSegment,
+      evaluateSegments
     }}>
       {children}
     </CustomerContext.Provider>

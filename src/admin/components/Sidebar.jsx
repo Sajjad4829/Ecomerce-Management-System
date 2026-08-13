@@ -35,7 +35,17 @@ const MENU_ITEMS = [
   { label: 'Procurement', icon: FiBox, path: '/admin/procurement' },
   { label: 'HR', icon: FiUsers, path: '/admin/hr' },
   { label: 'CRM', icon: FiUsers, path: '/admin/crm' },
-  { label: 'Customers', icon: FiUsers, path: '/admin/customers', requiredPermission: 'customers.view' },
+  { 
+    label: 'Customers', 
+    icon: FiUsers, 
+    path: '/admin/customers', 
+    requiredPermission: 'customers.view',
+    subItems: [
+      { label: 'Directory', path: '/admin/customers' },
+      { label: 'Segments', path: '/admin/customers/segments' },
+      { label: 'Loyalty', path: '/admin/loyalty' }
+    ]
+  },
   { 
     label: 'CMS', 
     icon: FiFileText, 
