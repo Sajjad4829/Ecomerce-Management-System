@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useAnalytics } from '../../context/AnalyticsContext';
 import MetricCard from '../../components/analytics/MetricCard';
 import DateRangeSelector from '../../components/analytics/DateRangeSelector';
-import DataStatusIndicator from '../../components/analytics/DataStatusIndicator';
 import AreaChart from '../../components/charts/AreaChart';
 import BarChart from '../../components/charts/BarChart';
 import AnalyticsTabs from '../../components/analytics/AnalyticsTabs';
@@ -36,7 +35,6 @@ export default function AnalyticsDashboard() {
           <p className="text-sm text-text-muted mt-1">Enterprise Analytics Overview</p>
         </div>
         <div className="flex items-center gap-4">
-          <DataStatusIndicator status="mock" message="Mock Data (Backend Pending)" />
           <DateRangeSelector />
           <button className="flex items-center gap-2 px-4 py-2 border border-black/10 rounded-lg hover:bg-background">
             <FiFilter /> Filters

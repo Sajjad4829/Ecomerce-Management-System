@@ -47,9 +47,11 @@ export const CustomerProvider = ({ children }) => {
   ]);
 
   const [segments, setSegments] = useState([
-    { id: 'seg-1', name: 'VIP Customers', description: 'Customers with LTV > $10,000', customerCount: 142, status: 'active', createdAt: '2023-01-01T00:00:00Z', conditions: [] },
-    { id: 'seg-2', name: 'New Customers', description: 'Joined in the last 30 days', customerCount: 89, status: 'active', createdAt: '2023-01-01T00:00:00Z', conditions: [] },
-    { id: 'seg-3', name: 'Returning Customers', description: 'Placed more than 1 order', customerCount: 450, status: 'active', createdAt: '2023-01-01T00:00:00Z', conditions: [] }
+    { id: 'seg-1', name: 'VIP Customers', description: 'Customers with LTV > $10,000 or > 10 orders', type: 'Dynamic', customerCount: 0, status: 'active', createdAt: '2023-01-01T00:00:00Z', rules: [{ id: 'r1', attribute: 'lifetimeValue', operator: 'greater_than', value: 10000 }, { id: 'r2', attribute: 'orderCount', operator: 'greater_than', value: 10 }] },
+    { id: 'seg-2', name: 'New Customers', description: 'First completed order or no previous completed history', type: 'Dynamic', customerCount: 0, status: 'active', createdAt: '2023-01-01T00:00:00Z', rules: [{ id: 'r3', attribute: 'orderCount', operator: 'equals', value: 0 }] },
+    { id: 'seg-3', name: 'Returning Customers', description: 'Placed more than 1 order', type: 'Dynamic', customerCount: 0, status: 'active', createdAt: '2023-01-01T00:00:00Z', rules: [{ id: 'r4', attribute: 'orderCount', operator: 'greater_than', value: 1 }] },
+    { id: 'seg-4', name: 'High Value Customers', description: 'Lifetime net spending exceeds threshold', type: 'Dynamic', customerCount: 0, status: 'active', createdAt: '2023-01-01T00:00:00Z', rules: [{ id: 'r5', attribute: 'lifetimeValue', operator: 'greater_than', value: 5000 }] },
+    { id: 'seg-5', name: 'Inactive Customers', description: 'No recent orders', type: 'Dynamic', customerCount: 0, status: 'active', createdAt: '2023-01-01T00:00:00Z', rules: [{ id: 'r6', attribute: 'days_since_last_order', operator: 'greater_than', value: 180 }] },
   ]);
 
   const [notes, setNotes] = useState([
@@ -94,23 +96,51 @@ export const CustomerProvider = ({ children }) => {
     const customer = getCustomer(customerId);
     if (!customer) return;
     
-    // In a real implementation, this would evaluate the 'conditions' array of each segment against the customer data
-    // For now, we mock the evaluation
+    const calculateDaysSinceLastOrder = (lastActivity) => {
+       if (!lastActivity) return 999;
+       const diffTime = Math.abs(new Date() - new Date(lastActivity));
+       return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    };
+
+    const customerAttributes = {
+      ...customer,
+      days_since_last_order: calculateDaysSinceLastOrder(customer.lastActivityAt),
+    };
+
     const matchedSegmentIds = segments
       .filter(s => s.status === 'active' || s.status === 'Active')
       .filter(s => {
-        // Mock condition evaluation:
-        if (s.name.includes('VIP') && (customer.lifetimeValue > 10000 || customer.orderCount >= 10)) return true;
-        if (s.name.includes('New') && customer.orderCount === 0) return true;
-        if (s.name.includes('Returning') && customer.orderCount > 1) return true;
-        return false;
+        if (s.type === 'Static') {
+           return customer.segmentIds?.includes(s.id);
+        }
+        if (!s.rules || s.rules.length === 0) return false;
+
+        // Default to OR logic for VIP, AND logic for others as an example, but we evaluate based on rule builder setup.
+        // For simplicity in this engine without nested groups, we'll evaluate if ANY rule matches for 'OR' (like VIP), or ALL match.
+        // Let's assume all rules must match (AND) by default unless it's the VIP segment which we explicitly defined as OR in our mock.
+        const isVIP = s.name === 'VIP Customers';
+
+        const evaluates = s.rules.map(rule => {
+          const val = customerAttributes[rule.attribute];
+          const target = rule.value;
+          switch (rule.operator) {
+            case 'equals': return val == target;
+            case 'not_equals': return val != target;
+            case 'greater_than': return val > target;
+            case 'less_than': return val < target;
+            case 'greater_than_or_equal': return val >= target;
+            case 'less_than_or_equal': return val <= target;
+            case 'contains': return String(val).toLowerCase().includes(String(target).toLowerCase());
+            default: return false;
+          }
+        });
+
+        return isVIP ? evaluates.some(Boolean) : evaluates.every(Boolean);
       })
       .map(s => s.id);
 
-    // Update customer segmentIds
     updateCustomer(customerId, { segmentIds: matchedSegmentIds });
 
-    // Update segment customer counts (mocked)
     setSegments(prevSegments => prevSegments.map(seg => {
       const isMatched = matchedSegmentIds.includes(seg.id);
       const currentlyHas = customer.segmentIds?.includes(seg.id);

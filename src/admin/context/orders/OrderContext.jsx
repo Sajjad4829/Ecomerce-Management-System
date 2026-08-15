@@ -16,6 +16,10 @@ export const OrderProvider = ({ children }) => {
       warehouseId: 'WH-1',
       total: 1245.50,
       currency: 'USD',
+      campaignId: 'CMP-001',
+      promotionId: 'pro-1',
+      couponCode: 'SUMMER20',
+      discountAmount: 249.10, // 20% off
       items: [
         { id: 'item-1', name: 'Velvet Sofa', sku: 'SOFA-VEL-BLU', quantity: 1, price: 1200.00 },
         { id: 'item-2', name: 'Throw Pillow', sku: 'PIL-COT-WHT', quantity: 2, price: 22.75 }
@@ -35,6 +39,9 @@ export const OrderProvider = ({ children }) => {
       warehouseId: 'WH-2',
       total: 3450.00,
       currency: 'USD',
+      campaignId: 'CMP-001',
+      promotionId: 'pro-2',
+      discountAmount: 0, // Free shipping
       items: [
         { id: 'item-3', name: 'Oak Dining Table', sku: 'TAB-OAK-LG', quantity: 1, price: 3450.00 }
       ],

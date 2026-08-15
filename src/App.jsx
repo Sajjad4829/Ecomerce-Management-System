@@ -82,7 +82,7 @@ import { Customer360 } from './admin/pages/customers/Customer360';
 import { CustomerProfile } from './admin/pages/customers/CustomerProfile';
 import { CustomerOrders } from './admin/pages/customers/CustomerOrders';
 import { CustomerPayments } from './admin/pages/customers/CustomerPayments';
-import { CustomerReturns } from './admin/pages/customers/CustomerReturns';
+import { CustomerReturns as AdminCustomerReturns } from './admin/pages/customers/CustomerReturns';
 import { CustomerRefunds } from './admin/pages/customers/CustomerRefunds';
 import { CustomerNotes } from './admin/pages/customers/CustomerNotes';
 import { CustomerActivity } from './admin/pages/customers/CustomerActivity';
@@ -244,7 +244,6 @@ import {
   DiscountCenter as FinanceDiscountCenter,
   CustomerBalances as FinanceCustomerBalances,
   AdjustmentCenter as FinanceAdjustmentCenter,
-  ReconciliationCenter as FinanceReconciliationCenter,
   ReconciliationDetail as FinanceReconciliationDetail,
   ExpenseCenter as FinanceExpenseCenter,
   AccountCenter as FinanceAccountCenter,
@@ -253,6 +252,7 @@ import {
   ProfitLossReport as FinanceProfitLoss,
   CashFlowReport as FinanceCashFlow
 } from './admin/pages/finance/FinancePages';
+import { ReconciliationCenter as FinanceReconciliationCenter } from './admin/pages/finance/reconciliation/ReconciliationCenter';
 
 import { FinanceProvider } from './admin/context/finance/FinanceContext';
 
@@ -313,11 +313,16 @@ import StockAdjustment from './admin/pages/inventory/stock/StockAdjustment';
 import StockTransfer from './admin/pages/inventory/stock/StockTransfer';
 import { MarketingProvider } from './admin/context/marketing/MarketingContext';
 import MarketingLayout from './admin/layouts/MarketingLayout';
+import MarketingDashboard from './admin/pages/marketing/MarketingDashboard';
+import CampaignCenter from './admin/pages/marketing/campaigns/CampaignCenter';
+import CampaignBuilder from './admin/pages/marketing/campaigns/CampaignBuilder';
+import CampaignDetail from './admin/pages/marketing/campaigns/CampaignDetail';
+import MarketingAnalytics from './admin/pages/marketing/campaigns/MarketingAnalytics';
 import {
-  MarketingDashboard, CampaignCenter, CampaignDetail, CampaignTypes,
+  CampaignTypes,
   Channels, Audiences, MarketingLists, Promotions, Banners, MarketingAssets,
   EmailCampaigns, SMSCampaigns, SocialCampaigns, Automations, MarketingTasks,
-  Calendar, Analytics, MarketingROI, Attribution
+  Calendar, MarketingROI, Attribution
 } from './admin/pages/marketing/MarketingPages';
 import StockMovementHistory from './admin/pages/inventory/movements/StockMovementHistory';
 import { PageVersions } from './admin/pages/cms/CMSPages';
@@ -461,7 +466,7 @@ import { CatalogSettings, CheckoutSettings, InventorySettings as StoreInventoryS
 import { ShippingSettings as StoreShippingSettings, ReturnsSettings as StoreReturnsSettings } from './admin/pages/settings/OperationsSettings';
 import { CustomerSettings, SystemSettings, PlatformSettings } from './admin/pages/settings/OtherSettings';
 import { BusinessRules } from './admin/pages/settings/BusinessRules';
-import CustomerSegmentation from './admin/pages/commerce/customers/segments/CustomerSegmentation';
+
 import SegmentBuilder from './admin/pages/commerce/customers/segments/SegmentBuilder';
 import SegmentDetail from './admin/pages/commerce/customers/segments/SegmentDetail';
 import SegmentAnalytics from './admin/pages/commerce/customers/segments/SegmentAnalytics';
@@ -808,6 +813,7 @@ export default function App() {
                                                     <Route path="marketing" element={<MarketingLayout />}>
                                                       <Route index element={<MarketingDashboard />} />
                                                       <Route path="campaigns" element={<CampaignCenter />} />
+                                                      <Route path="campaigns/create" element={<CampaignBuilder />} />
                                                       <Route path="campaigns/:campaignId" element={<CampaignDetail />} />
                                                       <Route path="campaign-types" element={<CampaignTypes />} />
                                                       <Route path="channels" element={<Channels />} />
@@ -822,7 +828,7 @@ export default function App() {
                                                       <Route path="automations" element={<Automations />} />
                                                       <Route path="tasks" element={<MarketingTasks />} />
                                                       <Route path="calendar" element={<Calendar />} />
-                                                      <Route path="analytics" element={<Analytics />} />
+                                                      <Route path="analytics" element={<MarketingAnalytics />} />
                                                       <Route path="roi" element={<MarketingROI />} />
                                                       <Route path="attribution" element={<Attribution />} />
                                                     </Route>
@@ -1009,7 +1015,7 @@ export default function App() {
                                                         <Route index element={<CustomerProfile />} />
                                                         <Route path="orders" element={<CustomerOrders />} />
                                                         <Route path="payments" element={<CustomerPayments />} />
-                                                        <Route path="returns" element={<CustomerReturns />} />
+                                                        <Route path="returns" element={<AdminCustomerReturns />} />
                                                         <Route path="refunds" element={<CustomerRefunds />} />
                                                         <Route path="wishlist" element={<CustomerWishlist />} />
                                                         <Route path="reviews" element={<AdminCustomerReviews />} />

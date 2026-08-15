@@ -4,12 +4,22 @@ import { Mail, Phone, Calendar, Clock, MapPin, Flag, Plus, Edit2, Trash2, CheckC
 import { useCustomers } from '../../context/customers/CustomerContext';
 import { useFinance } from '../../context/finance/FinanceContext';
 import { useOrders } from '../../context/orders/OrderContext';
+import { useLoyalty } from '../../context/LoyaltyContext';
 
 export function CustomerProfile() {
   const { customer } = useOutletContext();
-  const { addAddress, updateAddress, deleteAddress } = useCustomers();
+  const { addAddress, updateAddress, deleteAddress, segments } = useCustomers();
   const { transactions } = useFinance();
   const { orders } = useOrders();
+  const { getLoyaltyAccount, tiers } = useLoyalty();
+
+  const loyaltyAccount = getLoyaltyAccount(customer?.id);
+  const currentTier = tiers.find(t => t.id === loyaltyAccount?.tierId) || tiers[0];
+  const nextTierIndex = tiers.findIndex(t => t.id === currentTier?.id) + 1;
+  const nextTier = nextTierIndex < tiers.length ? tiers[nextTierIndex] : null;
+  const progressToNext = nextTier ? Math.min(100, Math.round((loyaltyAccount?.lifetimeEarned || 0) / nextTier.minSpend * 100)) : 100;
+
+  const customerSegments = segments.filter(s => customer?.segmentIds?.includes(s.id));
 
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
@@ -105,6 +115,55 @@ export function CustomerProfile() {
   return (
     <div className="space-y-8 max-w-5xl">
       
+      {/* Loyalty & Segments Banner */}
+      <section className="bg-[#1A1A1A] rounded-xl p-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 border border-gray-800">
+         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-3xl rounded-full -mr-20 -mt-20 pointer-events-none"></div>
+         
+         <div className="relative z-10 flex-1">
+            <div className="flex flex-wrap gap-2 mb-3">
+              {customerSegments.map(seg => (
+                 <span key={seg.id} className="px-2.5 py-1 bg-white/10 text-white border border-white/20 rounded-md text-xs font-medium tracking-wide">
+                   {seg.name}
+                 </span>
+              ))}
+              {customerSegments.length === 0 && (
+                 <span className="px-2.5 py-1 bg-white/5 text-gray-400 border border-white/10 rounded-md text-xs font-medium tracking-wide">
+                   No Segments
+                 </span>
+              )}
+            </div>
+            <h3 className="text-xl font-serif text-white flex items-center gap-2">
+               <span className="bg-gradient-to-r from-yellow-300 to-yellow-600 bg-clip-text text-transparent font-bold">
+                 {currentTier?.name || 'Member'} Tier
+               </span>
+               <span className="text-gray-400 text-sm font-sans font-normal ml-2">
+                 {loyaltyAccount?.availablePoints?.toLocaleString() || 0} Available Points
+               </span>
+            </h3>
+         </div>
+
+         <div className="relative z-10 w-full md:w-1/3">
+            {nextTier ? (
+               <div className="space-y-2">
+                 <div className="flex justify-between text-xs text-gray-300 font-medium">
+                   <span>{loyaltyAccount?.lifetimeEarned?.toLocaleString() || 0} pts</span>
+                   <span>{nextTier.minSpend.toLocaleString()} pts to {nextTier.name}</span>
+                 </div>
+                 <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
+                   <div 
+                     className="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 transition-all duration-1000" 
+                     style={{ width: `${progressToNext}%` }}
+                   ></div>
+                 </div>
+               </div>
+            ) : (
+               <div className="flex justify-end items-center h-full text-yellow-500 font-medium text-sm">
+                  ★ Highest Tier Reached
+               </div>
+            )}
+         </div>
+      </section>
+
       {/* Financial Summary */}
       <section>
         <h3 className="text-lg font-serif text-neutral-900 mb-4 border-b border-neutral-200 pb-2">Financial Summary</h3>

@@ -11,90 +11,90 @@ export default function LoyaltyDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">Loyalty & Rewards</h1>
-          <p className="text-sm text-text-muted mt-1">Manage points, tiers, rewards, and customer retention programs.</p>
+          <h1 className="text-2xl font-serif text-text-primary">Loyalty & Rewards</h1>
+          <p className="text-sm text-text-muted mt-1 tracking-wide">Manage points, tiers, rewards, and customer retention programs.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-primary">
+        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex items-center gap-5 transition-transform hover:-translate-y-1 hover:shadow-md">
+          <div className="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-primary">
             <FiUsers size={24} />
           </div>
           <div>
-            <p className="text-sm font-medium text-text-muted">Active Members</p>
-            <p className="text-2xl font-bold text-text-primary">{loyaltyAccounts.length}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">Active Members</p>
+            <p className="text-3xl font-light text-text-primary mt-1">{loyaltyAccounts.length}</p>
           </div>
         </div>
         
-        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-600">
+        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex items-center gap-5 transition-transform hover:-translate-y-1 hover:shadow-md">
+          <div className="w-14 h-14 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-600">
             <FiStar size={24} />
           </div>
           <div>
-            <p className="text-sm font-medium text-text-muted">Points Issued</p>
-            <p className="text-2xl font-bold text-text-primary">{totalPointsEarned.toLocaleString()}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">Points Issued</p>
+            <p className="text-3xl font-light text-text-primary mt-1">{totalPointsEarned.toLocaleString()}</p>
           </div>
         </div>
 
-        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-success-soft flex items-center justify-center text-success">
+        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex items-center gap-5 transition-transform hover:-translate-y-1 hover:shadow-md">
+          <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center text-success">
             <FiGift size={24} />
           </div>
           <div>
-            <p className="text-sm font-medium text-text-muted">Points Redeemed</p>
-            <p className="text-2xl font-bold text-text-primary">{totalPointsRedeemed.toLocaleString()}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">Points Redeemed</p>
+            <p className="text-3xl font-light text-text-primary mt-1">{totalPointsRedeemed.toLocaleString()}</p>
           </div>
         </div>
 
-        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
+        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex items-center gap-5 transition-transform hover:-translate-y-1 hover:shadow-md">
+          <div className="w-14 h-14 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
             <FiAward size={24} />
           </div>
           <div>
-            <p className="text-sm font-medium text-text-muted">Tier Levels</p>
-            <p className="text-2xl font-bold text-text-primary">{tiers.length}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">Tier Levels</p>
+            <p className="text-3xl font-light text-text-primary mt-1">{tiers.length}</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden p-6 space-y-6">
-          <h2 className="text-lg font-bold text-text-primary">Program Management</h2>
+        <div className="bg-surface rounded-xl border border-border shadow-sm p-6 space-y-6">
+          <h2 className="text-lg font-serif text-text-primary border-b border-border-hover pb-3">Program Management</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Link to="/admin/loyalty/ledger" className="p-4 border border-border rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-              <h3 className="font-medium text-text-primary">Points Ledger</h3>
-              <p className="text-xs text-text-muted mt-1">View all point transactions across the system.</p>
+            <Link to="/admin/customers/loyalty/ledger" className="p-5 border border-border rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all group">
+              <h3 className="font-semibold text-text-primary group-hover:text-primary transition-colors">Points Ledger</h3>
+              <p className="text-xs text-text-muted mt-2 leading-relaxed">View all point transactions across the system.</p>
             </Link>
-            <Link to="/admin/loyalty/tiers" className="p-4 border border-border rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-              <h3 className="font-medium text-text-primary">Loyalty Tiers</h3>
-              <p className="text-xs text-text-muted mt-1">Configure VIP levels and benefits.</p>
+            <Link to="/admin/customers/loyalty/tiers" className="p-5 border border-border rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all group">
+              <h3 className="font-semibold text-text-primary group-hover:text-primary transition-colors">Loyalty Tiers</h3>
+              <p className="text-xs text-text-muted mt-2 leading-relaxed">Configure VIP levels and benefits.</p>
             </Link>
-            <Link to="/admin/loyalty/rewards" className="p-4 border border-border rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-              <h3 className="font-medium text-text-primary">Reward Catalog</h3>
-              <p className="text-xs text-text-muted mt-1">Manage items customers can redeem with points.</p>
+            <Link to="/admin/customers/loyalty/rewards" className="p-5 border border-border rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all group">
+              <h3 className="font-semibold text-text-primary group-hover:text-primary transition-colors">Reward Catalog</h3>
+              <p className="text-xs text-text-muted mt-2 leading-relaxed">Manage items customers can redeem with points.</p>
             </Link>
-            <Link to="/admin/loyalty/earning-rules" className="p-4 border border-border rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-              <h3 className="font-medium text-text-primary">Earning Rules</h3>
-              <p className="text-xs text-text-muted mt-1">Setup point multipliers, bonuses, and events.</p>
+            <Link to="/admin/customers/loyalty/earning-rules" className="p-5 border border-border rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all group">
+              <h3 className="font-semibold text-text-primary group-hover:text-primary transition-colors">Earning Rules</h3>
+              <p className="text-xs text-text-muted mt-2 leading-relaxed">Setup point multipliers, bonuses, and events.</p>
             </Link>
-            <Link to="/admin/loyalty/referrals" className="p-4 border border-border rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-              <h3 className="font-medium text-text-primary">Referral Program</h3>
-              <p className="text-xs text-text-muted mt-1">Monitor refer-a-friend activities.</p>
+            <Link to="/admin/customers/loyalty/referrals" className="p-5 border border-border rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all group">
+              <h3 className="font-semibold text-text-primary group-hover:text-primary transition-colors">Referral Program</h3>
+              <p className="text-xs text-text-muted mt-2 leading-relaxed">Monitor refer-a-friend activities.</p>
             </Link>
-            <Link to="/admin/settings/loyalty" className="p-4 border border-border rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-              <h3 className="font-medium text-text-primary">Program Settings</h3>
-              <p className="text-xs text-text-muted mt-1">Configure expiration rules and global settings.</p>
+            <Link to="/admin/settings/loyalty" className="p-5 border border-border rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all group">
+              <h3 className="font-semibold text-text-primary group-hover:text-primary transition-colors">Program Settings</h3>
+              <p className="text-xs text-text-muted mt-2 leading-relaxed">Configure expiration rules and global settings.</p>
             </Link>
           </div>
         </div>
         
         <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
           <div className="p-6 border-b border-border flex justify-between items-center bg-background/50">
-             <h2 className="text-lg font-bold text-text-primary">Recent Transactions</h2>
-             <Link to="/admin/loyalty/ledger" className="text-sm text-primary hover:underline">View Ledger</Link>
+             <h2 className="text-lg font-serif text-text-primary">Recent Transactions</h2>
+             <Link to="/admin/customers/loyalty/ledger" className="text-sm font-medium text-primary hover:text-blue-700 transition-colors flex items-center gap-1">View Ledger &rarr;</Link>
           </div>
           <div className="divide-y divide-gray-100">
              {pointsLedger.slice(0, 5).map(txn => (

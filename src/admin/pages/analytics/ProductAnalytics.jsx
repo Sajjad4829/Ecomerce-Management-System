@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAnalytics } from '../../context/AnalyticsContext';
 import DateRangeSelector from '../../components/analytics/DateRangeSelector';
-import DataTable from '../../../components/cms/DataTable';
+import DataTable from '../../components/analytics/DataTable';
 import AnalyticsTabs from '../../components/analytics/AnalyticsTabs';
 import { FiDownload } from 'react-icons/fi';
 
@@ -37,6 +37,21 @@ export default function ProductAnalytics() {
         </div>
         <DataTable 
           data={data.bestSellers} 
+          columns={[
+            { key: 'name', label: 'Product Name' },
+            { key: 'units', label: 'Units Sold' },
+            { key: 'revenue', label: 'Revenue', render: (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val) },
+          ]}
+        />
+      </div>
+
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden mb-8">
+        <div className="p-6 border-b border-black/5 flex justify-between items-center">
+          <h3 className="text-lg font-medium">Needs Attention (Low Performing)</h3>
+          <span className="text-xs font-medium px-2 py-1 bg-red-50 text-red-600 rounded">Lowest Revenue</span>
+        </div>
+        <DataTable 
+          data={data.lowPerforming} 
           columns={[
             { key: 'name', label: 'Product Name' },
             { key: 'units', label: 'Units Sold' },

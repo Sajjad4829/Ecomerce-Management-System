@@ -42,25 +42,28 @@ export default function SegmentDetail() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-1 space-y-6">
           <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
-             <h2 className="text-lg font-bold text-text-primary mb-4">Segment Summary</h2>
-             <dl className="space-y-4">
-               <div>
-                 <dt className="text-sm text-text-muted">Type</dt>
-                 <dd className="text-sm font-medium text-text-primary">{segment.type}</dd>
+             <h2 className="text-lg font-serif text-text-primary mb-4">Segment Analytics</h2>
+             <div className="grid grid-cols-2 gap-4">
+               <div className="p-4 rounded-lg bg-background border border-border-hover">
+                 <dt className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">Gross Spend</dt>
+                 <dd className="text-xl font-light text-text-primary">৳12,500K</dd>
                </div>
-               <div>
-                 <dt className="text-sm text-text-muted">Total Customers</dt>
-                 <dd className="text-2xl font-bold text-text-primary mt-1">{segment.customerCount.toLocaleString()}</dd>
+               <div className="p-4 rounded-lg bg-background border border-border-hover">
+                 <dt className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">Refunds</dt>
+                 <dd className="text-xl font-light text-danger">৳350K</dd>
                </div>
-               <div>
-                 <dt className="text-sm text-text-muted">Created At</dt>
-                 <dd className="text-sm font-medium text-text-primary">{new Date(segment.createdAt).toLocaleDateString()}</dd>
+               <div className="p-4 rounded-lg bg-background border border-border-hover">
+                 <dt className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">Net Spend</dt>
+                 <dd className="text-xl font-bold text-text-primary">৳12,150K</dd>
                </div>
-               <div>
-                 <dt className="text-sm text-text-muted">Last Updated</dt>
-                 <dd className="text-sm font-medium text-text-primary">{new Date(segment.updatedAt).toLocaleDateString()}</dd>
+               <div className="p-4 rounded-lg bg-background border border-border-hover">
+                 <dt className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">Avg Order</dt>
+                 <dd className="text-xl font-light text-text-primary">৳25K</dd>
                </div>
-             </dl>
+             </div>
+          </div>
+          
+          <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
           </div>
           
           <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
@@ -97,7 +100,9 @@ export default function SegmentDetail() {
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Customer</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Orders</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Net Spend</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Last Active</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Loyalty</th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">Action</th>
                     </tr>
                   </thead>
@@ -113,9 +118,11 @@ export default function SegmentDetail() {
                          </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">12</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-primary font-medium">৳124,500</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">2 days ago</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm"><span className="px-2 py-0.5 rounded text-xs bg-yellow-100 text-yellow-800 font-bold uppercase">Gold</span></td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <Link to={`/admin/customers/cust_1`} className="text-primary hover:text-blue-900">View</Link>
+                        <Link to={`/admin/customers/cust_1`} className="text-primary hover:underline font-medium">View</Link>
                       </td>
                     </tr>
                     <tr className="hover:bg-background">
@@ -129,9 +136,11 @@ export default function SegmentDetail() {
                          </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">8</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-primary font-medium">৳45,200</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">1 week ago</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm"><span className="px-2 py-0.5 rounded text-xs bg-gray-200 text-gray-700 font-bold uppercase">Silver</span></td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <Link to={`/admin/customers/cust_2`} className="text-primary hover:text-blue-900">View</Link>
+                        <Link to={`/admin/customers/cust_2`} className="text-primary hover:underline font-medium">View</Link>
                       </td>
                     </tr>
                   </tbody>

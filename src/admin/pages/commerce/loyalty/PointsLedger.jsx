@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { FiSearch, FiFilter, FiArrowUpRight, FiArrowDownRight } from 'react-icons/fi';
+import { FiSearch, FiFilter, FiArrowUpRight, FiArrowDownRight, FiPlus } from 'react-icons/fi';
 import { useLoyalty } from '../../../context/LoyaltyContext';
+import PointAdjustmentModal from './PointAdjustmentModal';
 
 export default function PointsLedger() {
   const { pointsLedger } = useLoyalty();
   const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredLedger = pointsLedger.filter(txn => 
     txn.customerId.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -13,11 +15,17 @@ export default function PointsLedger() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">Points Ledger</h1>
-          <p className="text-sm text-text-muted mt-1">Immutable record of all point transactions.</p>
+          <h1 className="text-2xl font-serif text-text-primary">Points Ledger</h1>
+          <p className="text-sm text-text-muted mt-1 tracking-wide">Immutable record of all point transactions across the platform.</p>
         </div>
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-[#1A1A1A] text-white rounded-lg text-sm font-medium hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-sm"
+        >
+          <FiPlus /> Adjust Points
+        </button>
       </div>
 
       <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
@@ -80,6 +88,7 @@ export default function PointsLedger() {
           </table>
         </div>
       </div>
+      <PointAdjustmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

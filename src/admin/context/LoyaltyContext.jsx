@@ -86,19 +86,21 @@ export function LoyaltyProvider({ children }) {
   const getLoyaltyAccount = (customerId) => loyaltyAccounts.find(a => a.customerId === customerId);
   const getCustomerLedger = (customerId) => pointsLedger.filter(l => l.customerId === customerId);
 
-  const adjustPoints = (customerId, amount, source, reason) => {
+  const adjustPoints = (customerId, amount, source, reason, type = null) => {
     const accountIndex = loyaltyAccounts.findIndex(a => a.customerId === customerId);
     if (accountIndex === -1) return;
 
+    const actualType = type || (amount >= 0 ? 'Adjusted' : 'Adjusted');
+
     const newTxn = {
-      id: `txn_${Date.now()}`,
+      id: `txn_${Date.now()}_${Math.floor(Math.random()*1000)}`,
       loyaltyAccountId: loyaltyAccounts[accountIndex].id,
       customerId,
-      type: amount >= 0 ? 'Adjusted (Add)' : 'Adjusted (Deduct)',
+      type: actualType,
       amount,
       source,
       referenceId: `manual_${Date.now()}`,
-      status: 'Available',
+      status: 'Completed',
       createdAt: new Date().toISOString(),
       metadata: reason
     };
@@ -109,7 +111,29 @@ export function LoyaltyProvider({ children }) {
     const acc = newAccounts[accountIndex];
     acc.availablePoints += amount;
     if (amount > 0) acc.lifetimeEarned += amount;
+    if (actualType === 'Redeemed') acc.lifetimeRedeemed += Math.abs(amount);
     setLoyaltyAccounts(newAccounts);
+  };
+
+  const awardOrderPoints = (customerId, orderId, orderTotal) => {
+    // Earning rule: 1 point per $1 (example configurable rule)
+    const pointsToAward = Math.floor(orderTotal);
+    if (pointsToAward <= 0) return;
+    
+    adjustPoints(customerId, pointsToAward, 'Purchase', `Order #${orderId} Completion`, 'Earned');
+  };
+
+  const reverseRefundPoints = (customerId, orderId, refundAmount) => {
+    // Reversal rule: 1 point reversed per $1 refunded
+    const pointsToReverse = -Math.floor(refundAmount);
+    if (pointsToReverse >= 0) return;
+    
+    adjustPoints(customerId, pointsToReverse, 'Refund', `Refund for Order #${orderId}`, 'Reversed');
+  };
+
+  const expirePoints = (customerId, amount, reason) => {
+    if (amount <= 0) return;
+    adjustPoints(customerId, -amount, 'System', reason || 'Points Expired', 'Expired');
   };
 
   return (
@@ -122,7 +146,10 @@ export function LoyaltyProvider({ children }) {
       referrals,
       getLoyaltyAccount,
       getCustomerLedger,
-      adjustPoints
+      adjustPoints,
+      awardOrderPoints,
+      reverseRefundPoints,
+      expirePoints
     }}>
       {children}
     </LoyaltyContext.Provider>

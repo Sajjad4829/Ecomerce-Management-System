@@ -3,7 +3,7 @@ import { useAnalytics } from '../../context/AnalyticsContext';
 import MetricCard from '../../components/analytics/MetricCard';
 import DateRangeSelector from '../../components/analytics/DateRangeSelector';
 import AreaChart from '../../components/charts/AreaChart';
-import BarChart from '../../components/charts/BarChart';
+import DataTable from '../../components/analytics/DataTable';
 import AnalyticsTabs from '../../components/analytics/AnalyticsTabs';
 import { FiDownload } from 'react-icons/fi';
 
@@ -39,7 +39,6 @@ export default function SalesAnalytics() {
         <MetricCard title="Refunds" value={data.refunds} format="currency" prefix="-" />
         <MetricCard title="Net Sales" value={data.netSales} format="currency" />
       </div>
-      <AnalyticsTabs />
 
       <div className="bg-surface p-6 rounded-xl border border-black/5 shadow-sm mb-8">
         <h3 className="text-lg font-medium mb-6">Sales Trend</h3>
@@ -52,14 +51,17 @@ export default function SalesAnalytics() {
         />
       </div>
 
-      <div className="bg-surface p-6 rounded-xl border border-black/5 shadow-sm">
-        <h3 className="text-lg font-medium mb-6">Units Sold</h3>
-        <BarChart 
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden flex flex-col" style={{ minHeight: '400px' }}>
+        <div className="p-6 border-b border-black/5">
+          <h3 className="text-lg font-medium">Sales by Date</h3>
+        </div>
+        <DataTable 
           data={data.trend} 
-          xAxisKey="date" 
-          bars={[
-            { key: 'orders', name: 'Units', color: '#8B8B8B' }
-          ]} 
+          columns={[
+            { key: 'date', label: 'Date' },
+            { key: 'orders', label: 'Orders' },
+            { key: 'revenue', label: 'Revenue', render: (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val) },
+          ]}
         />
       </div>
     </div>
