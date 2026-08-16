@@ -21,7 +21,7 @@ export default function AuditDetail() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-24">
       <div className="flex items-center gap-4">
-        <Link to="/admin/audit/logs" className="p-2 text-text-muted hover:text-text-primary rounded-lg hover:bg-stone-100 transition-colors">
+        <Link to="/admin/settings/audit/logs" className="p-2 text-text-muted hover:text-text-primary rounded-lg hover:bg-stone-100 transition-colors">
           <FiArrowLeft size={20} />
         </Link>
         <div>

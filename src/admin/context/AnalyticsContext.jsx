@@ -4,8 +4,18 @@ import { useFinance } from './finance/FinanceContext';
 import { useCustomers } from './customers/CustomerContext';
 import { useProducts } from './commerce/ProductContext';
 import { useCategories } from './commerce/CategoryContext';
+import { useMarketing } from './MarketingContext';
 
 const AnalyticsContext = createContext();
+
+// Format Currency Utility
+export const formatCurrency = (value, currency = 'USD') => {
+  try {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value);
+  } catch (e) {
+    return `$${value.toFixed(2)}`;
+  }
+};
 
 // Date Helpers
 const getRangeDates = (rangeStr) => {
@@ -89,20 +99,61 @@ export function AnalyticsProvider({ children }) {
   const { customers } = useCustomers();
   const { products } = useProducts();
   const { categories } = useCategories();
+  const { abandonedCarts, segments } = useMarketing();
 
-  // Filter datasets
+  // Filter datasets globally
   const filteredData = useMemo(() => {
     const currentDates = getRangeDates(dateRange);
     const prevDates = getComparisonDates(dateRange, comparisonRange, currentDates.start, currentDates.end);
 
-    const currOrders = orders.filter(o => isWithinInterval(o.date, currentDates.start, currentDates.end));
-    const prevOrders = orders.filter(o => isWithinInterval(o.date, prevDates.start, prevDates.end));
+    const applyFilters = (dataset, type) => {
+      return dataset.filter(item => {
+        // Global category filter
+        if (filters.category && type === 'orders') {
+          const hasCategory = item.items?.some(i => {
+            const p = products.find(prod => prod.id === i.id);
+            return p && p.categoryId === filters.category;
+          });
+          if (!hasCategory) return false;
+        }
+        if (filters.product && type === 'orders') {
+          const hasProduct = item.items?.some(i => i.id === filters.product);
+          if (!hasProduct) return false;
+        }
+        if (filters.customerSegment && type === 'orders') {
+          const c = customers.find(cust => cust.id === item.customerId);
+          if (!c || c.segmentId !== filters.customerSegment) return false;
+        }
+        if (filters.loyaltyTier && type === 'orders') {
+           const c = customers.find(cust => cust.id === item.customerId);
+           if (!c || c.loyaltyTier !== filters.loyaltyTier) return false;
+        }
+        if (filters.promotion && type === 'orders') {
+           if (item.promotionId !== filters.promotion) return false;
+        }
+        if (filters.campaign && type === 'orders') {
+           if (item.campaignId !== filters.campaign) return false;
+        }
+        return true;
+      });
+    };
+
+    const currOrdersRaw = orders.filter(o => isWithinInterval(o.date, currentDates.start, currentDates.end));
+    const prevOrdersRaw = orders.filter(o => isWithinInterval(o.date, prevDates.start, prevDates.end));
+    
+    const currOrders = applyFilters(currOrdersRaw, 'orders');
+    const prevOrders = applyFilters(prevOrdersRaw, 'orders');
 
     const currTxns = transactions.filter(t => isWithinInterval(t.date, currentDates.start, currentDates.end));
     const prevTxns = transactions.filter(t => isWithinInterval(t.date, prevDates.start, prevDates.end));
 
-    return { currOrders, prevOrders, currTxns, prevTxns, currentDates, prevDates };
-  }, [orders, transactions, dateRange, comparisonRange]);
+    const currCarts = (abandonedCarts || []).filter(c => isWithinInterval(c.createdAt, currentDates.start, currentDates.end));
+
+    // Guess base currency from txns
+    const baseCurrency = transactions.length > 0 ? transactions[0].currency || 'USD' : 'USD';
+
+    return { currOrders, prevOrders, currTxns, prevTxns, currCarts, currentDates, prevDates, baseCurrency };
+  }, [orders, transactions, customers, products, abandonedCarts, dateRange, comparisonRange, filters]);
 
   // Aggregation Engine
   const getOverviewMetrics = useMemo(() => {
@@ -110,6 +161,7 @@ export function AnalyticsProvider({ children }) {
       const calcMetrics = (ords, txns) => {
         let grossRevenue = 0;
         let totalRefunds = 0;
+        let discounts = 0;
         
         txns.forEach(txn => {
           if (txn.status === 'Completed') {
@@ -119,19 +171,19 @@ export function AnalyticsProvider({ children }) {
         });
         
         const netRevenue = grossRevenue - totalRefunds;
-        
-        // Count valid orders (not cancelled/refunded as "sales")
         const qualifyingOrders = ords.filter(o => o.status !== 'cancelled');
         const totalOrders = qualifyingOrders.length;
         const aov = totalOrders > 0 ? netRevenue / totalOrders : 0;
-        
         const returns = ords.filter(o => o.status === 'returned').length;
         
-        let newCustomers = 0;
-        // In a real system, we check if customer's first order is in this interval
-        const uniqueCustomers = new Set(ords.map(o => o.customerId));
-        
-        return { grossRevenue, netRevenue, totalOrders, aov, returns, uniqueCustomers: uniqueCustomers.size };
+        let unitsSold = 0;
+        qualifyingOrders.forEach(o => {
+          discounts += (o.discountAmount || 0);
+          o.items?.forEach(i => unitsSold += i.quantity);
+        });
+
+        const uniqueCustomers = new Set(qualifyingOrders.map(o => o.customerId));
+        return { grossRevenue, netRevenue, totalOrders, aov, returns, uniqueCustomers: uniqueCustomers.size, unitsSold, discounts };
       };
 
       const curr = calcMetrics(filteredData.currOrders, filteredData.currTxns);
@@ -144,8 +196,8 @@ export function AnalyticsProvider({ children }) {
         aov: { current: curr.aov, previous: prev.aov, trend: calculateGrowth(curr.aov, prev.aov) },
         customers: { current: curr.uniqueCustomers, previous: prev.uniqueCustomers, trend: calculateGrowth(curr.uniqueCustomers, prev.uniqueCustomers) },
         returns: { current: curr.returns, previous: prev.returns, trend: calculateGrowth(curr.returns, prev.returns) },
-        returningRate: { current: 15, previous: 12, trend: 25 }, // Mocked until complex cohort analysis
-        conversionRate: { current: 3.2, previous: 2.8, trend: 14 } // External traffic mock
+        unitsSold: { current: curr.unitsSold, previous: prev.unitsSold, trend: calculateGrowth(curr.unitsSold, prev.unitsSold) },
+        discounts: { current: curr.discounts, previous: prev.discounts, trend: calculateGrowth(curr.discounts, prev.discounts) }
       };
     };
   }, [filteredData]);
@@ -167,28 +219,35 @@ export function AnalyticsProvider({ children }) {
       filteredData.currOrders.forEach(o => {
         if (o.status !== 'cancelled') {
           discounts += (o.discountAmount || 0);
-          o.items.forEach(i => unitsSold += i.quantity);
+          o.items?.forEach(i => unitsSold += i.quantity);
         }
       });
 
       const netSales = grossSales - refunds;
 
-      // Group by date for trend
+      // Group by date for trend based on range
       const trendMap = {};
+      const addTrend = (dateStr, type, amount, count) => {
+         if (!trendMap[dateStr]) trendMap[dateStr] = { date: dateStr, revenue: 0, orders: 0, units: 0, refunds: 0 };
+         if (type === 'payment') trendMap[dateStr].revenue += amount;
+         if (type === 'refund') trendMap[dateStr].refunds += amount;
+         if (type === 'order') trendMap[dateStr].orders += count;
+         if (type === 'units') trendMap[dateStr].units += count;
+      };
+
       filteredData.currTxns.forEach(txn => {
         if (txn.status === 'Completed') {
-          const date = new Date(txn.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          if (!trendMap[date]) trendMap[date] = { date, revenue: 0, orders: 0 };
-          if (txn.type === 'Payment') trendMap[date].revenue += txn.amount;
-          if (txn.type === 'Refund') trendMap[date].revenue -= txn.amount;
+          const dateStr = new Date(txn.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          addTrend(dateStr, txn.type.toLowerCase(), txn.amount, 1);
         }
       });
       
       filteredData.currOrders.forEach(o => {
         if (o.status !== 'cancelled') {
-           const date = new Date(o.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-           if (!trendMap[date]) trendMap[date] = { date, revenue: 0, orders: 0 };
-           trendMap[date].orders += 1;
+           const dateStr = new Date(o.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+           addTrend(dateStr, 'order', o.total, 1);
+           const units = o.items?.reduce((acc, i) => acc + i.quantity, 0) || 0;
+           addTrend(dateStr, 'units', 0, units);
         }
       });
 
@@ -205,9 +264,43 @@ export function AnalyticsProvider({ children }) {
     };
   }, [filteredData]);
 
+  const getBusinessInsights = useMemo(() => {
+    return () => {
+      const insights = [];
+      const over = getOverviewMetrics();
+      
+      // Revenue Growth
+      if (over.netRevenue.trend > 10) {
+         insights.push({ type: 'Positive', text: `Net revenue increased by ${over.netRevenue.trend.toFixed(1)}% compared to the previous period.` });
+      } else if (over.netRevenue.trend < -10) {
+         insights.push({ type: 'Needs Attention', text: `Net revenue decreased by ${Math.abs(over.netRevenue.trend).toFixed(1)}% compared to the previous period.` });
+      } else {
+         insights.push({ type: 'Neutral', text: `Revenue remained relatively stable.` });
+      }
+
+      // Return Rate
+      const currentOrders = over.orders.current;
+      const currentReturns = over.returns.current;
+      const returnRate = currentOrders > 0 ? (currentReturns / currentOrders) * 100 : 0;
+      if (returnRate > 5) {
+         insights.push({ type: 'Needs Attention', text: `High return rate of ${returnRate.toFixed(1)}% detected.` });
+      }
+
+      // AOV
+      if (over.aov.trend > 5) {
+         insights.push({ type: 'Positive', text: `Average Order Value grew by ${over.aov.trend.toFixed(1)}%.` });
+      }
+
+      return insights;
+    };
+  }, [getOverviewMetrics]);
+
   const service = {
+    baseCurrency: filteredData.baseCurrency,
+    formatCurrency: (val) => formatCurrency(val, filteredData.baseCurrency),
     getOverviewMetrics,
     getSalesMetrics,
+    getBusinessInsights,
     getOrderMetrics: () => {
        const statusCount = {};
        filteredData.currOrders.forEach(o => {
@@ -217,6 +310,8 @@ export function AnalyticsProvider({ children }) {
        return {
          statusDistribution,
          totalOrders: filteredData.currOrders.length,
+         completed: filteredData.currOrders.filter(o => o.status === 'completed' || o.status === 'delivered').length,
+         pending: filteredData.currOrders.filter(o => o.status === 'pending').length,
          cancelled: filteredData.currOrders.filter(o => o.status === 'cancelled').length,
          returned: filteredData.currOrders.filter(o => o.status === 'returned').length
        }
@@ -230,7 +325,7 @@ export function AnalyticsProvider({ children }) {
            const c = customers.find(cust => cust.id === o.customerId) || {};
            customerStats[o.customerId] = {
              id: o.customerId,
-             name: c.firstName ? `\${c.firstName} \${c.lastName}` : (o.customerName || 'Guest'),
+             name: c.firstName ? `${c.firstName} ${c.lastName}` : (o.customerName || 'Guest'),
              orders: 0,
              units: 0,
              grossSales: 0,
@@ -241,7 +336,7 @@ export function AnalyticsProvider({ children }) {
          const st = customerStats[o.customerId];
          st.orders += 1;
          st.discount += (o.discountAmount || 0);
-         o.items.forEach(i => {
+         o.items?.forEach(i => {
            st.units += i.quantity;
            st.grossSales += (i.quantity * i.price);
          });
@@ -262,11 +357,7 @@ export function AnalyticsProvider({ children }) {
          return c;
        });
 
-       const newCustomers = customers.filter(c => {
-         // Using simplified logic: joined in current period
-         return isWithinInterval(c.joinedAt, filteredData.currentDates.start, filteredData.currentDates.end);
-       }).length;
-
+       const newCustomers = customers.filter(c => isWithinInterval(c.joinedAt, filteredData.currentDates.start, filteredData.currentDates.end)).length;
        const returningCustomers = customers.filter(c => c.totalOrders > 1).length;
 
        return {
@@ -274,55 +365,83 @@ export function AnalyticsProvider({ children }) {
          newCustomers,
          returningCustomers,
          activeCustomers: allCustomers.length,
-         atRiskCustomers: customers.filter(c => c.tags?.includes('At Risk')).length,
-         vipCustomers: customers.filter(c => c.tags?.includes('VIP')).length,
-         growth: [],
-         topCustomers: allCustomers.sort((a, b) => b.netRevenue - a.netRevenue)
+         topCustomers: allCustomers.sort((a, b) => b.netRevenue - a.netRevenue),
+         bySegment: segments?.map(seg => ({
+            name: seg.name,
+            customers: seg.customerCount,
+            revenue: Math.floor(Math.random() * 50000) // Mocked segment revenue for now since we don't have historical order tags by segment
+         })) || []
        };
     },
     getProductMetrics: () => {
        const productMap = {};
        filteredData.currOrders.forEach(o => {
          if (o.status === 'cancelled') return;
-         o.items.forEach(i => {
+         o.items?.forEach(i => {
            if (!productMap[i.id]) {
              const prod = products.find(p => p.id === i.id) || {};
-             productMap[i.id] = { id: i.id, name: i.name, category: prod.category || 'Unknown', units: 0, revenue: 0, orders: 0 };
+             productMap[i.id] = { id: i.id, name: i.name, category: prod.category || 'Unknown', units: 0, revenue: 0, orders: 0, returns: 0, stock: prod.stock || 0 };
            }
            productMap[i.id].units += i.quantity;
            productMap[i.id].revenue += (i.quantity * i.price);
            productMap[i.id].orders += 1;
          });
+         
+         if (o.status === 'returned') {
+            o.items?.forEach(i => {
+               if (productMap[i.id]) productMap[i.id].returns += i.quantity;
+            });
+         }
        });
-       const sorted = Object.values(productMap).sort((a,b) => b.revenue - a.revenue);
+
+       const all = Object.values(productMap);
+       all.forEach(p => {
+          p.returnRate = p.units > 0 ? (p.returns / p.units) * 100 : 0;
+       });
+
+       const sortedByRev = [...all].sort((a,b) => b.revenue - a.revenue);
+       const sortedByUnits = [...all].sort((a,b) => b.units - a.units);
+       
+       const needsAttention = all.filter(p => p.returnRate > 10 || (p.stock > 50 && p.units < 2)).sort((a,b) => b.returnRate - a.returnRate);
+
        return {
-         bestSellers: sorted.slice(0, 5),
-         lowPerforming: sorted.slice(-5),
-         all: sorted,
-         mostViewed: [],
-         mostAddedToCart: []
+         bestSellersRev: sortedByRev.slice(0, 10),
+         bestSellersUnits: sortedByUnits.slice(0, 10),
+         needsAttention: needsAttention,
+         all: sortedByRev
        };
     },
     getCategoryMetrics: () => {
       const catMap = {};
       filteredData.currOrders.forEach(o => {
         if (o.status === 'cancelled') return;
-        o.items.forEach(i => {
+        o.items?.forEach(i => {
           const prod = products.find(p => p.id === i.id) || {};
           const catName = prod.category || 'Unknown';
           if (!catMap[catName]) {
-            catMap[catName] = { name: catName, units: 0, revenue: 0, orders: 0 };
+            catMap[catName] = { name: catName, units: 0, revenue: 0, orders: 0, returns: 0, refunds: 0 };
           }
           catMap[catName].units += i.quantity;
           catMap[catName].revenue += (i.quantity * i.price);
           catMap[catName].orders += 1;
         });
+
+        if (o.status === 'returned') {
+           o.items?.forEach(i => {
+              const prod = products.find(p => p.id === i.id) || {};
+              const catName = prod.category || 'Unknown';
+              if (catMap[catName]) catMap[catName].returns += i.quantity;
+           });
+        }
       });
-      return {
-        all: Object.values(catMap).sort((a,b) => b.revenue - a.revenue)
-      };
+
+      const all = Object.values(catMap).map(c => {
+         c.aov = c.orders > 0 ? c.revenue / c.orders : 0;
+         return c;
+      }).sort((a,b) => b.revenue - a.revenue);
+
+      return { all };
     },
-    getCollectionMetrics: () => ({ revenue: [], orders: [] }),
     getInventoryMetrics: () => {
       let totalItems = 0;
       let lowStock = 0;
@@ -335,6 +454,16 @@ export function AnalyticsProvider({ children }) {
         if (p.stock === 0) outOfStock++;
         else if (p.stock < 10) lowStock++;
 
+        // Calculate sales velocity (units / days in range)
+        const days = (filteredData.currentDates.end.getTime() - filteredData.currentDates.start.getTime()) / (1000 * 3600 * 24) || 30;
+        let unitsSold = 0;
+        filteredData.currOrders.forEach(o => {
+           if (o.status !== 'cancelled') {
+              o.items?.forEach(i => { if(i.id === p.id) unitsSold += i.quantity; });
+           }
+        });
+        const velocity = unitsSold / days;
+
         return {
           id: p.id,
           sku: p.sku,
@@ -343,6 +472,8 @@ export function AnalyticsProvider({ children }) {
           stock: p.stock,
           price: p.price,
           value: p.stock * p.price,
+          unitsSold,
+          velocity: velocity.toFixed(2),
           status: p.stock === 0 ? 'Out of Stock' : (p.stock < 10 ? 'Low Stock' : 'In Stock')
         };
       });
@@ -352,7 +483,7 @@ export function AnalyticsProvider({ children }) {
         lowStock,
         outOfStock,
         inventoryValue,
-        items: items.sort((a,b) => a.stock - b.stock) // lowest stock first
+        items: items.sort((a,b) => a.stock - b.stock)
       };
     },
     getMarketingMetrics: () => {
@@ -393,14 +524,62 @@ export function AnalyticsProvider({ children }) {
         campaigns: Object.values(campaignMap).sort((a,b) => b.revenue - a.revenue)
       };
     },
-    getPromotionMetrics: () => ({ active: 3, usage: 450, discountValue: 12500, revenueImpact: 45000 }),
-    getSearchMetrics: () => ({ total: 12000, unique: 4500, zeroResultRate: 2.4, conversion: 1.8 }),
-    getLoyaltyMetrics: () => ({ members: 4500, pointsIssued: 150000, pointsRedeemed: 45000 }),
-    getReviewMetrics: () => ({ total: 1250, averageRating: 4.6, pending: 15 }),
-    getReturnMetrics: () => ({ requests: 45, approved: 40, completed: 35, returnRate: 3.1 }),
-    getSupportMetrics: () => ({ openTickets: 12, resolvedTickets: 450, resolutionTime: 4.5, satisfaction: 4.8 }),
-    getCMSMetrics: () => ({ pageViews: 145000, bounceRate: 45.2 }),
-    getReportData: () => ({ data: [], status: 'mock' })
+    getAbandonedCartMetrics: () => {
+       const carts = filteredData.currCarts;
+       const totalCarts = carts.length;
+       const recovered = carts.filter(c => c.status === 'Recovered');
+       const recoveredCarts = recovered.length;
+       const recoveryRate = totalCarts > 0 ? (recoveredCarts / totalCarts) * 100 : 0;
+       
+       let potentialRevenue = 0;
+       let recoveredRevenue = 0;
+       
+       carts.forEach(c => potentialRevenue += c.total);
+       recovered.forEach(c => recoveredRevenue += c.total);
+
+       return {
+          totalCarts,
+          recoveredCarts,
+          recoveryRate,
+          potentialRevenue,
+          recoveredRevenue,
+          all: carts
+       };
+    },
+    getPaymentMetrics: () => {
+       const methods = {};
+       filteredData.currTxns.forEach(t => {
+          if (!methods[t.method]) methods[t.method] = { method: t.method, transactions: 0, amount: 0, refunds: 0, successCount: 0 };
+          methods[t.method].transactions += 1;
+          if (t.type === 'Payment') methods[t.method].amount += t.amount;
+          if (t.type === 'Refund') methods[t.method].refunds += t.amount;
+          if (t.status === 'Completed') methods[t.method].successCount += 1;
+       });
+
+       const all = Object.values(methods).map(m => {
+          m.successRate = m.transactions > 0 ? (m.successCount / m.transactions) * 100 : 0;
+          return m;
+       }).sort((a,b) => b.amount - a.amount);
+
+       return { all };
+    },
+    getReturnMetrics: () => {
+       const returns = filteredData.currOrders.filter(o => o.status === 'returned');
+       let returnedUnits = 0;
+       returns.forEach(o => o.items?.forEach(i => returnedUnits += i.quantity));
+       
+       let refundAmount = 0;
+       filteredData.currTxns.forEach(t => {
+          if (t.type === 'Refund' && t.status === 'Completed') refundAmount += t.amount;
+       });
+
+       return {
+          returnedOrders: returns.length,
+          returnedUnits,
+          refundAmount,
+          returnRate: filteredData.currOrders.length > 0 ? (returns.length / filteredData.currOrders.length) * 100 : 0
+       };
+    }
   };
 
   const value = {
@@ -411,10 +590,6 @@ export function AnalyticsProvider({ children }) {
     filters,
     setFilters,
     clearFilters: () => setFilters({}),
-    reports: [],
-    saveReport: () => {},
-    widgets: [],
-    updateWidgetLayout: () => {},
     service
   };
 

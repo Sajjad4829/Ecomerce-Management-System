@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
 
 export const AuthContext = createContext(null);
 
@@ -111,7 +111,7 @@ export function AuthProvider({ children }) {
     return user.permissions.some(p => p.startsWith(module + '.'));
   };
 
-  const value = {
+  const value = React.useMemo(() => ({
     user,
     sessionStatus,
     isAuthenticated: sessionStatus === 'authenticated',
@@ -125,7 +125,7 @@ export function AuthProvider({ children }) {
     staffProfile: user,
     roles: user ? [user.role] : [],
     permissions: user ? user.permissions : []
-  };
+  }), [user, sessionStatus]);
 
   return (
     <AuthContext.Provider value={value}>

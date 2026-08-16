@@ -75,6 +75,45 @@ const MOCK_EVENTS = [
 ];
 
 export class AuditService {
+  async createAuditEvent(eventData) {
+    const newEvent = {
+      id: `evt-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      actor: eventData.actor || 'system',
+      actorRole: eventData.actorRole || 'System',
+      action: eventData.action,
+      module: eventData.module,
+      resourceType: eventData.resourceType || '-',
+      resourceId: eventData.resourceId || '-',
+      resourceName: eventData.resourceName || '-',
+      status: eventData.status || 'Success',
+      severity: eventData.severity || 'Low',
+      source: eventData.source || 'Admin UI',
+      metadata: maskObject(eventData.metadata || {})
+    };
+    
+    MOCK_EVENTS.unshift(newEvent);
+    return newEvent;
+  }
+
+  async getAuditAnalytics() {
+    const total = MOCK_EVENTS.length;
+    const critical = MOCK_EVENTS.filter(e => e.severity === 'Critical').length;
+    const failed = MOCK_EVENTS.filter(e => e.status === 'Failed').length;
+    
+    const byModule = MOCK_EVENTS.reduce((acc, curr) => {
+      acc[curr.module] = (acc[curr.module] || 0) + 1;
+      return acc;
+    }, {});
+
+    const byAction = MOCK_EVENTS.reduce((acc, curr) => {
+      acc[curr.action] = (acc[curr.action] || 0) + 1;
+      return acc;
+    }, {});
+
+    return { total, critical, failed, byModule, byAction };
+  }
+
   async getEvents(filters = {}) {
     let results = [...MOCK_EVENTS];
     

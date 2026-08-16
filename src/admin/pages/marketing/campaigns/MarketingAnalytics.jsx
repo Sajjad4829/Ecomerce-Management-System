@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useMarketing, useGlobalMarketingAnalytics } from '../../context/marketing/MarketingContext';
-import { useOrders } from '../../context/orders/OrderContext';
-import { useFinance } from '../../context/finance/FinanceContext';
+import { useMarketing, useGlobalMarketingAnalytics } from '../../../context/marketing/MarketingContext';
+import { useOrders } from '../../../context/orders/OrderContext';
+import { useFinance } from '../../../context/finance/FinanceContext';
 import { BarChart3, Download, Filter } from 'lucide-react';
 
 export const MarketingAnalytics = () => {

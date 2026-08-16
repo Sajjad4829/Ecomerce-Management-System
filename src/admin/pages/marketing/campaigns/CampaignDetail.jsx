@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useCampaignAnalytics } from '../../context/marketing/MarketingContext';
-import { usePromotion } from '../../context/PromotionContext';
+import { useCampaignAnalytics } from '../../../context/marketing/MarketingContext';
+import { usePromotion } from '../../../context/PromotionContext';
 import { ArrowLeft, TrendingUp, Users, Target, Activity, Calendar, Download, Edit2 } from 'lucide-react';
 
 export const CampaignDetail = () => {

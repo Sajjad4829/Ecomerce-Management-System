@@ -5,12 +5,12 @@ import DataTable from '../../components/analytics/DataTable';
 import AnalyticsTabs from '../../components/analytics/AnalyticsTabs';
 import { FiDownload } from 'react-icons/fi';
 
-export default function CategoryAnalytics() {
+export default function PaymentAnalytics() {
   const { service, dateRange } = useAnalytics();
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    setData(service.getCategoryMetrics());
+    setData(service.getPaymentMetrics());
   }, [service, dateRange]);
 
   if (!data) return null;
@@ -19,8 +19,8 @@ export default function CategoryAnalytics() {
     <div className="max-w-7xl mx-auto p-4 md:p-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-text-primary">Category Analytics</h1>
-          <p className="text-text-muted text-sm mt-1">Category performance and revenue</p>
+          <h1 className="text-2xl font-serif font-bold text-text-primary">Payment Analytics</h1>
+          <p className="text-text-muted text-sm mt-1">Transaction success rates and methods</p>
         </div>
         <div className="flex items-center gap-4">
           <DateRangeSelector />
@@ -31,21 +31,20 @@ export default function CategoryAnalytics() {
       </div>
       <AnalyticsTabs />
 
-      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden mb-8" style={{ minHeight: '400px' }}>
-        <div className="p-6 border-b border-black/5">
-          <h3 className="text-lg font-medium">Category Performance</h3>
+      <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden flex flex-col" style={{ minHeight: '400px' }}>
+        <div className="p-6 border-b border-black/5 flex justify-between items-center">
+          <h3 className="text-lg font-medium">Payment Methods</h3>
         </div>
         <DataTable 
           data={data.all} 
           columns={[
-            { key: 'name', label: 'Category Name' },
-            { key: 'orders', label: 'Orders' },
-            { key: 'units', label: 'Units Sold' },
-            { key: 'aov', label: 'AOV', render: (val) => service.formatCurrency(val) },
-            { key: 'returns', label: 'Returns' },
-            { key: 'revenue', label: 'Revenue', render: (val) => service.formatCurrency(val) },
+            { key: 'method', label: 'Payment Method' },
+            { key: 'transactions', label: 'Transactions' },
+            { key: 'successRate', label: 'Success Rate', render: (val) => `${val.toFixed(1)}%` },
+            { key: 'refunds', label: 'Refunds', render: (val) => service.formatCurrency(val) },
+            { key: 'amount', label: 'Total Volume', render: (val) => service.formatCurrency(val) },
           ]}
-          searchPlaceholder="Search categories..."
+          searchPlaceholder="Search methods..."
         />
       </div>
     </div>

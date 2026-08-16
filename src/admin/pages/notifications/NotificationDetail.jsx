@@ -59,7 +59,7 @@ export default function NotificationDetail() {
           </div>
           <h1 className="text-2xl font-serif font-bold text-text-primary mb-2">{notification.title}</h1>
           <p className="text-sm text-text-muted">
-            {new Date(notification.createdAt).toLocaleString()} • Source: {notification.source}
+            {new Date(notification.createdAt).toLocaleString()} • Module: {notification.module || 'System'}
           </p>
         </div>
         <div className="p-6 prose prose-stone max-w-none">
@@ -68,7 +68,16 @@ export default function NotificationDetail() {
           </p>
         </div>
         <div className="p-6 bg-background border-t border-border flex justify-between items-center text-sm text-text-muted">
-          <div>Actor: <span className="font-medium text-text-secondary">{notification.actor}</span></div>
+          <div className="flex items-center gap-4">
+            {notification.actionUrl && (
+              <Link to={notification.actionUrl} className="px-4 py-2 bg-stone-900 text-white rounded-lg font-medium hover:bg-stone-800 transition-colors">
+                View Related Entity
+              </Link>
+            )}
+            {notification.entityId && (
+              <span>Entity ID: <span className="font-medium text-text-secondary">{notification.entityId}</span></span>
+            )}
+          </div>
           <div>ID: <span className="font-mono text-xs">{notification.id}</span></div>
         </div>
       </div>

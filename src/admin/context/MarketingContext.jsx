@@ -130,6 +130,37 @@ export function MarketingProvider({ children }) {
     }
   ]);
 
+  // Phase 5.57 Abandoned Carts Mock
+  const [abandonedCarts, setAbandonedCarts] = useState([
+    {
+      id: 'cart_1',
+      customerId: 'cust_1',
+      items: [{ id: 'prod_1', quantity: 2, price: 50 }],
+      total: 100,
+      status: 'Recovered',
+      createdAt: '2026-08-10T10:00:00Z',
+      recoveredAt: '2026-08-11T12:00:00Z'
+    },
+    {
+      id: 'cart_2',
+      customerId: 'cust_3',
+      items: [{ id: 'prod_2', quantity: 1, price: 1200 }],
+      total: 1200,
+      status: 'Abandoned',
+      createdAt: '2026-08-12T14:00:00Z',
+      recoveredAt: null
+    },
+    {
+      id: 'cart_3',
+      customerId: 'guest_1',
+      items: [{ id: 'prod_3', quantity: 1, price: 300 }],
+      total: 300,
+      status: 'Recovered',
+      createdAt: '2026-08-14T09:00:00Z',
+      recoveredAt: '2026-08-14T11:00:00Z'
+    }
+  ]);
+
   const getSegment = (id) => segments.find(s => s.id === id);
   const getAutomation = (id) => automations.find(a => a.id === id);
   const getAutomationLogs = (id) => automationLogs.filter(l => l.automationId === id);
@@ -140,11 +171,13 @@ export function MarketingProvider({ children }) {
       audiences,
       automations,
       automationLogs,
+      abandonedCarts,
       getSegment,
       getAutomation,
       getAutomationLogs,
       setSegments,
-      setAutomations
+      setAutomations,
+      setAbandonedCarts
     }}>
       {children}
     </MarketingContext.Provider>

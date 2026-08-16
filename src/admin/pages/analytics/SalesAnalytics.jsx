@@ -46,13 +46,13 @@ export default function SalesAnalytics() {
           data={data.trend} 
           xAxisKey="date" 
           areas={[
-            { key: 'revenue', name: 'Revenue', color: '#1A1A1A' }
+            { key: 'revenue', name: 'Revenue', color: 'currentColor' }
           ]} 
         />
       </div>
 
       <div className="bg-surface rounded-xl border border-black/5 shadow-sm overflow-hidden flex flex-col" style={{ minHeight: '400px' }}>
-        <div className="p-6 border-b border-black/5">
+        <div className="p-6 border-b border-black/5 flex justify-between items-center">
           <h3 className="text-lg font-medium">Sales by Date</h3>
         </div>
         <DataTable 
@@ -60,7 +60,9 @@ export default function SalesAnalytics() {
           columns={[
             { key: 'date', label: 'Date' },
             { key: 'orders', label: 'Orders' },
-            { key: 'revenue', label: 'Revenue', render: (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val) },
+            { key: 'units', label: 'Units Sold' },
+            { key: 'refunds', label: 'Refunds', render: (val) => service.formatCurrency(val) },
+            { key: 'revenue', label: 'Revenue', render: (val) => service.formatCurrency(val) },
           ]}
         />
       </div>

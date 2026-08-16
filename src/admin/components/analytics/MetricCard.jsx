@@ -1,16 +1,17 @@
 import React from 'react';
 import { FiTrendingUp, FiTrendingDown, FiMinus } from 'react-icons/fi';
+import { useAnalytics } from '../../context/AnalyticsContext';
 
 export default function MetricCard({ title, value, previousValue, trend, format = 'number', prefix = '', suffix = '', info }) {
+  const { service } = useAnalytics();
   const isPositive = trend > 0;
   const isNegative = trend < 0;
-  const isNeutral = trend === 0 || !trend;
 
   const displayValue = format === 'currency' 
-    ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
+    ? service.formatCurrency(value || 0)
     : format === 'percent'
-    ? `${value}%`
-    : new Intl.NumberFormat('en-US').format(value);
+    ? `${value || 0}%`
+    : new Intl.NumberFormat('en-US').format(value || 0);
 
   return (
     <div className="bg-surface p-6 rounded-xl border border-black/5 shadow-sm">
@@ -37,7 +38,7 @@ export default function MetricCard({ title, value, previousValue, trend, format 
               isPositive ? 'text-success' : isNegative ? 'text-danger' : 'text-text-muted'
             }`}>
               {isPositive ? <FiTrendingUp className="w-4 h-4" /> : isNegative ? <FiTrendingDown className="w-4 h-4" /> : <FiMinus className="w-4 h-4" />}
-              <span>{Math.abs(trend)}%</span>
+              <span>{Math.abs(trend).toFixed(1)}%</span>
             </div>
           )}
           {previousValue !== undefined && (

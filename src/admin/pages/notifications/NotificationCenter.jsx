@@ -1,19 +1,48 @@
 import React, { useState } from 'react';
 import { useNotification } from '../../context/NotificationContext';
-import { FiCheck, FiArchive, FiAlertCircle, FiBox, FiShoppingCart, FiShield, FiMessageSquare } from 'react-icons/fi';
+import { FiCheck, FiArchive, FiAlertCircle, FiBox, FiShoppingCart, FiShield, FiMessageSquare, FiSearch } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 export default function NotificationCenter() {
   const { notifications, markAsRead, markAllAsRead, archiveNotification, getUnreadCount } = useNotification();
   const [activeTab, setActiveTab] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('All');
+  const [dateFilter, setDateFilter] = useState('All');
 
-  const tabs = ['All', 'Unread', 'System', 'Order', 'Inventory', 'Marketing', 'Security'];
+  const tabs = ['All', 'Unread', 'System', 'Order', 'Inventory', 'Finance', 'Security', 'Archived'];
 
   const filteredNotifications = notifications.filter(n => {
-    if (n.status === 'Archived') return false;
-    if (activeTab === 'All') return true;
-    if (activeTab === 'Unread') return n.status === 'Unread';
-    return n.type === activeTab;
+    // Tab Filter
+    if (activeTab === 'Archived') {
+      if (n.status !== 'Archived') return false;
+    } else {
+      if (n.status === 'Archived') return false;
+      if (activeTab === 'Unread' && n.status !== 'Unread') return false;
+      if (activeTab !== 'All' && activeTab !== 'Unread' && n.type !== activeTab) return false;
+    }
+
+    // Priority Filter
+    if (priorityFilter !== 'All' && n.priority !== priorityFilter) return false;
+
+    // Date Filter (simple mock implementation)
+    if (dateFilter === 'Today') {
+      if (new Date(n.createdAt).toDateString() !== new Date().toDateString()) return false;
+    } else if (dateFilter === 'Last 7 Days') {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      if (new Date(n.createdAt) < sevenDaysAgo) return false;
+    }
+
+    // Search Filter
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      if (!n.title.toLowerCase().includes(q) && !n.message.toLowerCase().includes(q) && !(n.entityId || '').toLowerCase().includes(q)) {
+        return false;
+      }
+    }
+
+    return true;
   });
 
   const getIcon = (type) => {
@@ -40,7 +69,7 @@ export default function NotificationCenter() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-serif font-bold text-text-primary">Notification Center</h1>
-          <p className="text-sm text-text-muted mt-1">Manage system alerts and internal communications.</p>
+          <p className="text-sm text-text-muted mt-1">Manage system alerts and operational events.</p>
         </div>
         <div className="flex gap-2">
           {getUnreadCount() > 0 && (
@@ -48,6 +77,44 @@ export default function NotificationCenter() {
               Mark All as Read
             </button>
           )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="md:col-span-2 relative">
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+          <input 
+            type="text" 
+            placeholder="Search notifications..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+          />
+        </div>
+        <div>
+          <select 
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+          >
+            <option value="All">All Priorities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Normal">Normal</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div>
+          <select 
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+          >
+            <option value="All">All Time</option>
+            <option value="Today">Today</option>
+            <option value="Last 7 Days">Last 7 Days</option>
+            <option value="Last 30 Days">Last 30 Days</option>
+          </select>
         </div>
       </div>
 

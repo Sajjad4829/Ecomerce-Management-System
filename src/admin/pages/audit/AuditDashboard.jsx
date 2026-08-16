@@ -47,7 +47,7 @@ export default function AuditDashboard() {
             <FiShield />
             <h3 className="font-medium text-sm">Active Admins</h3>
           </div>
-          <p className="text-2xl font-bold text-text-primary">12 <span className="text-xs text-text-muted font-normal">(Placeholder)</span></p>
+          <p className="text-2xl font-bold text-text-primary">{new Set(events.map(e => e.actor)).size}</p>
         </div>
       </div>
 
@@ -55,7 +55,7 @@ export default function AuditDashboard() {
         <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-serif font-bold text-lg">Recent Activity</h3>
-            <Link to="/admin/audit/logs" className="text-sm text-text-secondary hover:text-text-primary">View All</Link>
+            <Link to="/admin/settings/audit/logs" className="text-sm text-text-secondary hover:text-text-primary">View All</Link>
           </div>
           {loading ? (
             <div className="animate-pulse h-40 bg-stone-100 rounded-lg"></div>
@@ -67,7 +67,7 @@ export default function AuditDashboard() {
         <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-serif font-bold text-lg">High Risk Activity</h3>
-            <Link to="/admin/audit/logs?severity=High" className="text-sm text-text-secondary hover:text-text-primary">View All</Link>
+            <Link to="/admin/settings/audit/logs?severity=High" className="text-sm text-text-secondary hover:text-text-primary">View All</Link>
           </div>
           {loading ? (
             <div className="animate-pulse h-40 bg-stone-100 rounded-lg"></div>

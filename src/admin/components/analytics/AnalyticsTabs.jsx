@@ -8,12 +8,17 @@ const TABS = [
   { label: 'Orders', path: '/admin/analytics/orders' },
   { label: 'Customers', path: '/admin/analytics/customers' },
   { label: 'Products', path: '/admin/analytics/products' },
+  { label: 'Categories', path: '/admin/analytics/categories' },
+  { label: 'Inventory', path: '/admin/analytics/inventory' },
+  { label: 'Marketing', path: '/admin/analytics/marketing' },
+  { label: 'Payments', path: '/admin/analytics/payment' },
+  { label: 'Abandoned Carts', path: '/admin/analytics/abandoned-carts' },
   { label: 'Reports', path: '/admin/analytics/reports' },
 ];
 
 export default function AnalyticsTabs() {
   return (
-    <div className="flex space-x-1 border-b border-black/10 mb-8 overflow-x-auto custom-scrollbar">
+    <div className="flex space-x-1 border-b border-black/10 mb-8 overflow-x-auto custom-scrollbar pb-2">
       {TABS.map((tab) => (
         <NavLink
           key={tab.label}

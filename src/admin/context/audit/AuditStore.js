@@ -30,12 +30,23 @@ export function useAuditStore() {
     setFilters({});
   };
 
+  const createAuditEvent = async (eventData) => {
+    try {
+      const newEvent = await auditService.createAuditEvent(eventData);
+      setEvents(prev => [newEvent, ...prev]);
+      return newEvent;
+    } catch (err) {
+      console.error('Failed to create audit event', err);
+    }
+  };
+
   return {
     events,
     filters,
     loading,
     updateFilters,
     clearFilters,
-    loadEvents
+    loadEvents,
+    createAuditEvent
   };
 }

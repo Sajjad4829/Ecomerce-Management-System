@@ -317,7 +317,7 @@ import MarketingDashboard from './admin/pages/marketing/MarketingDashboard';
 import CampaignCenter from './admin/pages/marketing/campaigns/CampaignCenter';
 import CampaignBuilder from './admin/pages/marketing/campaigns/CampaignBuilder';
 import CampaignDetail from './admin/pages/marketing/campaigns/CampaignDetail';
-import MarketingAnalytics from './admin/pages/marketing/campaigns/MarketingAnalytics';
+
 import {
   CampaignTypes,
   Channels, Audiences, MarketingLists, Promotions, Banners, MarketingAssets,
@@ -646,7 +646,21 @@ export default function App() {
                                                       <Route path="localization" element={<SystemSettings />} />
                                                       <Route path="features" element={<div className="p-8">Feature Flags Placeholder</div>} />
                                                       <Route path="business-rules" element={<BusinessRules />} />
-                                                      <Route path="audit" element={<div className="p-8">Audit Settings Placeholder</div>} />
+                                                      <Route path="audit">
+                                                        <Route index element={<AuditDashboard />} />
+                                                        <Route path="logs" element={<AuditLogs />} />
+                                                        <Route path="logs/:eventId" element={<AuditDetail />} />
+                                                        <Route path="actors" element={<ActorActivity />} />
+                                                        <Route path="actors/:staffId" element={<ActorActivityDetail />} />
+                                                        <Route path="modules" element={<ModuleActivity />} />
+                                                        <Route path="security" element={<SecurityEvents />} />
+                                                        <Route path="logins" element={<LoginActivity />} />
+                                                        <Route path="exports" element={<ExportActivity />} />
+                                                        <Route path="imports" element={<ImportActivity />} />
+                                                        <Route path="retention" element={<AuditRetention />} />
+                                                        <Route path="archive" element={<AuditArchive />} />
+                                                        <Route path="alerts" element={<AuditAlerts />} />
+                                                      </Route>
 
                                                       <Route path="staff">
                                                         <Route index element={<StaffManager />} />
@@ -672,21 +686,7 @@ export default function App() {
                                                       </Route>
                                                     </Route>
 
-                                                    <Route path="audit">
-                                                      <Route index element={<AuditDashboard />} />
-                                                      <Route path="logs" element={<AuditLogs />} />
-                                                      <Route path="logs/:eventId" element={<AuditDetail />} />
-                                                      <Route path="actors" element={<ActorActivity />} />
-                                                      <Route path="actors/:staffId" element={<ActorActivityDetail />} />
-                                                      <Route path="modules" element={<ModuleActivity />} />
-                                                      <Route path="security" element={<SecurityEvents />} />
-                                                      <Route path="logins" element={<LoginActivity />} />
-                                                      <Route path="exports" element={<ExportActivity />} />
-                                                      <Route path="imports" element={<ImportActivity />} />
-                                                      <Route path="retention" element={<AuditRetention />} />
-                                                      <Route path="archive" element={<AuditArchive />} />
-                                                      <Route path="alerts" element={<AuditAlerts />} />
-                                                    </Route>
+
 
                                                     <Route path="compliance">
                                                       <Route index element={<ComplianceCenter />} />

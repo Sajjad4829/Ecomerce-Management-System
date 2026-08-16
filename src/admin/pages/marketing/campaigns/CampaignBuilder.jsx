@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useMarketing } from '../../context/marketing/MarketingContext';
-import { usePromotion } from '../../context/PromotionContext';
-import { useCustomers } from '../../context/customers/CustomerContext';
-import { useLoyalty } from '../../context/LoyaltyContext';
+import { useMarketing } from '../../../context/marketing/MarketingContext';
+import { usePromotion } from '../../../context/PromotionContext';
+import { useCustomers } from '../../../context/customers/CustomerContext';
+import { useLoyalty } from '../../../context/LoyaltyContext';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Play, Target, Tag, Ticket, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';

@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useMemo } from 'react';
 import { useCategories } from './CategoryContext';
+import { auditService } from '../../services/audit/AuditService';
 
 const ProductContext = createContext();
 
@@ -61,15 +62,42 @@ export function ProductProvider({ children }) {
   }, [products, getCategoryById]);
 
   const addProduct = (product) => {
-    setProducts(prev => [...prev, { ...product, id: `prod-${Date.now()}` }]);
+    const newProduct = { ...product, id: `prod-${Date.now()}` };
+    setProducts(prev => [...prev, newProduct]);
+    auditService.createAuditEvent({
+      action: 'CREATE',
+      module: 'Products',
+      resourceType: 'Product',
+      resourceId: newProduct.id,
+      resourceName: newProduct.name,
+      metadata: { newValue: newProduct }
+    });
   };
 
   const updateProduct = (id, updates) => {
+    const oldProduct = products.find(p => p.id === id);
     setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
+    auditService.createAuditEvent({
+      action: 'UPDATE',
+      module: 'Products',
+      resourceType: 'Product',
+      resourceId: id,
+      resourceName: oldProduct?.name || id,
+      metadata: { oldValue: oldProduct, newValue: { ...oldProduct, ...updates } }
+    });
   };
 
   const deleteProduct = (id) => {
+    const oldProduct = products.find(p => p.id === id);
     setProducts(prev => prev.filter(p => p.id !== id));
+    auditService.createAuditEvent({
+      action: 'DELETE',
+      module: 'Products',
+      resourceType: 'Product',
+      resourceId: id,
+      resourceName: oldProduct?.name || id,
+      severity: 'High'
+    });
   };
 
   const bulkDelete = (ids) => {

@@ -92,7 +92,7 @@ export default function AuditLogs() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link to={`/admin/audit/logs/${event.id}`} className="text-text-secondary hover:text-text-primary text-sm font-medium">
+                    <Link to={`/admin/settings/audit/logs/${event.id}`} className="text-text-secondary hover:text-text-primary text-sm font-medium">
                       Details
                     </Link>
                   </td>

@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
+import { auditService } from './audit/AuditStore';
+import { auditService as realAuditService } from '../services/audit/AuditService';
 
 const MOCK_ORDERS = [
   {
@@ -87,6 +89,17 @@ export function OrderProvider({ children }) {
           date: new Date().toISOString(),
           note: `Status changed to \${newStatus}. \${reason}`
         };
+        
+        realAuditService.createAuditEvent({
+          action: 'STATUS_CHANGE',
+          module: 'Orders',
+          resourceType: 'Order',
+          resourceId: id,
+          resourceName: o.id,
+          severity: newStatus === 'Cancelled' ? 'High' : 'Low',
+          metadata: { oldStatus: o.status, newStatus, reason }
+        });
+
         return {
           ...o,
           status: newStatus,
@@ -121,6 +134,17 @@ export function OrderProvider({ children }) {
           date: new Date().toISOString(),
           note: `Fulfillment status updated to \${newStatus}. \${note}`
         };
+        
+        realAuditService.createAuditEvent({
+          action: 'FULFILLMENT_UPDATE',
+          module: 'Orders',
+          resourceType: 'Order',
+          resourceId: id,
+          resourceName: o.id,
+          severity: 'Medium',
+          metadata: { oldStatus: o.fulfillmentStatus, newStatus, note }
+        });
+
         return {
           ...o,
           fulfillmentStatus: newStatus,
@@ -131,14 +155,16 @@ export function OrderProvider({ children }) {
     }))
   }
 
+  const value = React.useMemo(() => ({
+    orders,
+    getOrder,
+    updateOrderStatus,
+    addInternalNote,
+    updateFulfillmentStatus
+  }), [orders]);
+
   return (
-    <OrderContext.Provider value={{
-      orders,
-      getOrder,
-      updateOrderStatus,
-      addInternalNote,
-      updateFulfillmentStatus
-    }}>
+    <OrderContext.Provider value={value}>
       {children}
     </OrderContext.Provider>
   );

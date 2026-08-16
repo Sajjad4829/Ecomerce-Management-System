@@ -1,54 +1,19 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
+import { notificationService } from '../services/notification/NotificationService';
+import { useEffect } from 'react';
+
 const NotificationContext = createContext();
 
 export function NotificationProvider({ children }) {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 'notif_1',
-      title: 'High Resource Usage Detected',
-      message: 'Server load exceeded 90% for 5 minutes.',
-      type: 'System',
-      priority: 'High',
-      source: 'Monitor',
-      actor: 'System',
-      status: 'Unread',
-      createdAt: '2026-08-09T08:00:00Z',
-    },
-    {
-      id: 'notif_2',
-      title: 'Low Stock: Aurora Lounge Chair',
-      message: 'Inventory dropped below threshold (5 left).',
-      type: 'Inventory',
-      priority: 'Normal',
-      source: 'Inventory Module',
-      actor: 'System',
-      status: 'Unread',
-      createdAt: '2026-08-09T07:30:00Z',
-    },
-    {
-      id: 'notif_3',
-      title: 'Suspicious Login Attempt',
-      message: 'Failed login attempt from unknown IP address.',
-      type: 'Security',
-      priority: 'Critical',
-      source: 'Auth',
-      actor: 'Unknown',
-      status: 'Unread',
-      createdAt: '2026-08-09T06:15:00Z',
-    },
-    {
-      id: 'notif_4',
-      title: 'Order #ORD-1092 Requires Manual Review',
-      message: 'Fraud score exceeded threshold.',
-      type: 'Order',
-      priority: 'High',
-      source: 'Order Module',
-      actor: 'System',
-      status: 'Read',
-      createdAt: '2026-08-08T15:20:00Z',
-    }
-  ]);
+  const [notifications, setNotifications] = useState(notificationService.getNotifications());
+
+  useEffect(() => {
+    const unsubscribe = notificationService.subscribe((data) => {
+      setNotifications(data);
+    });
+    return unsubscribe;
+  }, []);
 
   const [templates, setTemplates] = useState([
     {
@@ -167,38 +132,32 @@ export function NotificationProvider({ children }) {
     return notifications.filter(n => n.status === 'Unread').length;
   }, [notifications]);
 
-  const markAsRead = (id) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, status: 'Read' } : n));
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, status: 'Read' })));
-  };
-
-  const archiveNotification = (id) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, status: 'Archived' } : n));
-  };
+  const markAsRead = (id) => notificationService.markAsRead(id);
+  const markAllAsRead = () => notificationService.markAllAsRead();
+  const archiveNotification = (id) => notificationService.archive(id);
 
   const getNotification = (id) => notifications.find(n => n.id === id);
 
   const updatePreferences = (newPrefs) => setPreferences(newPrefs);
 
+  const value = useMemo(() => ({
+    notifications,
+    templates,
+    rules,
+    preferences,
+    communicationLogs,
+    campaigns,
+    scheduledMessages,
+    getUnreadCount,
+    markAsRead,
+    markAllAsRead,
+    archiveNotification,
+    getNotification,
+    updatePreferences
+  }), [notifications, templates, rules, preferences, communicationLogs, campaigns, scheduledMessages, getUnreadCount, markAsRead, markAllAsRead, archiveNotification, getNotification, updatePreferences]);
+
   return (
-    <NotificationContext.Provider value={{
-      notifications,
-      templates,
-      rules,
-      preferences,
-      communicationLogs,
-      campaigns,
-      scheduledMessages,
-      getUnreadCount,
-      markAsRead,
-      markAllAsRead,
-      archiveNotification,
-      getNotification,
-      updatePreferences
-    }}>
+    <NotificationContext.Provider value={value}>
       {children}
     </NotificationContext.Provider>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMarketing } from '../../context/marketing/MarketingContext';
+import { useMarketing } from '../../../context/marketing/MarketingContext';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Plus, MoreHorizontal } from 'lucide-react';
 

@@ -108,18 +108,70 @@ export const OrderProvider = ({ children }) => {
   
   const updateOrderStatus = (id, status) => {
     setOrders(orders.map(o => o.id === id ? { ...o, status } : o));
+    import('../../services/notification/NotificationService').then(({ notificationService }) => {
+      notificationService.createNotification({
+        type: 'Order',
+        title: `Order Status Changed`,
+        message: `Order #${id} is now ${status}.`,
+        priority: 'Normal',
+        module: 'Orders',
+        entityId: id,
+        entityType: 'Order',
+        eventId: `ord_stat_${id}_${status}`,
+        actionUrl: `/admin/orders/${id}`
+      });
+    });
   };
   
   const addOrder = (order) => {
     setOrders([order, ...orders]);
+    import('../../services/notification/NotificationService').then(({ notificationService }) => {
+      notificationService.createNotification({
+        type: 'Order',
+        title: `New Order Received`,
+        message: `Order #${order.id} has been placed.`,
+        priority: 'Normal',
+        module: 'Orders',
+        entityId: order.id,
+        entityType: 'Order',
+        eventId: `ord_new_${order.id}`,
+        actionUrl: `/admin/orders/${order.id}`
+      });
+    });
   };
 
   const fulfillOrder = (id) => {
     setOrders(orders.map(o => o.id === id ? { ...o, status: 'shipped', fulfillmentStatus: 'shipped' } : o));
+    import('../../services/notification/NotificationService').then(({ notificationService }) => {
+      notificationService.createNotification({
+        type: 'Order',
+        title: `Order Shipped`,
+        message: `Order #${id} has been shipped.`,
+        priority: 'Normal',
+        module: 'Orders',
+        entityId: id,
+        entityType: 'Order',
+        eventId: `ord_shp_${id}`,
+        actionUrl: `/admin/orders/${id}`
+      });
+    });
   };
 
   const cancelOrder = (id) => {
     setOrders(orders.map(o => o.id === id ? { ...o, status: 'cancelled', paymentStatus: 'refunded', fulfillmentStatus: 'cancelled' } : o));
+    import('../../services/notification/NotificationService').then(({ notificationService }) => {
+      notificationService.createNotification({
+        type: 'Order',
+        title: `Order Cancelled`,
+        message: `Order #${id} has been cancelled.`,
+        priority: 'High',
+        module: 'Orders',
+        entityId: id,
+        entityType: 'Order',
+        eventId: `ord_can_${id}`,
+        actionUrl: `/admin/orders/${id}`
+      });
+    });
   };
 
   const contextValue = useMemo(() => ({
