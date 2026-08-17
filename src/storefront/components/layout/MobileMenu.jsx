@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiX, FiChevronRight } from 'react-icons/fi';
+import { useCategories } from '../../../admin/context/commerce/CategoryContext';
 
 export default function MobileMenu({ isOpen, onClose }) {
+  const { categories } = useCategories();
+  
   if (!isOpen) return null;
 
   return (
@@ -12,7 +15,7 @@ export default function MobileMenu({ isOpen, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+        className="fixed inset-0 bg-black/50 z-50 lg:hidden backdrop-blur-sm"
         onClick={onClose}
       />
 
@@ -33,26 +36,33 @@ export default function MobileMenu({ isOpen, onClose }) {
 
         <nav className="flex-1 overflow-y-auto py-4">
           <ul className="flex flex-col">
-            {[
-              { label: 'Home', path: '/' },
-              { label: 'Shop', path: '/products' },
-              { label: 'Categories', path: '/categories' },
-              { label: 'Collections', path: '/collections' },
-              { label: 'New Arrivals', path: '/collections/new' },
-              { label: 'Best Sellers', path: '/collections/bestsellers' },
-              { label: 'Offers', path: '/offers' },
-            ].map((item) => (
-              <li key={item.path}>
+            {categories?.filter(c => !c.parentId).map((category) => (
+              <li key={category.id}>
                 <Link
-                  to={item.path}
+                  to={`/category/${category.slug}`}
                   onClick={onClose}
                   className="flex items-center justify-between px-6 py-4 text-lg font-medium text-gray-900 hover:bg-gray-50 transition-colors"
                 >
-                  {item.label}
+                  {category.name}
                   <FiChevronRight size={20} className="text-gray-400" />
                 </Link>
               </li>
             ))}
+            <li className="border-t border-gray-100 mt-2 pt-2">
+               <Link to="/collections" onClick={onClose} className="flex items-center justify-between px-6 py-4 text-lg font-medium text-gray-900 hover:bg-gray-50 transition-colors">
+                  Collections <FiChevronRight size={20} className="text-gray-400" />
+               </Link>
+            </li>
+            <li>
+               <Link to="/collections/new" onClick={onClose} className="flex items-center justify-between px-6 py-4 text-lg font-medium text-gray-900 hover:bg-gray-50 transition-colors">
+                  New Arrivals <FiChevronRight size={20} className="text-gray-400" />
+               </Link>
+            </li>
+            <li>
+               <Link to="/offers" onClick={onClose} className="flex items-center justify-between px-6 py-4 text-lg font-medium text-gray-900 hover:bg-gray-50 transition-colors">
+                  Offers <FiChevronRight size={20} className="text-gray-400" />
+               </Link>
+            </li>
           </ul>
         </nav>
 

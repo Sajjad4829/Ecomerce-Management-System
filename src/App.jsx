@@ -27,6 +27,7 @@ import Home from './storefront/pages/home/Home';
 import CartPage from './storefront/pages/cart/CartPage';
 import WishlistPage from './storefront/pages/wishlist/WishlistPage';
 import ProductsPage from './storefront/pages/product/ProductsPage';
+import CategoryPage from './storefront/pages/category/CategoryPage';
 import ProductDetailPage from './storefront/pages/product/ProductDetailPage';
 import DashboardHome from './admin/pages/DashboardHome';
 import AdminLogin from './admin/pages/auth/AdminLogin';
@@ -545,6 +546,8 @@ export default function App() {
                                                     <Route path="/cart" element={<CartPage />} />
                                                     <Route path="/wishlist" element={<WishlistPage />} />
                                                     <Route path="/products" element={<ProductsPage />} />
+                                                    <Route path="/category/:slug" element={<CategoryPage />} />
+                                                    <Route path="/category/:slug/:subSlug" element={<CategoryPage />} />
                                                     <Route path="/products/:id" element={<ProductDetailPage />} />
                                                     <Route path="/search" element={<SearchResultsPage />} />
                                                     <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
