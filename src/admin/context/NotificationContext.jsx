@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 
 import { notificationService } from '../services/notification/NotificationService';
 import { useEffect } from 'react';

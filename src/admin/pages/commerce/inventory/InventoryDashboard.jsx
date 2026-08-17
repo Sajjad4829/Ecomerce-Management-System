@@ -63,7 +63,8 @@ export default function CommerceInventoryDashboard() {
         item.sku.toLowerCase().includes(searchQuery.toLowerCase());
       
       const matchesStatus = statusFilter === 'All Statuses' || item.status === statusFilter;
-      const matchesWarehouse = warehouseFilter === 'All Warehouses' || item.warehouseName === warehouseFilter;
+      const matchesWarehouse = warehouseFilter === 'All Warehouses' || item.warehouseN
+      ame === warehouseFilter;
       const matchesCategory = categoryFilter === 'All Categories' || item.category === categoryFilter;
       const matchesVariant = variantFilter === 'All Variants' || item.variant === variantFilter;
       const matchesType = typeFilter === 'All Types' || item.productType === typeFilter;

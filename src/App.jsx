@@ -23,6 +23,7 @@ import CommandCenter from "./admin/pages/command/CommandCenter";
 import { SearchAnalytics as GlobalSearchAnalytics, ZeroResultAnalysis, SearchRedirects as GlobalSearchRedirects, SearchSynonyms as GlobalSearchSynonyms, SearchBoosts as GlobalSearchBoosts, SearchPins as GlobalSearchPins, SearchExclusions } from "./admin/pages/search/SearchManagementPages";
 
 import StorefrontLayout from './storefront/layouts/StorefrontLayout';
+import Home from './storefront/pages/home/Home';
 import CartPage from './storefront/pages/cart/CartPage';
 import WishlistPage from './storefront/pages/wishlist/WishlistPage';
 import ProductsPage from './storefront/pages/product/ProductsPage';
@@ -53,6 +54,8 @@ import BrandEditor from './admin/pages/commerce/brands/BrandEditor';
 import AttributeManager from './admin/pages/commerce/attributes/AttributeManager';
 import AttributeEditor from './admin/pages/commerce/attributes/AttributeEditor';
 import AttributeGroupManager from './admin/pages/commerce/attributes/AttributeGroupManager';
+import CatalogInventoryPage from './admin/pages/commerce/catalog/inventory/CatalogInventoryPage';
+import CatalogWarehousesPage from './admin/pages/commerce/catalog/warehouses/CatalogWarehousesPage';
 
 // SEO Imports (Phase 5.24)
 import { SEOProvider } from './admin/context/seo/SEOContext';
@@ -312,6 +315,7 @@ import WarehouseCenter from './admin/pages/inventory/warehouses/WarehouseCenter'
 import StockAdjustment from './admin/pages/inventory/stock/StockAdjustment';
 import StockTransfer from './admin/pages/inventory/stock/StockTransfer';
 import { MarketingProvider } from './admin/context/marketing/MarketingContext';
+import { MarketingProvider as MarketingAutomationProvider } from './admin/context/MarketingContext';
 import MarketingLayout from './admin/layouts/MarketingLayout';
 import MarketingDashboard from './admin/pages/marketing/MarketingDashboard';
 import CampaignCenter from './admin/pages/marketing/campaigns/CampaignCenter';
@@ -514,11 +518,13 @@ export default function App() {
     <ToastProvider>
     <AuthProvider>
       <CommerceProvider>
+        <MediaProvider><GlobalSearchProvider><SearchProvider><CustomerProvider><SEOProvider><ExperienceProvider><CategoryProvider><ProductProvider><CollectionProvider>
         <InventoryProvider>
           <ProcurementProvider>
             <HRProvider>
               <CRMProvider>
-                <MarketingProvider>
+                <MarketingAutomationProvider>
+                  <MarketingProvider>
                   <CMSProvider>
                     <OrderProvider>
                       <ShippingProvider>
@@ -528,19 +534,14 @@ export default function App() {
                               <ReviewProvider>
                                 <SupportProvider>
                                   <NotificationProvider>
-                                    <AnalyticsProvider>
-                                      <SettingsProvider>
-                                        <MarketingProvider>
-                                          <CMSProvider>
-                                              <MediaProvider><GlobalSearchProvider><SearchProvider><CustomerProvider><SEOProvider><ExperienceProvider><CategoryProvider><ProductProvider><CollectionProvider>
-
+                                    <FinanceProvider>
+                                      <AnalyticsProvider>
+                                        <SettingsProvider>
                                               <Router>
                                                 <Routes>
-                                                  {/* Redirect root to admin dashboard for now, as we are building the admin shell */}
-                                                  <Route path="/" element={<Navigate to="/admin" replace />} />
-
                                                   {/* Storefront Layout Routes */}
                                                   <Route element={<StorefrontLayout />}>
+                                                    <Route index element={<Home />} />
                                                     <Route path="/cart" element={<CartPage />} />
                                                     <Route path="/wishlist" element={<WishlistPage />} />
                                                     <Route path="/products" element={<ProductsPage />} />
@@ -695,6 +696,8 @@ export default function App() {
                                                     </Route>
 
 
+                                                    <Route path="catalog/inventory" element={<CatalogInventoryPage />} />
+                                                    <Route path="catalog/warehouses" element={<CatalogWarehousesPage />} />
                                                     <Route path="catalog" element={<CatalogWorkspace />} />
                                                     <Route path="catalog/products" element={<ProductManager />} />
                                                     <Route path="catalog/products/new" element={<ProductEditor />} />
@@ -1117,12 +1120,10 @@ export default function App() {
                                                 </Routes>
                                               </Router>
 
-                                              </CollectionProvider></ProductProvider></CategoryProvider></ExperienceProvider></SEOProvider></CustomerProvider></SearchProvider></GlobalSearchProvider></MediaProvider>
-                                          </CMSProvider>
-                                        </MarketingProvider>
                                       </SettingsProvider>
                                     </AnalyticsProvider>
-                                  </NotificationProvider>
+                                  </FinanceProvider>
+                                </NotificationProvider>
                                 </SupportProvider>
                               </ReviewProvider>
                             </LoyaltyProvider>
@@ -1132,10 +1133,12 @@ export default function App() {
                     </OrderProvider>
                   </CMSProvider>
                 </MarketingProvider>
+              </MarketingAutomationProvider>
               </CRMProvider>
             </HRProvider>
           </ProcurementProvider>
         </InventoryProvider>
+        </CollectionProvider></ProductProvider></CategoryProvider></ExperienceProvider></SEOProvider></CustomerProvider></SearchProvider></GlobalSearchProvider></MediaProvider>
       </CommerceProvider>
     </AuthProvider>
     </ToastProvider>
