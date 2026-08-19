@@ -31,13 +31,7 @@ export default function StorefrontLayout() {
         <Outlet />
       </main>
 
-      {/* Floating Phone Callout */}
-      <a href="tel:09678777777" className="fixed bottom-8 left-8 z-50 flex items-center justify-center space-x-3 bg-black/40 backdrop-blur-md hover:bg-black/60 transition-colors rounded-full pl-2 pr-5 py-2 shadow-[0_4px_20px_rgba(0,0,0,0.2)] group border border-white/10 text-white hover:-translate-y-1 transform duration-300">
-        <div className="w-8 h-8 rounded-full bg-[#E31E24] flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        </div>
-        <span className="text-white text-sm font-bold tracking-wider drop-shadow-md">09 678 7777 77</span>
-      </a>
+
 
       <footer className="bg-[#111] text-white pt-20 pb-10 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
