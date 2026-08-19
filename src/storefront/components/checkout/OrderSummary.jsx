@@ -23,7 +23,14 @@ export default function OrderSummary() {
               </div>
               <div className="flex-1 text-sm">
                 <p className="font-bold text-[#1A1A1A]">{item.product.name}</p>
-                {item.variant && <p className="text-gray-500">{item.variant.title}</p>}
+                {item.selectedVariants && Object.keys(item.selectedVariants).length > 0 && (
+                  <p className="text-gray-500 text-xs mt-0.5">
+                    {Object.entries(item.selectedVariants).map(([k, v]) => `${v}`).join(' / ')}
+                  </p>
+                )}
+                {!item.selectedVariants && item.variant && (
+                  <p className="text-gray-500 text-xs mt-0.5">{item.variant.title}</p>
+                )}
               </div>
               <div className="text-sm font-bold text-[#1A1A1A]">
                 ${(item.unitPrice * item.quantity).toLocaleString('en-US', { minimumFractionDigits: 2 })}

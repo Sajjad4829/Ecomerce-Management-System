@@ -98,8 +98,10 @@ export function ReviewProvider({ children }) {
 
   const getReview = (id) => reviews.find(r => r.id === id);
 
+  const getProductReviews = (productId) => reviews.filter(r => r.productId === productId && r.status === 'Published');
+
   const getProductRating = (productId) => {
-    const productReviews = reviews.filter(r => r.productId === productId && r.status === 'Published');
+    const productReviews = getProductReviews(productId);
     if (productReviews.length === 0) return { average: 0, count: 0, distribution: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } };
     
     let sum = 0;
@@ -165,6 +167,7 @@ export function ReviewProvider({ children }) {
       reports,
       moderationReasons,
       getReview,
+      getProductReviews,
       getProductRating,
       updateReviewStatus,
       replyToReview,

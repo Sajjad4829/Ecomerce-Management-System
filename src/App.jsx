@@ -26,8 +26,9 @@ import StorefrontLayout from './storefront/layouts/StorefrontLayout';
 import Home from './storefront/pages/home/Home';
 import CartPage from './storefront/pages/cart/CartPage';
 import WishlistPage from './storefront/pages/wishlist/WishlistPage';
-import ProductsPage from './storefront/pages/product/ProductsPage';
+import ShopPage from './storefront/pages/product/ShopPage';
 import CategoryPage from './storefront/pages/category/CategoryPage';
+import CategoriesPage from './storefront/pages/category/CategoriesPage';
 import ProductDetailPage from './storefront/pages/product/ProductDetailPage';
 import DashboardHome from './admin/pages/DashboardHome';
 import AdminLogin from './admin/pages/auth/AdminLogin';
@@ -545,12 +546,13 @@ export default function App() {
                                                     <Route index element={<Home />} />
                                                     <Route path="/cart" element={<CartPage />} />
                                                     <Route path="/wishlist" element={<WishlistPage />} />
-                                                    <Route path="/products" element={<ProductsPage />} />
+                                                    <Route path="/shop" element={<ShopPage />} />
+                                                    <Route path="/categories" element={<CategoriesPage />} />
                                                     <Route path="/category/:slug" element={<CategoryPage />} />
                                                     <Route path="/category/:slug/:subSlug" element={<CategoryPage />} />
-                                                    <Route path="/products/:id" element={<ProductDetailPage />} />
+                                                    <Route path="/product/:slug" element={<ProductDetailPage />} />
                                                     <Route path="/search" element={<SearchResultsPage />} />
-                                                    <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+                                                    <Route path="/order/success" element={<OrderConfirmation />} />
                                                   </Route>
 
                                                   {/* Standalone Storefront Routes */}

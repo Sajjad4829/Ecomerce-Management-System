@@ -13,11 +13,14 @@ import NewsletterSection from '../../components/home/NewsletterSection';
 export default function Home() {
   const { products } = useProducts();
 
-  // Using simple slicing or reversing to simulate different lists of products
-  // In a real application, you'd filter by specific tags or categories like "featured", "new", etc.
-  const featuredProducts = products; 
-  const newArrivals = [...products].reverse();
-  const bestSellers = products;
+  const safeProducts = products || [];
+  const featuredProducts = safeProducts.filter(p => p.badge === 'Featured' || p.featured === true).slice(0, 4);
+  const newArrivals = [...safeProducts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 4);
+  const bestSellers = safeProducts.filter(p => p.badge === 'Best Seller').slice(0, 4);
+
+  // Fallbacks if not enough specific products exist
+  if (featuredProducts.length === 0) featuredProducts.push(...safeProducts.slice(0, 4));
+  if (bestSellers.length === 0) bestSellers.push(...safeProducts.slice(0, 4));
 
   return (
     <div className="w-full bg-white animate-in fade-in duration-1000">

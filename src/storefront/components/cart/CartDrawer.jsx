@@ -41,16 +41,17 @@ export default function CartDrawer() {
               <div className="w-20 h-20 bg-[#F7F5F2] rounded-full flex items-center justify-center mb-6">
                 <FiShoppingBag size={32} className="text-gray-400" />
               </div>
-              <h3 className="text-xl font-serif font-bold text-[#1A1A1A] mb-2">Your cart is empty</h3>
+              <h3 className="text-xl font-serif font-bold text-[#1A1A1A] mb-2">Your Cart is Empty</h3>
               <p className="text-sm text-gray-500 mb-8 max-w-xs mx-auto">
-                Discover our latest collections and find something perfect for your space.
+                Discover something beautiful for your space.
               </p>
-              <button 
+              <Link 
+                to="/shop"
                 onClick={closeCartDrawer}
-                className="px-8 py-3 bg-[#1A1A1A] text-white text-sm font-semibold hover:bg-black transition-colors"
+                className="px-8 py-3 bg-[#1A1A1A] text-white text-sm font-bold tracking-widest uppercase hover:bg-black transition-colors"
               >
                 Continue Shopping
-              </button>
+              </Link>
             </div>
           ) : (
             <div className="py-2">
@@ -78,7 +79,7 @@ export default function CartDrawer() {
               <Link 
                 to="/checkout"
                 onClick={closeCartDrawer}
-                className="w-full py-4 bg-[#1A1A1A] text-white text-sm font-semibold hover:bg-black transition-colors flex items-center justify-center gap-2"
+                className="w-full py-4 bg-[#1A1A1A] text-white text-sm font-bold tracking-widest uppercase hover:bg-black transition-colors flex items-center justify-center gap-2"
               >
                 Checkout <FiArrowRight size={16} />
               </Link>

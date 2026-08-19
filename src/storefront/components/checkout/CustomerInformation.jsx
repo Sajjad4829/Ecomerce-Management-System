@@ -24,45 +24,45 @@ export default function CustomerInformation() {
           </span>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div className="sm:col-span-2">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Email Address</label>
             <input
               type="email"
               name="email"
               value={contactInfo.email}
               onChange={handleContactChange}
-              placeholder="Email address"
-              className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm"
+              className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm transition-colors"
             />
           </div>
           <div>
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">First Name</label>
             <input
               type="text"
               name="firstName"
               value={contactInfo.firstName}
               onChange={handleContactChange}
-              placeholder="First name (optional for guest)"
-              className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm"
+              className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm transition-colors"
             />
           </div>
           <div>
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Last Name</label>
             <input
               type="text"
               name="lastName"
               value={contactInfo.lastName}
               onChange={handleContactChange}
-              placeholder="Last name (optional for guest)"
-              className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm"
+              className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm transition-colors"
             />
           </div>
           <div className="sm:col-span-2">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Phone Number</label>
             <input
               type="tel"
               name="phone"
               value={contactInfo.phone}
               onChange={handleContactChange}
-              placeholder="Phone number"
-              className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm"
+              className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm transition-colors"
             />
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function CustomerInformation() {
         <AddressForm address={shippingAddress} setAddress={setShippingAddress} />
       </section>
 
-      <div className="pt-6">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-black/10 z-50 lg:static lg:bg-transparent lg:border-t-0 lg:p-0 lg:pt-6 flex flex-col sm:flex-row items-center justify-end">
         <button 
           onClick={nextStep}
           className="w-full sm:w-auto px-8 py-4 bg-[#1A1A1A] text-white text-sm font-semibold rounded-xl hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-black/10"

@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
-import ProductCard from '../../product/ProductCard';
+import ProductCard from '../product/ProductCard';
 
 export default function ProductGridSection({ title, products, linkTo }) {
-  // Take up to 4 products to display in the grid
-  const displayProducts = products.slice(0, 4);
+  const displayProducts = products?.slice(0, 4) || [];
+
+  if (displayProducts.length === 0) return null;
 
   return (
     <section className="py-24 bg-white">

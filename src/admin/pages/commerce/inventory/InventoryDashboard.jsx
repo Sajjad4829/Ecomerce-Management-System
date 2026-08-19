@@ -58,10 +58,10 @@ export default function CommerceInventoryDashboard() {
   // Filter logic
   const filteredData = useMemo(() => {
     return joinedInventory.filter(item => {
-      const matchesSearch = 
+      const matchesSearch =
         item.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.sku.toLowerCase().includes(searchQuery.toLowerCase());
-      
+
       const matchesStatus = statusFilter === 'All Statuses' || item.status === statusFilter;
       const matchesWarehouse = warehouseFilter === 'All Warehouses' || item.warehouseN
       ame === warehouseFilter;
@@ -120,7 +120,7 @@ export default function CommerceInventoryDashboard() {
             <FiDownload className="w-4 h-4" />
             Export
           </button>
-          <button 
+          <button
             onClick={() => setSelectedAdjustmentItem(joinedInventory[0])} // Quick shortcut if needed, though usually triggered from row
             className="flex items-center gap-2 px-4 py-2 bg-primary text-surface rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors shadow-sm"
           >
@@ -141,7 +141,7 @@ export default function CommerceInventoryDashboard() {
           <div className="text-2xl font-bold text-text-primary">{metrics.totalProducts}</div>
           <div className="text-xs font-medium text-text-muted mt-1">Total Products</div>
         </div>
-        
+
         <div className="bg-surface p-4 rounded-xl shadow-sm border border-black/5">
           <div className="flex items-center justify-between mb-2">
             <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
@@ -207,7 +207,7 @@ export default function CommerceInventoryDashboard() {
             className="w-full pl-9 pr-4 py-2 bg-background border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
           />
         </div>
-        
+
         <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
           <div className="flex items-center gap-2 px-3 py-2 bg-background rounded-lg text-sm text-text-muted shrink-0 border border-black/5">
             <FiFilter className="w-4 h-4" />
@@ -270,7 +270,7 @@ export default function CommerceInventoryDashboard() {
               <option key={w.id} value={w.name}>{w.name}</option>
             ))}
           </select>
-          
+
           {(searchQuery || statusFilter !== 'All Statuses' || warehouseFilter !== 'All Warehouses' || categoryFilter !== 'All Categories' || variantFilter !== 'All Variants' || typeFilter !== 'All Types') && (
             <button
               onClick={() => {
@@ -290,14 +290,14 @@ export default function CommerceInventoryDashboard() {
       </div>
 
       {/* Main Table */}
-      <CatalogInventoryTable 
+      <CatalogInventoryTable
         data={filteredData}
         onAdjustStock={setSelectedAdjustmentItem}
         onViewDetails={setSelectedDetailsItem}
       />
 
       {/* Modals & Drawers */}
-      <StockAdjustmentModal 
+      <StockAdjustmentModal
         isOpen={!!selectedAdjustmentItem}
         onClose={() => setSelectedAdjustmentItem(null)}
         selectedItem={selectedAdjustmentItem}

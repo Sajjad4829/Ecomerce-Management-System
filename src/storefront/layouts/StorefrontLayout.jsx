@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import { FiSearch, FiHeart, FiShoppingBag, FiMenu, FiUser, FiInstagram, FiTwitter, FiFacebook, FiYoutube } from 'react-icons/fi';
 import { useCommerce } from '../context/CommerceContext';
 import CartDrawer from '../components/cart/CartDrawer';
@@ -9,108 +9,35 @@ import { useAuth } from '../../auth/context/AuthContext';
 import { AnimatePresence } from 'framer-motion';
 import GlobalSearch from '../components/search/GlobalSearch';
 import MobileMenu from '../components/layout/MobileMenu';
+import Navbar from '../components/navigation/Navbar';
 
 export default function StorefrontLayout() {
   const { openCartDrawer } = useCommerce();
   const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
-      {/* Announcement Bar */}
-      <div className="bg-primary text-white text-xs font-medium tracking-wide text-center py-2 px-4 relative z-50">
-        Complimentary shipping on all orders over $5,000. <Link to="/shipping" className="underline ml-1 hover:text-gray-200">Learn more</Link>
-      </div>
 
-      <header 
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-          isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-2' : 'bg-white py-4'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          
-          {/* Mobile Menu & Search */}
-          <div className="flex items-center gap-4 lg:hidden">
-            <button 
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 -ml-2 text-gray-500 hover:text-black transition-colors"
-            >
-              <FiMenu size={24} />
-            </button>
-            <button 
-              onClick={() => setIsSearchOpen(true)}
-              className="p-2 text-gray-500 hover:text-black transition-colors"
-            >
-              <FiSearch size={20} />
-            </button>
-          </div>
 
-          {/* Logo */}
-          <div className="flex-1 lg:flex-none text-center lg:text-left">
-            <Link to="/" className="text-3xl font-serif font-bold tracking-tight text-gray-900 hover:text-gray-600 transition-colors">
-              AURA
-            </Link>
-          </div>
+      <Navbar 
+        onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+        onOpenSearch={() => setIsSearchOpen(true)}
+      />
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2 text-sm font-medium tracking-wide text-gray-600">
-            <Link to="/products" className="hover:text-black transition-colors">Shop</Link>
-            <Link to="/categories" className="hover:text-black transition-colors">Categories</Link>
-            <Link to="/collections" className="hover:text-black transition-colors">Collections</Link>
-            <Link to="/collections/new" className="hover:text-black transition-colors">New Arrivals</Link>
-            <Link to="/collections/bestsellers" className="hover:text-black transition-colors">Best Sellers</Link>
-          </nav>
-
-          {/* Right Actions */}
-          <div className="flex items-center gap-3 sm:gap-5 text-gray-600">
-            <button 
-              onClick={() => setIsSearchOpen(true)}
-              className="hidden lg:block p-2 hover:text-black transition-colors"
-              aria-label="Search"
-            >
-              <FiSearch size={20} />
-            </button>
-            
-            <Link to={isAuthenticated ? "/account" : "/account/login"} className="p-2 hover:text-black transition-colors hidden sm:block" aria-label="Account">
-              {isAuthenticated ? (
-                <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-700">
-                  {user?.name?.[0]?.toUpperCase() || 'U'}
-                </div>
-              ) : (
-                <FiUser size={20} />
-              )}
-            </Link>
-            
-            <Link to="/wishlist" className="p-2 hover:text-black transition-colors relative" aria-label="Wishlist">
-              <FiHeart size={20} />
-              <WishlistBadge />
-            </Link>
-            
-            <button 
-              onClick={openCartDrawer}
-              className="p-2 hover:text-black transition-colors relative"
-              aria-label="Cart"
-            >
-              <FiShoppingBag size={20} />
-              <CartBadge />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 flex flex-col w-full">
+      <main className={`flex-1 flex flex-col w-full ${location.pathname !== '/' ? 'pt-[72px] md:pt-[84px]' : ''}`}>
         <Outlet />
       </main>
+
+      {/* Floating Phone Callout */}
+      <a href="tel:09678777777" className="fixed bottom-8 left-8 z-50 flex items-center justify-center space-x-3 bg-black/40 backdrop-blur-md hover:bg-black/60 transition-colors rounded-full pl-2 pr-5 py-2 shadow-[0_4px_20px_rgba(0,0,0,0.2)] group border border-white/10 text-white hover:-translate-y-1 transform duration-300">
+        <div className="w-8 h-8 rounded-full bg-[#E31E24] flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
+           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <span className="text-white text-sm font-bold tracking-wider drop-shadow-md">09 678 7777 77</span>
+      </a>
 
       <footer className="bg-[#111] text-white pt-20 pb-10 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -140,7 +67,7 @@ export default function StorefrontLayout() {
             <div>
               <h4 className="font-bold mb-6 text-xs uppercase tracking-widest text-gray-300">Shop</h4>
               <ul className="space-y-4 text-sm text-gray-500">
-                <li><Link to="/products" className="hover:text-white transition-colors">All Products</Link></li>
+                <li><Link to="/shop" className="hover:text-white transition-colors">All Products</Link></li>
                 <li><Link to="/collections/new" className="hover:text-white transition-colors">New Arrivals</Link></li>
                 <li><Link to="/collections/bestsellers" className="hover:text-white transition-colors">Best Sellers</Link></li>
                 <li><Link to="/offers" className="hover:text-white transition-colors">Offers</Link></li>

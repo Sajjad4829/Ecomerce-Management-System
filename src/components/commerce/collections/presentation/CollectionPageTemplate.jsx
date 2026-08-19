@@ -48,7 +48,7 @@ export default function CollectionPageTemplate({ collection }) {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
             {products.map(product => (
-              <Link to={`/products/${product.id}`} key={product.id} className="group cursor-pointer">
+              <Link to={`/product/${product.slug}`} key={product.id} className="group cursor-pointer">
                 <div className="relative bg-stone-100 aspect-square overflow-hidden mb-4">
                   <img 
                     src={product.image} 

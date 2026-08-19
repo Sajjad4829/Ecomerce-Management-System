@@ -1,8 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { useCommerce } from './CommerceContext';
 import { useNavigate } from 'react-router-dom';
-import { useInventory } from '../../admin/context/inventory/InventoryContext';
-import { useOrders } from '../../admin/context/orders/OrderContext';
 
 export const CheckoutContext = createContext(null);
 
@@ -15,8 +13,6 @@ const MOCK_SHIPPING_METHODS = [
 export function CheckoutProvider({ children }) {
   const { cartItems, cartSubtotal, clearCart } = useCommerce();
   const navigate = useNavigate();
-  const { reserveStock } = useInventory();
-  const { addOrder } = useOrders();
 
   const [currentStep, setCurrentStep] = useState('information'); // information, delivery, review
   
@@ -30,28 +26,24 @@ export function CheckoutProvider({ children }) {
   const [shippingAddress, setShippingAddress] = useState({
     firstName: '',
     lastName: '',
-    company: '',
+    phone: '',
     address1: '',
-    address2: '',
-    city: '',
-    state: '',
-    zip: '',
-    country: 'US',
-    phone: ''
+    area: '',
+    city: '', // District
+    state: '', // Division
+    zip: ''
   });
 
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
   const [billingAddress, setBillingAddress] = useState({
     firstName: '',
     lastName: '',
-    company: '',
+    phone: '',
     address1: '',
-    address2: '',
-    city: '',
-    state: '',
-    zip: '',
-    country: 'US',
-    phone: ''
+    area: '',
+    city: '', // District
+    state: '', // Division
+    zip: ''
   });
 
   const [shippingMethod, setShippingMethod] = useState(MOCK_SHIPPING_METHODS[0]);
@@ -71,9 +63,11 @@ export function CheckoutProvider({ children }) {
       if (!contactInfo.email) errors.push('Email is required');
       if (!shippingAddress.firstName) errors.push('First Name is required');
       if (!shippingAddress.lastName) errors.push('Last Name is required');
+      if (!shippingAddress.phone) errors.push('Phone Number is required');
       if (!shippingAddress.address1) errors.push('Address is required');
-      if (!shippingAddress.city) errors.push('City is required');
-      if (!shippingAddress.zip) errors.push('ZIP is required');
+      if (!shippingAddress.city) errors.push('City/District is required');
+      if (!shippingAddress.state) errors.push('State/Division is required');
+      if (!shippingAddress.zip) errors.push('ZIP/Area Code is required');
     }
     setValidationErrors(errors);
     return errors.length === 0;
@@ -95,29 +89,30 @@ export function CheckoutProvider({ children }) {
     else if (currentStep === 'delivery') setCurrentStep('information');
   };
 
-  const createOrder = async (transaction = null) => {
-    setIsProcessing(true);
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const mockOrder = {
-      id: `ORD-2026-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`,
+  // Synchronously constructs the payload for the Payment/Review step to use.
+  const createOrderPayload = (transaction = null) => {
+    const orderId = `#DF-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const createdAt = new Date().toISOString();
+
+    const orderPayload = {
+      id: orderId,
+      createdAt,
       status: 'Pending',
       paymentStatus: transaction?.status === 'Succeeded' ? 'Paid' : 'Pending',
       fulfillmentStatus: 'Unfulfilled',
       transaction,
-      date: new Date().toISOString(), // Changed to 'date' for Admin compatibility
+      date: createdAt,
       customer: contactInfo,
       customerName: `${contactInfo.firstName} ${contactInfo.lastName}`,
       email: contactInfo.email,
       items: cartItems.map(item => ({
         ...item,
-        productId: item.id // Ensure we have a standard productId format
+        productId: item.productId || item.id
       })),
       shippingAddress,
       billingAddress: billingSameAsShipping ? shippingAddress : billingAddress,
       shippingMethod: shippingMethod?.name || 'Standard Delivery',
-      total: grandTotal, // Add simple 'total' for Admin compatibility
+      total: grandTotal,
       currency: 'USD',
       totals: {
         subtotal: cartSubtotal,
@@ -129,28 +124,7 @@ export function CheckoutProvider({ children }) {
       notes: orderNotes
     };
 
-    try {
-      // 1. Reserve stock across necessary warehouses
-      const reservedItems = cartItems.map(item => ({
-        id: item.id,
-        name: item.name,
-        sku: item.sku || `SKU-${item.id}`,
-        quantity: item.quantity
-      }));
-      
-      reserveStock(mockOrder.id, reservedItems);
-
-      // 2. Add to global orders
-      addOrder(mockOrder);
-
-      setIsProcessing(false);
-      clearCart();
-      navigate(`/order-confirmation/${mockOrder.id}`, { state: { order: mockOrder } });
-    } catch (error) {
-      setIsProcessing(false);
-      setValidationErrors([error.message || 'Failed to reserve stock. Some items may be out of stock.']);
-      setCurrentStep('review'); // Bring user back to see the error
-    }
+    return orderPayload;
   };
 
   const value = {
@@ -171,9 +145,10 @@ export function CheckoutProvider({ children }) {
     shippingMethods: MOCK_SHIPPING_METHODS,
     nextStep,
     prevStep,
-    createOrder,
+    createOrderPayload,
     validationErrors,
     isProcessing,
+    setIsProcessing,
     totals: {
       subtotal: cartSubtotal,
       discount,

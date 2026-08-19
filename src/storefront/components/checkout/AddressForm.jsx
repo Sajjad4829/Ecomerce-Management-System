@@ -5,97 +5,102 @@ export default function AddressForm({ address, setAddress, disabled }) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
       <div>
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">First Name</label>
         <input
           type="text"
           name="firstName"
           value={address.firstName}
           onChange={handleChange}
           disabled={disabled}
-          placeholder="First name"
-          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50 transition-colors"
         />
       </div>
       <div>
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Last Name</label>
         <input
           type="text"
           name="lastName"
           value={address.lastName}
           onChange={handleChange}
           disabled={disabled}
-          placeholder="Last name"
-          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50 transition-colors"
         />
       </div>
       <div className="sm:col-span-2">
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Phone Number</label>
         <input
-          type="text"
-          name="company"
-          value={address.company}
+          type="tel"
+          name="phone"
+          value={address.phone}
           onChange={handleChange}
           disabled={disabled}
-          placeholder="Company (optional)"
-          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50 transition-colors"
         />
       </div>
       <div className="sm:col-span-2">
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Full Address</label>
         <input
           type="text"
           name="address1"
           value={address.address1}
           onChange={handleChange}
           disabled={disabled}
-          placeholder="Address"
-          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50 transition-colors"
         />
       </div>
       <div className="sm:col-span-2">
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Area / Locality</label>
         <input
           type="text"
-          name="address2"
-          value={address.address2}
+          name="area"
+          value={address.area}
           onChange={handleChange}
           disabled={disabled}
-          placeholder="Apartment, suite, etc. (optional)"
-          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50 transition-colors"
         />
       </div>
-      <div className="sm:col-span-2">
+      <div>
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">District</label>
         <input
           type="text"
           name="city"
           value={address.city}
           onChange={handleChange}
           disabled={disabled}
-          placeholder="City"
-          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50 transition-colors"
         />
       </div>
       <div>
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Division</label>
         <select
           name="state"
           value={address.state}
           onChange={handleChange}
           disabled={disabled}
-          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm bg-white disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm bg-white disabled:opacity-50 disabled:bg-gray-50 transition-colors"
         >
-          <option value="">State / Province</option>
-          <option value="CA">California</option>
-          <option value="NY">New York</option>
-          <option value="TX">Texas</option>
-          <option value="FL">Florida</option>
+          <option value="">Select Division</option>
+          <option value="Dhaka">Dhaka</option>
+          <option value="Chittagong">Chittagong</option>
+          <option value="Sylhet">Sylhet</option>
+          <option value="Khulna">Khulna</option>
+          <option value="Rajshahi">Rajshahi</option>
+          <option value="Rangpur">Rangpur</option>
+          <option value="Barisal">Barisal</option>
+          <option value="Mymensingh">Mymensingh</option>
         </select>
       </div>
       <div>
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">ZIP / Postal Code</label>
         <input
           type="text"
           name="zip"
           value={address.zip}
           onChange={handleChange}
           disabled={disabled}
-          placeholder="ZIP / Postal code"
-          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50"
+          className="w-full px-4 py-3 border border-black/10 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm disabled:opacity-50 disabled:bg-gray-50 transition-colors"
         />
       </div>
     </div>

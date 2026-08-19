@@ -177,6 +177,34 @@ export function CategoryProvider({ children }) {
     return categories.find(c => c.id === id) || null;
   }, [categories]);
 
+  // Get category by slug
+  const getCategoryBySlug = useCallback((slug) => {
+    return categories.find(c => c.slug === slug) || null;
+  }, [categories]);
+
+  // Get parent category
+  const getParentCategory = useCallback((categoryId) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category || !category.parentId) return null;
+    return categories.find(c => c.id === category.parentId) || null;
+  }, [categories]);
+
+  // Get full category hierarchy up to root
+  const getCategoryHierarchy = useCallback((categoryId) => {
+    const hierarchy = [];
+    let currentId = categoryId;
+    while (currentId) {
+      const cat = categories.find(c => c.id === currentId);
+      if (cat) {
+        hierarchy.unshift(cat);
+        currentId = cat.parentId;
+      } else {
+        break;
+      }
+    }
+    return hierarchy;
+  }, [categories]);
+
   // Create Category
   const addCategory = useCallback((categoryData) => {
     const newCategory = {
@@ -239,6 +267,9 @@ export function CategoryProvider({ children }) {
     getChildren,
     canDeleteCategory,
     getCategoryById,
+    getCategoryBySlug,
+    getParentCategory,
+    getCategoryHierarchy,
     addCategory,
     updateCategory,
     deleteCategory,
@@ -247,7 +278,7 @@ export function CategoryProvider({ children }) {
     bulkDelete
   }), [
     categories, categoryTree, getCategoryTree, getChildren, canDeleteCategory, 
-    getCategoryById, addCategory, updateCategory, deleteCategory, 
+    getCategoryById, getCategoryBySlug, getParentCategory, getCategoryHierarchy, addCategory, updateCategory, deleteCategory, 
     bulkUpdateStatus, bulkSetFeatured, bulkDelete
   ]);
 

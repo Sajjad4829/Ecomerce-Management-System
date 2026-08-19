@@ -1,150 +1,191 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiArrowLeft } from 'react-icons/fi';
-import ProductRatingSummary from '../../components/reviews/ProductRatingSummary';
-import ReviewList from '../../components/reviews/ReviewList';
-import RelatedProducts from '../../components/discovery/RelatedProducts';
-import SimilarProducts from '../../components/discovery/SimilarProducts';
-
-import {
-  ProductGallery,
-  ProductInfo,
-  ProductVariantSelector,
-  ProductActions,
-  ProductDetailsAccordion
-} from '../../../components/commerce/products/presentation';
+import { useProducts } from '../../../admin/context/commerce/ProductContext';
+import { useCategories } from '../../../admin/context/commerce/CategoryContext';
+import { useReviews } from '../../../admin/context/ReviewContext';
+import ProductBreadcrumb from '../../components/product/ProductBreadcrumb';
+import ProductGallery from '../../components/product/ProductGallery';
+import ProductInfo from '../../components/product/ProductInfo';
+import ProductVariants from '../../components/product/ProductVariants';
+import ProductActions from '../../components/product/ProductActions';
+import ProductHighlights from '../../components/product/ProductHighlights';
+import ProductDescription from '../../components/product/ProductDescription';
+import ProductSpecifications from '../../components/product/ProductSpecifications';
+import ProductDelivery from '../../components/product/ProductDelivery';
+import ProductReviews from '../../components/product/ProductReviews';
+import RelatedProducts from '../../components/product/RelatedProducts';
+import { motion } from 'framer-motion';
 
 export default function ProductDetailPage() {
-  const { id } = useParams();
+  const { slug } = useParams();
+  const { getProductBySlug } = useProducts();
+  const { getCategoryById } = useCategories();
+  const { getProductReviews } = useReviews();
   
-  // Mock unified product data structure
-  const product = {
-    status: 'published',
-    basicInfo: {
-      name: 'The Sovereign Curved Sofa',
-      sku: 'AUR-SOF-001',
-      brand: 'AURA',
-      shortDescription: 'A masterclass in modern seating, featuring a sweeping curved silhouette and premium upholstery designed for both striking aesthetic impact and enveloping comfort.',
-      description: 'The Sovereign Curved Sofa challenges the conventional with its organic, sweeping lines and sculptural presence. Inspired by natural forms, this masterwork anchors any room with a feeling of fluidity and grace. Every curve is meticulously engineered to provide ergonomic support, ensuring that this piece is as exceptionally comfortable as it is visually arresting.'
-    },
-    organization: {
-      mainCategory: 'Living Room',
-      subCategory: 'Sofas & Sectionals',
-      childCategory: 'Curved Sofas',
-      collection: 'The Sanctuary',
-      tags: ['curved', 'luxury', 'boucle']
-    },
-    media: {
-      primaryImage: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800',
-      gallery: [
-        'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800',
-        'https://images.unsplash.com/photo-1583847268964-b28ce8f52859?auto=format&fit=crop&q=80&w=800'
-      ],
-      view360: {
-        enabled: true,
-        autoRotate: true,
-        speed: 50,
-        frames: [
-          'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800',
-          'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800',
-          'https://images.unsplash.com/photo-1583847268964-b28ce8f52859?auto=format&fit=crop&q=80&w=800'
-        ]
+  const [product, setProduct] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [ratingData, setRatingData] = useState(null);
+  const [selectedVariants, setSelectedVariants] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Scroll to top when slug changes
+    window.scrollTo(0, 0);
+    setIsLoading(true);
+
+    const foundProduct = getProductBySlug(slug);
+    
+    if (foundProduct) {
+      setProduct(foundProduct);
+      setCategory(getCategoryById(foundProduct.categoryId));
+      
+      const reviews = getProductReviews(foundProduct.id) || [];
+      const average = reviews.length > 0 
+        ? (reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length).toFixed(1)
+        : 0;
+      setRatingData({ average: Number(average), count: reviews.length });
+
+      // Initialize default variants
+      const initialVariants = {};
+      if (foundProduct.variants) {
+        foundProduct.variants.forEach(vg => {
+          if (vg.options && vg.options.length > 0) {
+            initialVariants[vg.type] = vg.options[0];
+          }
+        });
       }
-    },
-    variants: [
-      { id: 'v1', name: 'Alabaster Bouclé', sku: 'AUR-SOF-001-ALB', price: 12850, stock: 3, image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800', color: 'White' },
-      { id: 'v2', name: 'Charcoal Velvet', sku: 'AUR-SOF-001-CHA', price: 13200, stock: 2, image: 'https://images.unsplash.com/photo-1583847268964-b28ce8f52859?auto=format&fit=crop&q=80&w=800', color: 'DarkGray' }
-    ],
-    pricing: {
-      regularPrice: 14000,
-      salePrice: 12850,
-      cost: 6000,
-      currency: 'USD'
-    },
-    inventory: {
-      totalStock: 5,
-      status: 'In Stock'
-    },
-    furnitureDetails: {
-      dimensions: {
-        'Overall': '96"W x 42"D x 30"H',
-        'Seat Height': '18"',
-        'Seat Depth': '26"',
-        'Weight': '185 lbs'
-      },
-      materials: {
-        frameMaterial: 'Kiln-dried hardwood',
-        upholstery: 'Premium Italian Bouclé'
-      },
-      care: {
-        furniture: 'Keep away from direct sunlight.',
-        upholstery: 'Vacuum regularly with a soft brush attachment. For spills, blot immediately.'
-      },
-      warranty: {
-        duration: '10-Year Limited Warranty',
-        description: 'Covers the frame and spring system.'
-      },
-      returns: {
-        exchange: 'Custom or made-to-order items are non-returnable.',
-        returnPolicy: 'White Glove Delivery included on orders over $5,000.'
-      },
-      story: 'Meticulously crafted by master artisans over 40 hours.'
-    },
-    seo: {
-      slug: 'sovereign-curved-sofa',
-      metaTitle: 'The Sovereign Curved Sofa | Aurelia Furniture',
-      metaDescription: 'Discover the Sovereign Curved Sofa. Premium bespoke seating.'
+      setSelectedVariants(initialVariants);
+
+      // Track recently viewed products in localStorage
+      try {
+        const viewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+        const updatedViewed = [foundProduct.id, ...viewed.filter(id => id !== foundProduct.id)].slice(0, 4);
+        localStorage.setItem('recentlyViewed', JSON.stringify(updatedViewed));
+      } catch (e) {
+        // Ignore localStorage errors
+      }
+    } else {
+      setProduct(null);
     }
+    
+    setIsLoading(false);
+  }, [slug, getProductBySlug, getCategoryById, getProductReviews]);
+
+  const handleVariantChange = (type, option) => {
+    setSelectedVariants(prev => ({
+      ...prev,
+      [type]: option
+    }));
   };
 
-  const [activeVariant, setActiveVariant] = useState(product.variants[0]);
-
-  return (
-    <div className="min-h-screen bg-[#F7F5F2] font-sans pb-24">
-      <header className="px-8 py-6 bg-white border-b border-black/5 sticky top-0 z-10 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-serif font-bold tracking-tight text-stone-900">
-          AURA
-        </Link>
-        <Link to="/products" className="text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors flex items-center gap-2">
-          <FiArrowLeft /> Back to Catalog
-        </Link>
-      </header>
-      
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col xl:flex-row gap-12 mb-24">
-          <div className="xl:w-[55%]">
-             <ProductGallery product={product} activeVariant={activeVariant} />
-          </div>
-          <div className="xl:w-[45%] flex flex-col space-y-8 py-4">
-             <ProductInfo product={product} activeVariant={activeVariant} />
-             <ProductVariantSelector product={product} activeVariant={activeVariant} onVariantChange={setActiveVariant} />
-             <ProductActions product={product} activeVariant={activeVariant} />
-          </div>
-        </div>
-
-        <div className="max-w-4xl mx-auto flex justify-center mb-24">
-           <ProductDetailsAccordion product={product} />
-        </div>
-
-        {/* Customer Reviews Section */}
-        <div className="max-w-4xl mx-auto space-y-12">
-          <div className="text-center">
-             <h2 className="text-3xl font-serif font-bold text-stone-900 mb-4">Customer Reviews</h2>
-          </div>
-          
-          <ProductRatingSummary productId={id} />
-          
-          <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6 md:p-8">
-             <ReviewList productId={id} />
-          </div>
-        </div>
-
-        {/* Discovery Sections */}
-        <div className="mt-24 space-y-24">
-          <SimilarProducts productId={id} />
-          <RelatedProducts productId={id} />
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+           <div className="animate-pulse flex flex-col lg:flex-row gap-12 lg:gap-16">
+             <div className="w-full lg:w-3/5 aspect-[4/5] bg-gray-100 rounded-xl"></div>
+             <div className="w-full lg:w-2/5 flex flex-col gap-4">
+               <div className="h-10 bg-gray-100 w-3/4 rounded"></div>
+               <div className="h-6 bg-gray-100 w-1/4 rounded mb-8"></div>
+               <div className="h-14 bg-gray-100 w-full rounded"></div>
+               <div className="h-14 bg-gray-100 w-full rounded mt-4"></div>
+             </div>
+           </div>
         </div>
       </div>
-    </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4 bg-white">
+        <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">Product Not Found</h1>
+        <p className="text-gray-500 mb-8 max-w-md">We couldn't find the product you're looking for. It may have been removed or the link might be broken.</p>
+        <Link to="/shop" className="px-8 py-3 bg-gray-900 text-white font-bold tracking-widest uppercase text-sm hover:bg-gray-800 transition-colors">
+          Return to Shop
+        </Link>
+      </div>
+    );
+  }
+
+  // Determine active price based on variants
+  let activePrice = product?.price || 0;
+  let activeComparePrice = product?.compareAtPrice || null;
+
+  if (product && selectedVariants && Object.keys(selectedVariants).length > 0) {
+    Object.values(selectedVariants).forEach(option => {
+      if (option && option.price) {
+        activePrice = option.price;
+        activeComparePrice = null; 
+      } else if (option && option.priceModifier) {
+        activePrice += option.priceModifier;
+      }
+    });
+  }
+
+  const galleryImages = product?.gallery && product.gallery.length > 0 
+    ? product.gallery 
+    : [product?.image];
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white min-h-screen"
+    >
+      <ProductBreadcrumb product={product} category={category} />
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          
+          {/* Left Column: Gallery */}
+          <div className="w-full lg:w-3/5">
+            <div className="sticky top-28">
+              <ProductGallery images={galleryImages} selectedVariants={selectedVariants} />
+            </div>
+          </div>
+
+          {/* Right Column: Product Details */}
+          <div className="w-full lg:w-2/5 flex flex-col">
+            <ProductInfo 
+              product={product} 
+              ratingData={ratingData} 
+              selectedVariants={selectedVariants}
+              activePrice={activePrice}
+              activeComparePrice={activeComparePrice}
+            />
+            
+            <ProductVariants 
+              variants={product.variants} 
+              selectedVariants={selectedVariants} 
+              onVariantChange={handleVariantChange} 
+            />
+            
+            <ProductActions 
+              product={product} 
+              selectedVariants={selectedVariants}
+              activePrice={activePrice}
+            />
+
+            <div className="mt-12 flex flex-col">
+              <ProductHighlights highlights={product.highlights} />
+              <ProductDescription description={product.description} />
+              <ProductDelivery product={product} />
+              <ProductSpecifications specifications={product.specifications} />
+            </div>
+          </div>
+
+        </div>
+        
+        {/* Full Width Reviews Section below Main content */}
+        <ProductReviews product={product} />
+        
+      </main>
+
+      <RelatedProducts currentProduct={product} />
+
+    </motion.div>
   );
 }

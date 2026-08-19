@@ -96,10 +96,10 @@ export default function PaymentStep() {
         </div>
       </section>
 
-      <div className="pt-6 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-black/10 z-50 lg:static lg:bg-transparent lg:border-t-0 lg:p-0 lg:pt-6 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
         <button 
           onClick={prevStep}
-          className="text-sm font-medium text-gray-500 hover:text-black flex items-center gap-2"
+          className="w-full sm:w-auto py-4 text-sm font-medium text-gray-500 hover:text-black flex items-center justify-center gap-2"
         >
           <FiArrowLeft size={16} /> Return to delivery
         </button>

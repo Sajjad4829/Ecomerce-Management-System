@@ -52,7 +52,7 @@ export default function CartTotals() {
         <span className="text-3xl font-bold text-[#1A1A1A]">${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
       </div>
 
-      <Link to="/checkout" className="w-full py-4 bg-[#1A1A1A] text-white text-sm font-semibold rounded hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-black/10">
+      <Link to="/checkout" className="w-full h-14 bg-[#1A1A1A] text-white text-sm font-bold tracking-widest uppercase hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-black/10">
         Proceed to Checkout <FiArrowRight size={16} />
       </Link>
 

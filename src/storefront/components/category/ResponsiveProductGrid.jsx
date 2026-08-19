@@ -1,9 +1,9 @@
 import React from 'react';
-import ProductCard from '../../product/ProductCard';
+import ProductCard from '../product/ProductCard';
 import EmptyState from './EmptyState';
 import { FiSliders } from 'react-icons/fi';
 
-export default function ResponsiveProductGrid({ products, onOpenMobileFilters, isLoading }) {
+export default function ResponsiveProductGrid({ products, onOpenMobileFilters, isLoading, sortOption, onSortChange }) {
   if (isLoading) {
     return (
       <div className="flex-1 w-full">
@@ -32,6 +32,8 @@ export default function ResponsiveProductGrid({ products, onOpenMobileFilters, i
         </button>
 
         <select 
+          value={sortOption}
+          onChange={onSortChange}
           className="text-sm font-medium text-gray-900 bg-transparent outline-none border-none pr-4 cursor-pointer"
           aria-label="Sort products"
         >
@@ -39,19 +41,24 @@ export default function ResponsiveProductGrid({ products, onOpenMobileFilters, i
           <option value="newest">Newest</option>
           <option value="price-asc">Price Low to High</option>
           <option value="price-desc">Price High to Low</option>
+          <option value="name-asc">Name A-Z</option>
         </select>
       </div>
 
       {/* Desktop Sort Header (Hidden on Mobile) */}
-      <div className="hidden lg:flex justify-end mb-8">
+      <div className="hidden lg:flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
+        <p className="text-sm text-gray-500">Showing {products.length} products</p>
         <select 
-          className="text-sm font-medium text-gray-900 bg-transparent outline-none border-b border-gray-300 pb-1 cursor-pointer hover:border-gray-900 transition-colors"
+          value={sortOption}
+          onChange={onSortChange}
+          className="text-sm font-medium text-gray-900 bg-transparent outline-none pb-1 cursor-pointer hover:border-gray-900 transition-colors"
           aria-label="Sort products"
         >
           <option value="featured">Featured</option>
           <option value="newest">Newest</option>
           <option value="price-asc">Price Low to High</option>
           <option value="price-desc">Price High to Low</option>
+          <option value="name-asc">Name A-Z</option>
         </select>
       </div>
 

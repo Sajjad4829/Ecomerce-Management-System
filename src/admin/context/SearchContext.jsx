@@ -50,9 +50,9 @@ export function SearchProvider({ children }) {
 
   // Mock Products Database
   const [mockProducts] = useState([
-    { id: 'prod-1', name: 'Aurum Premium Sofa', category: 'Living Room', price: 125000, material: 'Leather', rating: 4.8, inStock: true, image: 'https://placehold.co/600x600/1a1a1a/ffffff?text=Aurum+Sofa' },
-    { id: 'prod-2', name: 'Nordic Oak Dining Table', category: 'Dining', price: 85000, material: 'Oak Wood', rating: 4.5, inStock: true, image: 'https://placehold.co/600x600/1a1a1a/ffffff?text=Nordic+Table' },
-    { id: 'prod-3', name: 'Velvet Lounge Chair', category: 'Living Room', price: 45000, material: 'Velvet', rating: 4.9, inStock: false, image: 'https://placehold.co/600x600/1a1a1a/ffffff?text=Velvet+Chair' },
+    { id: 'prod-1', slug: 'the-sovereign-curved-sofa', name: 'Aurum Premium Sofa', category: 'Living Room', price: 125000, material: 'Leather', rating: 4.8, inStock: true, image: 'https://placehold.co/600x600/1a1a1a/ffffff?text=Aurum+Sofa' },
+    { id: 'prod-2', slug: 'florentine-marble-dining-table', name: 'Nordic Oak Dining Table', category: 'Dining', price: 85000, material: 'Oak Wood', rating: 4.5, inStock: true, image: 'https://placehold.co/600x600/1a1a1a/ffffff?text=Nordic+Table' },
+    { id: 'prod-3', slug: 'nordic-oak-lounge-chair', name: 'Velvet Lounge Chair', category: 'Living Room', price: 45000, material: 'Velvet', rating: 4.9, inStock: false, image: 'https://placehold.co/600x600/1a1a1a/ffffff?text=Velvet+Chair' },
   ]);
 
   // Search Service Abstraction

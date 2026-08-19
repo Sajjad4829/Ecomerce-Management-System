@@ -5,10 +5,12 @@ import { Link } from 'react-router-dom';
 
 export default function CartItem({ item }) {
   const { updateQuantity, removeFromCart, saveForLater } = useCommerce();
-  const { product, variant, quantity, unitPrice } = item;
+  const { product, selectedVariants, variantImage, quantity, unitPrice, availability } = item;
 
-  // Placeholder image if not provided
-  const imageUrl = variant?.image || product?.images?.[0] || 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=400';
+  // Prioritize variant image, then product gallery/image, then fallback
+  const imageUrl = variantImage || product?.gallery?.[0] || product?.image || 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=400';
+  
+  const maxStock = product?.stock !== undefined ? product.stock : 99;
 
   return (
     <div className="flex gap-4 py-6 border-b border-black/5 last:border-0 relative group">
@@ -25,19 +27,25 @@ export default function CartItem({ item }) {
       <div className="flex-1 flex flex-col justify-between">
         <div className="flex justify-between items-start gap-4">
           <div>
-            <Link to={`/products/${product?.id || 'sample'}`} className="text-base font-bold text-[#1A1A1A] hover:underline hover:underline-offset-2">
+            <Link to={`/product/${product?.slug || product?.id}`} className="text-base font-bold text-[#1A1A1A] hover:underline hover:underline-offset-2">
               {product?.name || 'Premium Product'}
             </Link>
-            {variant && (
-              <p className="text-sm text-gray-500 mt-1">
-                {variant.title || 'Standard Variant'}
+            
+            {selectedVariants && Object.keys(selectedVariants).length > 0 && (
+              <p className="text-sm text-gray-500 mt-1 space-x-2">
+                {Object.entries(selectedVariants).map(([type, option], idx) => (
+                  <span key={type}>
+                    {idx > 0 && <span className="text-gray-300 mr-2">|</span>}
+                    <span className="capitalize">{type}:</span> {option?.name}
+                  </span>
+                ))}
               </p>
             )}
             
-            {/* Availability Badge Placeholder */}
-            <p className="text-xs font-medium text-green-600 mt-2 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-              {item.availability || 'In Stock'}
+            {/* Availability Badge */}
+            <p className={`text-xs font-medium mt-2 flex items-center gap-1.5 ${product?.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${product?.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
+              {availability || (product?.stock > 0 ? 'In Stock' : 'Out of Stock')}
             </p>
           </div>
 
@@ -57,6 +65,7 @@ export default function CartItem({ item }) {
           <QuantitySelector 
             quantity={quantity} 
             onChange={(newQuantity) => updateQuantity(item.id, newQuantity)}
+            max={maxStock}
           />
           
           <div className="flex items-center gap-2">

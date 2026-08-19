@@ -1,5 +1,17 @@
+import { useReviews } from '../../../admin/context/ReviewContext';
+
 export default function Testimonials() {
-  const TESTIMONIALS = [
+  const { reviews } = useReviews();
+
+  // Get up to 3 published 5-star reviews, fallback to hardcoded if none
+  const publishedReviews = reviews?.filter(r => r.status === 'Published' && r.rating >= 4).slice(0, 3) || [];
+  
+  const displayReviews = publishedReviews.length > 0 ? publishedReviews.map(r => ({
+    id: r.id,
+    quote: r.content,
+    author: r.customerName,
+    location: "Verified Customer"
+  })) : [
     {
       id: 1,
       quote: "The craftsmanship is unparalleled. Our new dining table has completely transformed the energy of our home, becoming the focal point of every gathering.",
@@ -23,12 +35,11 @@ export default function Testimonials() {
   return (
     <section className="py-24 bg-[#F9F9F9]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-16">A word from our clients</h2>
+        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-16">What Our Customers Say</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
-          {TESTIMONIALS.map((testimonial) => (
+          {displayReviews.map((testimonial) => (
             <div key={testimonial.id} className="flex flex-col items-center">
-              {/* Subtle quote mark graphic */}
               <span className="text-4xl text-gray-300 font-serif mb-6 leading-none">"</span>
               <p className="text-lg text-gray-700 italic mb-8 flex-grow leading-relaxed">
                 {testimonial.quote}

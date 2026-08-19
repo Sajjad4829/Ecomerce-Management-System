@@ -2,6 +2,10 @@ import { useCheckout } from '../../context/CheckoutContext';
 import { usePayment } from '../../context/PaymentContext';
 import { FiArrowLeft, FiCreditCard, FiSmartphone, FiBriefcase, FiDollarSign, FiXCircle, FiRefreshCw } from 'react-icons/fi';
 import AddressForm from './AddressForm';
+import { useNavigate } from 'react-router-dom';
+import { useCommerce } from '../../context/CommerceContext';
+import { useToast } from '../../../components/ui/Toast/ToastContext';
+import PaymentSimulatorModal from './PaymentSimulatorModal';
 
 const METHOD_ICONS = {
   online: <FiCreditCard size={16} className="text-gray-500" />,
@@ -22,47 +26,63 @@ export default function ReviewStep() {
 
   const { selectedMethod, processPaymentPlaceholder, paymentStatus, retryPayment } = usePayment();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPayload, setCurrentPayload] = useState(null);
+  const navigate = useNavigate();
+  const { clearCart } = useCommerce();
+  const { addToast } = useToast();
+
   const handlePlaceOrder = async () => {
-    try {
-      const txn = await processPaymentPlaceholder();
-      await createOrder(txn); // This normally happens after successful payment
-    } catch (error) {
-      // payment failed state is updated in context
+    setIsProcessing(true);
+    const payload = createOrderPayload();
+    setCurrentPayload(payload);
+
+    if (selectedMethod?.id === 'cod') {
+      // Simulate COD processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setIsProcessing(false);
+      clearCart();
+      navigate('/order/success', { state: { payload } });
+    } else {
+      // Show online payment simulator
+      setIsProcessing(false);
+      setIsModalOpen(true);
     }
   };
 
-  const isActuallyProcessing = isProcessing || paymentStatus === 'Processing';
+  const handleSimulateSuccess = () => {
+    setIsModalOpen(false);
+    setIsProcessing(true);
+    
+    // Create transaction record
+    const txn = {
+      id: `TXN-${Date.now()}`,
+      provider: selectedMethod.provider,
+      method: selectedMethod.id,
+      amount: currentPayload.totals.grandTotal, 
+      status: 'Succeeded',
+      reference: 'SIMULATED_SUCCESS',
+      createdAt: new Date().toISOString()
+    };
+    
+    // Update payload
+    const updatedPayload = {
+      ...currentPayload,
+      paymentStatus: 'Paid',
+      transaction: txn
+    };
 
-  if (paymentStatus === 'Failed') {
-    return (
-      <div className="bg-white rounded-2xl border border-red-100 p-8 text-center max-w-md mx-auto">
-        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
-          <FiXCircle size={32} className="text-red-500" />
-        </div>
-        <h2 className="text-2xl font-serif font-bold text-gray-900 mb-2">Payment Failed</h2>
-        <p className="text-sm text-gray-500 mb-8">
-          We couldn't process your payment. Please check your payment details or try a different method.
-        </p>
-        <div className="space-y-3">
-          <button 
-            onClick={retryPayment}
-            className="w-full px-6 py-3 bg-[#1A1A1A] text-white font-semibold rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2"
-          >
-            <FiRefreshCw size={18} /> Retry Payment
-          </button>
-          <button 
-            onClick={() => {
-              retryPayment();
-              prevStep();
-            }}
-            className="w-full px-6 py-3 bg-white border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            Change Payment Method
-          </button>
-        </div>
-      </div>
-    );
-  }
+    setIsProcessing(false);
+    clearCart();
+    navigate('/order/success', { state: { payload: updatedPayload } });
+  };
+
+  const handleSimulateFailure = () => {
+    setIsModalOpen(false);
+    addToast('Payment failed. Please try again.', 'error');
+  };
+
+  const isActuallyProcessing = isProcessing;
 
   return (
     <div className="space-y-10">
@@ -144,10 +164,10 @@ export default function ReviewStep() {
         )}
       </section>
 
-      <div className="pt-6 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-black/10 z-50 lg:static lg:bg-transparent lg:border-t-0 lg:p-0 lg:pt-6 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
         <button 
           onClick={prevStep}
-          className="text-sm font-medium text-gray-500 hover:text-black flex items-center gap-2 disabled:opacity-50"
+          className="w-full sm:w-auto py-4 text-sm font-medium text-gray-500 hover:text-black flex items-center justify-center gap-2 disabled:opacity-50"
           disabled={isActuallyProcessing}
         >
           <FiArrowLeft size={16} /> Return to payment
@@ -160,6 +180,15 @@ export default function ReviewStep() {
           {isActuallyProcessing ? 'Processing Payment...' : 'Place Order'}
         </button>
       </div>
+
+      <PaymentSimulatorModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={handleSimulateSuccess}
+        onFailure={handleSimulateFailure}
+        payload={currentPayload}
+        selectedMethod={selectedMethod}
+      />
     </div>
   );
 }

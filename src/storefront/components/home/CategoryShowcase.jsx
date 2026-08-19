@@ -1,34 +1,17 @@
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
-
-const CATEGORIES = [
-  {
-    id: 'living-room',
-    title: 'Living Room',
-    image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=80&w=800',
-    slug: 'living-room'
-  },
-  {
-    id: 'bedroom',
-    title: 'Bedroom',
-    image: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=800',
-    slug: 'bedroom'
-  },
-  {
-    id: 'dining',
-    title: 'Dining Room',
-    image: 'https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&q=80&w=800',
-    slug: 'dining-room'
-  },
-  {
-    id: 'office',
-    title: 'Office',
-    image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=800',
-    slug: 'office'
-  }
-];
+import { useCategories } from '../../../admin/context/commerce/CategoryContext';
 
 export default function CategoryShowcase() {
+  const { categories } = useCategories();
+  
+  // Get top-level categories and limit to 4
+  const displayCategories = categories?.filter(c => !c.parentId).slice(0, 4) || [];
+
+  if (displayCategories.length === 0) {
+    return null; // Graceful empty state
+  }
+
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,16 +25,16 @@ export default function CategoryShowcase() {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {CATEGORIES.map(category => (
+          {displayCategories.map(category => (
             <Link key={category.id} to={`/category/${category.slug}`} className="group block relative overflow-hidden bg-gray-100 aspect-[4/5]">
               <img 
-                src={category.image} 
-                alt={category.title} 
+                src={category.image || 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=800'} 
+                alt={category.name} 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
               <div className="absolute bottom-0 left-0 p-8">
-                <h3 className="text-xl font-bold text-white tracking-wide">{category.title}</h3>
+                <h3 className="text-xl font-bold text-white tracking-wide">{category.name}</h3>
               </div>
             </Link>
           ))}

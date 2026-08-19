@@ -4,7 +4,7 @@ const BENEFITS = [
   {
     icon: FiTruck,
     title: 'FREE SHIPPING',
-    description: 'Worldwide delivery'
+    description: 'Nationwide delivery'
   },
   {
     icon: FiRefreshCcw,

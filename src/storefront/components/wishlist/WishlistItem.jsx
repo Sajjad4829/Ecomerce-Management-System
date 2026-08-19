@@ -12,7 +12,7 @@ export default function WishlistItem({ item }) {
   return (
     <div className="flex flex-col sm:flex-row gap-6 p-6 bg-white border border-black/5 rounded-2xl shadow-sm hover:shadow-md transition-shadow group">
       {/* Image */}
-      <Link to={`/products/${product.id}`} className="w-full sm:w-40 h-48 sm:h-40 shrink-0 bg-gray-100 rounded-xl overflow-hidden block">
+      <Link to={`/product/${product.slug}`} className="w-full sm:w-40 h-48 sm:h-40 shrink-0 bg-gray-100 rounded-xl overflow-hidden block">
         <img 
           src={imageUrl} 
           alt={product.name} 
@@ -25,7 +25,7 @@ export default function WishlistItem({ item }) {
         <div>
           <div className="flex justify-between items-start gap-4">
             <div>
-              <Link to={`/products/${product.id}`} className="text-lg font-bold text-[#1A1A1A] hover:underline hover:underline-offset-2">
+              <Link to={`/product/${product.slug}`} className="text-lg font-bold text-[#1A1A1A] hover:underline hover:underline-offset-2">
                 {product.name}
               </Link>
               {variant && (

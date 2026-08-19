@@ -14,16 +14,16 @@ export default function PromoBanner() {
           
           <div className="relative z-10 w-full max-w-xl p-8 md:p-16 lg:p-24 text-white">
             <h2 className="text-4xl md:text-5xl font-serif font-bold leading-tight mb-6 tracking-tight">
-              Made for modern living.
+              Elevate Your Everyday
             </h2>
             <p className="text-lg md:text-xl opacity-90 mb-10 leading-relaxed font-light">
-              Explore our curated selection of foundational pieces that anchor your space with effortless style and uncompromising comfort.
+              Discover furniture designed to transform your living spaces.
             </p>
             <Link 
-              to="/collections" 
-              className="inline-flex items-center justify-center px-8 py-4 text-sm font-bold tracking-widest text-black bg-white hover:bg-gray-100 transition-colors uppercase"
+              to="/products" 
+              className="inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest text-black bg-white hover:bg-gray-100 transition-colors uppercase"
             >
-              Explore Collection
+              Shop Now
             </Link>
           </div>
         </div>

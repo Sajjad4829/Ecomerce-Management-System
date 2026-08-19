@@ -1,33 +1,59 @@
 import { useCommerce } from '../../context/CommerceContext';
 import WishlistButton from '../wishlist/WishlistButton';
 import { FiShoppingCart } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useReviews } from '../../../admin/context/ReviewContext';
 import { FiStar } from 'react-icons/fi';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCommerce();
   const { getProductRating } = useReviews();
+  const navigate = useNavigate();
   const price = product.price;
   const ratingData = getProductRating(product.id);
+
+  const handleQuickAdd = (e) => {
+    e.preventDefault();
+    if (product.variants && product.variants.length > 0) {
+      navigate(`/product/${product.slug}`);
+    } else {
+      addToCart(product, null, 1);
+    }
+  };
 
   return (
     <div className="group relative flex flex-col h-full">
       <div className="relative w-full aspect-[4/5] bg-gray-100 overflow-hidden mb-4">
-        <img 
-          src={product.image || 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=400'} 
-          alt={product.name} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-        />
+        <Link to={`/product/${product.slug}`}>
+          <img 
+            src={product.image || 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=400'} 
+            alt={product.name} 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+        </Link>
         
         <div className="absolute top-4 right-4 z-10">
           <WishlistButton product={product} />
         </div>
 
+        {/* Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+          {product.badge && (
+            <span className="bg-black text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1">
+              {product.badge}
+            </span>
+          )}
+          {product.compareAtPrice > product.price && !product.badge && (
+            <span className="bg-[#B91C1C] text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1">
+              SALE
+            </span>
+          )}
+        </div>
+
         {/* Hover Actions */}
         <div className="absolute inset-x-4 bottom-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
           <button 
-            onClick={() => addToCart(product, null, 1)}
+            onClick={handleQuickAdd}
             className="w-full py-3 bg-white/90 backdrop-blur text-[#1A1A1A] text-sm font-semibold hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-sm"
           >
             <FiShoppingCart size={16} /> <span className="hidden sm:inline">Quick Add</span>
@@ -37,7 +63,7 @@ export default function ProductCard({ product }) {
 
       <div className="px-1 flex flex-col flex-1">
         <div className="flex justify-between items-start gap-2">
-          <Link to={`/products/${product.id}`} className="block flex-1">
+          <Link to={`/product/${product.slug}`} className="block flex-1">
             <h3 className="text-sm sm:text-base font-bold text-[#1A1A1A] group-hover:underline line-clamp-2">{product.name}</h3>
           </Link>
           {ratingData.count > 0 && (
@@ -49,9 +75,22 @@ export default function ProductCard({ product }) {
           )}
         </div>
         <p className="text-sm text-gray-500 mt-1">{product.category || 'Furniture'}</p>
-        <p className="text-base font-medium text-[#1A1A1A] mt-2">
-          ${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-        </p>
+        <div className="flex items-center gap-2 mt-2">
+          {product.compareAtPrice > product.price ? (
+            <>
+              <p className="text-sm text-gray-400 line-through">
+                ${product.compareAtPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </p>
+              <p className="text-base font-medium text-[#B91C1C]">
+                ${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </p>
+            </>
+          ) : (
+            <p className="text-base font-medium text-[#1A1A1A]">
+              ${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

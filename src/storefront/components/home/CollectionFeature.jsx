@@ -15,20 +15,20 @@ export default function CollectionFeature() {
             </div>
           </div>
           <div className="w-full lg:w-1/2">
-            <span className="block text-sm font-bold tracking-[0.2em] uppercase text-gray-500 mb-4">
+            <span className="block text-xs font-bold tracking-[0.3em] uppercase text-gray-500 mb-6">
               Curated Collection
             </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6 leading-tight uppercase">
               The Sanctuary Collection
             </h2>
             <p className="text-lg text-gray-600 mb-10 leading-relaxed max-w-lg">
-              Embrace tranquility with our newest collection. Featuring organic textures, soft neutral tones, and expansive silhouettes designed to turn your home into a restorative retreat.
+              Furniture designed for calm, comfort and timeless interiors.
             </p>
             <Link 
               to="/collections/sanctuary" 
-              className="inline-flex items-center justify-center px-8 py-4 text-sm font-bold tracking-widest text-white bg-black hover:bg-gray-800 transition-colors uppercase"
+              className="group inline-flex items-center justify-center px-8 py-4 text-xs font-bold tracking-widest text-white bg-black hover:bg-gray-800 transition-colors uppercase"
             >
-              Shop The Collection
+              Explore Collection <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           </div>
         </div>
