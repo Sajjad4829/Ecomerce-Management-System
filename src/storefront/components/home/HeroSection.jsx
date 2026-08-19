@@ -1,14 +1,59 @@
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+const slides = [
+  {
+    id: 1,
+    image: "/hero/living.png",
+    category: "Living Room",
+  },
+  {
+    id: 2,
+    image: "/hero/bedroom.png",
+    category: "Bedroom",
+  },
+  {
+    id: 3,
+    image: "/hero/dining.png",
+    category: "Dining",
+  },
+  {
+    id: 4,
+    image: "/hero/office.png",
+    category: "Office",
+  }
+];
+
 export default function HeroSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }, 5000); // Change slide every 5 seconds
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <section className="relative w-full h-screen min-h-[600px] flex items-center bg-[#F7F7F7]">
-      <img
-        src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2000"
-        alt="Premium modern living room setup"
-        className="absolute inset-0 w-full h-full object-cover object-center"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
+    <section className="relative w-full h-screen min-h-[600px] flex items-center bg-[#F7F7F7] overflow-hidden">
+      {/* Slider Images */}
+      {slides.map((slide, index) => (
+        <div
+          key={slide.id}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            index === currentSlide ? 'opacity-100 z-0' : 'opacity-0 z-[-1]'
+          }`}
+        >
+          <img
+            src={slide.image}
+            alt={`${slide.category} furniture setup`}
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+      ))}
+      
+      {/* Dark overlay to give a premium, moody feel and make text pop */}
+      <div className="absolute inset-0 bg-black/30 bg-gradient-to-r from-black/80 via-black/50 to-black/30 z-0"></div>
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="max-w-2xl text-white">
@@ -16,10 +61,10 @@ export default function HeroSection() {
             NEW COLLECTION
           </span>
           <h1 className="text-5xl md:text-6xl lg:text-[5rem] font-serif font-bold tracking-tight leading-[1.05] mb-6">
-            Designed for the way you live
+            Sets you as a trend
           </h1>
           <p className="text-lg md:text-xl opacity-90 mb-10 leading-relaxed font-light text-gray-100 max-w-xl">
-            Premium furniture crafted with timeless design, exceptional comfort and lasting quality.
+            aesthetically stylish setter
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link 
@@ -38,6 +83,20 @@ export default function HeroSection() {
         </div>
       </div>
       
+      {/* Slider Navigation Dots */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-3">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-3 h-3 rounded-full transition-all ${
+              index === currentSlide ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/80'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+
       {/* Mobile Number inside banner at bottom left */}
       <a href="tel:09678777777" className="absolute bottom-6 left-6 md:bottom-8 md:left-8 z-20 flex items-center space-x-2 text-white hover:text-gray-300 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
