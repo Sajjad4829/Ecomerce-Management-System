@@ -1,5 +1,7 @@
 import { useProducts } from '../../../admin/context/commerce/ProductContext';
+import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 import HeroSection from '../../components/home/HeroSection';
+import CreationsWithPurpose from '../../components/home/CreationsWithPurpose';
 import BenefitsSection from '../../components/home/BenefitsSection';
 import CategoryShowcase from '../../components/home/CategoryShowcase';
 import ProductGridSection from '../../components/home/ProductGridSection';
@@ -12,6 +14,7 @@ import NewsletterSection from '../../components/home/NewsletterSection';
 
 export default function Home() {
   const { products } = useProducts();
+  const { activeTheme } = useStorefrontTheme();
 
   const safeProducts = products || [];
   const featuredProducts = safeProducts.filter(p => p.badge === 'Featured' || p.featured === true).slice(0, 4);
@@ -25,6 +28,7 @@ export default function Home() {
   return (
     <div className="w-full bg-white animate-in fade-in duration-1000">
       <HeroSection />
+      {activeTheme.id === 'classic-furniture' && <CreationsWithPurpose />}
       <BenefitsSection />
       <CategoryShowcase />
       

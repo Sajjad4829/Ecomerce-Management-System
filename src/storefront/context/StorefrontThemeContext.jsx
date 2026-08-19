@@ -6,6 +6,12 @@ export const storefrontThemes = [
   {
     id: 'classic-furniture',
     name: 'Classic Furniture',
+    heroSlides: [
+      { id: 1, image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2000", category: "Living Room" },
+      { id: 2, image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=2000", category: "Bedroom" },
+      { id: 3, image: "https://images.unsplash.com/photo-1617806118233-18e1c0945594?auto=format&fit=crop&q=80&w=2000", category: "Dining" },
+      { id: 4, image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=2000", category: "Office" }
+    ],
     description: 'Existing premium furniture storefront',
     preview: { bg: '#F7F7F7', primary: '#E31E24', accent: '#000000' },
     tokens: {
@@ -46,6 +52,12 @@ export const storefrontThemes = [
   {
     id: 'modern-luxury',
     name: 'Modern Luxury',
+    heroSlides: [
+      { id: 1, image: "https://images.unsplash.com/photo-1583847268964-b28ce8f31586?auto=format&fit=crop&q=80&w=2000", category: "Living Room" },
+      { id: 2, image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=2000", category: "Bedroom" },
+      { id: 3, image: "https://images.unsplash.com/photo-1574873215043-44119461cb3b?auto=format&fit=crop&q=80&w=2000", category: "Dining" },
+      { id: 4, image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000", category: "Office" }
+    ],
     description: 'Modern premium ecommerce experience',
     preview: { bg: '#FAFAFA', primary: '#111827', accent: '#4B5563' },
     tokens: {
@@ -80,46 +92,6 @@ export const storefrontThemes = [
         radius: 'rounded-2xl',
         shadow: 'hover:shadow-2xl hover:shadow-slate-200/50',
         button: 'bg-slate-900 text-white hover:bg-slate-800 rounded-full'
-      }
-    }
-  },
-  {
-    id: 'dark-luxury',
-    name: 'Dark Luxury',
-    description: 'Dark luxury ecommerce experience',
-    preview: { bg: '#0A0A0A', primary: '#D4AF37', accent: '#262626' },
-    tokens: {
-      background: 'bg-[#0A0A0A]',
-      surface: 'bg-[#171717]',
-      text: {
-        primary: 'text-[#F5F5F5]',
-        secondary: 'text-[#A3A3A3]',
-        muted: 'text-[#737373]',
-        inverse: 'text-[#0A0A0A]'
-      },
-      primary: 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#FDE047]',
-      secondary: 'bg-[#171717] text-[#D4AF37] hover:bg-[#262626] border border-[#D4AF37]',
-      border: 'border-[#262626]',
-      header: {
-        solid: 'bg-[#0A0A0A]/90 backdrop-blur-xl text-[#F5F5F5] shadow-2xl border-[#262626]',
-        transparent: 'bg-transparent text-white border-transparent',
-        linkSolid: 'text-[#A3A3A3] hover:text-[#D4AF37]',
-        linkTransparent: 'text-white/80 hover:text-[#D4AF37]',
-        linkActiveSolid: 'bg-[#262626] text-[#D4AF37]',
-        linkActiveTransparent: 'bg-black/40 text-[#D4AF37]',
-      },
-      hero: {
-        overlay: 'bg-black/60 bg-gradient-to-t from-[#0A0A0A] to-transparent',
-        fontFamily: 'font-serif tracking-widest',
-        titleSize: 'text-4xl md:text-5xl lg:text-7xl uppercase',
-        buttonPrimary: 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#FDE047]',
-        buttonSecondary: 'bg-transparent border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10'
-      },
-      productCard: {
-        surface: 'bg-[#171717]',
-        radius: 'rounded-sm',
-        shadow: 'hover:shadow-[0_0_30px_rgba(212,175,55,0.1)]',
-        button: 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#FDE047]'
       }
     }
   }

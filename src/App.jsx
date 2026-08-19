@@ -494,6 +494,7 @@ import {
   BannerManager, SEOCenter, RedirectCenter, PagePreview,
   PageTypeCenter, PageTypeForm
 } from './admin/pages/cms/CMSPages';
+import VisualEditor from './admin/pages/cms/editor/VisualEditor';
 
 import { ExperienceProvider } from './admin/context/experience/ExperienceContext';
 import {
@@ -849,7 +850,7 @@ export default function App() {
                                                       <Route path="pages" element={<PageCenter />} />
                                                       <Route path="pages/create" element={<PageForm />} />
                                                       <Route path="pages/:pageId/edit" element={<PageForm />} />
-                                                      <Route path="pages/:pageId/builder" element={<PageBuilder />} />
+                                                      <Route path="pages/:pageId/builder" element={<VisualEditor />} />
                                                       <Route path="pages/:pageId/preview" element={<PagePreview />} />
                                                       <Route path="page-types" element={<PageTypeCenter />} />
                                                       <Route path="page-types/create" element={<PageTypeForm />} />

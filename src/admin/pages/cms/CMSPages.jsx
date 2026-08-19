@@ -304,12 +304,66 @@ export const PageBuilder = () => {
 };
 
 export const SectionLibrary = () => {
-  const { sections } = useCMS();
+  const { sections, setSections } = useCMS();
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [formData, setFormData] = React.useState({ name: '', type: 'Hero', category: 'Hero' });
+  const [content, setContent] = React.useState({
+    title: '',
+    subtitle: '',
+    ctaText: '',
+    ctaUrl: '',
+    items: [
+      { id: Date.now(), imageUrl: '', title: '', link: '' }
+    ]
+  });
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    const newTemplate = {
+      id: `SEC-${Date.now()}`,
+      name: formData.name || 'New Section',
+      category: formData.category,
+      type: formData.type,
+      status: 'Active',
+      updatedAt: new Date().toISOString().split('T')[0],
+      usageCount: 0,
+      content: {
+        title: content.title || "Creations with purpose",
+        subtitle: content.subtitle || "Many choices based on your space",
+        ctaText: content.ctaText || "Explore Now",
+        ctaUrl: content.ctaUrl || "/shop",
+        items: content.items.length > 0 ? content.items : [
+          { id: 1, imageUrl: '/images/default.jpg', title: 'Default', link: '/shop' }
+        ]
+      },
+      // Keep defaultSchema synced so AddSectionDrawer can consume it properly
+      defaultSchema: {
+        title: content.title || "Creations with purpose",
+        subtitle: content.subtitle || "Many choices based on your space",
+        ctaText: content.ctaText || "Explore Now",
+        ctaUrl: content.ctaUrl || "/shop",
+        items: content.items.length > 0 ? content.items : [
+          { id: 1, imageUrl: '/images/default.jpg', title: 'Default', link: '/shop' }
+        ]
+      }
+    };
+    
+    setSections([...sections, newTemplate]);
+    setIsModalOpen(false);
+    setFormData({ name: '', type: 'Hero', category: 'Hero' });
+    setContent({ title: '', subtitle: '', ctaText: '', ctaUrl: '', items: [{ id: Date.now(), imageUrl: '', title: '', link: '' }] });
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-serif text-neutral-900">Section Library</h1>
-        <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Section Template</button>
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800"
+        >
+          Create Section Template
+        </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {sections.map(s => (
@@ -324,7 +378,7 @@ export const SectionLibrary = () => {
               </div>
               <div className="text-sm text-neutral-500 mb-4">Type: {s.type}</div>
               <div className="flex justify-between items-center mt-auto pt-4 border-t border-neutral-100">
-                <span className="text-xs text-neutral-500">Used in {s.usageCount} pages</span>
+                <span className="text-xs text-neutral-500">Used in {s.usageCount || 0} pages</span>
                 <div className="space-x-2 text-sm">
                   <button className="text-primary hover:text-indigo-800 font-medium">Edit</button>
                   <button className="text-neutral-600 hover:text-neutral-800 font-medium">Duplicate</button>
@@ -334,6 +388,138 @@ export const SectionLibrary = () => {
           </div>
         ))}
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div className="p-6 border-b border-neutral-200">
+              <h2 className="text-xl font-serif font-bold text-neutral-900">Create Section Template</h2>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[60vh] custom-scrollbar">
+              <form id="create-section-form" onSubmit={handleCreate} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Section Name</label>
+                  <input 
+                    required 
+                    type="text" 
+                    className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" 
+                    value={formData.name} 
+                    onChange={e => setFormData({...formData, name: e.target.value})} 
+                    placeholder="e.g., Summer Promo Carousel" 
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1">Category</label>
+                    <select 
+                      className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" 
+                      value={formData.category} 
+                      onChange={e => setFormData({...formData, category: e.target.value})}
+                    >
+                      <option>Hero</option>
+                      <option>Carousel</option>
+                      <option>CTA</option>
+                      <option>Content</option>
+                      <option>Grid</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1">Type</label>
+                    <select 
+                      className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" 
+                      value={formData.type} 
+                      onChange={e => setFormData({...formData, type: e.target.value})}
+                    >
+                      <option>Hero</option>
+                      <option>Product</option>
+                      <option>Newsletter</option>
+                      <option>CREATIONS_SHOWCASE</option>
+                    </select>
+                  </div>
+                </div>
+
+                {formData.type === 'CREATIONS_SHOWCASE' && (
+                  <div className="border-t border-neutral-200 pt-6 space-y-6">
+                    <h3 className="font-bold text-neutral-900 font-serif">Section Content</h3>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Title</label>
+                        <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.title} onChange={e => setContent({...content, title: e.target.value})} placeholder="Creations with purpose" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Subtitle</label>
+                        <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.subtitle} onChange={e => setContent({...content, subtitle: e.target.value})} placeholder="Many choices based on your space" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Text</label>
+                        <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaText} onChange={e => setContent({...content, ctaText: e.target.value})} placeholder="Explore Now" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Link</label>
+                        <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaUrl} onChange={e => setContent({...content, ctaUrl: e.target.value})} placeholder="/shop" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium text-sm text-neutral-900 mb-3">Image Items</h4>
+                      <div className="space-y-3">
+                        {content.items.map((item, index) => (
+                          <div key={item.id} className="p-4 border border-neutral-200 rounded-lg bg-neutral-50 flex gap-4 items-start">
+                             <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div>
+                                  <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
+                                  <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.title} onChange={e => {
+                                    const newItems = [...content.items];
+                                    newItems[index].title = e.target.value;
+                                    setContent({...content, items: newItems});
+                                  }} placeholder="e.g. Living Room" />
+                                </div>
+                                <div>
+                                  <label className="block text-xs font-medium text-neutral-500 mb-1">Image URL</label>
+                                  <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.imageUrl} onChange={e => {
+                                    const newItems = [...content.items];
+                                    newItems[index].imageUrl = e.target.value;
+                                    setContent({...content, items: newItems});
+                                  }} placeholder="https://..." />
+                                </div>
+                                <div>
+                                  <label className="block text-xs font-medium text-neutral-500 mb-1">Link</label>
+                                  <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.link} onChange={e => {
+                                    const newItems = [...content.items];
+                                    newItems[index].link = e.target.value;
+                                    setContent({...content, items: newItems});
+                                  }} placeholder="/category/..." />
+                                </div>
+                             </div>
+                             <button type="button" onClick={() => {
+                               const newItems = content.items.filter(i => i.id !== item.id);
+                               setContent({...content, items: newItems});
+                             }} className="text-red-500 hover:text-red-700 mt-6 p-1 transition-colors" title="Remove Item">
+                                <Trash2 size={18} />
+                             </button>
+                          </div>
+                        ))}
+                      </div>
+                      <button type="button" onClick={() => {
+                        setContent({...content, items: [...content.items, { id: Date.now(), imageUrl: '', title: '', link: '' }]})
+                      }} className="mt-4 text-sm font-medium text-primary hover:text-indigo-800 flex items-center gap-1 transition-colors">
+                        + Add Image Item
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </form>
+            </div>
+            
+            <div className="p-6 border-t border-neutral-200 bg-neutral-50 rounded-b-lg flex justify-end gap-2 shrink-0">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded hover:bg-white transition-colors">Cancel</button>
+              <button type="submit" form="create-section-form" className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors">Create Template</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

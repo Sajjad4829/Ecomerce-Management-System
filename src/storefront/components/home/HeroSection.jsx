@@ -2,33 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
-const slides = [
-  {
-    id: 1,
-    image: "/hero/living.png",
-    category: "Living Room",
-  },
-  {
-    id: 2,
-    image: "/hero/bedroom.png",
-    category: "Bedroom",
-  },
-  {
-    id: 3,
-    image: "/hero/dining.png",
-    category: "Dining",
-  },
-  {
-    id: 4,
-    image: "/hero/office.png",
-    category: "Office",
-  }
-];
-
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { activeTheme } = useStorefrontTheme();
   const heroTokens = activeTheme.tokens.hero;
+  const slides = activeTheme.heroSlides || [];
 
   useEffect(() => {
     const timer = setInterval(() => {

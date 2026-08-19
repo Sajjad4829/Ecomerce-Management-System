@@ -3,22 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiSearch, FiPlus, FiGlobe, FiLayout } from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
 
-const LIBRARY_SECTIONS = [
-  { type: 'hero', name: 'Main Hero', category: 'Hero Sections', image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=400' },
-  { type: 'grid', name: 'Product Grid', category: 'Commerce', image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=400' },
-  { type: 'banner', name: 'Newsletter Signup', category: 'Conversion', image: '' },
-  { type: 'features', name: 'Features List', category: 'Content', image: '' },
-  { type: 'category', name: 'Category Grid', category: 'Commerce', image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400' },
-  { type: 'testimonials', name: 'Customer Reviews', category: 'Social Proof', image: '' },
-  { type: 'faq', name: 'FAQ Accordion', category: 'Content', image: '' },
-  { type: 'footer', name: 'Standard Footer', category: 'Global', image: '' },
-];
-
-const GLOBAL_BLOCKS = [
-  { type: 'banner', name: 'Summer Sale Promo Banner', category: 'Banners', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400' },
-  { type: 'footer', name: 'Standard Footer - 2024', category: 'Footers', image: '' },
-  { type: 'grid', name: 'Featured Products Grid - Homepage', category: 'Product Grids', image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=400' },
-];
+import { LIBRARY_SECTIONS, GLOBAL_BLOCKS } from './sectionLibraryRegistry';
 
 export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
   const [activeTab, setActiveTab] = useState('sections');
@@ -92,7 +77,7 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
                   )}
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <button 
-                      onClick={() => onAdd(sec)} 
+                      onClick={() => onAdd(sec.defaultSchema ? { ...sec, settings: sec.defaultSchema } : sec)} 
                       className="px-5 py-2.5 bg-surface text-text-primary text-xs font-bold uppercase tracking-widest rounded-lg hover:scale-105 transition-transform flex items-center gap-2 shadow-xl"
                     >
                       <FiPlus size={16} /> Add to Page

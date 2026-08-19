@@ -9,6 +9,7 @@ import CategoryGridPreview from './preview/CategoryGridPreview';
 import TestimonialsPreview from './preview/TestimonialsPreview';
 import FAQPreview from './preview/FAQPreview';
 import FooterPreview from './preview/FooterPreview';
+import CreationsShowcasePreview from './preview/CreationsShowcasePreview';
 import EmptyCanvas from './EmptyCanvas';
 
 export default function PreviewCanvas({ 
@@ -47,6 +48,7 @@ export default function PreviewCanvas({
       case 'testimonials': content = <TestimonialsPreview />; break;
       case 'faq': content = <FAQPreview />; break;
       case 'footer': content = <FooterPreview />; break;
+      case 'CREATIONS_SHOWCASE': content = <CreationsShowcasePreview section={section} />; break;
       default: content = <div className="p-20 text-center bg-gray-100 text-text-muted">Placeholder for {section.type}</div>;
     }
 
