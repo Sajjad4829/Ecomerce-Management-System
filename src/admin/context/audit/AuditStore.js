@@ -1,0 +1,52 @@
+import { useState, useEffect, useCallback } from 'react';
+import { auditService } from '../../services/audit/AuditService';
+
+export function useAuditStore() {
+  const [events, setEvents] = useState([]);
+  const [filters, setFilters] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const loadEvents = useCallback(async (currentFilters = filters) => {
+    setLoading(true);
+    try {
+      const data = await auditService.getEvents(currentFilters);
+      setEvents(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
+
+  const updateFilters = (newFilters) => {
+    setFilters(prev => ({ ...prev, ...newFilters }));
+  };
+
+  const clearFilters = () => {
+    setFilters({});
+  };
+
+  const createAuditEvent = async (eventData) => {
+    try {
+      const newEvent = await auditService.createAuditEvent(eventData);
+      setEvents(prev => [newEvent, ...prev]);
+      return newEvent;
+    } catch (err) {
+      console.error('Failed to create audit event', err);
+    }
+  };
+
+  return {
+    events,
+    filters,
+    loading,
+    updateFilters,
+    clearFilters,
+    loadEvents,
+    createAuditEvent
+  };
+}

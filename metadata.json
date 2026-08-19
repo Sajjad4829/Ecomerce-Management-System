@@ -1,0 +1,8 @@
+{
+  "name": "Premium Furniture eCommerce",
+  "description": "A Premium Furniture eCommerce Platform with a Fully Dynamic Enterprise CMS. Built with the MERN stack.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
