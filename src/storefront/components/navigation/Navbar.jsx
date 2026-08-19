@@ -4,6 +4,7 @@ import { Search, ShoppingBag, User, Menu, ChevronDown, ArrowRight } from 'lucide
 import { useCommerce } from '../../context/CommerceContext';
 import { useAuth } from '../../../auth/context/AuthContext';
 import CartBadge from '../cart/CartBadge';
+import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
 const megaMenus = {
   'Living Room': [
@@ -196,6 +197,8 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
   const location = useLocation();
   const { openCartDrawer } = useCommerce();
   const { isAuthenticated, user } = useAuth();
+  const { activeTheme } = useStorefrontTheme();
+  const headerTokens = activeTheme.tokens.header;
 
   const isHomePage = location.pathname === '/';
   
@@ -227,7 +230,7 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 w-full transition-colors duration-300 border-b h-[72px] md:h-[84px] ${
-        isSolid ? 'bg-white text-gray-800 shadow-md border-gray-200' : 'bg-transparent text-white border-transparent'
+        isSolid ? headerTokens.solid : headerTokens.transparent
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -235,8 +238,8 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
       <div className="w-full mx-auto flex items-center justify-between xl:grid xl:grid-cols-3 h-full px-5">
         {/* Left Section: Brand Logo */}
         <div className="flex items-center xl:justify-self-start h-full">
-          <Link to="/" className="bg-[#E31E24] hover:brightness-110 transition-all flex items-center justify-center px-3 py-0.5 md:px-4 md:py-1">
-            <span className="text-white text-3xl md:text-[40px] font-black tracking-tighter uppercase text-center leading-none">
+          <Link to="/" className={`${activeTheme.tokens.primary} transition-all flex items-center justify-center px-3 py-0.5 md:px-4 md:py-1`}>
+            <span className="text-3xl md:text-[40px] font-black tracking-tighter uppercase text-center leading-none">
               DORY
             </span>
           </Link>
@@ -255,8 +258,8 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
                 to={category.path}
                 className={`whitespace-nowrap h-full flex items-center px-3 xl:px-4 text-sm xl:text-base font-semibold transition-colors duration-200 ${
                   hoveredCategory === category.name 
-                    ? (isSolid ? 'bg-blue-50/30 text-black' : 'bg-white/10 text-white')
-                    : (isSolid ? 'text-gray-800 hover:text-black' : 'text-white/90 hover:text-white')
+                    ? (isSolid ? headerTokens.linkActiveSolid : headerTokens.linkActiveTransparent)
+                    : (isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent)
                 }`}
               >
                 {category.name}
@@ -264,12 +267,12 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
               
               {/* Mega Menu Dropdown */}
               {hoveredCategory === category.name && megaMenus[category.name] && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[900px] bg-white text-gray-800 shadow-2xl p-8 grid grid-cols-4 gap-8 z-50">
+                <div className={`absolute top-full left-1/2 -translate-x-1/2 w-[900px] ${activeTheme.tokens.surface} ${activeTheme.tokens.text.primary} shadow-2xl p-8 grid grid-cols-4 gap-8 z-50`}>
                   {megaMenus[category.name].map((col, colIndex) => (
                     <div key={colIndex} className="flex flex-col space-y-6">
                       {col.map((section, secIndex) => (
                         <div key={secIndex} className="flex flex-col">
-                          <Link to={section.link} className="font-bold text-sm text-gray-900 mb-3 hover:text-red-600 flex items-center group">
+                          <Link to={section.link} className={`font-bold text-sm ${activeTheme.tokens.text.primary} mb-3 hover:opacity-70 flex items-center group`}>
                             {section.title}
                             {section.items.length > 0 && <ArrowRight size={14} className="ml-1 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 duration-200" />}
                           </Link>
@@ -277,7 +280,7 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
                             <ul className="flex flex-col space-y-2">
                               {section.items.map((item, itemIndex) => (
                                 <li key={itemIndex}>
-                                  <Link to={`${section.link}/${item.toLowerCase().replace(/ /g, '-')}`} className="text-xs text-gray-500 hover:text-[#2563eb] transition-colors">
+                                  <Link to={`${section.link}/${item.toLowerCase().replace(/ /g, '-')}`} className={`text-xs ${activeTheme.tokens.text.secondary} hover:opacity-70 transition-colors`}>
                                     {item}
                                   </Link>
                                 </li>
@@ -293,7 +296,7 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
             </div>
           ))}
           <button className={`whitespace-nowrap h-full flex items-center px-3 xl:px-4 text-sm xl:text-base font-semibold transition-colors duration-200 gap-1 ${
-            isSolid ? 'text-gray-800 hover:text-black' : 'text-white/90 hover:text-white'
+            isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
           }`}>
             More <ChevronDown size={14} />
           </button>
@@ -301,11 +304,11 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
 
         {/* Right Section: Utilities */}
         <div className={`flex items-center space-x-4 md:space-x-5 xl:justify-self-end ${
-          isSolid ? 'text-gray-800' : 'text-white'
+          isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
         }`}>
           <button 
             onClick={onOpenSearch}
-            className={`p-1 transition-colors ${isSolid ? 'hover:text-red-600' : 'hover:text-gray-300'}`}
+            className="p-1 transition-colors hover:opacity-70"
             aria-label="Search"
           >
             <Search size={20} />
@@ -313,12 +316,12 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
           
           <Link 
             to={isAuthenticated ? "/account" : "/account/login"} 
-            className={`p-1 transition-colors hidden sm:block ${isSolid ? 'hover:text-red-600' : 'hover:text-gray-300'}`}
+            className="p-1 transition-colors hidden sm:block hover:opacity-70"
             aria-label="Account"
           >
             {isAuthenticated ? (
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                isSolid ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
+                isSolid ? 'bg-current text-white' : 'bg-current text-black'
               }`}>
                 {user?.name?.[0]?.toUpperCase() || 'U'}
               </div>
@@ -329,7 +332,7 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
           
           <button 
             onClick={openCartDrawer}
-            className={`p-1 transition-colors relative ${isSolid ? 'hover:text-red-600' : 'hover:text-gray-300'}`}
+            className="p-1 transition-colors relative hover:opacity-70"
             aria-label="Cart"
           >
             <ShoppingBag size={20} />
@@ -339,7 +342,7 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
           {/* Mobile Menu Toggle */}
           <button 
             onClick={onOpenMobileMenu}
-            className={`p-1 transition-colors lg:hidden ml-2 ${isSolid ? 'hover:text-red-600' : 'hover:text-gray-300'}`}
+            className="p-1 transition-colors lg:hidden ml-2 hover:opacity-70"
             aria-label="Menu"
           >
             <Menu size={24} />

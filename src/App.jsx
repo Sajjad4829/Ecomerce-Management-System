@@ -477,6 +477,7 @@ import SegmentBuilder from './admin/pages/commerce/customers/segments/SegmentBui
 import SegmentDetail from './admin/pages/commerce/customers/segments/SegmentDetail';
 import SegmentAnalytics from './admin/pages/commerce/customers/segments/SegmentAnalytics';
 import AppearanceSettings from './admin/pages/settings/appearance/AppearanceSettings';
+import { StorefrontThemeProvider } from './storefront/context/StorefrontThemeContext';
 
 
 
@@ -539,6 +540,7 @@ export default function App() {
                                     <FinanceProvider>
                                       <AnalyticsProvider>
                                         <SettingsProvider>
+                                          <StorefrontThemeProvider>
                                               <Router>
                                                 <Routes>
                                                   {/* Storefront Layout Routes */}
@@ -1124,8 +1126,8 @@ export default function App() {
                                                   </Route>
                                                 </Routes>
                                               </Router>
-
-                                      </SettingsProvider>
+                                          </StorefrontThemeProvider>
+                                        </SettingsProvider>
                                     </AnalyticsProvider>
                                   </FinanceProvider>
                                 </NotificationProvider>

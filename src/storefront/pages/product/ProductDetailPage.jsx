@@ -15,6 +15,7 @@ import ProductDelivery from '../../components/product/ProductDelivery';
 import ProductReviews from '../../components/product/ProductReviews';
 import RelatedProducts from '../../components/product/RelatedProducts';
 import { motion } from 'framer-motion';
+import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
@@ -27,6 +28,7 @@ export default function ProductDetailPage() {
   const [ratingData, setRatingData] = useState(null);
   const [selectedVariants, setSelectedVariants] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const { activeTheme } = useStorefrontTheme();
 
   useEffect(() => {
     // Scroll to top when slug changes
@@ -80,7 +82,7 @@ export default function ProductDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className={`min-h-screen ${activeTheme.tokens.background}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
            <div className="animate-pulse flex flex-col lg:flex-row gap-12 lg:gap-16">
              <div className="w-full lg:w-3/5 aspect-[4/5] bg-gray-100 rounded-xl"></div>
@@ -98,9 +100,9 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4 bg-white">
-        <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">Product Not Found</h1>
-        <p className="text-gray-500 mb-8 max-w-md">We couldn't find the product you're looking for. It may have been removed or the link might be broken.</p>
+      <div className={`min-h-[70vh] flex flex-col items-center justify-center text-center px-4 ${activeTheme.tokens.background}`}>
+        <h1 className={`text-4xl font-serif font-bold mb-4 ${activeTheme.tokens.text.primary}`}>Product Not Found</h1>
+        <p className={`mb-8 max-w-md ${activeTheme.tokens.text.secondary}`}>We couldn't find the product you're looking for. It may have been removed or the link might be broken.</p>
         <Link to="/shop" className="px-8 py-3 bg-gray-900 text-white font-bold tracking-widest uppercase text-sm hover:bg-gray-800 transition-colors">
           Return to Shop
         </Link>
@@ -133,7 +135,7 @@ export default function ProductDetailPage() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-white min-h-screen"
+      className={`${activeTheme.tokens.background} min-h-screen`}
     >
       <ProductBreadcrumb product={product} category={category} />
 

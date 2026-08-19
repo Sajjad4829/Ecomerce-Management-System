@@ -6,6 +6,7 @@ import ResponsiveProductGrid from '../../components/category/ResponsiveProductGr
 import CategoryBreadcrumb from '../../components/category/CategoryBreadcrumb';
 import FloatingSupportButton from '../../components/category/FloatingSupportButton';
 import { Link } from 'react-router-dom';
+import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
 const FILTER_CONFIG = [
   {
@@ -39,6 +40,7 @@ const FILTER_CONFIG = [
 
 export default function ShopPage() {
   const { products } = useProducts();
+  const { activeTheme } = useStorefrontTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
@@ -127,12 +129,12 @@ export default function ShopPage() {
   }, [products, activeFilters, sortOption]);
 
   return (
-    <div className="w-full bg-white min-h-screen pb-24">
-      <div className="bg-gray-50 border-b border-gray-200">
+    <div className={`w-full min-h-screen pb-24 ${activeTheme.tokens.background}`}>
+      <div className={`${activeTheme.tokens.surface} border-b ${activeTheme.tokens.border}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <CategoryBreadcrumb category={{ name: 'Shop' }} />
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1A1A1A] mt-4">Shop All Furniture</h1>
-          <p className="text-gray-500 mt-4 max-w-2xl text-lg">Discover our complete curated collection of premium furniture designed for the modern home.</p>
+          <h1 className={`text-4xl md:text-5xl font-serif font-bold mt-4 ${activeTheme.tokens.text.primary}`}>Shop All Furniture</h1>
+          <p className={`mt-4 max-w-2xl text-lg ${activeTheme.tokens.text.secondary}`}>Discover our complete curated collection of premium furniture designed for the modern home.</p>
         </div>
       </div>
 

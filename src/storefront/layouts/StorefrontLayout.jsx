@@ -10,8 +10,10 @@ import { AnimatePresence } from 'framer-motion';
 import GlobalSearch from '../components/search/GlobalSearch';
 import MobileMenu from '../components/layout/MobileMenu';
 import Navbar from '../components/navigation/Navbar';
+import { useStorefrontTheme } from '../context/StorefrontThemeContext';
 
 export default function StorefrontLayout() {
+  const { activeTheme } = useStorefrontTheme();
   const { openCartDrawer } = useCommerce();
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
@@ -19,7 +21,7 @@ export default function StorefrontLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
+    <div className={`min-h-screen flex flex-col font-sans ${activeTheme.tokens.background} ${activeTheme.tokens.text.primary}`}>
 
 
       <Navbar 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
 const slides = [
   {
@@ -26,6 +27,8 @@ const slides = [
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { activeTheme } = useStorefrontTheme();
+  const heroTokens = activeTheme.tokens.hero;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -53,14 +56,14 @@ export default function HeroSection() {
       ))}
       
       {/* Dark overlay to give a premium, moody feel and make text pop */}
-      <div className="absolute inset-0 bg-black/30 bg-gradient-to-r from-black/80 via-black/50 to-black/30 z-0"></div>
+      <div className={`absolute inset-0 z-0 ${heroTokens.overlay}`}></div>
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="max-w-2xl text-white">
           <span className="block text-xs font-bold tracking-[0.3em] uppercase mb-6 opacity-90 text-gray-200">
             NEW COLLECTION
           </span>
-          <h1 className="text-5xl md:text-6xl lg:text-[5rem] font-serif font-bold tracking-tight leading-[1.05] mb-6">
+          <h1 className={`${heroTokens.titleSize} ${heroTokens.fontFamily} font-bold leading-[1.05] mb-6`}>
             Sets you as a trend
           </h1>
           <p className="text-lg md:text-xl opacity-90 mb-10 leading-relaxed font-light text-gray-100 max-w-xl">
@@ -69,13 +72,13 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link 
               to="/products" 
-              className="inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest text-black bg-white hover:bg-gray-200 transition-colors uppercase"
+              className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonPrimary}`}
             >
               Shop Collection
             </Link>
             <Link 
               to="/collections/new" 
-              className="inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest text-white border border-white hover:bg-white/10 transition-colors uppercase"
+              className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonSecondary}`}
             >
               Explore New Arrivals
             </Link>
