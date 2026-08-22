@@ -1,40 +1,40 @@
+import React from 'react';
+
 export default function ProductGridPreview() {
   const products = [
-    { id: 1, name: 'Lounge Chair', price: '$890', image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=600' },
-    { id: 2, name: 'Oak Dining Table', price: '$1,200', image: 'https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&q=80&w=600' },
-    { id: 3, name: 'Minimalist Sofa', price: '$2,400', image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=600' },
+    { name: 'Wireless Headphones', price: '$159.00', originalPrice: '$199.00', badge: 'Sale', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400' },
+    { name: 'Smart Watch Series 8', price: '$249.00', image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400' },
+    { name: 'Leather Backpack', price: '$129.00', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400' },
+    { name: 'Running Shoes', price: '$99.00', originalPrice: '$129.00', badge: 'Sale', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400' },
   ];
 
   return (
-    <div className="py-24 px-8 md:px-16 bg-surface">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-end mb-12">
-          <div>
-            <h2 className="text-3xl font-serif font-bold text-text-primary mb-2">New Arrivals</h2>
-            <p className="text-text-muted">The latest additions to our collection.</p>
-          </div>
-          <button className="hidden md:block text-xs font-bold uppercase tracking-[0.2em] text-text-primary border-b-2 border-[#1A1A1A] pb-1 hover:text-text-muted hover:border-gray-500 transition-colors">
-            View All
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {products.map(product => (
-            <div key={product.id} className="group cursor-pointer">
-              <div className="aspect-[4/5] bg-gray-100 overflow-hidden mb-6 relative">
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-              <div className="flex justify-between items-center">
-                <h3 className="font-serif font-bold text-text-primary text-lg">{product.name}</h3>
-                <span className="text-sm font-medium text-text-muted">{product.price}</span>
-              </div>
+    <div className="w-full bg-[#fcfdff] py-16 px-12">
+      <div className="flex items-end justify-between mb-8">
+        <h2 className="text-xl font-bold text-gray-900 font-sans tracking-tight">Featured Products</h2>
+        <a href="#" className="text-xs font-semibold text-[#635BFF] hover:underline">View All</a>
+      </div>
+      
+      <div className="grid grid-cols-4 gap-6">
+        {products.map((product, idx) => (
+          <div key={idx} className="group cursor-pointer">
+            <div className="w-full aspect-square bg-[#f5f6f8] rounded-xl mb-4 relative overflow-hidden flex items-center justify-center p-6">
+              {product.badge && (
+                <div className="absolute top-3 left-3 px-2 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded shadow-sm z-10 uppercase tracking-wider">
+                  {product.badge}
+                </div>
+              )}
+              <img src={product.image} alt={product.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" />
             </div>
-          ))}
-        </div>
+            <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">{product.name}</h3>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-gray-900">{product.price}</span>
+              {product.originalPrice && (
+                <span className="text-xs font-medium text-gray-400 line-through">{product.originalPrice}</span>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

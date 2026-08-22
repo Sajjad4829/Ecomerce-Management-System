@@ -1,5 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { FiMonitor, FiTablet, FiSmartphone, FiRotateCcw, FiRotateCw, FiExternalLink } from 'react-icons/fi';
+import { cn } from '../../../../utils/cn';
+import { useParams } from 'react-router-dom';
+import { useCMS } from '../../../context/cms/CMSContext';
 import EditorToolbar from '../../../components/cms/editor/EditorToolbar';
 import SectionList from '../../../components/cms/editor/SectionList';
 import PropertyPanel from '../../../components/cms/editor/PropertyPanel';
@@ -8,24 +12,27 @@ import PageSettingsDrawer from '../../../components/cms/editor/PageSettingsDrawe
 import AddSectionDrawer from '../../../components/cms/editor/AddSectionDrawer';
 import SaveBlockModal from '../../../components/cms/blocks/SaveBlockModal';
 
-const INITIAL_SECTIONS = [
-  { id: 'sec-1', name: 'Main Hero', type: 'hero' },
-  { id: 'sec-2', name: 'Features', type: 'features' },
-  { id: 'sec-3', name: 'Featured Category', type: 'category' },
-  { id: 'sec-4', name: 'New Arrivals', type: 'grid' },
-  { id: 'sec-5', name: 'Customer Reviews', type: 'testimonials' },
-  { id: 'sec-6', name: 'Frequently Asked Questions', type: 'faq' },
-  { id: 'sec-7', name: 'Newsletter', type: 'banner' },
-  { id: 'sec-8', name: 'Footer', type: 'footer' },
-];
-
 export default function VisualEditor() {
+  const { pageId } = useParams();
+  const { getDraftSections, saveDraftSections, publishPageSections, getPage } = useCMS();
+  const page = getPage(pageId) || { name: 'Unknown Page', status: 'Draft' };
+
   const [device, setDevice] = useState('desktop');
   const [activeSectionId, setActiveSectionId] = useState(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [blockToSave, setBlockToSave] = useState(null);
-  const [sections, setSections] = useState(INITIAL_SECTIONS);
+  const [sections, setSections] = useState(() => getDraftSections(pageId));
+
+  // Auto-save drafts when sections change
+  useEffect(() => {
+    saveDraftSections(pageId, sections);
+  }, [sections, pageId]);
+
+  const handlePublish = () => {
+    publishPageSections(pageId);
+    alert('Page published successfully!');
+  };
 
   // Handlers
   const handleAddSection = (sectionTemplate) => {
@@ -33,6 +40,11 @@ export default function VisualEditor() {
       id: `sec-${Date.now()}`,
       name: sectionTemplate.name,
       type: sectionTemplate.type,
+      category: sectionTemplate.category,
+      icon: sectionTemplate.icon,
+      isHidden: false,
+      content: sectionTemplate.defaultContent || {},
+      settings: sectionTemplate.defaultSettings || {}
     };
     setSections([...sections, newSection]);
     setActiveSectionId(newSection.id);
@@ -45,18 +57,41 @@ export default function VisualEditor() {
   };
 
   const handleDuplicateSection = (id) => {
-    const sectionToDup = sections.find(s => s.id === id);
-    if (!sectionToDup) return;
-    const index = sections.findIndex(s => s.id === id);
+    const sectionIndex = sections.findIndex(s => s.id === id);
+    if (sectionIndex === -1) return;
+
     const newSection = {
-      ...sectionToDup,
-      id: `sec-${Date.now()}`,
-      name: `${sectionToDup.name} (Copy)`
+      ...sections[sectionIndex],
+      id: `section-${Date.now()}`
     };
+
     const newSections = [...sections];
-    newSections.splice(index + 1, 0, newSection);
+    newSections.splice(sectionIndex + 1, 0, newSection);
     setSections(newSections);
     setActiveSectionId(newSection.id);
+  };
+
+  const handleUpdateSection = (id, updates) => {
+    setSections(prevSections => prevSections.map(s => {
+      if (s.id === id) {
+        return {
+          ...s,
+          ...updates,
+          content: { ...(s.content || {}), ...(updates.content || {}) },
+          settings: { ...(s.settings || {}), ...(updates.settings || {}) },
+          responsive: {
+            desktop: { ...(s.responsive?.desktop || {}), ...(updates.responsive?.desktop || {}) },
+            tablet: { ...(s.responsive?.tablet || {}), ...(updates.responsive?.tablet || {}) },
+            mobile: { ...(s.responsive?.mobile || {}), ...(updates.responsive?.mobile || {}) }
+          }
+        };
+      }
+      return s;
+    }));
+  };
+
+  const handleToggleHide = (id) => {
+    setSections(sections.map(s => s.id === id ? { ...s, isHidden: !s.isHidden } : s));
   };
 
   const handleMoveUp = (id) => {
@@ -83,16 +118,19 @@ export default function VisualEditor() {
   };
 
   return (
-    <div className="h-screen w-screen bg-background flex flex-col overflow-hidden font-sans fixed inset-0 z-50">
-      <EditorToolbar 
-        device={device} 
-        setDevice={setDevice} 
-        onOpenSettings={() => setIsSettingsOpen(true)} 
+    <div className="h-[calc(100vh-10rem)] w-full flex flex-col overflow-hidden font-sans">
+      <EditorToolbar
+        device={device}
+        setDevice={setDevice}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+        page={page}
+        onSaveDraft={() => saveDraftSections(pageId, sections)}
+        onPublish={handlePublish}
       />
 
       <div className="flex flex-1 overflow-hidden relative">
         {/* Left Panel: Structure */}
-        <SectionList 
+        <SectionList
           sections={sections}
           onReorder={setSections}
           activeSectionId={activeSectionId}
@@ -100,10 +138,31 @@ export default function VisualEditor() {
           onAddSection={() => setIsLibraryOpen(true)}
           onDeleteSection={handleDeleteSection}
           onDuplicateSection={handleDuplicateSection}
+          onToggleHide={handleToggleHide}
         />
 
-        {/* Center Panel: Preview Canvas */}
-        <PreviewCanvas 
+        {/* Center Panel: Preview Canvas & Toolbar */}
+        <div className="flex-1 flex flex-col min-w-0 bg-[#f9fafb] relative px-4">
+          
+          {/* Canvas Top Toolbar */}
+          <div className="h-14 flex items-center justify-between shrink-0 px-2 mt-2">
+            <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-gray-200 shadow-sm">
+              <button onClick={() => setDevice('desktop')} className={cn("p-1.5 rounded-md transition-colors", device === 'desktop' ? "bg-gray-100 text-[#635BFF]" : "text-gray-400 hover:text-gray-600")}><FiMonitor size={16} /></button>
+              <button onClick={() => setDevice('tablet')} className={cn("p-1.5 rounded-md transition-colors", device === 'tablet' ? "bg-gray-100 text-[#635BFF]" : "text-gray-400 hover:text-gray-600")}><FiTablet size={16} /></button>
+              <button onClick={() => setDevice('mobile')} className={cn("p-1.5 rounded-md transition-colors", device === 'mobile' ? "bg-gray-100 text-[#635BFF]" : "text-gray-400 hover:text-gray-600")}><FiSmartphone size={16} /></button>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button className="p-1.5 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-gray-600 shadow-sm transition-colors"><FiRotateCcw size={16} /></button>
+              <button className="p-1.5 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-gray-600 shadow-sm transition-colors"><FiRotateCw size={16} /></button>
+            </div>
+
+            <button className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-gray-600 text-xs font-medium hover:bg-gray-50 shadow-sm transition-colors">
+              <FiExternalLink size={14} /> View Site
+            </button>
+          </div>
+
+          <PreviewCanvas
           device={device}
           sections={sections}
           activeSectionId={activeSectionId}
@@ -115,27 +174,31 @@ export default function VisualEditor() {
           onAddSection={() => setIsLibraryOpen(true)}
           onSaveGlobalBlock={handleSaveGlobalBlock}
         />
+        </div>
 
         {/* Right Panel: Properties */}
-        <PropertyPanel 
+        <PropertyPanel
           activeSectionId={activeSectionId}
           sections={sections}
+          onUpdateSection={handleUpdateSection}
+          device={device}
+          setDevice={setDevice}
         />
       </div>
 
       {/* Drawers */}
-      <PageSettingsDrawer 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)} 
+      <PageSettingsDrawer
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
       />
-      <AddSectionDrawer 
-        isOpen={isLibraryOpen} 
-        onClose={() => setIsLibraryOpen(false)} 
-        onAdd={handleAddSection} 
+      <AddSectionDrawer
+        isOpen={isLibraryOpen}
+        onClose={() => setIsLibraryOpen(false)}
+        onAdd={handleAddSection}
       />
-      
+
       {/* Modals */}
-      <SaveBlockModal 
+      <SaveBlockModal
         isOpen={!!blockToSave}
         onClose={() => setBlockToSave(null)}
         section={blockToSave}

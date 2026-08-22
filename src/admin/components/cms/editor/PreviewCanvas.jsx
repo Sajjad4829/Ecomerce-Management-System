@@ -1,7 +1,9 @@
 import { cn } from '../../../../utils/cn';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiArrowUp, FiArrowDown, FiTrash2, FiCopy, FiSave } from 'react-icons/fi';
+import * as Icons from 'react-icons/fi';
 import HeroPreview from './preview/HeroPreview';
+import NavbarPreview from './preview/NavbarPreview';
 import ProductGridPreview from './preview/ProductGridPreview';
 import BannerPreview from './preview/BannerPreview';
 import FeaturesPreview from './preview/FeaturesPreview';
@@ -12,53 +14,92 @@ import FooterPreview from './preview/FooterPreview';
 import CreationsShowcasePreview from './preview/CreationsShowcasePreview';
 import EmptyCanvas from './EmptyCanvas';
 
-export default function PreviewCanvas({ 
+const GenericPreview = ({ section }) => {
+  const IconComponent = Icons[section.icon] || Icons.FiLayout;
+  return (
+    <div className="py-24 px-12 border-2 border-dashed border-black/10 m-4 bg-surface/50 flex flex-col items-center justify-center text-text-muted transition-colors hover:bg-surface rounded-2xl">
+      <IconComponent size={32} className="mb-4 text-black/20" />
+      <h3 className="text-sm font-bold text-text-primary mb-1">{section.name}</h3>
+      <p className="text-xs">{section.description || 'Preview placeholder for ' + section.type}</p>
+      <div className="mt-4 px-3 py-1 bg-black/5 rounded-full text-[10px] uppercase tracking-widest font-bold">
+        {section.category}
+      </div>
+    </div>
+  );
+};
+
+export default function PreviewCanvas({
   device, sections, activeSectionId, onSelectSection,
   onMoveUp, onMoveDown, onDelete, onDuplicate, onAddSection,
   onSaveGlobalBlock
 }) {
-  
+
   const getContainerClasses = () => {
     switch (device) {
       case 'mobile': return 'w-[375px] max-w-full min-h-[667px] shadow-2xl rounded-[2rem] border-[8px] border-[#1A1A1A] mx-auto overflow-hidden bg-surface mt-8 transition-all duration-500 relative';
       case 'tablet': return 'w-[768px] max-w-full min-h-[1024px] shadow-2xl rounded-xl border-[4px] border-[#1A1A1A]/10 mx-auto overflow-hidden bg-surface mt-8 transition-all duration-500 relative';
-      case 'desktop': 
-      default: 
-        return 'w-full min-h-full shadow-sm bg-surface transition-all duration-500 relative';
+      case 'desktop':
+      default:
+        return 'w-full min-h-full shadow-sm bg-surface transition-all duration-500 relative flex flex-col';
     }
   };
 
   const renderSection = (section, index) => {
+    if (section.isHidden) return null;
+
+    // Check responsive visibility
+    const responsive = section.responsive || {};
+    let isVisible = true;
+    if (device === 'mobile' && responsive.mobile && responsive.mobile.visible !== undefined) {
+      isVisible = responsive.mobile.visible;
+    } else if ((device === 'mobile' || device === 'tablet') && responsive.tablet && responsive.tablet.visible !== undefined) {
+      isVisible = responsive.tablet.visible;
+    } else if (responsive.desktop && responsive.desktop.visible !== undefined) {
+      isVisible = responsive.desktop.visible;
+    }
+
+    if (!isVisible) return null;
+
     const isActive = activeSectionId === section.id;
     const isFirst = index === 0;
     const isLast = index === sections.length - 1;
 
     const wrapperClasses = cn(
-      "relative cursor-pointer transition-all outline-none group",
+      "relative cursor-pointer transition-all outline-none group shrink-0",
       isActive ? "ring-2 ring-blue-500 ring-inset z-20" : "hover:ring-2 hover:ring-blue-400/50 hover:ring-inset z-10"
     );
 
     let content = null;
-    switch(section.type) {
-      case 'hero': content = <HeroPreview />; break;
-      case 'grid': content = <ProductGridPreview />; break;
-      case 'banner': content = <BannerPreview />; break;
-      case 'features': content = <FeaturesPreview />; break;
-      case 'category': content = <CategoryGridPreview />; break;
-      case 'testimonials': content = <TestimonialsPreview />; break;
-      case 'faq': content = <FAQPreview />; break;
-      case 'footer': content = <FooterPreview />; break;
-      case 'CREATIONS_SHOWCASE': content = <CreationsShowcasePreview section={section} />; break;
-      default: content = <div className="p-20 text-center bg-gray-100 text-text-muted">Placeholder for {section.type}</div>;
+    switch (section.type) {
+      case 'NAVBAR': content = <NavbarPreview section={section} device={device} />; break;
+      case 'hero':
+      case 'HERO_BANNER': content = <HeroPreview section={section} device={device} />; break;
+      case 'FEATURE_GRID':
+      case 'features': content = <FeaturesPreview section={section} device={device} />; break;
+      case 'grid':
+      case 'PRODUCT_GRID': content = <ProductGridPreview section={section} device={device} />; break;
+      case 'banner':
+      case 'CTA_BANNER':
+      case 'PROMO_BANNER': content = <BannerPreview section={section} device={device} />; break;
+      case 'category':
+      case 'CATEGORY_GRID': content = <CategoryGridPreview section={section} device={device} />; break;
+      case 'testimonials':
+      case 'TESTIMONIALS': content = <TestimonialsPreview section={section} device={device} />; break;
+      case 'faq':
+      case 'FAQ': content = <FAQPreview section={section} device={device} />; break;
+      case 'footer':
+      case 'FOOTER': content = <FooterPreview section={section} device={device} />; break;
+      case 'CREATIONS_SHOWCASE': content = <CreationsShowcasePreview section={section} device={device} />; break;
+      default: content = <GenericPreview section={section} device={device} />;
     }
 
     return (
-      <motion.div 
+      <motion.div
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        key={section.id} 
+        key={section.id}
         className={wrapperClasses}
         onClick={(e) => {
           e.stopPropagation();
@@ -100,11 +141,11 @@ export default function PreviewCanvas({
   };
 
   return (
-    <div 
-      className="flex-1 bg-[#ECEAE6] h-[calc(100vh-4rem)] overflow-y-auto overflow-x-hidden relative custom-scrollbar"
+    <div
+      className="flex-1 overflow-auto relative custom-scrollbar"
       onClick={() => onSelectSection(null)}
     >
-      <div className="w-full flex justify-center pb-20">
+      <div className="w-full min-w-max flex justify-center pb-20">
         <div className={getContainerClasses()}>
           {sections.length === 0 ? (
             <EmptyCanvas onAddSection={onAddSection} />

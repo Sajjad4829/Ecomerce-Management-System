@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useCMS } from '../../context/cms/CMSContext';
 import { FileText, Layers, Navigation, Search, ArrowLeft, MoveUp, MoveDown, Copy, Eye, EyeOff, Trash2 } from 'lucide-react';
-import { SectionRenderer } from './SectionRenderer';
+import SectionRenderer from '../../../storefront/components/sections/SectionRenderer';
 
 export const CMSDashboard = () => {
   return (
@@ -113,61 +113,161 @@ export const PageCenter = () => {
 };
 
 export const PageForm = () => {
-  const { pageTypes } = useCMS();
+  const { pageTypes, getPage, createPage, updatePage, pages } = useCMS();
   const { pageId } = useParams();
-  const [selectedType, setSelectedType] = React.useState('');
+  const navigate = useNavigate();
+  
+  const existingPage = pageId ? getPage(pageId) : null;
+  const [formData, setFormData] = React.useState(existingPage || {
+    name: '', title: '', slug: '', pageTypeId: '', status: 'Draft',
+    description: '', seoDescription: '', ogImage: '', template: 'default', visibility: 'Public',
+  });
 
-  // Get active page types, or include the currently selected one if it's deactivated but already saved
   const availableTypes = pageTypes.filter(pt => pt.status === 'Active');
 
+  const handleSave = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.slug || !formData.pageTypeId) {
+      alert("Name, Slug, and Page Type are required.");
+      return;
+    }
+    // Check for unique slug
+    if (pages.some(p => p.slug === formData.slug && p.id !== pageId)) {
+      alert("Slug is already in use by another page.");
+      return;
+    }
+
+    if (pageId) {
+      updatePage(pageId, formData);
+      navigate(`/admin/cms/pages/${pageId}/builder`);
+    } else {
+      const newPage = createPage(formData);
+      navigate(`/admin/cms/pages/${newPage.id}/builder`);
+    }
+  };
+
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <Link to="/admin/cms/pages" className="p-2 border border-neutral-200 rounded-md hover:bg-neutral-50 text-neutral-600">
-          <ArrowLeft className="w-4 h-4" />
-        </Link>
-        <h1 className="text-2xl font-serif text-neutral-900">{pageId ? 'Edit Page' : 'Create Page'}</h1>
-      </div>
-      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Page Name</label>
-          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" placeholder="e.g. About Us" />
+    <form onSubmit={handleSave} className="space-y-6 max-w-5xl mx-auto pb-12">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <Link to="/admin/cms/pages" className="p-2 border border-neutral-200 rounded-md hover:bg-neutral-50 text-neutral-600 transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <h1 className="text-2xl font-serif text-neutral-900">{pageId ? 'Edit Page' : 'Create Page'}</h1>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Page Title (SEO)</label>
-          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" placeholder="e.g. Our Story | Luxury Hotels" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Slug</label>
-          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" placeholder="e.g. /about" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Page Type</label>
-          <select 
-            className="w-full border-neutral-300 rounded-md shadow-sm p-2 border"
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-          >
-            <option value="">Select a Page Type...</option>
-            {availableTypes.map(pt => (
-              <option key={pt.id} value={pt.id}>{pt.name}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Status</label>
-          <select className="w-full border-neutral-300 rounded-md shadow-sm p-2 border">
-            <option>Draft</option>
-            <option>Published</option>
-            <option>Scheduled</option>
-          </select>
-        </div>
-        <div className="pt-4 flex justify-end gap-2">
-          <Link to="/admin/cms/pages" className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded hover:bg-neutral-50">Cancel</Link>
-          <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Save Page</button>
+        <div className="flex items-center gap-3">
+          <Link to="/admin/cms/pages" className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded-md hover:bg-neutral-50 font-medium transition-colors">Cancel</Link>
+          <button type="submit" className="px-5 py-2 bg-neutral-900 text-white rounded-md hover:bg-neutral-800 font-medium transition-colors shadow-sm">Save & Continue to Builder</button>
         </div>
       </div>
-    </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          {/* GENERAL */}
+          <div className="bg-surface p-6 rounded-xl border border-neutral-200 shadow-sm space-y-6">
+            <h2 className="text-lg font-semibold text-neutral-900 border-b border-neutral-100 pb-4">General Information</h2>
+            <div className="grid grid-cols-1 gap-5">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1.5">Page Name *</label>
+                <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. About Us" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1.5">Page Description</label>
+                <textarea className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" rows="3" placeholder="Internal description for this page" value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} />
+              </div>
+              <div className="grid grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">Slug *</label>
+                  <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. /about" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} required />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">Page Type *</label>
+                  <select 
+                    className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white"
+                    value={formData.pageTypeId}
+                    onChange={(e) => setFormData({...formData, pageTypeId: e.target.value})}
+                    required
+                  >
+                    <option value="">Select a Page Type...</option>
+                    {availableTypes.map(pt => (
+                      <option key={pt.id} value={pt.id}>{pt.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* SEO */}
+          <div className="bg-surface p-6 rounded-xl border border-neutral-200 shadow-sm space-y-6">
+            <h2 className="text-lg font-semibold text-neutral-900 border-b border-neutral-100 pb-4">Search Engine Optimization (SEO)</h2>
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1.5">SEO Title</label>
+                <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. Our Story | Luxury Hotels" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1.5">SEO Description</label>
+                <textarea className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" rows="3" placeholder="Description shown in search results..." value={formData.seoDescription || ''} onChange={e => setFormData({...formData, seoDescription: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1.5">OG Image URL</label>
+                <input type="url" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="https://example.com/image.jpg" value={formData.ogImage || ''} onChange={e => setFormData({...formData, ogImage: e.target.value})} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-8">
+          {/* PUBLISHING */}
+          <div className="bg-surface p-6 rounded-xl border border-neutral-200 shadow-sm space-y-6">
+            <h2 className="text-lg font-semibold text-neutral-900 border-b border-neutral-100 pb-4">Publishing</h2>
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1.5">Status</label>
+                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}>
+                  <option value="Draft">Draft</option>
+                  <option value="Published">Published</option>
+                  <option value="Scheduled">Scheduled</option>
+                  <option value="Unpublished">Unpublished</option>
+                  <option value="Archived">Archived</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1.5">Visibility</label>
+                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.visibility || 'Public'} onChange={e => setFormData({...formData, visibility: e.target.value})}>
+                  <option value="Public">Public</option>
+                  <option value="Hidden">Hidden (Direct Link Only)</option>
+                  <option value="Password Protected">Password Protected</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1.5">Template</label>
+                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.template || 'default'} onChange={e => setFormData({...formData, template: e.target.value})}>
+                  <option value="default">Default Template</option>
+                  <option value="blank">Blank Canvas</option>
+                  <option value="landing">Landing Page</option>
+                  <option value="full-width">Full Width</option>
+                </select>
+              </div>
+              
+              {pageId && (
+                <div className="pt-5 border-t border-neutral-100 space-y-3">
+                  <div className="flex justify-between text-sm text-neutral-500">
+                    <span className="font-medium">Created</span>
+                    <span>{formData.createdAt || 'N/A'}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-neutral-500">
+                    <span className="font-medium">Last Updated</span>
+                    <span>{formData.updatedAt || 'N/A'}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
   );
 };
 
@@ -823,8 +923,9 @@ export const RedirectCenter = () => {
 
 export const PagePreview = () => {
   const { pageId } = useParams();
-  const { getPage } = useCMS();
+  const { getPage, getDraftSections } = useCMS();
   const page = getPage(pageId) || { name: 'Unknown Page' };
+  const sections = getDraftSections(pageId);
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] -m-8 bg-neutral-100">
@@ -843,20 +944,17 @@ export const PagePreview = () => {
       </div>
       <div className="flex-1 overflow-y-auto flex justify-center p-8">
         <div className="bg-surface w-full max-w-6xl shadow-xl min-h-full border border-neutral-200 rounded">
-            {/* Mock Rendered Frontend */}
-            <div className="h-16 border-b border-neutral-200 flex items-center px-8 justify-between">
-              <div className="font-serif font-bold text-xl">BRAND</div>
-              <div className="space-x-6 text-sm">
-                <span>Home</span>
-                <span>Products</span>
+            {/* Simple Mock Header */}
+            <div className="h-16 border-b border-neutral-200 flex items-center px-8 justify-between bg-white sticky top-0 z-10">
+              <div className="font-serif font-bold text-xl uppercase tracking-widest text-black">STOREFRONT</div>
+              <div className="space-x-8 text-xs font-medium uppercase tracking-widest text-gray-500">
+                <span>Shop</span>
+                <span>Collections</span>
                 <span>About</span>
               </div>
             </div>
             
-            <SectionRenderer section={{ type: "Hero", content: { heading: "Welcome to " + page.name, subtitle: "A premium digital experience", cta: "Explore Now" } }} />
-            <SectionRenderer section={{ type: "Text", content: { heading: "Our Philosophy", text: "We believe in the power of good design..." }, layout: { alignment: "center" } }} />
-            <SectionRenderer section={{ type: "CardGrid", content: { heading: "Featured Collections", description: "Discover our most popular items" } }} />
-
+            <SectionRenderer sections={sections} />
         </div>
       </div>
     </div>

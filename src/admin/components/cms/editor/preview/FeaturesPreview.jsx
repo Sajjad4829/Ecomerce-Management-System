@@ -1,23 +1,27 @@
+import React from 'react';
+import { FiTruck, FiShield, FiClock, FiRefreshCcw } from 'react-icons/fi';
+
 export default function FeaturesPreview() {
   const features = [
-    { title: 'Sustainably Sourced', desc: 'Every piece is crafted from ethically harvested wood.' },
-    { title: 'Lifetime Warranty', desc: 'Built to last generations, guaranteed by our warranty.' },
-    { title: 'Free White Glove Delivery', desc: 'Complimentary delivery and assembly on all orders over $1000.' },
+    { icon: FiTruck, title: 'Free Shipping', desc: 'On orders over $50' },
+    { icon: FiShield, title: 'Secure Payment', desc: '100% secure payment' },
+    { icon: FiClock, title: '24/7 Support', desc: 'Friendly support' },
+    { icon: FiRefreshCcw, title: 'Money Back', desc: '30 days return' },
   ];
 
   return (
-    <div className="py-20 px-8 md:px-16 bg-background">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-        {features.map((feature, idx) => (
-          <div key={idx} className="text-center">
-            <div className="w-12 h-12 border border-black/10 rounded-full mx-auto mb-6 flex items-center justify-center">
-              <div className="w-2 h-2 bg-[#1A1A1A] rounded-full"></div>
-            </div>
-            <h3 className="text-lg font-serif font-bold text-text-primary mb-3">{feature.title}</h3>
-            <p className="text-sm text-text-secondary leading-relaxed max-w-xs mx-auto">{feature.desc}</p>
+    <div className="w-full bg-white py-12 px-12 flex justify-between items-center border-t border-b border-gray-50/50 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] relative z-20">
+      {features.map((feature, idx) => (
+        <div key={idx} className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-[#635BFF]/10 flex items-center justify-center text-[#635BFF]">
+            <feature.icon size={18} />
           </div>
-        ))}
-      </div>
+          <div>
+            <h4 className="text-sm font-bold text-gray-900 leading-tight">{feature.title}</h4>
+            <p className="text-[11px] text-gray-500 mt-0.5">{feature.desc}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

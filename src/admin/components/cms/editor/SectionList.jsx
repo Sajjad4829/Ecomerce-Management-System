@@ -1,97 +1,68 @@
 import { useState } from 'react';
-import { FiPlus, FiSearch } from 'react-icons/fi';
-import { Reorder, AnimatePresence } from 'framer-motion';
+import { FiPlus } from 'react-icons/fi';
+import { Reorder, AnimatePresence, motion } from 'framer-motion';
 import SectionItem from './SectionItem';
 
-export default function SectionList({ 
-  sections, 
+export default function SectionList({
+  sections,
   onReorder,
-  activeSectionId, 
-  onSelectSection, 
+  activeSectionId,
+  onSelectSection,
   onAddSection,
   onDeleteSection,
-  onDuplicateSection 
+  onDuplicateSection,
+  onToggleHide
 }) {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const isSearching = searchQuery.length > 0;
-  const filteredSections = isSearching 
-    ? sections.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.type.toLowerCase().includes(searchQuery.toLowerCase()))
-    : sections;
-
   return (
-    <div className="w-80 bg-surface border-r border-black/10 flex flex-col h-[calc(100vh-4rem)] shrink-0 z-10 overflow-hidden shadow-xl shadow-black/5">
+    <div className="w-[260px] shrink-0 h-full bg-gray-50 flex flex-col border-r border-gray-200 overflow-hidden">
+      
       {/* Header */}
-      <div className="p-4 border-b border-black/5 shrink-0 bg-background">
-        <h2 className="text-[10px] font-bold uppercase tracking-widest text-text-primary mb-4">Content Structure</h2>
-        <div className="relative">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted size-3.5" />
-          <input 
-            type="text" 
-            placeholder="Search sections..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-surface border border-black/10 rounded-lg text-xs focus:outline-none focus:border-black/30 transition-all"
-          />
+      <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-white shrink-0">
+        <h2 className="text-sm font-bold text-gray-900">Sections</h2>
+          <button
+            onClick={onAddSection}
+            className="text-xs font-semibold text-[#635BFF] hover:bg-[#635BFF]/10 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+          >
+            <FiPlus size={14} /> Add Section
+          </button>
         </div>
-      </div>
 
-      {/* List */}
-      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-        {isSearching ? (
-          <div className="space-y-2">
-            {filteredSections.map((section, index) => (
-              <SectionItem 
-                key={section.id} 
-                section={section} 
-                isActive={activeSectionId === section.id}
-                onClick={() => onSelectSection(section.id)}
-                onDelete={() => onDeleteSection(section.id)}
-                onDuplicate={() => onDuplicateSection(section.id)}
-              />
-            ))}
-          </div>
-        ) : (
+        {/* List */}
+        <div className="p-4 bg-gray-50 flex-1">
           <Reorder.Group axis="y" values={sections} onReorder={onReorder} className="space-y-2">
             <AnimatePresence>
               {sections.map((section) => (
-                <Reorder.Item 
-                  key={section.id} 
-                  value={section} 
+                <Reorder.Item
+                  key={section.id}
+                  value={section}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-surface rounded-lg"
                 >
-                  <SectionItem 
-                    section={section} 
+                  <SectionItem
+                    section={section}
                     isActive={activeSectionId === section.id}
                     onClick={() => onSelectSection(section.id)}
                     onDelete={() => onDeleteSection(section.id)}
                     onDuplicate={() => onDuplicateSection(section.id)}
+                    onToggleHide={() => onToggleHide(section.id)}
                   />
                 </Reorder.Item>
               ))}
             </AnimatePresence>
           </Reorder.Group>
-        )}
 
-        {filteredSections.length === 0 && (
-          <div className="text-center py-8 text-text-muted text-xs">
-            No sections found.
+          <div 
+            onClick={onAddSection}
+            className="mt-6 border-2 border-dashed border-gray-200 p-8 flex flex-col items-center justify-center text-gray-400 bg-white cursor-pointer hover:border-[#635BFF]/50 hover:bg-[#635BFF]/5 transition-all group"
+          >
+            <div className="w-8 h-8 bg-gray-50 group-hover:bg-[#635BFF]/10 group-hover:text-[#635BFF] flex items-center justify-center mb-2 border border-gray-100 group-hover:border-[#635BFF]/20 transition-colors">
+              <FiPlus size={16} />
+            </div>
+            <span className="text-xs font-medium text-gray-600 group-hover:text-[#635BFF] transition-colors">Drag & Drop Sections Here</span>
+            <span className="text-[10px] text-gray-400 mt-1">Reorder to customize your page</span>
           </div>
-        )}
-      </div>
-
-      {/* Footer Actions */}
-      <div className="p-4 border-t border-black/5 shrink-0 bg-background/50">
-        <button 
-          onClick={onAddSection}
-          className="w-full py-2.5 bg-surface border border-black/10 border-dashed rounded-lg text-xs font-semibold uppercase tracking-widest text-text-primary hover:bg-background hover:border-black/20 hover:shadow-sm transition-all flex items-center justify-center gap-2"
-        >
-          <FiPlus /> Add Section
-        </button>
-      </div>
+        </div>
     </div>
   );
 }

@@ -24,6 +24,7 @@ import { SearchAnalytics as GlobalSearchAnalytics, ZeroResultAnalysis, SearchRed
 
 import StorefrontLayout from './storefront/layouts/StorefrontLayout';
 import Home from './storefront/pages/home/Home';
+import CMSPage from './storefront/pages/cms/CMSPage';
 import CartPage from './storefront/pages/cart/CartPage';
 import WishlistPage from './storefront/pages/wishlist/WishlistPage';
 import ShopPage from './storefront/pages/product/ShopPage';
@@ -490,10 +491,11 @@ import { CMSProvider } from './admin/context/cms/CMSContext';
 import CMSLayout from './admin/layouts/CMSLayout';
 import {
   CMSDashboard, PageCenter, PageForm, PageBuilder, SectionLibrary,
-  BlockCenter, NavigationCenter, HeaderManager, FooterManager,
+  BlockCenter, NavigationCenter, FooterManager,
   BannerManager, SEOCenter, RedirectCenter, PagePreview,
   PageTypeCenter, PageTypeForm
 } from './admin/pages/cms/CMSPages';
+import NavbarEditor from './admin/pages/cms/editor/NavbarEditor';
 import VisualEditor from './admin/pages/cms/editor/VisualEditor';
 
 import { ExperienceProvider } from './admin/context/experience/ExperienceContext';
@@ -556,6 +558,7 @@ export default function App() {
                                                     <Route path="/product/:slug" element={<ProductDetailPage />} />
                                                     <Route path="/search" element={<SearchResultsPage />} />
                                                     <Route path="/order/success" element={<OrderConfirmation />} />
+                                                    <Route path="/:slug" element={<CMSPage />} />
                                                   </Route>
 
                                                   {/* Standalone Storefront Routes */}
@@ -846,7 +849,7 @@ export default function App() {
 
                                                     {/* CMS Routes */}
                                                     <Route path="cms" element={<CMSLayout />}>
-                                                      <Route index element={<CMSDashboard />} />
+                                                      <Route index element={<VisualEditor />} />
                                                       <Route path="pages" element={<PageCenter />} />
                                                       <Route path="pages/create" element={<PageForm />} />
                                                       <Route path="pages/:pageId/edit" element={<PageForm />} />
@@ -858,7 +861,7 @@ export default function App() {
                                                       <Route path="sections" element={<SectionLibrary />} />
                                                       <Route path="blocks" element={<BlockCenter />} />
                                                       <Route path="navigation" element={<NavigationCenter />} />
-                                                      <Route path="header" element={<HeaderManager />} />
+                                                      <Route path="header" element={<NavbarEditor />} />
                                                       <Route path="footer" element={<FooterManager />} />
                                                       <Route path="banners" element={<BannerManager />} />
                                                       <Route path="seo" element={<SEOCenter />} />

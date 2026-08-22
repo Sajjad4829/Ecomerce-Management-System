@@ -8,6 +8,8 @@ export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
 
+  const isBuilderRoute = location.pathname.includes('/builder') || location.pathname.endsWith('/header') || location.pathname.endsWith('/cms') || location.pathname.endsWith('/cms/');
+
   // Close sidebar on mobile when route changes
   useEffect(() => {
     const handleResize = () => {
@@ -45,7 +47,7 @@ export default function AdminLayout() {
       <div className="flex flex-col flex-1 w-full overflow-hidden relative">
         <Topbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} isOpen={isSidebarOpen} />
         <SearchOverlay />
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main className={`flex-1 overflow-y-auto ${isBuilderRoute ? '' : 'p-6 md:p-8'}`}>
           <Outlet />
         </main>
       </div>

@@ -8,6 +8,11 @@ import ProductGridSection from '../home/ProductGridSection';
 import CategoryShowcase from '../home/CategoryShowcase';
 import Testimonials from '../home/Testimonials';
 import BenefitsSection from '../home/BenefitsSection';
+import PromoBanner from '../home/PromoBanner';
+import CollectionFeature from '../home/CollectionFeature';
+import BrandStory from '../home/BrandStory';
+import EditorialSection from '../home/EditorialSection';
+import NewsletterSection from '../home/NewsletterSection';
 
 // Central Registry Map
 const SECTION_COMPONENTS = {
@@ -17,6 +22,11 @@ const SECTION_COMPONENTS = {
   FEATURED_CATEGORIES: CategoryShowcase,
   TESTIMONIALS: Testimonials,
   TRUST_BADGES: BenefitsSection,
+  PROMO_BANNER: PromoBanner,
+  COLLECTION_FEATURE: CollectionFeature,
+  BRAND_STORY: BrandStory,
+  EDITORIAL: EditorialSection,
+  NEWSLETTER: NewsletterSection,
   // Add future section types here easily
 };
 

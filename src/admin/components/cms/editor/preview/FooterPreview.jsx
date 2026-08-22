@@ -1,4 +1,5 @@
-export default function FooterPreview() {
+export default function FooterPreview({ section }) {
+  // Footer is generally static but we'll accept section just in case.
   return (
     <footer className="bg-gray-100 py-16 px-8 md:px-16 text-sm border-t border-black/5">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">

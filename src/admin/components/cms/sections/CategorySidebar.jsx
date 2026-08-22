@@ -1,26 +1,6 @@
 import { cn } from '../../../../utils/cn';
 
-const CATEGORIES = [
-  'All Sections',
-  'Favorites',
-  'Headers',
-  'Hero Sections',
-  'Banners',
-  'Product Grids',
-  'Sliders',
-  'Categories',
-  'Collections',
-  'Image Galleries',
-  'Testimonials',
-  'Features',
-  'FAQs',
-  'Call to Actions',
-  'Newsletters',
-  'Footers',
-  'Utilities'
-];
-
-export default function CategorySidebar({ activeCategory, setActiveCategory }) {
+export default function CategorySidebar({ activeCategory, setActiveCategory, categories }) {
   return (
     <div className="w-64 shrink-0 pr-6 hidden lg:block">
       <div className="sticky top-24">
@@ -28,18 +8,18 @@ export default function CategorySidebar({ activeCategory, setActiveCategory }) {
           Categories
         </h3>
         <ul className="space-y-1 custom-scrollbar max-h-[calc(100vh-12rem)] overflow-y-auto">
-          {CATEGORIES.map(category => (
-            <li key={category}>
+          {categories.map(category => (
+            <li key={category.id}>
               <button
-                onClick={() => setActiveCategory(category)}
+                onClick={() => setActiveCategory(category.id)}
                 className={cn(
                   "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors font-medium flex items-center justify-between",
-                  activeCategory === category 
+                  activeCategory === category.id 
                     ? "bg-[#1A1A1A] text-white" 
                     : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 )}
               >
-                {category}
+                {category.name}
               </button>
             </li>
           ))}

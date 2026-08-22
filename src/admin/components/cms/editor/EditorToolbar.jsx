@@ -1,102 +1,46 @@
-import { motion } from 'framer-motion';
-import { 
-  FiArrowLeft, FiMonitor, FiTablet, FiSmartphone, 
-  FiRotateCcw, FiRotateCw, FiPlay, FiSettings, FiCheck, FiMoreVertical 
-} from 'react-icons/fi';
-import { cn } from '../../../../utils/cn';
+import { FiChevronDown, FiSettings, FiCheck } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
-export default function EditorToolbar({ device, setDevice, onOpenSettings }) {
+export default function EditorToolbar({ page, onSaveDraft, onPublish }) {
   return (
-    <div className="h-16 bg-surface border-b border-black/10 flex items-center justify-between px-4 shrink-0 z-20 sticky top-0">
-      {/* Left: Back & Title */}
-      <div className="flex items-center gap-4 w-1/3">
-        <Link 
-          to="/admin/cms/pages" 
-          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-text-muted transition-colors"
-        >
-          <FiArrowLeft size={18} />
-        </Link>
-        <div className="h-6 w-px bg-black/10"></div>
-        <div>
-          <h1 className="text-sm font-bold text-text-primary font-serif">Home Page V2</h1>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-            <span className="text-[10px] text-text-muted font-medium uppercase tracking-wider">Draft - Last saved 2m ago</span>
-          </div>
-        </div>
+    <div className="h-20 bg-surface border-b border-gray-200 flex items-center justify-between px-8 shrink-0 z-20">
+      {/* Left: Title */}
+      <div>
+        <h1 className="text-xl font-bold text-gray-900 font-sans">Page Builder</h1>
+        <p className="text-sm text-gray-500 mt-1">Design and build your page using sections and live preview.</p>
       </div>
 
-      {/* Center: Device Switcher & History */}
-      <div className="flex items-center gap-6 justify-center w-1/3">
-        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg border border-black/5">
-          <button 
-            onClick={() => setDevice('desktop')}
-            className={cn(
-              "p-1.5 rounded-md transition-colors",
-              device === 'desktop' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
-            )}
-            title="Desktop view"
-          >
-            <FiMonitor size={16} />
-          </button>
-          <button 
-            onClick={() => setDevice('tablet')}
-            className={cn(
-              "p-1.5 rounded-md transition-colors",
-              device === 'tablet' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
-            )}
-            title="Tablet view"
-          >
-            <FiTablet size={16} />
-          </button>
-          <button 
-            onClick={() => setDevice('mobile')}
-            className={cn(
-              "p-1.5 rounded-md transition-colors",
-              device === 'mobile' ? "bg-surface text-text-primary shadow-sm" : "text-text-muted hover:text-text-primary"
-            )}
-            title="Mobile view"
-          >
-            <FiSmartphone size={16} />
+      {/* Center: Page Selector */}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center text-sm">
+          <span className="text-gray-500 mr-3">Current Page:</span>
+          <button className="flex items-center justify-between w-40 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-gray-900 hover:border-gray-300 transition-colors">
+            <span className="font-medium truncate">{page?.name || 'Home Page'}</span>
+            <FiChevronDown className="text-gray-400" />
           </button>
         </div>
-
-        <div className="h-5 w-px bg-black/10"></div>
-
-        <div className="flex items-center gap-2 text-text-muted">
-          <button className="p-1.5 hover:text-text-primary hover:bg-gray-100 rounded-md transition-colors" title="Undo">
-            <FiRotateCcw size={16} />
-          </button>
-          <button className="p-1.5 hover:text-text-primary hover:bg-gray-100 rounded-md transition-colors" title="Redo">
-            <FiRotateCw size={16} />
-          </button>
-        </div>
+        <Link
+          to="/admin/cms/pages"
+          className="px-4 py-1.5 text-sm font-medium text-[#635BFF] bg-[#635BFF]/10 hover:bg-[#635BFF]/20 rounded-lg transition-colors flex items-center gap-2"
+        >
+          <FiSettings size={14} />
+          Manage Pages
+        </Link>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-3 w-1/3 justify-end">
+      <div className="flex items-center gap-3">
         <button 
-          onClick={onOpenSettings}
-          className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted hover:bg-gray-100 transition-colors"
-          title="Page Settings"
+          onClick={onSaveDraft} 
+          className="px-5 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
         >
-          <FiSettings size={18} />
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted hover:bg-gray-100 transition-colors" title="Preview Live">
-          <FiPlay size={18} />
-        </button>
-        
-        <div className="h-6 w-px bg-black/10 mx-1"></div>
-
-        <button className="px-4 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
           Save Draft
         </button>
-        <button className="px-5 py-2 bg-[#1A1A1A] text-white text-xs font-semibold uppercase tracking-widest rounded-lg hover:bg-black/80 transition-colors shadow-sm flex items-center gap-2">
-          <FiCheck /> Publish
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted hover:bg-gray-100 transition-colors">
-          <FiMoreVertical size={18} />
+        <button 
+          onClick={onPublish} 
+          className="px-5 py-2 bg-[#635BFF] text-white text-sm font-medium rounded-lg hover:bg-[#524be0] transition-colors shadow-sm flex items-center gap-2"
+        >
+          Publish <FiChevronDown size={14} />
         </button>
       </div>
     </div>

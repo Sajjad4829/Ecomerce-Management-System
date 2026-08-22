@@ -7,10 +7,10 @@ export const storefrontThemes = [
     id: 'classic-furniture',
     name: 'Classic Furniture',
     heroSlides: [
-      { id: 1, image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2000", category: "Living Room" },
-      { id: 2, image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=2000", category: "Bedroom" },
-      { id: 3, image: "https://images.unsplash.com/photo-1617806118233-18e1c0945594?auto=format&fit=crop&q=80&w=2000", category: "Dining" },
-      { id: 4, image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=2000", category: "Office" }
+      { id: 1, image: "/hero/living.png", category: "Living Room" },
+      { id: 2, image: "/hero/bedroom.png", category: "Bedroom" },
+      { id: 3, image: "/hero/dining.png", category: "Dining" },
+      { id: 4, image: "/hero/office.png", category: "Office" }
     ],
     description: 'Existing premium furniture storefront',
     preview: { bg: '#F7F7F7', primary: '#E31E24', accent: '#000000' },
@@ -53,10 +53,10 @@ export const storefrontThemes = [
     id: 'modern-luxury',
     name: 'Modern Luxury',
     heroSlides: [
-      { id: 1, image: "https://images.unsplash.com/photo-1583847268964-b28ce8f31586?auto=format&fit=crop&q=80&w=2000", category: "Living Room" },
-      { id: 2, image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=2000", category: "Bedroom" },
-      { id: 3, image: "https://images.unsplash.com/photo-1574873215043-44119461cb3b?auto=format&fit=crop&q=80&w=2000", category: "Dining" },
-      { id: 4, image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000", category: "Office" }
+      { id: 1, image: "/hero/living.png", category: "Living Room" },
+      { id: 2, image: "/hero/bedroom.png", category: "Bedroom" },
+      { id: 3, image: "/hero/dining.png", category: "Dining" },
+      { id: 4, image: "/hero/office.png", category: "Office" }
     ],
     description: 'Modern premium ecommerce experience',
     preview: { bg: '#FAFAFA', primary: '#111827', accent: '#4B5563' },
