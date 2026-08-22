@@ -1,12 +1,13 @@
-export default function FooterPreview({ section }) {
-  // Footer is generally static but we'll accept section just in case.
+export default function FooterPreview({ section = {} }) {
+  const content = section.content || {};
+
   return (
     <footer className="bg-gray-100 py-16 px-8 md:px-16 text-sm border-t border-black/5">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="col-span-1">
-          <h2 className="text-xl font-serif font-bold text-text-primary mb-6">LUMIÈRE</h2>
+          <h2 className="text-xl font-serif font-bold text-text-primary mb-6">{content.title || 'LUMIÈRE'}</h2>
           <p className="text-text-muted leading-relaxed mb-6">
-            Crafting premium wooden furniture for modern living spaces since 2010.
+            {content.subtitle || content.description || 'Crafting premium wooden furniture for modern living spaces since 2010.'}
           </p>
         </div>
         <div>

@@ -12,7 +12,10 @@ export default function FAQPreview({ section }) {
   return (
     <div className="py-24 px-8 md:px-16 bg-surface">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-3xl font-serif font-bold text-text-primary mb-12 text-center">{content.title || 'Frequently Asked Questions'}</h2>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-serif font-bold text-text-primary mb-2">{content.title || 'Frequently Asked Questions'}</h2>
+          {content.subtitle && <p className="text-text-muted">{content.subtitle}</p>}
+        </div>
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
             <div key={idx} className="border border-black/10 rounded-lg p-6 flex justify-between items-center cursor-pointer hover:border-black/30 transition-colors">

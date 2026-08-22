@@ -170,7 +170,7 @@ export default function PropertyPanel({ activeSectionId, sections, onUpdateSecti
   };
 
   return (
-    <div className="w-[280px] bg-surface border-l border-black/10 flex flex-col h-full shrink-0 z-10 overflow-hidden shadow-xl shadow-black/5">
+    <div className="w-[240px] bg-surface border-l border-black/10 flex flex-col h-full shrink-0 z-10 overflow-hidden shadow-xl shadow-black/5">
       {/* Header */}
       <div className="p-4 border-b border-black/5 shrink-0 bg-background">
         <div className="flex items-center justify-between mb-1">

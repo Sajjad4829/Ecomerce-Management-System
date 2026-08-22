@@ -1,6 +1,6 @@
 import { cn } from '../../../../utils/cn';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FiArrowUp, FiArrowDown, FiTrash2, FiCopy, FiSave } from 'react-icons/fi';
+import { FiArrowUp, FiArrowDown, FiTrash2, FiCopy, FiSave, FiLock } from 'react-icons/fi';
 import * as Icons from 'react-icons/fi';
 import HeroPreview from './preview/HeroPreview';
 import NavbarPreview from './preview/NavbarPreview';
@@ -40,7 +40,7 @@ export default function PreviewCanvas({
       case 'tablet': return 'w-[768px] max-w-full min-h-[1024px] shadow-2xl rounded-xl border-[4px] border-[#1A1A1A]/10 mx-auto overflow-hidden bg-surface mt-8 transition-all duration-500 relative';
       case 'desktop':
       default:
-        return 'w-full min-h-full shadow-sm bg-surface transition-all duration-500 relative flex flex-col';
+        return 'w-full min-h-full bg-white flex flex-col relative transition-all duration-500 border-x border-gray-200';
     }
   };
 
@@ -145,15 +145,36 @@ export default function PreviewCanvas({
       className="flex-1 overflow-auto relative custom-scrollbar"
       onClick={() => onSelectSection(null)}
     >
-      <div className="w-full min-w-max flex justify-center pb-20">
+      <div className={cn("w-full flex justify-center", device !== 'desktop' ? "pb-20 px-8" : "")}>
         <div className={getContainerClasses()}>
-          {sections.length === 0 ? (
-            <EmptyCanvas onAddSection={onAddSection} />
-          ) : (
-            <AnimatePresence>
-              {sections.map((section, index) => renderSection(section, index))}
-            </AnimatePresence>
+          {device === 'desktop' && (
+            <div className="h-10 bg-gray-50 border-b border-gray-200 flex items-center px-4 shrink-0 gap-4">
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
+                <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
+                <div className="w-3 h-3 rounded-full bg-[#27C93F]"></div>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="bg-gray-100 rounded-md px-3 py-1 flex items-center gap-2 text-[11px] font-medium text-gray-500 min-w-[250px] justify-center">
+                  <FiLock size={10} className="text-emerald-500" />
+                  https://yourstore.com
+                </div>
+              </div>
+              <div className="w-[52px]"></div> {/* spacer to balance the traffic lights */}
+            </div>
           )}
+          <div 
+            className={device === 'desktop' ? "relative flex-1 bg-surface flex flex-col min-h-[800px]" : ""}
+            style={device === 'desktop' ? { zoom: '0.75' } : {}}
+          >
+            {sections.length === 0 ? (
+              <EmptyCanvas onAddSection={onAddSection} />
+            ) : (
+              <AnimatePresence>
+                {sections.map((section, index) => renderSection(section, index))}
+              </AnimatePresence>
+            )}
+          </div>
         </div>
       </div>
     </div>

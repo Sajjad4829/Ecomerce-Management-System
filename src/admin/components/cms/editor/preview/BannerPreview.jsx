@@ -33,14 +33,14 @@ export default function BannerPreview({ section, device = 'desktop' }) {
   }
 
   return (
-    <div className={`${ptClass} ${pbClass} px-8 text-center flex flex-col items-center justify-center ${settings.color === 'brand' ? 'bg-[#1A1A1A] text-white' : 'bg-gray-100 text-text-primary'}`}>
+    <div className={`${ptClass} ${pbClass} px-8 text-center flex flex-col items-center justify-center ${settings.colorScheme === 'dark' || settings.colorScheme === 'brand' ? 'bg-[#1A1A1A] text-white' : 'bg-gray-100 text-text-primary'}`}>
       <h2 className="text-xl font-serif font-bold mb-2">
-        {content.text || content.title || 'Promotional Banner'}
+        {content.title || content.text || 'Promotional Banner'}
       </h2>
-      {content.description && <p className="mb-4">{content.description}</p>}
-      {content.button && (
-         <button className="mt-4 px-6 py-3 bg-[#1A1A1A] text-white text-xs font-bold uppercase tracking-widest hover:bg-black/80 transition-colors">
-            {content.button}
+      {(content.subtitle || content.description) && <p className="mb-4">{content.subtitle || content.description}</p>}
+      {(content.ctaText || content.button) && (
+         <button className={`mt-4 px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors ${settings.colorScheme === 'dark' || settings.colorScheme === 'brand' ? 'bg-white text-[#1A1A1A] hover:bg-gray-200' : 'bg-[#1A1A1A] text-white hover:bg-black/80'}`}>
+            {content.ctaText || content.button}
          </button>
       )}
     </div>

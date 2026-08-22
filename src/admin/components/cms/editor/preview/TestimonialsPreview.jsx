@@ -22,7 +22,7 @@ export default function TestimonialsPreview({ section, device = 'desktop' }) {
           ))}
         </div>
         <h3 className={`${device === 'mobile' ? 'text-2xl' : 'text-3xl md:text-4xl'} font-serif leading-relaxed mb-8`}>
-          "The quality of the oak dining table exceeded all our expectations. It is truly a centerpiece that our family will gather around for decades to come."
+          "{content.subtitle || content.description || 'The quality of the oak dining table exceeded all our expectations. It is truly a centerpiece that our family will gather around for decades to come.'}"
         </h3>
         <div className="text-sm tracking-widest uppercase font-bold text-text-muted">
           — Sarah Jenkins, Verified Buyer
