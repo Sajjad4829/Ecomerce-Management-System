@@ -5,189 +5,7 @@ import { useCommerce } from '../../context/CommerceContext';
 import { useAuth } from '../../../auth/context/AuthContext';
 import CartBadge from '../cart/CartBadge';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
-
-const megaMenus = {
-  'Living Room': [
-    [
-      { title: 'Sofa Set', link: '/categories/living-room/sofa-set', items: ['Fabric Sofa', 'Wooden Sofa', 'L-Shaped Sofa', 'Leather Sofa', 'Rexin Sofa', 'Sofa-Bed', '3-Seater Sofa', '2-Seater Sofa', 'Single Seater', 'Modular Sofa', 'Sofa with Divan', 'Multipurpose Sofa', 'Storage Sofa', 'Ottoman'] },
-      { title: 'Cushion', link: '/categories/living-room/cushion', items: [] }
-    ],
-    [
-      { title: 'Center Table', link: '/categories/living-room/center-table', items: ['Center Table With Glass Top', 'Center Table With Wooden Top', 'Center Table With Storage', 'Corner Table', 'Modular Center Table', 'Non-Lacquer Center Table', 'Nested Table'] },
-      { title: 'Divan', link: '/categories/living-room/divan', items: ['Fabric Divan', 'Wooden Divan', 'Modular Divan'] },
-      { title: 'Shoe Rack', link: '/categories/living-room/shoe-rack', items: ['Storage', 'Shoe Rack With Mirror'] },
-      { title: 'Cradle', link: '/categories/living-room/cradle', items: [] }
-    ],
-    [
-      { title: 'File Rack', link: '/categories/living-room/file-rack', items: [] },
-      { title: 'Stand', link: '/categories/living-room/stand', items: ['Hanger Stand', 'Iron Stand'] },
-      { title: 'TV Cabinet', link: '/categories/living-room/tv-cabinet', items: ['TV Cabinet With Hanging Unit', 'Low Height TV Cabinet', 'Modular TV Cabinet'] },
-      { title: 'Open Shelves', link: '/categories/living-room/open-shelves', items: ['Book Shelves', 'Corner Shelves', 'Display Rack'] }
-    ],
-    [
-      { title: 'Chair', link: '/categories/living-room/chair', items: ['Rocking Chair', 'Easy Chair', 'Accent Chair', 'Bar Stool', 'Foot Stool', 'Telephone Seater', 'Recliner Chair'] },
-      { title: 'Lobby', link: '/categories/living-room/lobby', items: ['Lobby Table', 'Lobby Chair'] }
-    ]
-  ],
-  'Bedroom': [
-    [
-      { title: 'Bed', link: '/categories/bedroom/bed', items: ['King Size Bed', 'Queen Size Bed', 'Semi Double Bed', 'Single Bed', 'Bunk Bed', 'Hydraulic Bed'] }
-    ],
-    [
-      { title: 'Wardrobe', link: '/categories/bedroom/wardrobe', items: ['2-Door Wardrobe', '3-Door Wardrobe', '4-Door Wardrobe', 'Sliding Wardrobe', 'Walk-in Closet'] },
-      { title: 'Dressing Table', link: '/categories/bedroom/dressing-table', items: ['With Mirror', 'With Storage'] }
-    ],
-    [
-      { title: 'Bedside Table', link: '/categories/bedroom/bedside-table', items: [] },
-      { title: 'Chest of Drawers', link: '/categories/bedroom/chest-of-drawers', items: [] },
-      { title: 'Almirah', link: '/categories/bedroom/almirah', items: [] }
-    ],
-    [
-      { title: 'Mattress', link: '/categories/bedroom/mattress', items: ['Orthopedic', 'Spring', 'Foam'] },
-      { title: 'Bedroom Chair', link: '/categories/bedroom/chair', items: [] },
-      { title: 'Pillow', link: '/categories/bedroom/pillow', items: [] }
-    ]
-  ],
-  'Dining': [
-    [
-      { title: 'Dining Table', link: '/categories/dining/dining-table', items: ['Wooden Table', 'Glass Top', 'Marble Top', '4-Seater', '6-Seater', '8-Seater', 'Extendable'] }
-    ],
-    [
-      { title: 'Dining Chair', link: '/categories/dining/dining-chair', items: ['Wooden Chair', 'Upholstered', 'Arm Chair'] }
-    ],
-    [
-      { title: 'Dinner Wagon', link: '/categories/dining/dinner-wagon', items: ['Showcase', 'Sideboard', 'Buffet Table'] },
-      { title: 'Tea Cart', link: '/categories/dining/tea-cart', items: [] }
-    ],
-    [
-      { title: 'Cupboard', link: '/categories/dining/cupboard', items: [] },
-      { title: 'Bar Cabinet', link: '/categories/dining/bar-cabinet', items: [] },
-      { title: 'Dining Bench', link: '/categories/dining/dining-bench', items: [] }
-    ]
-  ],
-  'Kitchen': [
-    [
-      { title: 'Kitchen Cabinet', link: '/categories/kitchen/kitchen-cabinet', items: ['Wall Cabinet', 'Base Cabinet', 'Tall Unit'] }
-    ],
-    [
-      { title: 'Kitchen Island', link: '/categories/kitchen/kitchen-island', items: [] },
-      { title: 'Kitchen Rack', link: '/categories/kitchen/kitchen-rack', items: [] }
-    ],
-    [
-      { title: 'Pantry Unit', link: '/categories/kitchen/pantry-unit', items: [] },
-      { title: 'Trolley', link: '/categories/kitchen/trolley', items: [] }
-    ],
-    [
-      { title: 'Kitchen Accessories', link: '/categories/kitchen/accessories', items: [] }
-    ]
-  ],
-  'Kid\'s Room': [
-    [
-      { title: 'Kid\'s Bed', link: '/categories/kids-room/bed', items: ['Bunk Bed', 'Single Bed', 'Trundle Bed', 'Car Bed'] }
-    ],
-    [
-      { title: 'Study Table', link: '/categories/kids-room/study-table', items: ['Adjustable', 'With Bookshelf'] },
-      { title: 'Kid\'s Chair', link: '/categories/kids-room/chair', items: [] }
-    ],
-    [
-      { title: 'Kid\'s Wardrobe', link: '/categories/kids-room/wardrobe', items: [] },
-      { title: 'Toy Storage', link: '/categories/kids-room/toy-storage', items: [] }
-    ],
-    [
-      { title: 'Cribs', link: '/categories/kids-room/cribs', items: [] },
-      { title: 'Play Mat', link: '/categories/kids-room/play-mat', items: [] }
-    ]
-  ],
-  'SmartFit': [
-    [
-      { title: 'Sofa-Cum-Bed', link: '/categories/smartfit/sofa-cum-bed', items: [] }
-    ],
-    [
-      { title: 'Wall Bed', link: '/categories/smartfit/wall-bed', items: [] }
-    ],
-    [
-      { title: 'Folding Table', link: '/categories/smartfit/folding-table', items: [] }
-    ],
-    [
-      { title: 'Nested Table', link: '/categories/smartfit/nested-table', items: [] },
-      { title: 'Multipurpose Cabinet', link: '/categories/smartfit/multipurpose-cabinet', items: [] }
-    ]
-  ],
-  'Institutional': [
-    [
-      { title: 'Auditorium Chair', link: '/categories/institutional/auditorium-chair', items: [] },
-      { title: 'Waiting Chair', link: '/categories/institutional/waiting-chair', items: [] }
-    ],
-    [
-      { title: 'Hospital Bed', link: '/categories/institutional/hospital-bed', items: [] },
-      { title: 'Patient Cabinet', link: '/categories/institutional/patient-cabinet', items: [] }
-    ],
-    [
-      { title: 'School Desk', link: '/categories/institutional/school-desk', items: [] },
-      { title: 'Teacher\'s Desk', link: '/categories/institutional/teachers-desk', items: [] }
-    ],
-    [
-      { title: 'Conference Table', link: '/categories/institutional/conference-table', items: [] },
-      { title: 'Podium', link: '/categories/institutional/podium', items: [] }
-    ]
-  ],
-  'Door': [
-    [
-      { title: 'Solid Wooden Door', link: '/categories/door/solid-wooden-door', items: [] },
-      { title: 'Flush Door', link: '/categories/door/flush-door', items: [] }
-    ],
-    [
-      { title: 'Veneer Door', link: '/categories/door/veneer-door', items: [] },
-      { title: 'Laminated Door', link: '/categories/door/laminated-door', items: [] }
-    ],
-    [
-      { title: 'Glass Door', link: '/categories/door/glass-door', items: [] },
-      { title: 'PVC Door', link: '/categories/door/pvc-door', items: [] }
-    ],
-    [
-      { title: 'Door Frame (Chowkath)', link: '/categories/door/door-frame', items: [] },
-      { title: 'Door Accessories', link: '/categories/door/door-accessories', items: [] }
-    ]
-  ],
-  'Interior': [
-    [
-      { title: 'Wall Paneling', link: '/categories/interior/wall-paneling', items: [] },
-      { title: 'False Ceiling', link: '/categories/interior/false-ceiling', items: [] }
-    ],
-    [
-      { title: 'Window Blinds', link: '/categories/interior/window-blinds', items: [] },
-      { title: 'Curtains', link: '/categories/interior/curtains', items: [] }
-    ],
-    [
-      { title: 'Wall Wallpaper', link: '/categories/interior/wallpaper', items: [] },
-      { title: 'Floor Covering', link: '/categories/interior/floor-covering', items: [] }
-    ],
-    [
-      { title: 'Decorative Light', link: '/categories/interior/decorative-light', items: [] },
-      { title: 'Room Divider', link: '/categories/interior/room-divider', items: [] }
-    ]
-  ],
-  'Office': [
-    [
-      { title: 'Director Table', link: '/categories/office/director-table', items: [] },
-      { title: 'Executive Table', link: '/categories/office/executive-table', items: [] },
-      { title: 'Manager Table', link: '/categories/office/manager-table', items: [] }
-    ],
-    [
-      { title: 'Swivel Chair', link: '/categories/office/swivel-chair', items: ['High Back', 'Mid Back', 'Low Back'] },
-      { title: 'Visitor Chair', link: '/categories/office/visitor-chair', items: [] },
-      { title: 'Conference Chair', link: '/categories/office/conference-chair', items: [] }
-    ],
-    [
-      { title: 'File Cabinet', link: '/categories/office/file-cabinet', items: ['Wooden', 'Metal'] },
-      { title: 'Drawer Mobile', link: '/categories/office/drawer-mobile', items: [] }
-    ],
-    [
-      { title: 'Workstation', link: '/categories/office/workstation', items: ['2-Seater', '4-Seater', '6-Seater'] },
-      { title: 'Sofa & Lounge', link: '/categories/office/sofa-lounge', items: [] }
-    ]
-  ]
-};
+import { useCMS } from '../../../admin/context/cms/CMSContext';
 
 export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -198,7 +16,9 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
   const { openCartDrawer } = useCommerce();
   const { isAuthenticated, user } = useAuth();
   const { activeTheme } = useStorefrontTheme();
+  const { menus } = useCMS();
   const headerTokens = activeTheme.tokens.header;
+  const headerMenu = menus.find(m => m.type === 'Header')?.items?.filter(i => i.visibility) || [];
 
   const isHomePage = location.pathname === '/';
   
@@ -214,19 +34,7 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [location.pathname]);
 
-  const categories = [
-    { name: 'Living Room', path: '/categories/living-room' },
-    { name: 'Bedroom', path: '/categories/bedroom' },
-    { name: 'Dining', path: '/categories/dining' },
-    { name: 'Kitchen', path: '/categories/kitchen' },
-    { name: "Kid's Room", path: '/categories/kids-room' },
-    { name: 'SmartFit', path: '/categories/smartfit' },
-    { name: 'Institutional', path: '/categories/institutional' },
-    { name: 'Door', path: '/categories/door' },
-    { name: 'Interior', path: '/categories/interior' },
-    { name: 'Office', path: '/categories/office' },
-  ];
-
+  // Removed hardcoded categories array
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 w-full transition-colors duration-300 border-b h-[72px] md:h-[84px] ${
@@ -247,50 +55,63 @@ export default function Navbar({ onOpenMobileMenu, onOpenSearch }) {
 
         {/* Center Section: Categories (Desktop) */}
         <nav className="hidden lg:flex items-center h-full xl:justify-self-center relative">
-          {categories.map((category) => (
+          {headerMenu.map((category) => (
             <div 
-              key={category.name}
+              key={category.id}
               className="h-full"
-              onMouseEnter={() => setHoveredCategory(category.name)}
+              onMouseEnter={() => setHoveredCategory(category.title)}
               onMouseLeave={() => setHoveredCategory(null)}
             >
               <Link 
-                to={category.path}
+                to={category.link}
                 className={`whitespace-nowrap h-full flex items-center px-3 xl:px-4 text-sm xl:text-base font-semibold transition-colors duration-200 ${
-                  hoveredCategory === category.name 
+                  hoveredCategory === category.title 
                     ? (isSolid ? headerTokens.linkActiveSolid : headerTokens.linkActiveTransparent)
                     : (isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent)
                 }`}
               >
-                {category.name}
+                {category.title}
               </Link>
               
               {/* Mega Menu Dropdown */}
-              {hoveredCategory === category.name && megaMenus[category.name] && (
-                <div className={`absolute top-full left-1/2 -translate-x-1/2 w-[900px] ${activeTheme.tokens.surface} ${activeTheme.tokens.text.primary} shadow-2xl p-8 grid grid-cols-4 gap-8 z-50`}>
-                  {megaMenus[category.name].map((col, colIndex) => (
-                    <div key={colIndex} className="flex flex-col space-y-6">
-                      {col.map((section, secIndex) => (
-                        <div key={secIndex} className="flex flex-col">
-                          <Link to={section.link} className={`font-bold text-sm ${activeTheme.tokens.text.primary} mb-3 hover:opacity-70 flex items-center group`}>
-                            {section.title}
-                            {section.items.length > 0 && <ArrowRight size={14} className="ml-1 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 duration-200" />}
-                          </Link>
-                          {section.items.length > 0 && (
-                            <ul className="flex flex-col space-y-2">
-                              {section.items.map((item, itemIndex) => (
-                                <li key={itemIndex}>
-                                  <Link to={`${section.link}/${item.toLowerCase().replace(/ /g, '-')}`} className={`text-xs ${activeTheme.tokens.text.secondary} hover:opacity-70 transition-colors`}>
-                                    {item}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      ))}
+              {hoveredCategory === category.title && category.isMegaMenu && category.columns?.length > 0 && (
+                <div className={`absolute top-full left-1/2 -translate-x-1/2 w-[900px] ${activeTheme.tokens.surface} ${activeTheme.tokens.text.primary} shadow-2xl p-8 z-50 flex gap-8`}>
+                  <div className="flex-1 grid grid-cols-4 gap-8">
+                    {category.columns.map((col, colIndex) => (
+                      <div key={col.id || colIndex} className="flex flex-col space-y-6">
+                        {col.groups.map((group, secIndex) => (
+                          <div key={group.id || secIndex} className="flex flex-col">
+                            <Link to={group.link} className={`font-bold text-sm ${activeTheme.tokens.text.primary} mb-3 hover:opacity-70 flex items-center group`}>
+                              {group.title}
+                              {group.items?.length > 0 && <ArrowRight size={14} className="ml-1 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 duration-200" />}
+                            </Link>
+                            {group.items?.length > 0 && (
+                              <ul className="flex flex-col space-y-2">
+                                {group.items.map((item, itemIndex) => (
+                                  <li key={item.id || itemIndex}>
+                                    <Link to={item.link} className={`text-xs ${activeTheme.tokens.text.secondary} hover:opacity-70 transition-colors`}>
+                                      {item.title}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                  {category.promoBanner?.imageUrl && (
+                    <div className="w-[240px] shrink-0">
+                      <Link to={category.promoBanner.link || '#'} className="block h-full w-full rounded-lg overflow-hidden group">
+                        <img 
+                          src={category.promoBanner.imageUrl} 
+                          alt={category.promoBanner.altText || "Promotional Banner"} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </Link>
                     </div>
-                  ))}
+                  )}
                 </div>
               )}
             </div>

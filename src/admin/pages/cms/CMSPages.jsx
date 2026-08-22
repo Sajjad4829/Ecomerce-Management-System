@@ -670,7 +670,315 @@ export const BlockCenter = () => {
 };
 
 export const NavigationCenter = () => {
-  const { menus } = useCMS();
+  const { menus, setMenus } = useCMS();
+  const [activeMenuId, setActiveMenuId] = React.useState(null);
+  const [activeItemId, setActiveItemId] = React.useState(null);
+
+  const activeMenu = menus.find(m => m.id === activeMenuId);
+  const activeItem = activeMenu?.items?.find(i => i.id === activeItemId);
+
+  const handleUpdateMenu = (updatedMenu) => {
+    setMenus(menus.map(m => m.id === updatedMenu.id ? updatedMenu : m));
+  };
+
+  const handleDragStart = (e, index) => { 
+    e.dataTransfer.setData('index', index); 
+  };
+  const handleDrop = (e, targetIndex) => {
+    e.preventDefault();
+    const sourceIndex = parseInt(e.dataTransfer.getData('index'));
+    if (sourceIndex === targetIndex || isNaN(sourceIndex)) return;
+    const newItems = [...activeMenu.items];
+    const [moved] = newItems.splice(sourceIndex, 1);
+    newItems.splice(targetIndex, 0, moved);
+    handleUpdateMenu({ ...activeMenu, items: newItems });
+  };
+  const handleDragOver = (e) => { e.preventDefault(); };
+
+  if (activeMenuId && activeMenu) {
+    return (
+      <div className="space-y-6 max-w-7xl mx-auto">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <button onClick={() => { setActiveMenuId(null); setActiveItemId(null); }} className="text-neutral-500 hover:text-neutral-900">
+              <ArrowLeft size={20} />
+            </button>
+            <h1 className="text-2xl font-serif text-neutral-900">{activeMenu.name} Builder</h1>
+          </div>
+          <button onClick={() => { setActiveMenuId(null); setActiveItemId(null); }} className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Done</button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* List of items */}
+          <div className="col-span-1 bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-neutral-200 bg-neutral-50 flex justify-between items-center">
+              <h2 className="font-medium text-neutral-900">Menu Items</h2>
+              <button 
+                onClick={() => {
+                  const newItem = { id: `new-top-${Date.now()}`, title: 'New Item', link: '/', visibility: true, isMegaMenu: false, columns: [], promoBanner: { imageUrl: '', link: '', altText: '' } };
+                  handleUpdateMenu({ ...activeMenu, items: [...(activeMenu.items || []), newItem] });
+                  setActiveItemId(newItem.id);
+                }}
+                className="text-primary text-sm font-medium hover:text-indigo-800"
+              >
+                + Add Item
+              </button>
+            </div>
+            <div className="p-2 space-y-2 overflow-y-auto max-h-[600px]">
+              {(activeMenu.items || []).map((item, idx) => (
+                <div 
+                  key={item.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, idx)}
+                  onDrop={(e) => handleDrop(e, idx)}
+                  onDragOver={handleDragOver}
+                  onClick={() => setActiveItemId(item.id)}
+                  className={`p-3 rounded border cursor-pointer flex justify-between items-center transition-colors ${
+                    activeItemId === item.id ? 'border-primary bg-indigo-50/50' : 'border-neutral-200 hover:border-neutral-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="text-neutral-400 cursor-grab px-1">≡</div>
+                    <div>
+                      <div className="font-medium text-sm text-neutral-900">{item.title}</div>
+                      <div className="text-xs text-neutral-500">{item.isMegaMenu ? 'Mega Menu' : 'Standard Link'}</div>
+                    </div>
+                  </div>
+                  {!item.visibility && <EyeOff size={14} className="text-neutral-400" />}
+                </div>
+              ))}
+              {(!activeMenu.items || activeMenu.items.length === 0) && (
+                <div className="p-4 text-center text-sm text-neutral-500">No items added yet.</div>
+              )}
+            </div>
+          </div>
+
+          {/* Editor */}
+          <div className="col-span-2 space-y-6">
+            {activeItem ? (
+              <>
+                <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6 space-y-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium text-neutral-900">Item Settings</h3>
+                    <button 
+                      onClick={() => {
+                        handleUpdateMenu({ ...activeMenu, items: activeMenu.items.filter(i => i.id !== activeItem.id) });
+                        setActiveItemId(null);
+                      }}
+                      className="text-red-500 hover:text-red-700 p-2"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-1">Title</label>
+                      <input 
+                        type="text" 
+                        value={activeItem.title}
+                        onChange={(e) => {
+                          const updated = { ...activeItem, title: e.target.value };
+                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                        }}
+                        className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-1">Link</label>
+                      <input 
+                        type="text" 
+                        value={activeItem.link}
+                        onChange={(e) => {
+                          const updated = { ...activeItem, link: e.target.value };
+                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                        }}
+                        className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-6 pt-2">
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        checked={activeItem.visibility}
+                        onChange={(e) => {
+                          const updated = { ...activeItem, visibility: e.target.checked };
+                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                        }}
+                        className="rounded text-primary"
+                      />
+                      Visible
+                    </label>
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        checked={activeItem.isMegaMenu}
+                        onChange={(e) => {
+                          const updated = { ...activeItem, isMegaMenu: e.target.checked };
+                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                        }}
+                        className="rounded text-primary"
+                      />
+                      Enable Mega Menu
+                    </label>
+                  </div>
+                </div>
+
+                {activeItem.isMegaMenu && (
+                  <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6 space-y-6">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-medium text-neutral-900">Mega Menu Columns</h3>
+                      <button 
+                        onClick={() => {
+                          const newCol = { id: `col-${Date.now()}`, groups: [] };
+                          const updated = { ...activeItem, columns: [...(activeItem.columns || []), newCol] };
+                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                        }}
+                        className="text-sm font-medium text-primary hover:text-indigo-800"
+                      >
+                        + Add Column
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {(activeItem.columns || []).map((col, colIdx) => (
+                        <div key={col.id} className="border border-neutral-200 rounded p-4 bg-neutral-50 relative">
+                          <button 
+                            onClick={() => {
+                              const updatedCols = activeItem.columns.filter(c => c.id !== col.id);
+                              const updated = { ...activeItem, columns: updatedCols };
+                              handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                            }}
+                            className="absolute top-2 right-2 text-neutral-400 hover:text-red-500"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                          <div className="font-medium text-sm text-neutral-700 mb-3">Column {colIdx + 1}</div>
+                          
+                          <div className="space-y-4">
+                            {col.groups.map(group => (
+                              <div key={group.id} className="bg-white border border-neutral-200 rounded p-3">
+                                <div className="flex items-center justify-between mb-2">
+                                  <input 
+                                    type="text" 
+                                    value={group.title}
+                                    placeholder="Group Title"
+                                    onChange={(e) => {
+                                      const updatedCols = [...activeItem.columns];
+                                      const g = updatedCols[colIdx].groups.find(g => g.id === group.id);
+                                      if (g) g.title = e.target.value;
+                                      const updated = { ...activeItem, columns: updatedCols };
+                                      handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                    }}
+                                    className="text-sm font-bold border-b border-dashed border-neutral-300 focus:border-primary outline-none"
+                                  />
+                                  <button onClick={() => {
+                                      const updatedCols = [...activeItem.columns];
+                                      updatedCols[colIdx].groups = updatedCols[colIdx].groups.filter(g => g.id !== group.id);
+                                      const updated = { ...activeItem, columns: updatedCols };
+                                      handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                  }} className="text-neutral-400 hover:text-red-500"><Trash2 size={12} /></button>
+                                </div>
+                                <input 
+                                  type="text" 
+                                  value={group.link}
+                                  placeholder="Group Link"
+                                  onChange={(e) => {
+                                    const updatedCols = [...activeItem.columns];
+                                    const g = updatedCols[colIdx].groups.find(g => g.id === group.id);
+                                    if (g) g.link = e.target.value;
+                                    const updated = { ...activeItem, columns: updatedCols };
+                                    handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                  }}
+                                  className="text-xs text-neutral-500 w-full mb-3 outline-none"
+                                />
+
+                                <div className="space-y-1">
+                                  {group.items.map((linkItem) => (
+                                    <div key={linkItem.id} className="flex items-center gap-2 group/link">
+                                      <input 
+                                        type="text" 
+                                        value={linkItem.title}
+                                        onChange={(e) => {
+                                          const updatedCols = [...activeItem.columns];
+                                          const l = updatedCols[colIdx].groups.find(g => g.id === group.id).items.find(i => i.id === linkItem.id);
+                                          if (l) l.title = e.target.value;
+                                          const updated = { ...activeItem, columns: updatedCols };
+                                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                        }}
+                                        className="text-xs flex-1 bg-transparent border-none outline-none"
+                                        placeholder="Link Text"
+                                      />
+                                      <button onClick={() => {
+                                          const updatedCols = [...activeItem.columns];
+                                          const grp = updatedCols[colIdx].groups.find(g => g.id === group.id);
+                                          grp.items = grp.items.filter(i => i.id !== linkItem.id);
+                                          const updated = { ...activeItem, columns: updatedCols };
+                                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                      }} className="opacity-0 group-hover/link:opacity-100 text-red-500"><Trash2 size={10} /></button>
+                                    </div>
+                                  ))}
+                                  <button onClick={() => {
+                                      const updatedCols = [...activeItem.columns];
+                                      updatedCols[colIdx].groups.find(g => g.id === group.id).items.push({ id: `lnk-${Date.now()}`, title: 'New Link', link: '/' });
+                                      const updated = { ...activeItem, columns: updatedCols };
+                                      handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                  }} className="text-xs text-primary hover:underline mt-1">+ Add Link</button>
+                                </div>
+                              </div>
+                            ))}
+                            
+                            <button onClick={() => {
+                                const updatedCols = [...activeItem.columns];
+                                updatedCols[colIdx].groups.push({ id: `grp-${Date.now()}`, title: 'New Group', link: '/', items: [] });
+                                const updated = { ...activeItem, columns: updatedCols };
+                                handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                            }} className="text-xs font-medium text-neutral-600 hover:text-neutral-900 w-full text-left bg-white border border-dashed border-neutral-300 p-2 rounded">
+                              + Add Group
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="pt-4 border-t border-neutral-200">
+                      <h4 className="text-sm font-medium text-neutral-900 mb-3">Promotional Banner (Optional)</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs text-neutral-500 mb-1">Image URL</label>
+                          <input type="text" value={activeItem.promoBanner?.imageUrl || ''} onChange={(e) => {
+                             const pb = { ...(activeItem.promoBanner || {}), imageUrl: e.target.value };
+                             const updated = { ...activeItem, promoBanner: pb };
+                             handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                          }} className="w-full text-sm border p-2 rounded border-neutral-300" placeholder="https://..." />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-neutral-500 mb-1">Link</label>
+                          <input type="text" value={activeItem.promoBanner?.link || ''} onChange={(e) => {
+                             const pb = { ...(activeItem.promoBanner || {}), link: e.target.value };
+                             const updated = { ...activeItem, promoBanner: pb };
+                             handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                          }} className="w-full text-sm border p-2 rounded border-neutral-300" placeholder="/sale" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center text-neutral-400 bg-neutral-50 rounded border border-dashed border-neutral-200 py-20">
+                <Navigation size={48} className="mb-4 opacity-20" />
+                <p>Select a menu item from the left to edit its details</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center">
@@ -693,7 +1001,7 @@ export const NavigationCenter = () => {
               <tr key={m.id} className="hover:bg-neutral-50">
                 <td className="px-6 py-4 font-medium text-neutral-900">{m.name}</td>
                 <td className="px-6 py-4 text-neutral-600">{m.type}</td>
-                <td className="px-6 py-4 text-neutral-600">{m.items}</td>
+                <td className="px-6 py-4 text-neutral-600">{m.items?.length || 0}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                     m.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
@@ -702,7 +1010,7 @@ export const NavigationCenter = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right space-x-3">
-                  <button className="text-primary hover:text-indigo-900 font-medium">Builder</button>
+                  <button onClick={() => setActiveMenuId(m.id)} className="text-primary hover:text-indigo-900 font-medium">Builder</button>
                   <button className="text-neutral-600 hover:text-neutral-900 font-medium">Settings</button>
                 </td>
               </tr>
