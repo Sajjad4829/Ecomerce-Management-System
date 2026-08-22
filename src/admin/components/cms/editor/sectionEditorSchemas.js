@@ -34,9 +34,14 @@ const COMMON_RESPONSIVE = [
 export const SECTION_SCHEMAS = {
   // NAVIGATION
   NAVBAR: {
-    content: [],
+    content: [
+      { name: 'showSearch', label: 'Search Icon', type: FIELD_TYPES.TOGGLE, defaultValue: true },
+      { name: 'showUser', label: 'User Account', type: FIELD_TYPES.TOGGLE, defaultValue: true },
+      { name: 'showCart', label: 'Shopping Cart', type: FIELD_TYPES.TOGGLE, defaultValue: true }
+    ],
     settings: [
-      { name: 'position', label: 'Position', type: FIELD_TYPES.SELECT, options: ['static', 'sticky', 'fixed'], defaultValue: 'sticky' },
+      { name: 'stickyOnScroll', label: 'Sticky on Scroll', type: FIELD_TYPES.TOGGLE, defaultValue: true },
+      { name: 'transparentOnTop', label: 'Transparent on Top', type: FIELD_TYPES.TOGGLE, defaultValue: false },
       ...COMMON_LAYOUT,
       ...COMMON_VISIBILITY
     ],
