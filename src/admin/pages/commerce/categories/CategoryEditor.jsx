@@ -33,6 +33,7 @@ export default function CategoryEditor() {
     slug: '',
     description: '',
     parentId: '',
+    navMenuId: '',
     status: 'draft',
     featured: false,
     sortOrder: 1,
@@ -46,6 +47,19 @@ export default function CategoryEditor() {
     robots: 'index,follow'
   });
 
+  const [navItems, setNavItems] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/navbar')
+      .then(res => res.json())
+      .then(data => {
+        if (data.navItems) {
+          setNavItems(data.navItems);
+        }
+      })
+      .catch(err => console.error('Failed to load navbar from API:', err));
+  }, []);
+
   const { categories, getCategoryById, addCategory, updateCategory } = useCategories();
 
   useEffect(() => {
@@ -56,12 +70,12 @@ export default function CategoryEditor() {
           name: cat.name || '',
           slug: cat.slug || '',
           description: cat.description || '',
-          parentId: cat.parentId || '',
           status: cat.status || 'draft',
           featured: cat.featured || false,
           sortOrder: cat.sortOrder || 1,
+          parentId: cat.parentId || '',
+          navMenuId: cat.navMenuId || '',
           image: cat.image || '',
-          bannerImage: cat.bannerImage || '',
           icon: cat.icon || '',
           seoTitle: cat.seo?.metaTitle || '',
           seoDescription: cat.seo?.metaDescription || '',
@@ -108,6 +122,8 @@ export default function CategoryEditor() {
       return;
     }
     
+    
+    
     setIsSaving(true);
     setTimeout(() => {
       setFormData(prev => ({ ...prev, status: 'published' }));
@@ -119,14 +135,15 @@ export default function CategoryEditor() {
     }, 1000);
   };
 
-  const handleSave = (forceStatus = null) => {
-    // Prepare payload
+  const handleSave = async (forceStatus = null) => {
+    setIsSaving(true);
     const payload = {
       name: formData.name,
       slug: formData.slug || generateSlug(formData.name),
       description: formData.description,
-      parentId: formData.parentId || null,
-      status: forceStatus || formData.status,
+      parentId: formData.parentId === 'none' ? null : (formData.parentId || null),
+      navMenuId: formData.navMenuId || null,
+      status: typeof forceStatus === 'string' ? forceStatus : formData.status,
       featured: formData.featured,
       sortOrder: Number(formData.sortOrder) || 1,
       image: formData.image,
@@ -142,9 +159,9 @@ export default function CategoryEditor() {
     };
 
     if (isNew) {
-      addCategory(payload);
+      await addCategory(payload);
     } else {
-      updateCategory(id, payload);
+      await updateCategory(id, payload);
     }
   };
 
@@ -232,7 +249,7 @@ export default function CategoryEditor() {
       <div className="flex-1 overflow-hidden flex">
         
         {/* LEFT COLUMN: Form Cards (55%) */}
-        <div className="w-[55%] h-full overflow-y-auto px-8 py-6 no-scrollbar pb-32">
+        <div className="w-[55%] h-full overflow-y-auto px-8 py-6 pb-32 custom-scrollbar">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -274,18 +291,39 @@ export default function CategoryEditor() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-text-primary mb-1.5">Parent Category</label>
+                      <label className="block text-xs font-bold text-text-primary mb-1.5">Parent Within Field</label>
                       <select 
-                        value={formData.parentId}
-                        onChange={(e) => handleChange('parentId', e.target.value)}
+                        value={formData.navMenuId || ''}
+                        onChange={(e) => handleChange('navMenuId', e.target.value)}
                         className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary"
                       >
-                        <option value="">None (Top Level)</option>
-                        {categories.filter(c => c.id !== id).map(c => (
-                          <option key={c.id} value={c.id}>{c.name}</option>
+                        <option value="">None</option>
+                        {navItems.map(item => (
+                          <option key={item.id} value={item.id}>{item.label}</option>
                         ))}
                       </select>
                     </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-text-primary mb-1.5">Parent Category Group <span className="text-[#FF4D4F]">*</span></label>
+                      <select 
+                        value={formData.parentId || ''}
+                        onChange={(e) => handleChange('parentId', e.target.value)}
+                        className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary"
+                        required
+                      >
+                        <option value="">Select a Group</option>
+                        <option value="none">None (Top Level)</option>
+                        {categories
+                          .filter(c => c.id !== id)
+                          .filter(c => !formData.navMenuId || c.navMenuId === formData.navMenuId)
+                          .map(c => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+
 
                     <div>
                       <label className="block text-xs font-bold text-text-primary mb-1.5">Description</label>

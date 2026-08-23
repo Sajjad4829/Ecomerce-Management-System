@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FiLayout, FiImage, FiType, FiSearch, FiUser, FiShoppingCart, FiHeart, FiSettings, FiCheck, FiPlus, FiTrash2, FiMenu, FiChevronDown } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCMS } from '../../../context/cms/CMSContext';
+import MegaMenuBuilder from '../../../components/cms/navigation/MegaMenuBuilder';
 
 export default function NavbarEditor() {
   const { setSections } = useCMS();
@@ -15,14 +16,36 @@ export default function NavbarEditor() {
   const [showCart, setShowCart] = useState(true);
   const [activeLinkId, setActiveLinkId] = useState(null);
   
-  const [links, setLinks] = useState([
-    { id: 1, text: 'Home' },
-    { id: 2, text: 'Shop', hasDropdown: true },
-    { id: 3, text: 'Categories', hasDropdown: true },
-    { id: 4, text: 'About' },
-    { id: 5, text: 'Blog' },
-    { id: 6, text: 'Contact' },
-  ]);
+  const [links, setLinks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch('/api/navbar')
+      .then(res => res.json())
+      .then(data => {
+        if (data.navItems && data.navItems.length > 0) {
+          // Map navbar structure to links array
+          const mappedLinks = data.navItems.map(item => ({
+            id: item.id,
+            text: item.label,
+            hasDropdown: item.hasMegaMenu,
+            dropdownData: item.megaMenu
+          }));
+          setLinks(mappedLinks);
+        } else {
+          // Fallback to defaults
+          setLinks([
+            { id: 'home', text: 'Home' },
+            { id: 'categories', text: 'Categories', hasDropdown: true }
+          ]);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load navbar from API:', err);
+        setLoading(false);
+      });
+  }, []);
 
   const activeLink = links.find(l => l.id === activeLinkId);
 
@@ -42,36 +65,55 @@ export default function NavbarEditor() {
   };
 
   const addLink = () => {
-    setLinks([...links, { id: Date.now(), text: 'New Link' }]);
+    setLinks([...links, { id: Date.now(), text: 'New Menu Item' }]);
   };
 
   const handlePublish = () => {
-    const newNavbarSection = {
-      id: `lib-navbar-${Date.now()}`,
-      type: 'NAVBAR',
-      name: 'Custom Global Navbar',
-      category: 'Header Section',
-      description: 'Your published custom navbar.',
-      icon: 'FiLayout',
-      defaultContent: {
-        logoType,
-        logoText,
-        logoImage,
-        links
-      },
-      defaultSettings: {
-        isSticky,
-        isTransparent,
-        showSearch,
-        showUser,
-        showCart
-      },
-      status: 'Active'
+    // Validation: Check for duplicate group categories within any column
+    for (const link of links) {
+      if (link.hasDropdown && link.dropdownData && link.dropdownData.columns) {
+        for (const col of link.dropdownData.columns) {
+          const usedIds = new Set();
+          for (const group of (col.groups || [])) {
+            if (group.referenceId) {
+              if (usedIds.has(group.referenceId)) {
+                alert(`Validation Error: The menu "${link.text}" has a column with duplicate categories. Please remove duplicates before publishing.`);
+                return;
+              }
+              usedIds.add(group.referenceId);
+            }
+          }
+        }
+      }
+    }
+
+    const newNavbarData = {
+      navItems: links.map(link => ({
+        id: link.id,
+        label: link.text,
+        order: link.id,
+        hasMegaMenu: link.hasDropdown || false,
+        megaMenu: link.dropdownData || null
+      }))
     };
-    
-    setSections(prev => [newNavbarSection, ...prev.filter(s => s.type !== 'NAVBAR')]);
-    alert('Navbar successfully published and added to the Section Library!');
+
+    fetch('/api/navbar', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newNavbarData)
+    })
+    .then(res => {
+      if (!res.ok) {
+        return res.json().then(err => { throw new Error(err.error) });
+      }
+      alert('Navbar successfully published and saved!');
+    })
+    .catch(err => {
+      alert(`Error publishing navbar: ${err.message}`);
+    });
   };
+
+  if (loading) return <div className="p-8">Loading Navbar...</div>;
 
   return (
     <div className="flex flex-col h-[calc(100vh-10rem)] bg-[#f9fafb] font-sans">
@@ -261,148 +303,11 @@ export default function NavbarEditor() {
         <div className="flex-1 overflow-auto relative bg-gray-100 flex items-start justify-start p-8">
           
           {activeLinkId && activeLink ? (
-             <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8 space-y-8">
-                <div className="flex justify-between items-center border-b border-gray-200 pb-4">
-                  <h2 className="text-xl font-bold text-gray-900">Mega Menu Builder: {activeLink.text}</h2>
-                  <button onClick={() => {
-                    const newCol = { id: `col-${Date.now()}`, groups: [] };
-                    const updatedCols = [...(activeLink.columns || []), newCol];
-                    setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                  }} className="px-4 py-2 bg-[#635BFF] text-white text-sm font-medium rounded-lg hover:bg-[#524be0] transition-colors flex items-center gap-2">
-                    <FiPlus /> Add Column
-                  </button>
-                </div>
-                
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                  {(activeLink.columns || []).map((col, colIdx) => (
-                    <div key={col.id} className="border border-gray-200 rounded-lg p-5 bg-gray-50 relative">
-                      <button 
-                        onClick={() => {
-                          const updatedCols = activeLink.columns.filter(c => c.id !== col.id);
-                          setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                        }}
-                        className="absolute top-3 right-3 text-gray-400 hover:text-red-500"
-                      >
-                        <FiTrash2 size={16} />
-                      </button>
-                      <h4 className="font-bold text-gray-700 mb-4 uppercase text-xs tracking-wider">Column {colIdx + 1}</h4>
-                      
-                      <div className="space-y-4">
-                        {col.groups.map(group => (
-                          <div key={group.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                            <div className="flex items-center justify-between mb-3">
-                              <input 
-                                type="text" 
-                                value={group.title}
-                                placeholder="Group Title"
-                                onChange={(e) => {
-                                  const updatedCols = [...activeLink.columns];
-                                  const g = updatedCols[colIdx].groups.find(g => g.id === group.id);
-                                  if (g) g.title = e.target.value;
-                                  setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                                }}
-                                className="text-sm font-bold border-b border-dashed border-gray-300 focus:border-[#635BFF] outline-none bg-transparent"
-                              />
-                              <button onClick={() => {
-                                  const updatedCols = [...activeLink.columns];
-                                  updatedCols[colIdx].groups = updatedCols[colIdx].groups.filter(g => g.id !== group.id);
-                                  setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                              }} className="text-gray-400 hover:text-red-500"><FiTrash2 size={14} /></button>
-                            </div>
-                            <input 
-                              type="text" 
-                              value={group.link || ''}
-                              placeholder="Group Link (e.g. /category)"
-                              onChange={(e) => {
-                                const updatedCols = [...activeLink.columns];
-                                const g = updatedCols[colIdx].groups.find(g => g.id === group.id);
-                                if (g) g.link = e.target.value;
-                                setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                              }}
-                              className="text-xs text-gray-500 w-full mb-4 outline-none border-b border-gray-100 pb-1"
-                            />
-
-                            <div className="space-y-2">
-                              {group.items.map((linkItem) => (
-                                <div key={linkItem.id} className="flex items-center gap-2 group/link">
-                                  <input 
-                                    type="text" 
-                                    value={linkItem.title}
-                                    onChange={(e) => {
-                                      const updatedCols = [...activeLink.columns];
-                                      const l = updatedCols[colIdx].groups.find(g => g.id === group.id).items.find(i => i.id === linkItem.id);
-                                      if (l) l.title = e.target.value;
-                                      setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                                    }}
-                                    className="text-xs flex-1 bg-transparent border-none outline-none text-gray-700"
-                                    placeholder="Link Text"
-                                  />
-                                  <input 
-                                    type="text" 
-                                    value={linkItem.link || ''}
-                                    onChange={(e) => {
-                                      const updatedCols = [...activeLink.columns];
-                                      const l = updatedCols[colIdx].groups.find(g => g.id === group.id).items.find(i => i.id === linkItem.id);
-                                      if (l) l.link = e.target.value;
-                                      setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                                    }}
-                                    className="text-[10px] w-24 bg-transparent border-none outline-none text-gray-400 placeholder-gray-300"
-                                    placeholder="URL"
-                                  />
-                                  <button onClick={() => {
-                                      const updatedCols = [...activeLink.columns];
-                                      const grp = updatedCols[colIdx].groups.find(g => g.id === group.id);
-                                      grp.items = grp.items.filter(i => i.id !== linkItem.id);
-                                      setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                                  }} className="opacity-0 group-hover/link:opacity-100 text-red-500"><FiTrash2 size={12} /></button>
-                                </div>
-                              ))}
-                              <button onClick={() => {
-                                  const updatedCols = [...activeLink.columns];
-                                  updatedCols[colIdx].groups.find(g => g.id === group.id).items.push({ id: `lnk-${Date.now()}`, title: 'New Link', link: '/' });
-                                  setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                              }} className="text-xs text-[#635BFF] font-medium hover:underline mt-2 flex items-center gap-1"><FiPlus size={10} /> Add Item</button>
-                            </div>
-                          </div>
-                        ))}
-                        
-                        <button onClick={() => {
-                            const updatedCols = [...activeLink.columns];
-                            updatedCols[colIdx].groups.push({ id: `grp-${Date.now()}`, title: 'New Group', link: '/', items: [] });
-                            setLinks(links.map(l => l.id === activeLink.id ? { ...l, columns: updatedCols } : l));
-                        }} className="text-xs font-bold text-gray-500 hover:text-gray-900 w-full text-center bg-white border border-dashed border-gray-300 p-3 rounded-lg transition-colors">
-                          + Add Link Group
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  {(!activeLink.columns || activeLink.columns.length === 0) && (
-                    <div className="col-span-full py-12 text-center border-2 border-dashed border-gray-200 rounded-lg">
-                      <p className="text-gray-500 text-sm">No columns added yet. Add a column to start building your mega menu.</p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="pt-6 border-t border-gray-200">
-                  <h4 className="text-sm font-bold text-gray-900 mb-4">Promotional Banner (Optional)</h4>
-                  <div className="grid grid-cols-2 gap-6 bg-gray-50 p-5 rounded-lg border border-gray-200">
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Image URL</label>
-                      <input type="text" value={activeLink.promoBanner?.imageUrl || ''} onChange={(e) => {
-                         const pb = { ...(activeLink.promoBanner || {}), imageUrl: e.target.value };
-                         setLinks(links.map(l => l.id === activeLink.id ? { ...l, promoBanner: pb } : l));
-                      }} className="w-full text-sm border p-2.5 rounded-lg border-gray-300 focus:border-[#635BFF] focus:ring-1 focus:ring-[#635BFF] outline-none" placeholder="https://..." />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Link</label>
-                      <input type="text" value={activeLink.promoBanner?.link || ''} onChange={(e) => {
-                         const pb = { ...(activeLink.promoBanner || {}), link: e.target.value };
-                         setLinks(links.map(l => l.id === activeLink.id ? { ...l, promoBanner: pb } : l));
-                      }} className="w-full text-sm border p-2.5 rounded-lg border-gray-300 focus:border-[#635BFF] focus:ring-1 focus:ring-[#635BFF] outline-none" placeholder="/sale" />
-                    </div>
-                  </div>
-                </div>
-             </div>
+             <MegaMenuBuilder 
+                activeLink={activeLink} 
+                onChange={(updated) => setLinks(links.map(l => l.id === activeLink.id ? updated : l))} 
+                onBack={() => setActiveLinkId(null)} 
+             />
           ) : (
           <div className="w-full min-w-max bg-white relative shadow-sm rounded-lg overflow-hidden border border-gray-200">
             {/* The Navbar Live Preview */}

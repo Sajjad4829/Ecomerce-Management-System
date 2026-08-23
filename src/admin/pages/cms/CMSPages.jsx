@@ -1,8 +1,70 @@
 import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useCMS } from '../../context/cms/CMSContext';
-import { FileText, Layers, Navigation, Search, ArrowLeft, MoveUp, MoveDown, Copy, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { useCategories } from '../../context/commerce/CategoryContext';
+import { useProducts } from '../../context/commerce/ProductContext';
+import { useCollections } from '../../context/commerce/CollectionContext';
+import { useBrands } from '../../context/commerce/BrandContext';
+import { FileText, Layers, Navigation, Search, ArrowLeft, MoveUp, MoveDown, Copy, Eye, EyeOff, Trash2, Edit2 } from 'lucide-react';
 import SectionRenderer from '../../../storefront/components/sections/SectionRenderer';
+
+const ReferenceItemSelector = ({ item, onChange, categories, products, collections, brands, small = false }) => {
+  return (
+    <div className={`flex ${small ? 'flex-col gap-2' : 'gap-4'} w-full`}>
+      <select 
+        value={item.referenceType || 'custom'}
+        onChange={(e) => {
+          const type = e.target.value;
+          onChange({
+            ...item,
+            referenceType: type === 'custom' ? null : type,
+            referenceId: type === 'custom' ? null : '',
+            title: type === 'custom' ? item.title || '' : '',
+            link: type === 'custom' ? item.link || '' : ''
+          });
+        }}
+        className={`border-neutral-300 rounded-md shadow-sm border bg-white ${small ? 'p-1 text-xs' : 'p-2 text-sm'}`}
+      >
+        <option value="custom">Custom Link</option>
+        <option value="category">Category</option>
+        <option value="product">Product</option>
+        <option value="collection">Collection</option>
+        <option value="brand">Brand</option>
+      </select>
+
+      {item.referenceType && item.referenceType !== 'custom' ? (
+        <select
+          value={item.referenceId || ''}
+          onChange={(e) => onChange({ ...item, referenceId: e.target.value })}
+          className={`flex-1 border-neutral-300 rounded-md shadow-sm border bg-white ${small ? 'p-1 text-xs' : 'p-2 text-sm'}`}
+        >
+          <option value="">Select...</option>
+          {item.referenceType === 'category' && categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          {item.referenceType === 'product' && products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+          {item.referenceType === 'collection' && collections.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          {item.referenceType === 'brand' && brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+        </select>
+      ) : (
+        <div className={`flex ${small ? 'flex-col gap-2' : 'gap-4 flex-1'}`}>
+          <input 
+            type="text" 
+            placeholder="Title"
+            value={item.title || ''}
+            onChange={(e) => onChange({ ...item, title: e.target.value })}
+            className={`flex-1 border-neutral-300 rounded-md shadow-sm border ${small ? 'p-1 text-xs' : 'p-2 text-sm'}`}
+          />
+          <input 
+            type="text" 
+            placeholder="URL"
+            value={item.link || ''}
+            onChange={(e) => onChange({ ...item, link: e.target.value })}
+            className={`flex-1 border-neutral-300 rounded-md shadow-sm border ${small ? 'p-1 text-xs' : 'p-2 text-sm'}`}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const CMSDashboard = () => {
   return (
@@ -669,13 +731,78 @@ export const BlockCenter = () => {
   );
 };
 
+const MegaMenuEditableItem = ({ item, onChange, onDelete, onMoveUp, onMoveDown, categories, products, collections, brands }) => {
+  const [isEditing, setIsEditing] = React.useState(!item.referenceType && !item.title);
+
+  const resolveTitle = () => {
+    if (item.referenceType && item.referenceId) {
+      if (item.referenceType === 'category') return categories.find(c => c.id === item.referenceId)?.name || 'Unknown Category';
+      if (item.referenceType === 'product') return products.find(p => p.id === item.referenceId)?.name || 'Unknown Product';
+      if (item.referenceType === 'collection') return collections.find(c => c.id === item.referenceId)?.name || 'Unknown Collection';
+      if (item.referenceType === 'brand') return brands.find(b => b.id === item.referenceId)?.name || 'Unknown Brand';
+    }
+    return item.title || 'Unnamed Item';
+  };
+
+  if (isEditing) {
+    return (
+      <div className="p-3 bg-white border border-primary rounded shadow-sm space-y-3 mb-2">
+        <ReferenceItemSelector 
+          item={item} 
+          onChange={onChange} 
+          categories={categories} 
+          products={products} 
+          collections={collections} 
+          brands={brands} 
+          small={true} 
+        />
+        <div className="flex justify-end gap-2">
+          {onDelete && <button onClick={onDelete} className="text-xs text-red-500 hover:text-red-700 px-2 py-1">Delete</button>}
+          <button onClick={() => setIsEditing(false)} className="text-xs bg-neutral-900 text-white px-3 py-1 rounded">Save</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-between p-2 hover:bg-neutral-50 rounded border border-transparent hover:border-neutral-200 group/link transition-colors">
+      <div className="text-sm text-neutral-700 font-medium">
+        {resolveTitle()}
+        <span className="ml-2 text-[10px] text-neutral-400 font-normal px-1.5 py-0.5 bg-neutral-100 rounded border border-neutral-200 uppercase tracking-wider">
+          {item.referenceType || 'custom'}
+        </span>
+      </div>
+      <div className="opacity-0 group-hover/link:opacity-100 flex gap-1">
+        {onMoveUp && <button onClick={onMoveUp} className="p-1 text-neutral-400 hover:text-neutral-900"><MoveUp size={12} /></button>}
+        {onMoveDown && <button onClick={onMoveDown} className="p-1 text-neutral-400 hover:text-neutral-900"><MoveDown size={12} /></button>}
+        <button onClick={() => setIsEditing(true)} className="p-1 text-neutral-400 hover:text-primary"><Edit2 size={12} /></button>
+        {onDelete && <button onClick={onDelete} className="p-1 text-red-400 hover:text-red-600"><Trash2 size={12} /></button>}
+      </div>
+    </div>
+  );
+};
+
 export const NavigationCenter = () => {
   const { menus, setMenus } = useCMS();
+  const { categories } = useCategories();
+  const { products } = useProducts();
+  const { collections } = useCollections();
+  const { brands } = useBrands();
   const [activeMenuId, setActiveMenuId] = React.useState(null);
   const [activeItemId, setActiveItemId] = React.useState(null);
 
   const activeMenu = menus.find(m => m.id === activeMenuId);
   const activeItem = activeMenu?.items?.find(i => i.id === activeItemId);
+
+  const resolveItemTitle = (item) => {
+    if (item.referenceType && item.referenceId) {
+      if (item.referenceType === 'category') return categories.find(c => c.id === item.referenceId)?.name || 'Unknown Category';
+      if (item.referenceType === 'product') return products.find(p => p.id === item.referenceId)?.name || 'Unknown Product';
+      if (item.referenceType === 'collection') return collections.find(c => c.id === item.referenceId)?.name || 'Unknown Collection';
+      if (item.referenceType === 'brand') return brands.find(b => b.id === item.referenceId)?.name || 'Unknown Brand';
+    }
+    return item.title || 'Unnamed Item';
+  };
 
   const handleUpdateMenu = (updatedMenu) => {
     setMenus(menus.map(m => m.id === updatedMenu.id ? updatedMenu : m));
@@ -740,8 +867,12 @@ export const NavigationCenter = () => {
                   <div className="flex items-center gap-3">
                     <div className="text-neutral-400 cursor-grab px-1">≡</div>
                     <div>
-                      <div className="font-medium text-sm text-neutral-900">{item.title}</div>
-                      <div className="text-xs text-neutral-500">{item.isMegaMenu ? 'Mega Menu' : 'Standard Link'}</div>
+                      <div className="font-medium text-sm text-neutral-900">{resolveItemTitle(item)}</div>
+                      <div className="text-xs text-neutral-500">
+                        {item.referenceType 
+                          ? `${item.referenceType.charAt(0).toUpperCase() + item.referenceType.slice(1)} Reference` 
+                          : (item.isMegaMenu ? 'Mega Menu' : 'Standard Link')}
+                      </div>
                     </div>
                   </div>
                   {!item.visibility && <EyeOff size={14} className="text-neutral-400" />}
@@ -771,31 +902,18 @@ export const NavigationCenter = () => {
                     </button>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-1">Title</label>
-                      <input 
-                        type="text" 
-                        value={activeItem.title}
-                        onChange={(e) => {
-                          const updated = { ...activeItem, title: e.target.value };
-                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
-                        }}
-                        className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-1">Link</label>
-                      <input 
-                        type="text" 
-                        value={activeItem.link}
-                        onChange={(e) => {
-                          const updated = { ...activeItem, link: e.target.value };
-                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
-                        }}
-                        className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm"
-                      />
-                    </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">Item Link Configuration</label>
+                    <ReferenceItemSelector
+                      item={activeItem}
+                      onChange={(updatedItem) => {
+                        handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updatedItem : i) });
+                      }}
+                      categories={categories}
+                      products={products}
+                      collections={collections}
+                      brands={brands}
+                    />
                   </div>
 
                   <div className="flex items-center gap-6 pt-2">
@@ -858,85 +976,100 @@ export const NavigationCenter = () => {
                           <div className="font-medium text-sm text-neutral-700 mb-3">Column {colIdx + 1}</div>
                           
                           <div className="space-y-4">
-                            {col.groups.map(group => (
+                            {col.groups.map((group, groupIdx) => (
                               <div key={group.id} className="bg-white border border-neutral-200 rounded p-3">
-                                <div className="flex items-center justify-between mb-2">
-                                  <input 
-                                    type="text" 
-                                    value={group.title}
-                                    placeholder="Group Title"
-                                    onChange={(e) => {
+                                <div className="mb-3 border-b border-neutral-100 pb-2">
+                                  <MegaMenuEditableItem
+                                    item={group}
+                                    onChange={(updatedGroup) => {
                                       const updatedCols = [...activeItem.columns];
-                                      const g = updatedCols[colIdx].groups.find(g => g.id === group.id);
-                                      if (g) g.title = e.target.value;
+                                      updatedCols[colIdx].groups = updatedCols[colIdx].groups.map(g => g.id === group.id ? updatedGroup : g);
                                       const updated = { ...activeItem, columns: updatedCols };
                                       handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
                                     }}
-                                    className="text-sm font-bold border-b border-dashed border-neutral-300 focus:border-primary outline-none"
-                                  />
-                                  <button onClick={() => {
+                                    onDelete={() => {
                                       const updatedCols = [...activeItem.columns];
                                       updatedCols[colIdx].groups = updatedCols[colIdx].groups.filter(g => g.id !== group.id);
                                       const updated = { ...activeItem, columns: updatedCols };
                                       handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
-                                  }} className="text-neutral-400 hover:text-red-500"><Trash2 size={12} /></button>
+                                    }}
+                                    onMoveUp={groupIdx > 0 ? () => {
+                                      const updatedCols = [...activeItem.columns];
+                                      const arr = updatedCols[colIdx].groups;
+                                      [arr[groupIdx - 1], arr[groupIdx]] = [arr[groupIdx], arr[groupIdx - 1]];
+                                      const updated = { ...activeItem, columns: updatedCols };
+                                      handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                    } : null}
+                                    onMoveDown={groupIdx < col.groups.length - 1 ? () => {
+                                      const updatedCols = [...activeItem.columns];
+                                      const arr = updatedCols[colIdx].groups;
+                                      [arr[groupIdx + 1], arr[groupIdx]] = [arr[groupIdx], arr[groupIdx + 1]];
+                                      const updated = { ...activeItem, columns: updatedCols };
+                                      handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                    } : null}
+                                    categories={categories}
+                                    products={products}
+                                    collections={collections}
+                                    brands={brands}
+                                  />
                                 </div>
-                                <input 
-                                  type="text" 
-                                  value={group.link}
-                                  placeholder="Group Link"
-                                  onChange={(e) => {
-                                    const updatedCols = [...activeItem.columns];
-                                    const g = updatedCols[colIdx].groups.find(g => g.id === group.id);
-                                    if (g) g.link = e.target.value;
-                                    const updated = { ...activeItem, columns: updatedCols };
-                                    handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
-                                  }}
-                                  className="text-xs text-neutral-500 w-full mb-3 outline-none"
-                                />
 
-                                <div className="space-y-1">
-                                  {group.items.map((linkItem) => (
-                                    <div key={linkItem.id} className="flex items-center gap-2 group/link">
-                                      <input 
-                                        type="text" 
-                                        value={linkItem.title}
-                                        onChange={(e) => {
-                                          const updatedCols = [...activeItem.columns];
-                                          const l = updatedCols[colIdx].groups.find(g => g.id === group.id).items.find(i => i.id === linkItem.id);
-                                          if (l) l.title = e.target.value;
-                                          const updated = { ...activeItem, columns: updatedCols };
-                                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
-                                        }}
-                                        className="text-xs flex-1 bg-transparent border-none outline-none"
-                                        placeholder="Link Text"
-                                      />
-                                      <button onClick={() => {
-                                          const updatedCols = [...activeItem.columns];
-                                          const grp = updatedCols[colIdx].groups.find(g => g.id === group.id);
-                                          grp.items = grp.items.filter(i => i.id !== linkItem.id);
-                                          const updated = { ...activeItem, columns: updatedCols };
-                                          handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
-                                      }} className="opacity-0 group-hover/link:opacity-100 text-red-500"><Trash2 size={10} /></button>
-                                    </div>
+                                <div className="space-y-1 pl-4 border-l-2 border-neutral-50 ml-2">
+                                  {group.items.map((linkItem, linkIdx) => (
+                                    <MegaMenuEditableItem
+                                      key={linkItem.id}
+                                      item={linkItem}
+                                      onChange={(updatedLink) => {
+                                        const updatedCols = [...activeItem.columns];
+                                        const grp = updatedCols[colIdx].groups.find(g => g.id === group.id);
+                                        grp.items = grp.items.map(i => i.id === linkItem.id ? updatedLink : i);
+                                        const updated = { ...activeItem, columns: updatedCols };
+                                        handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                      }}
+                                      onDelete={() => {
+                                        const updatedCols = [...activeItem.columns];
+                                        const grp = updatedCols[colIdx].groups.find(g => g.id === group.id);
+                                        grp.items = grp.items.filter(i => i.id !== linkItem.id);
+                                        const updated = { ...activeItem, columns: updatedCols };
+                                        handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                      }}
+                                      onMoveUp={linkIdx > 0 ? () => {
+                                        const updatedCols = [...activeItem.columns];
+                                        const arr = updatedCols[colIdx].groups.find(g => g.id === group.id).items;
+                                        [arr[linkIdx - 1], arr[linkIdx]] = [arr[linkIdx], arr[linkIdx - 1]];
+                                        const updated = { ...activeItem, columns: updatedCols };
+                                        handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                      } : null}
+                                      onMoveDown={linkIdx < group.items.length - 1 ? () => {
+                                        const updatedCols = [...activeItem.columns];
+                                        const arr = updatedCols[colIdx].groups.find(g => g.id === group.id).items;
+                                        [arr[linkIdx + 1], arr[linkIdx]] = [arr[linkIdx], arr[linkIdx + 1]];
+                                        const updated = { ...activeItem, columns: updatedCols };
+                                        handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                      } : null}
+                                      categories={categories}
+                                      products={products}
+                                      collections={collections}
+                                      brands={brands}
+                                    />
                                   ))}
                                   <button onClick={() => {
                                       const updatedCols = [...activeItem.columns];
-                                      updatedCols[colIdx].groups.find(g => g.id === group.id).items.push({ id: `lnk-${Date.now()}`, title: 'New Link', link: '/' });
+                                      updatedCols[colIdx].groups.find(g => g.id === group.id).items.push({ id: `lnk-${Date.now()}`, title: '', link: '', referenceType: '', referenceId: '' });
                                       const updated = { ...activeItem, columns: updatedCols };
                                       handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
-                                  }} className="text-xs text-primary hover:underline mt-1">+ Add Link</button>
+                                  }} className="text-xs text-primary hover:underline mt-1 flex items-center gap-1"><span className="text-lg leading-none">+</span> Add Item</button>
                                 </div>
                               </div>
                             ))}
                             
                             <button onClick={() => {
                                 const updatedCols = [...activeItem.columns];
-                                updatedCols[colIdx].groups.push({ id: `grp-${Date.now()}`, title: 'New Group', link: '/', items: [] });
+                                updatedCols[colIdx].groups.push({ id: `grp-${Date.now()}`, title: '', link: '', referenceType: '', referenceId: '', items: [] });
                                 const updated = { ...activeItem, columns: updatedCols };
                                 handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
-                            }} className="text-xs font-medium text-neutral-600 hover:text-neutral-900 w-full text-left bg-white border border-dashed border-neutral-300 p-2 rounded">
-                              + Add Group
+                            }} className="text-xs font-medium text-neutral-600 hover:text-neutral-900 w-full text-left bg-white border border-dashed border-neutral-300 p-2 rounded flex items-center gap-1">
+                              <span className="text-lg leading-none">+</span> Add Group
                             </button>
                           </div>
                         </div>
@@ -1023,6 +1156,17 @@ export const NavigationCenter = () => {
 };
 
 export const HeaderManager = () => {
+  const { headerConfig, setHeaderConfig, menus } = useCMS();
+  const headerMenus = menus.filter(m => m.type === 'Header');
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setHeaderConfig({
+      ...headerConfig,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
+
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <div className="flex justify-between items-center">
@@ -1030,38 +1174,57 @@ export const HeaderManager = () => {
       </div>
       <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm space-y-6">
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Logo</label>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">Logo Text</label>
           <div className="flex items-center gap-4">
-            <div className="w-32 h-12 bg-neutral-100 border border-neutral-200 flex items-center justify-center text-xs text-neutral-500 rounded">Logo Preview</div>
-            <button className="px-3 py-1.5 border border-neutral-200 text-sm rounded hover:bg-neutral-50">Change Logo</button>
+            <input 
+              type="text" 
+              name="logoText" 
+              value={headerConfig?.logoText || ''} 
+              onChange={handleChange} 
+              className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm" 
+            />
           </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Primary Menu</label>
-          <select className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm">
-            <option>Main Header Navigation</option>
-            <option>Alternative Menu</option>
-          </select>
+          <div className="flex items-center gap-4">
+            <select 
+              name="primaryMenuId" 
+              value={headerConfig?.primaryMenuId || ''} 
+              onChange={handleChange} 
+              className="flex-1 border-neutral-300 rounded-md shadow-sm p-2 border text-sm"
+            >
+              {headerMenus.map(m => (
+                <option key={m.id} value={m.id}>{m.name}</option>
+              ))}
+            </select>
+            <Link 
+              to="/admin/cms/navigation"
+              className="px-4 py-2 border border-neutral-200 text-sm font-medium rounded hover:bg-neutral-50 text-neutral-700 whitespace-nowrap"
+            >
+              Edit Menu
+            </Link>
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-2">Features</label>
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" className="rounded text-primary" defaultChecked /> Enable Search
+              <input type="checkbox" name="enableSearch" checked={headerConfig?.enableSearch} onChange={handleChange} className="rounded text-primary" /> Enable Search
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" className="rounded text-primary" defaultChecked /> Enable User Account
+              <input type="checkbox" name="enableAccount" checked={headerConfig?.enableAccount} onChange={handleChange} className="rounded text-primary" /> Enable User Account
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" className="rounded text-primary" defaultChecked /> Enable Wishlist
+              <input type="checkbox" name="enableWishlist" checked={headerConfig?.enableWishlist} onChange={handleChange} className="rounded text-primary" /> Enable Wishlist
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" className="rounded text-primary" defaultChecked /> Enable Cart
+              <input type="checkbox" name="enableCart" checked={headerConfig?.enableCart} onChange={handleChange} className="rounded text-primary" /> Enable Cart
             </label>
           </div>
         </div>
         <div className="pt-4 flex justify-end">
-          <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Save Configuration</button>
+          <button onClick={() => alert('Configuration Saved!')} className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Save Configuration</button>
         </div>
       </div>
     </div>

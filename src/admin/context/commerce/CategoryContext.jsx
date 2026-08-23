@@ -18,131 +18,22 @@ export const generateSlug = (name) => {
     .replace(/(^-|-$)+/g, '');
 };
 
-// Initial dummy data as requested for hierarchy
-const initialCategories = [
-  {
-    id: 'cat-1',
-    name: 'Furniture',
-    slug: 'furniture',
-    description: 'Premium furniture for your entire home.',
-    parentId: null,
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400',
-    bannerImage: null,
-    icon: null,
-    status: 'published',
-    featured: true,
-    sortOrder: 1,
-    seo: {
-      metaTitle: 'Furniture | Aurelia',
-      metaDescription: 'Shop our premium furniture collection.',
-      metaKeywords: 'furniture, premium, luxury',
-      canonicalUrl: '',
-      ogImage: '',
-      robots: 'index,follow'
-    },
-    createdAt: new Date('2026-08-01').toISOString(),
-    updatedAt: new Date('2026-08-08').toISOString(),
-  },
-  {
-    id: 'cat-1-1',
-    name: 'Living Room',
-    slug: 'living-room',
-    description: 'Luxury living room furniture including sofas and coffee tables.',
-    parentId: 'cat-1',
-    image: 'https://images.unsplash.com/photo-1550226891-ef816aed4a98?auto=format&fit=crop&q=80&w=400',
-    bannerImage: null,
-    icon: null,
-    status: 'published',
-    featured: false,
-    sortOrder: 1,
-    seo: {},
-    createdAt: new Date('2026-08-02').toISOString(),
-    updatedAt: new Date('2026-08-07').toISOString(),
-  },
-  {
-    id: 'cat-1-1-1',
-    name: 'Sofas',
-    slug: 'sofas',
-    description: 'Modern and classic sofas for ultimate comfort.',
-    parentId: 'cat-1-1',
-    image: null,
-    bannerImage: null,
-    icon: null,
-    status: 'published',
-    featured: true,
-    sortOrder: 1,
-    seo: {},
-    createdAt: new Date('2026-08-03').toISOString(),
-    updatedAt: new Date('2026-08-06').toISOString(),
-  },
-  {
-    id: 'cat-1-1-2',
-    name: 'Coffee Tables',
-    slug: 'coffee-tables',
-    description: 'Elegant coffee tables to complete your living space.',
-    parentId: 'cat-1-1',
-    image: null,
-    bannerImage: null,
-    icon: null,
-    status: 'published',
-    featured: false,
-    sortOrder: 2,
-    seo: {},
-    createdAt: new Date('2026-08-03').toISOString(),
-    updatedAt: new Date('2026-08-05').toISOString(),
-  },
-  {
-    id: 'cat-1-2',
-    name: 'Bedroom',
-    slug: 'bedroom',
-    description: 'Beds, wardrobes, and bedside tables for your sanctuary.',
-    parentId: 'cat-1',
-    image: null,
-    bannerImage: null,
-    icon: null,
-    status: 'published',
-    featured: false,
-    sortOrder: 2,
-    seo: {},
-    createdAt: new Date('2026-08-02').toISOString(),
-    updatedAt: new Date('2026-08-07').toISOString(),
-  },
-  {
-    id: 'cat-1-2-1',
-    name: 'Beds',
-    slug: 'beds',
-    description: 'Premium beds for a perfect night\'s sleep.',
-    parentId: 'cat-1-2',
-    image: null,
-    bannerImage: null,
-    icon: null,
-    status: 'published',
-    featured: true,
-    sortOrder: 1,
-    seo: {},
-    createdAt: new Date('2026-08-03').toISOString(),
-    updatedAt: new Date('2026-08-06').toISOString(),
-  },
-  {
-    id: 'cat-2',
-    name: 'Lighting',
-    slug: 'lighting',
-    description: 'Illuminate your space with our curated lighting collection.',
-    parentId: null,
-    image: 'https://images.unsplash.com/photo-1513506003901-1e6a229e9d15?auto=format&fit=crop&q=80&w=400',
-    bannerImage: null,
-    icon: null,
-    status: 'published',
-    featured: true,
-    sortOrder: 2,
-    seo: {},
-    createdAt: new Date('2026-08-01').toISOString(),
-    updatedAt: new Date('2026-08-08').toISOString(),
-  }
-];
-
 export function CategoryProvider({ children }) {
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(data => {
+        setCategories(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch categories:', err);
+        setLoading(false);
+      });
+  }, []);
 
   // Get full category hierarchy (Tree structure)
   const getCategoryTree = useCallback((cats = categories, parentId = null) => {
@@ -164,13 +55,9 @@ export function CategoryProvider({ children }) {
 
   // Check if a category has products or children (for delete protection)
   const canDeleteCategory = useCallback((categoryId, products = []) => {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return false;
-    
-    const children = getChildren(categoryId);
-    const hasProducts = products.some(p => p.categoryId === categoryId);
-    return children.length === 0 && !hasProducts;
-  }, [categories, getChildren]);
+    // Restriction removed per user request. Always allow deletion.
+    return true;
+  }, []);
 
   // Get category by ID
   const getCategoryById = useCallback((id) => {
@@ -198,6 +85,7 @@ export function CategoryProvider({ children }) {
       if (cat) {
         hierarchy.unshift(cat);
         currentId = cat.parentId;
+        
       } else {
         break;
       }
@@ -206,30 +94,70 @@ export function CategoryProvider({ children }) {
   }, [categories]);
 
   // Create Category
-  const addCategory = useCallback((categoryData) => {
+  const addCategory = useCallback(async (categoryData) => {
     const newCategory = {
       ...categoryData,
-      id: `cat-${Date.now()}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    setCategories(prev => [...prev, newCategory]);
-    return newCategory;
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCategory)
+      });
+      if (res.ok) {
+        const savedCategory = await res.json();
+        setCategories(prev => [...prev, savedCategory]);
+        return savedCategory;
+      } else {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to add category');
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }, []);
 
   // Update Category
-  const updateCategory = useCallback((id, updates) => {
-    setCategories(prev => prev.map(c => 
-      c.id === id ? { ...c, ...updates, updatedAt: new Date().toISOString() } : c
-    ));
+  const updateCategory = useCallback(async (id, updates) => {
+    try {
+      const res = await fetch(`/api/categories/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...updates, updatedAt: new Date().toISOString() })
+      });
+      if (res.ok) {
+        const updatedCategory = await res.json();
+        setCategories(prev => prev.map(c => c.id === id ? updatedCategory : c));
+      } else {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to update category');
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }, []);
 
   // Delete Category
-  const deleteCategory = useCallback((id, products = []) => {
-    if (!canDeleteCategory(id, products)) {
-      throw new Error("Cannot delete category with active products or child categories.");
+  const deleteCategory = useCallback(async (id, products = []) => {
+    // Restriction removed per user request
+    try {
+      const res = await fetch(`/api/categories/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setCategories(prev => prev.filter(c => c.id !== id));
+      } else {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to delete category');
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
     }
-    setCategories(prev => prev.filter(c => c.id !== id));
   }, [canDeleteCategory]);
 
   // Bulk Actions

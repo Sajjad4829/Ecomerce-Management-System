@@ -1,0 +1,31 @@
+{
+  "navItems": [
+    {
+      "id": "home",
+      "label": "Home",
+      "order": "home",
+      "hasMegaMenu": false,
+      "megaMenu": null
+    },
+    {
+      "id": "categories",
+      "label": "Categories",
+      "order": "categories",
+      "hasMegaMenu": true,
+      "megaMenu": {
+        "promoBlock": {
+          "imageUrl": "",
+          "linkUrl": ""
+        },
+        "columns": []
+      }
+    },
+    {
+      "id": 1787478101701,
+      "label": "Bedroom",
+      "order": 1787478101701,
+      "hasMegaMenu": true,
+      "megaMenu": null
+    }
+  ]
+}

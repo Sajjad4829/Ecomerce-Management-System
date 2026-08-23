@@ -11,6 +11,7 @@ import EmptyState from '../../components/cms/EmptyState';
 const CATALOG_MODULES = [
   { id: 'products', title: 'Products', description: 'Manage the core catalog, SKUs, and bespoke furniture variants.', icon: FiBox, count: 245 },
   { id: 'categories', title: 'Categories', description: 'Taxonomy management for organizing items logically (e.g., Seating, Tables).', icon: FiFolder, count: 18 },
+
   { id: 'collections', title: 'Collections', description: 'Curated groups of items (e.g., The Sanctuary Collection).', icon: FiGrid, count: 6 },
   { id: 'brands', title: 'Brands', description: 'Manage manufacturers, designers, and partner brands.', icon: FiTag, count: 12 },
   { id: 'attributes', title: 'Attributes', description: 'Global specifications like Wood Finish, Fabric, or Dimensions.', icon: FiSliders, count: 42 },

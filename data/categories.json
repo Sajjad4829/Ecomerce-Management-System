@@ -1,0 +1,130 @@
+[
+  {
+    "id": "bedroom",
+    "name": "Bedroom",
+    "slug": "bedroom",
+    "parentId": null,
+    "parentCategoryId": "furniture",
+    "status": "published"
+  },
+  {
+    "id": "beds",
+    "name": "Beds",
+    "slug": "beds",
+    "parentId": "bedroom",
+    "status": "published"
+  },
+  {
+    "name": "Household Almirah",
+    "slug": "household-almirah",
+    "description": "",
+    "parentId": "bedroom",
+    "status": "published",
+    "featured": false,
+    "sortOrder": 1,
+    "image": "",
+    "bannerImage": "",
+    "icon": "",
+    "seo": {
+      "metaTitle": "",
+      "metaDescription": "",
+      "metaKeywords": "",
+      "canonicalUrl": "",
+      "robots": "index,follow"
+    },
+    "createdAt": "2026-08-23T09:41:19.972Z",
+    "updatedAt": "2026-08-23T09:41:19.972Z",
+    "id": "cat-1787478081354"
+  },
+  {
+    "name": "Folding Reading Table",
+    "slug": "folding-reading-table",
+    "description": "",
+    "parentId": "bedroom",
+    "parentCategoryId": null,
+    "status": "published",
+    "featured": false,
+    "sortOrder": 1,
+    "image": "",
+    "bannerImage": "",
+    "icon": "",
+    "seo": {
+      "metaTitle": "",
+      "metaDescription": "",
+      "metaKeywords": "",
+      "canonicalUrl": "",
+      "robots": "index,follow"
+    },
+    "createdAt": "2026-08-23T09:55:48.176Z",
+    "updatedAt": "2026-08-23T09:55:48.176Z",
+    "id": "cat-1787478948499"
+  },
+  {
+    "name": "Non Laquer Chest Of drawer",
+    "slug": "chest-of-drawer",
+    "description": "",
+    "parentId": "bedroom",
+    "parentCategoryId": null,
+    "status": "published",
+    "featured": false,
+    "sortOrder": 1,
+    "image": "",
+    "bannerImage": "",
+    "icon": "",
+    "seo": {
+      "metaTitle": "",
+      "metaDescription": "",
+      "metaKeywords": "",
+      "canonicalUrl": "",
+      "robots": "index,follow"
+    },
+    "createdAt": "2026-08-23T10:16:21.661Z",
+    "updatedAt": "2026-08-23T10:20:48.391Z",
+    "id": "cat-1787480182002"
+  },
+  {
+    "name": "Sofa Set",
+    "slug": "sofa-set",
+    "description": "",
+    "parentId": null,
+    "status": "published",
+    "featured": false,
+    "sortOrder": 1,
+    "image": "",
+    "bannerImage": "",
+    "icon": "",
+    "seo": {
+      "metaTitle": "",
+      "metaDescription": "",
+      "metaKeywords": "",
+      "canonicalUrl": "",
+      "robots": "index,follow"
+    },
+    "createdAt": "2026-08-23T11:45:53.952Z",
+    "updatedAt": "2026-08-23T11:50:04.534Z",
+    "id": "cat-1787485554285"
+  },
+  {
+    "name": "Bed",
+    "slug": "bed",
+    "description": "",
+    "parentId": null,
+    "navMenuId": "1787478101701",
+    "status": "published",
+    "featured": false,
+    "sortOrder": 1,
+    "image": "",
+    "bannerImage": "",
+    "icon": "",
+    "seo": {
+      "metaTitle": "",
+      "metaDescription": "",
+      "metaKeywords": "",
+      "canonicalUrl": "",
+      "robots": "index,follow"
+    },
+    "createdAt": "2026-08-23T12:27:38.426Z",
+    "updatedAt": "2026-08-23T12:27:38.426Z",
+    "id": "cat-1787488059045"
+  }
+]

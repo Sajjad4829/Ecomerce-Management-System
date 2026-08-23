@@ -10,7 +10,8 @@ const CategoryNode = ({
   selectedCategories, 
   onSelectOne, 
   onEdit, 
-  onPreview 
+  onPreview,
+  onDelete
 }) => {
   const [isExpanded, setIsExpanded] = useState(depth < 2);
   const [activeMenu, setActiveMenu] = useState(null);
@@ -102,7 +103,7 @@ const CategoryNode = ({
                     <FiCopy size={12} /> Duplicate
                   </button>
                   <div className="h-px bg-stone-100 my-1" />
-                  <button className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
+                  <button onClick={() => { onDelete(node.id); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
                     <FiTrash2 size={12} /> Delete
                   </button>
                 </motion.div>
@@ -130,6 +131,7 @@ const CategoryNode = ({
                 onSelectOne={onSelectOne}
                 onEdit={onEdit}
                 onPreview={onPreview}
+                onDelete={onDelete}
               />
             ))}
           </motion.div>
@@ -146,7 +148,8 @@ export default function CategoryTree({
   onSelectAll,
   onSelectOne,
   onEdit,
-  onPreview
+  onPreview,
+  onDelete
 }) {
   return (
     <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
@@ -165,7 +168,7 @@ export default function CategoryTree({
         </div>
       </div>
 
-      <div className="divide-y divide-stone-100">
+      <div className="divide-y divide-stone-100 overflow-y-auto max-h-[600px] custom-scrollbar">
         {categories.map(category => (
           <CategoryNode 
             key={category.id}
@@ -175,6 +178,7 @@ export default function CategoryTree({
             onSelectOne={onSelectOne}
             onEdit={onEdit}
             onPreview={onPreview}
+            onDelete={onDelete}
           />
         ))}
         {categories.length === 0 && (

@@ -45,10 +45,11 @@ import CatalogWorkspace from './admin/pages/commerce/CatalogWorkspace';
 import ProductManager from './admin/pages/commerce/products/ProductManager';
 import ProductEditor from './admin/pages/commerce/products/ProductEditor';
 
-import CategoryManager from './admin/pages/commerce/categories/CategoryManager';
 import { CategoryProvider } from './admin/context/commerce/CategoryContext';
 import { ProductProvider } from './admin/context/commerce/ProductContext';
 import { CollectionProvider } from './admin/context/commerce/CollectionContext';
+import { BrandProvider } from './admin/context/commerce/BrandContext';
+import CategoryManager from './admin/pages/commerce/categories/CategoryManager';
 import CategoryEditor from './admin/pages/commerce/categories/CategoryEditor';
 import CollectionManager from './admin/pages/commerce/collections/CollectionManager';
 import CollectionEditor from './admin/pages/commerce/collections/CollectionEditor';
@@ -524,7 +525,7 @@ export default function App() {
     <ToastProvider>
     <AuthProvider>
       <CommerceProvider>
-        <MediaProvider><GlobalSearchProvider><SearchProvider><CustomerProvider><SEOProvider><ExperienceProvider><CategoryProvider><ProductProvider><CollectionProvider>
+        <MediaProvider><GlobalSearchProvider><SearchProvider><CustomerProvider><SEOProvider><ExperienceProvider><CategoryProvider><ProductProvider><CollectionProvider><BrandProvider>
         <InventoryProvider>
           <ProcurementProvider>
             <HRProvider>
@@ -1149,7 +1150,7 @@ export default function App() {
             </HRProvider>
           </ProcurementProvider>
         </InventoryProvider>
-        </CollectionProvider></ProductProvider></CategoryProvider></ExperienceProvider></SEOProvider></CustomerProvider></SearchProvider></GlobalSearchProvider></MediaProvider>
+        </BrandProvider></CollectionProvider></ProductProvider></CategoryProvider></ExperienceProvider></SEOProvider></CustomerProvider></SearchProvider></GlobalSearchProvider></MediaProvider>
       </CommerceProvider>
     </AuthProvider>
     </ToastProvider>

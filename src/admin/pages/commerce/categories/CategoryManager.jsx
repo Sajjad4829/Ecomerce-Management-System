@@ -11,7 +11,7 @@ import { useProducts } from '../../../context/commerce/ProductContext';
 
 export default function CategoryManager() {
   const navigate = useNavigate();
-  const { categories, getCategoryTree, bulkUpdateStatus, bulkSetFeatured, bulkDelete } = useCategories();
+  const { categories, getCategoryTree, bulkUpdateStatus, bulkSetFeatured, bulkDelete, deleteCategory } = useCategories();
   const { products } = useProducts();
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -102,6 +102,15 @@ export default function CategoryManager() {
               onSelectOne={handleSelectOne}
               onEdit={(id) => navigate(`/admin/catalog/categories/${id}`)}
               onPreview={(c) => setPreviewCategory(c)}
+              onDelete={async (id) => {
+                if (window.confirm("Are you sure you want to delete this category?")) {
+                  try {
+                    await deleteCategory(id, products);
+                  } catch (e) {
+                    alert(e.message);
+                  }
+                }
+              }}
             />
           ) : (
             <CategoryGrid 
@@ -111,6 +120,15 @@ export default function CategoryManager() {
               onSelectOne={handleSelectOne}
               onEdit={(id) => navigate(`/admin/catalog/categories/${id}`)}
               onPreview={(c) => setPreviewCategory(c)}
+              onDelete={async (id) => {
+                if (window.confirm("Are you sure you want to delete this category?")) {
+                  try {
+                    await deleteCategory(id, products);
+                  } catch (e) {
+                    alert(e.message);
+                  }
+                }
+              }}
             />
           )}
         </div>

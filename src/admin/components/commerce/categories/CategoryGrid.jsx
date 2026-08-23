@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMoreVertical, FiEdit2, FiEye, FiFolder } from 'react-icons/fi';
+import { FiMoreVertical, FiEdit2, FiEye, FiFolder, FiTrash2 } from 'react-icons/fi';
 import CatalogStatusBadge from '../shared/CatalogStatusBadge';
 
 export default function CategoryGrid({ 
@@ -9,7 +9,8 @@ export default function CategoryGrid({
   selectedCategories, 
   onSelectOne, 
   onEdit, 
-  onPreview 
+  onPreview,
+  onDelete
 }) {
   const [activeMenu, setActiveMenu] = useState(null);
 
@@ -77,6 +78,10 @@ export default function CategoryGrid({
                     </button>
                     <button onClick={() => { onPreview(category); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2">
                       <FiEye size={12} /> Preview
+                    </button>
+                    <div className="h-px bg-stone-100 my-1" />
+                    <button onClick={() => { onDelete(category.id); setActiveMenu(null); }} className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
+                      <FiTrash2 size={12} /> Delete
                     </button>
                   </motion.div>
                 )}
