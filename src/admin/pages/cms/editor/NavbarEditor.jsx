@@ -124,10 +124,10 @@ export default function NavbarEditor() {
           <p className="text-sm text-gray-500 mt-1">Design your premium global header.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-5 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors shadow-sm">
+          <button type="button" className="px-5 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors shadow-sm">
             Reset Changes
           </button>
-          <button onClick={handlePublish} className="px-5 py-2 bg-[#635BFF] text-white text-sm font-medium rounded-lg hover:bg-[#524be0] transition-colors shadow-sm flex items-center gap-2">
+          <button type="button" onClick={handlePublish} className="px-5 py-2 bg-[#635BFF] text-white text-sm font-medium rounded-lg hover:bg-[#524be0] transition-colors shadow-sm flex items-center gap-2">
             <FiCheck /> Publish Navbar
           </button>
         </div>
@@ -233,7 +233,7 @@ export default function NavbarEditor() {
                 </div>
               ))}
             </div>
-            <button onClick={addLink} className="w-full py-2 border border-dashed border-gray-300 rounded-lg text-xs font-bold text-gray-500 hover:border-gray-400 hover:text-gray-700 flex items-center justify-center gap-2 transition-colors">
+            <button type="button" onClick={addLink} className="w-full py-2 border border-dashed border-gray-300 rounded-lg text-xs font-bold text-gray-500 hover:border-gray-400 hover:text-gray-700 flex items-center justify-center gap-2 transition-colors">
               <FiPlus /> Add Link
             </button>
           </div>

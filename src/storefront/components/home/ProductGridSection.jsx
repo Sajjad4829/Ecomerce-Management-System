@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import ProductCard from '../product/ProductCard';
+import { useProducts } from '../../../admin/context/commerce/ProductContext';
 
-export default function ProductGridSection({ title, products, linkTo }) {
-  const displayProducts = products?.slice(0, 4) || [];
+export default function ProductGridSection({ data, title: propTitle, linkTo }) {
+  const { products: contextProducts } = useProducts();
+  const content = data?.content || {};
+  const title = content.title || propTitle || "Featured Products";
+  
+  const displayProducts = contextProducts?.slice(0, 4) || [];
 
   if (displayProducts.length === 0) return null;
 

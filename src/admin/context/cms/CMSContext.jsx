@@ -59,6 +59,7 @@ export const CMSProvider = ({ children }) => {
   }, [headerConfig]);
 
   const INITIAL_SECTIONS = [
+    { id: 'lib-navbar', type: 'NAVBAR', name: 'Global Navbar', category: 'HEADER', description: 'The main navigation bar including logo, links, and icons', icon: 'FiLayout', defaultContent: {}, defaultSettings: { isSticky: true, isTransparent: false }, status: 'Active' },
     { id: 'lib-hero-banner', type: 'HERO_BANNER', name: 'Hero Banner', category: 'HERO', description: 'Full-width hero with background image and CTA', icon: 'FiImage', defaultContent: { title: 'New Collection', subtitle: 'Discover premium designs', ctaText: 'Shop Now' }, defaultSettings: { padding: 'none', align: 'center' }, status: 'Active', image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=400' },
     { id: 'lib-split-hero', type: 'SPLIT_HERO', name: 'Split Hero', category: 'HERO', description: '50/50 split with image and text', icon: 'FiLayout', defaultContent: { title: 'Modern Living', description: 'Elevate your space.' }, defaultSettings: { imageAlign: 'right' }, status: 'Active' },
     { id: 'lib-promo-hero', type: 'PROMO_HERO', name: 'Promotional Hero', category: 'HERO', description: 'Hero section focused on a major promotion', icon: 'FiStar', defaultContent: { badge: 'Summer Sale', title: 'Up to 50% Off' }, defaultSettings: { colorScheme: 'dark' }, status: 'Active' },
@@ -103,11 +104,11 @@ export const CMSProvider = ({ children }) => {
     { id: 'gb-footer-std', type: 'FOOTER', name: 'Standard Footer - 2024', category: 'Footers', description: 'Global footer', icon: 'FiLayout', defaultContent: {}, defaultSettings: {}, status: 'Active' }
   ];
 
-  const [sections, setSections] = useState(() => loadFromStorage('cms_sections', INITIAL_SECTIONS));
+  const [sections, setSections] = useState(() => loadFromStorage('cms_sections_v2', INITIAL_SECTIONS));
   const [blocks, setBlocks] = useState(() => loadFromStorage('cms_blocks', INITIAL_BLOCKS));
 
   useEffect(() => {
-    localStorage.setItem('cms_sections', JSON.stringify(sections));
+    localStorage.setItem('cms_sections_v2', JSON.stringify(sections));
   }, [sections]);
 
   useEffect(() => {

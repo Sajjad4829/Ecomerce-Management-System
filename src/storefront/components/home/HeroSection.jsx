@@ -2,11 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
-export default function HeroSection() {
+export default function HeroSection({ data }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { activeTheme } = useStorefrontTheme();
   const heroTokens = activeTheme.tokens.hero;
+  
+  const content = data?.content || {};
   const slides = activeTheme.heroSlides || [];
+  
+  const title = content.title || 'Discover Products That Inspire';
+  const subtitle = content.subtitle || 'Premium quality products with modern designs crafted for your lifestyle.';
+  const ctaText = content.ctaText || 'Shop Now';
+  const secondaryCtaText = content.secondaryCtaText || 'Explore Categories';
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -26,7 +33,7 @@ export default function HeroSection() {
           }`}
         >
           <img
-            src={slide.image}
+            src={content.image || slide.image}
             alt={`${slide.category} furniture setup`}
             className="w-full h-full object-cover object-center"
           />
@@ -39,27 +46,29 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="max-w-2xl text-white">
           <span className="block text-xs font-bold tracking-[0.3em] uppercase mb-6 opacity-90 text-gray-200">
-            NEW COLLECTION
+            {data?.category || 'NEW COLLECTION'}
           </span>
           <h1 className={`${heroTokens.titleSize} ${heroTokens.fontFamily} font-bold leading-[1.05] mb-6`}>
-            Sets you as a trend
+            {title}
           </h1>
           <p className="text-lg md:text-xl opacity-90 mb-10 leading-relaxed font-light text-gray-100 max-w-xl">
-            aesthetically stylish setter
+            {subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link 
               to="/products" 
               className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonPrimary}`}
             >
-              Shop Collection
+              {ctaText}
             </Link>
-            <Link 
-              to="/collections/new" 
-              className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonSecondary}`}
-            >
-              Explore New Arrivals
-            </Link>
+            {secondaryCtaText && (
+              <Link 
+                to="/collections/new" 
+                className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonSecondary}`}
+              >
+                {secondaryCtaText}
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -19,14 +19,19 @@ const SECTION_COMPONENTS = {
   HERO_BANNER: HeroSection,
   CREATIONS_SHOWCASE: CreationsWithPurpose,
   PRODUCT_CAROUSEL: ProductGridSection,
+  PRODUCT_GRID: ProductGridSection, // Added mapping
+  FEATURE_GRID: BenefitsSection, // Added mapping
   FEATURED_CATEGORIES: CategoryShowcase,
   TESTIMONIALS: Testimonials,
   TRUST_BADGES: BenefitsSection,
   PROMO_BANNER: PromoBanner,
+  CTA_BANNER: PromoBanner, // Added mapping
   COLLECTION_FEATURE: CollectionFeature,
   BRAND_STORY: BrandStory,
   EDITORIAL: EditorialSection,
   NEWSLETTER: NewsletterSection,
+  FOOTER: null, // Global footer used
+  NAVBAR: null, // Global navbar used
   // Add future section types here easily
 };
 

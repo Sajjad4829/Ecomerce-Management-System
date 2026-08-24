@@ -230,13 +230,3 @@ app.put('/api/navbar', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Express API server running on http://localhost:${PORT}`);
 });
-    await writeData('navbar.json', cleanNavbarData);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Express API server running on http://localhost:${PORT}`);
-});
