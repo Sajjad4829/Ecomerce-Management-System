@@ -2,8 +2,10 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import { useCategories } from '../../../admin/context/commerce/CategoryContext';
 
-export default function CategoryShowcase() {
+export default function CategoryShowcase({ data }) {
   const { categories } = useCategories();
+  const content = data?.content || {};
+  const title = content.title !== undefined ? content.title : 'Shop by Category';
   
   // Get top-level categories and limit to 4
   const displayCategories = categories?.filter(c => !c.parentId).slice(0, 4) || [];
@@ -17,7 +19,7 @@ export default function CategoryShowcase() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
           <div>
-            <h2 className="text-3xl font-serif font-bold text-gray-900 tracking-tight">Shop by Category</h2>
+            <h2 className="text-3xl font-serif font-bold text-gray-900 tracking-tight">{title}</h2>
           </div>
           <Link to="/categories" className="group flex items-center text-sm font-bold tracking-widest uppercase text-gray-900 hover:text-gray-500 transition-colors">
             View All <FiArrowRight className="ml-2 transform group-hover:translate-x-1 transition-transform" />
@@ -28,7 +30,7 @@ export default function CategoryShowcase() {
           {displayCategories.map(category => (
             <Link key={category.id} to={`/category/${category.slug}`} className="group block relative overflow-hidden bg-gray-100 aspect-[4/5]">
               <img 
-                src={category.image || 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=800'} 
+                src={category.image !== undefined && category.image !== '' ? category.image : 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80&w=800'} 
                 alt={category.name} 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />

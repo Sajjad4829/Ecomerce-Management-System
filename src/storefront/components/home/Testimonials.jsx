@@ -1,7 +1,9 @@
 import { useReviews } from '../../../admin/context/ReviewContext';
 
-export default function Testimonials() {
+export default function Testimonials({ data }) {
   const { reviews } = useReviews();
+  const content = data?.content || {};
+  const title = content.title !== undefined ? content.title : "What Our Customers Say";
 
   // Get up to 3 published 5-star reviews, fallback to hardcoded if none
   const publishedReviews = reviews?.filter(r => r.status === 'Published' && r.rating >= 4).slice(0, 3) || [];
@@ -35,7 +37,7 @@ export default function Testimonials() {
   return (
     <section className="py-24 bg-[#F9F9F9]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-16">What Our Customers Say</h2>
+        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-16">{title}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
           {displayReviews.map((testimonial) => (

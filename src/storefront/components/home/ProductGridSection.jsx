@@ -6,7 +6,7 @@ import { useProducts } from '../../../admin/context/commerce/ProductContext';
 export default function ProductGridSection({ data, title: propTitle, linkTo }) {
   const { products: contextProducts } = useProducts();
   const content = data?.content || {};
-  const title = content.title || propTitle || "Featured Products";
+  const title = content.title !== undefined ? content.title : (propTitle || "Featured Products");
   
   const displayProducts = contextProducts?.slice(0, 4) || [];
 

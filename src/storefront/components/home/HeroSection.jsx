@@ -8,53 +8,69 @@ export default function HeroSection({ data }) {
   const heroTokens = activeTheme.tokens.hero;
   
   const content = data?.content || {};
-  const slides = activeTheme.heroSlides || [];
+  console.log("HeroSection received data:", data);
+  const slides = (content.slides && content.slides.length > 0) ? content.slides : (activeTheme.heroSlides || []);
   
-  const title = content.title || 'Discover Products That Inspire';
-  const subtitle = content.subtitle || 'Premium quality products with modern designs crafted for your lifestyle.';
-  const ctaText = content.ctaText || 'Shop Now';
-  const secondaryCtaText = content.secondaryCtaText || 'Explore Categories';
+  const title = content.title || '';
+  const subtitle = content.subtitle || '';
+  const ctaText = content.ctaText || '';
+  const secondaryCtaText = content.secondaryCtaText || '';
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 5000); // Change slide every 5 seconds
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   return (
     <section className="relative w-full h-screen min-h-[600px] flex items-center bg-[#F7F7F7] overflow-hidden">
       {/* Slider Images */}
-      {slides.map((slide, index) => (
+      {slides.length > 0 ? slides.map((slide, index) => (
         <div
-          key={slide.id}
+          key={slide.id || index}
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
             index === currentSlide ? 'opacity-100 z-0' : 'opacity-0 z-[-1]'
           }`}
         >
           <img
-            src={content.image || slide.image}
-            alt={`${slide.category} furniture setup`}
+            src={slide.image}
+            alt={slide.title || title}
             className="w-full h-full object-cover object-center"
           />
         </div>
-      ))}
+      )) : (
+        <div className="absolute inset-0 bg-neutral-200 flex items-center justify-center text-neutral-400">
+           {content.image ? (
+             <img src={content.image} alt={title} className="w-full h-full object-cover object-center" />
+           ) : (
+             <span>No Image Provided</span>
+           )}
+        </div>
+      )}
       
       {/* Dark overlay to give a premium, moody feel and make text pop */}
       <div className={`absolute inset-0 z-0 ${heroTokens.overlay}`}></div>
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="max-w-2xl text-white">
-          <span className="block text-xs font-bold tracking-[0.3em] uppercase mb-6 opacity-90 text-gray-200">
-            {data?.category || 'NEW COLLECTION'}
+        <div className="max-w-4xl text-white pt-10">
+          <span className="block text-xs font-bold tracking-[0.3em] uppercase mb-4 opacity-90 text-gray-200">
+            {data?.category || ''}
           </span>
-          <h1 className={`${heroTokens.titleSize} ${heroTokens.fontFamily} font-bold leading-[1.05] mb-6`}>
-            {title}
-          </h1>
-          <p className="text-lg md:text-xl opacity-90 mb-10 leading-relaxed font-light text-gray-100 max-w-xl">
-            {subtitle}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex items-center mb-4 md:mb-6">
+            <h1 className={`${heroTokens.titleSize} ${heroTokens.fontFamily} font-bold leading-[1.05] shrink-0 drop-shadow-lg`}>
+              {title}
+            </h1>
+            <div className="flex-1 ml-6 md:ml-10 h-[2px] bg-white opacity-50 mt-2"></div>
+          </div>
+          <div className="flex items-center mb-10 md:mb-12">
+            <div className="w-16 md:w-48 mr-6 md:mr-10 h-[1px] bg-white opacity-60 mt-2"></div>
+            <p className="text-xl md:text-[40px] opacity-90 font-light text-white leading-relaxed drop-shadow-md">
+              {subtitle}
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 ml-0 md:ml-[232px]">
             <Link 
               to="/products" 
               className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonPrimary}`}
@@ -94,6 +110,16 @@ export default function HeroSection({ data }) {
         </svg>
         <span className="text-xs md:text-sm font-bold tracking-wider drop-shadow-md">09 678 7777 77</span>
       </a>
+
+      {/* Floating Chat Bubble at bottom right */}
+      <button 
+        className="absolute bottom-6 right-6 md:bottom-8 md:right-8 z-20 w-12 h-12 md:w-14 md:h-14 bg-[#ED1C24] rounded-full flex items-center justify-center shadow-lg hover:bg-red-700 transition-colors"
+        aria-label="Chat with us"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </button>
     </section>
   );
 }

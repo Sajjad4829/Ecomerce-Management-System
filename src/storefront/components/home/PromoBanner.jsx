@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 
 export default function PromoBanner({ data }) {
   const content = data?.content || {};
-  const title = content.title || "Elevate Your Everyday";
-  const text = content.text || "Discover furniture designed to transform your living spaces.";
-  const button = content.button || "Shop Now";
-  const image = content.image || data?.image || "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=2000";
+  const title = content.title !== undefined ? content.title : "Elevate Your Everyday";
+  const text = content.text !== undefined ? content.text : "Discover furniture designed to transform your living spaces.";
+  const button = content.button !== undefined ? content.button : "Shop Now";
+  const image = content.image !== undefined && content.image !== '' ? content.image : (data?.image || "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=2000");
 
   return (
     <section className="py-12 bg-white">

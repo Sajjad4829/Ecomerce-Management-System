@@ -143,7 +143,7 @@ export default function VisualEditor() {
 
         {/* Center Panel: Preview Canvas & Toolbar */}
         <div className="flex-1 flex flex-col min-w-0 bg-[#f9fafb] relative">
-          
+
           {/* Canvas Top Toolbar */}
           <div className="h-14 flex items-center justify-between shrink-0 px-6 mt-1 mb-1">
             <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-gray-200 shadow-sm">
@@ -151,7 +151,7 @@ export default function VisualEditor() {
               <button onClick={() => setDevice('tablet')} className={cn("p-1.5 rounded-md transition-colors", device === 'tablet' ? "bg-gray-100 text-[#635BFF]" : "text-gray-400 hover:text-gray-600")}><FiTablet size={16} /></button>
               <button onClick={() => setDevice('mobile')} className={cn("p-1.5 rounded-md transition-colors", device === 'mobile' ? "bg-gray-100 text-[#635BFF]" : "text-gray-400 hover:text-gray-600")}><FiSmartphone size={16} /></button>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <button className="p-1.5 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-gray-600 shadow-sm transition-colors"><FiRotateCcw size={16} /></button>
               <button className="p-1.5 bg-white border border-gray-200 rounded-lg text-gray-400 hover:text-gray-600 shadow-sm transition-colors"><FiRotateCw size={16} /></button>
@@ -163,17 +163,17 @@ export default function VisualEditor() {
           </div>
 
           <PreviewCanvas
-          device={device}
-          sections={sections}
-          activeSectionId={activeSectionId}
-          onSelectSection={setActiveSectionId}
-          onMoveUp={handleMoveUp}
-          onMoveDown={handleMoveDown}
-          onDelete={handleDeleteSection}
-          onDuplicate={handleDuplicateSection}
-          onAddSection={() => setIsLibraryOpen(true)}
-          onSaveGlobalBlock={handleSaveGlobalBlock}
-        />
+            device={device}
+            sections={sections}
+            activeSectionId={activeSectionId}
+            onSelectSection={setActiveSectionId}
+            onMoveUp={handleMoveUp}
+            onMoveDown={handleMoveDown}
+            onDelete={handleDeleteSection}
+            onDuplicate={handleDuplicateSection}
+            onAddSection={() => setIsLibraryOpen(true)}
+            onSaveGlobalBlock={handleSaveGlobalBlock}
+          />
         </div>
 
         {/* Right Panel: Properties */}

@@ -10,69 +10,7 @@ export function generateSlug(name) {
 export function CollectionProvider({ children }) {
   const { products } = useProducts();
 
-  const [collections, setCollections] = useState([
-    {
-      id: 'col-1',
-      name: 'The Sanctuary Collection',
-      slug: 'the-sanctuary',
-      description: 'A curated selection of minimalist, calming furniture for the modern home.',
-      type: 'manual',
-      status: 'published',
-      featured: true,
-      image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=400',
-      bannerImage: '',
-      icon: '',
-      productIds: ['prod-1', 'prod-3'],
-      rules: [],
-      matchMode: 'all', // 'all' or 'any'
-      sortMode: 'manual',
-      sortOrder: 0,
-      startAt: '',
-      endAt: '',
-      seo: {
-        metaTitle: 'The Sanctuary Collection | Aurelia',
-        metaDescription: 'Discover the Sanctuary Collection. Minimalist premium furniture.',
-        metaKeywords: '',
-        canonicalUrl: '',
-        ogImage: '',
-        robots: 'index, follow'
-      },
-      createdAt: '2026-08-01',
-      updatedAt: '2026-08-08'
-    },
-    {
-      id: 'col-2',
-      name: 'Autumn Arrival 2026',
-      slug: 'autumn-arrival',
-      description: 'New seasonal items dropping for Autumn.',
-      type: 'automatic',
-      status: 'scheduled',
-      featured: false,
-      image: 'https://images.unsplash.com/photo-1499933374294-458eb8a200f3?auto=format&fit=crop&q=80&w=400',
-      bannerImage: '',
-      icon: '',
-      productIds: [],
-      rules: [
-        { field: 'category', operator: 'equals', value: 'Seating' },
-        { field: 'price', operator: 'greaterThan', value: '3000' }
-      ],
-      matchMode: 'all',
-      sortMode: 'newest',
-      sortOrder: 1,
-      startAt: '2026-09-01T00:00:00Z',
-      endAt: '',
-      seo: {
-        metaTitle: '',
-        metaDescription: '',
-        metaKeywords: '',
-        canonicalUrl: '',
-        ogImage: '',
-        robots: 'index, follow'
-      },
-      createdAt: '2026-08-05',
-      updatedAt: '2026-08-05'
-    }
-  ]);
+  const [collections, setCollections] = useState([]);
 
   // Evaluates rules against a product
   const evaluateProduct = (product, rules, matchMode) => {

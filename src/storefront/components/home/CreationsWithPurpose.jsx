@@ -2,20 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
-export default function CreationsWithPurpose({ 
-  title = "Creations with purpose", 
-  subtitle = "Many choices based on your space", 
-  ctaText = "Explore Now", 
-  ctaUrl = "/shop", 
-  items = [
+export default function CreationsWithPurpose({ data }) {
+  const content = data?.content || {};
+  const title = content.title !== undefined ? content.title : "Creations with purpose";
+  const subtitle = content.subtitle !== undefined ? content.subtitle : "Many choices based on your space";
+  const ctaText = content.ctaText !== undefined ? content.ctaText : "Explore Now";
+  const ctaUrl = content.ctaUrl !== undefined ? content.ctaUrl : "/shop";
+  const items = content.items !== undefined ? content.items : [
     { id: "1", imageUrl: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=800", title: "Bedroom", link: "/category/bedroom" },
     { id: "2", imageUrl: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&q=80&w=800", title: "Office", link: "/category/office" },
     { id: "3", imageUrl: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=80&w=800", title: "Living Room", link: "/category/living-room" },
     { id: "4", imageUrl: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&q=80&w=800", title: "Dining", link: "/category/dining" },
     { id: "5", imageUrl: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800", title: "Sofa", link: "/category/sofa" },
     { id: "6", imageUrl: "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?auto=format&fit=crop&q=80&w=800", title: "Kitchen", link: "/category/kitchen" }
-  ]
-}) {
+  ];
   const { activeTheme } = useStorefrontTheme();
   
   const itemCount = items?.length || 0;

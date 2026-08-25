@@ -26,9 +26,7 @@ export const CMSProvider = ({ children }) => {
     }
   };
 
-  const [pages, setPages] = useState(() => loadFromStorage('cms_pages_v2', [
-    { id: 'PG-001', name: 'Homepage', title: 'Premium Furniture', slug: '/', pageTypeId: 'PT-001', status: 'Published', visibility: 'Public', template: 'default-home', description: 'Main storefront homepage', seoDescription: 'Premium furniture ecommerce', ogImage: '', sections: 7, seoStatus: 'Good', author: 'Admin', createdAt: '2024-01-01', updatedAt: '2024-06-10' },
-  ]));
+  const [pages, setPages] = useState(() => loadFromStorage('cms_pages_v2', []));
 
   const [pageSectionsDraft, setPageSectionsDraft] = useState(() => loadFromStorage('cms_pageSectionsDraft_v2', {}));
   const [pageSectionsPublished, setPageSectionsPublished] = useState(() => loadFromStorage('cms_pageSectionsPublished_v2', {}));
@@ -58,8 +56,27 @@ export const CMSProvider = ({ children }) => {
     localStorage.setItem('cms_header_config', JSON.stringify(headerConfig));
   }, [headerConfig]);
 
+  // Sync state across browser tabs
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'cms_pages_v2') {
+        setPages(JSON.parse(e.newValue || '[]'));
+      }
+      if (e.key === 'cms_pageSectionsPublished_v2') {
+        setPageSectionsPublished(JSON.parse(e.newValue || '{}'));
+      }
+      if (e.key === 'cms_pageSectionsDraft_v2') {
+        setPageSectionsDraft(JSON.parse(e.newValue || '{}'));
+      }
+      if (e.key === 'cms_sections_v2') {
+        setSections(JSON.parse(e.newValue || '[]'));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const INITIAL_SECTIONS = [
-    { id: 'lib-navbar', type: 'NAVBAR', name: 'Global Navbar', category: 'HEADER', description: 'The main navigation bar including logo, links, and icons', icon: 'FiLayout', defaultContent: {}, defaultSettings: { isSticky: true, isTransparent: false }, status: 'Active' },
     { id: 'lib-hero-banner', type: 'HERO_BANNER', name: 'Hero Banner', category: 'HERO', description: 'Full-width hero with background image and CTA', icon: 'FiImage', defaultContent: { title: 'New Collection', subtitle: 'Discover premium designs', ctaText: 'Shop Now' }, defaultSettings: { padding: 'none', align: 'center' }, status: 'Active', image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=400' },
     { id: 'lib-split-hero', type: 'SPLIT_HERO', name: 'Split Hero', category: 'HERO', description: '50/50 split with image and text', icon: 'FiLayout', defaultContent: { title: 'Modern Living', description: 'Elevate your space.' }, defaultSettings: { imageAlign: 'right' }, status: 'Active' },
     { id: 'lib-promo-hero', type: 'PROMO_HERO', name: 'Promotional Hero', category: 'HERO', description: 'Hero section focused on a major promotion', icon: 'FiStar', defaultContent: { badge: 'Summer Sale', title: 'Up to 50% Off' }, defaultSettings: { colorScheme: 'dark' }, status: 'Active' },
@@ -148,24 +165,10 @@ export const CMSProvider = ({ children }) => {
   const getPage = (id) => pages.find(p => p.id === id);
 
   const getPageSections = (pageId) => {
-    if (pageId === 'PG-001' && !pageSectionsPublished[pageId]) {
-       return [
-        { id: 'sec-navbar', type: 'NAVBAR', name: 'Navbar', icon: 'FiLayout', category: 'Header Section' },
-        { id: 'sec-hero', type: 'HERO_BANNER', name: 'Hero', icon: 'FiImage', category: 'Hero Section' },
-        { id: 'sec-features', type: 'FEATURE_GRID', name: 'Feature Grid', icon: 'FiGrid', category: 'Features Section' },
-        { id: 'sec-products', type: 'PRODUCT_GRID', name: 'Products', icon: 'FiBox', category: 'Products Section' },
-        { id: 'sec-testimonials', type: 'TESTIMONIALS', name: 'Testimonials', icon: 'FiMessageCircle', category: 'Testimonials Section' },
-        { id: 'sec-cta', type: 'CTA_BANNER', name: 'Call To Action', icon: 'FiMaximize', category: 'Banner Section' },
-        { id: 'sec-footer', type: 'FOOTER', name: 'Footer', icon: 'FiLayout', category: 'Footer Section' }
-       ];
-    }
     return pageSectionsPublished[pageId] || [];
   };
 
   const getDraftSections = (pageId) => {
-    if (pageId === 'PG-001' && !pageSectionsDraft[pageId]) {
-      return getPageSections(pageId);
-    }
     return pageSectionsDraft[pageId] || [];
   };
 
@@ -200,11 +203,25 @@ export const CMSProvider = ({ children }) => {
     setPages(prev => prev.map(p => p.id === pageId ? { ...p, ...pageData, updatedAt: new Date().toISOString().split('T')[0] } : p));
   };
 
+  const deletePage = (pageId) => {
+    setPages(prev => prev.filter(p => p.id !== pageId));
+    setPageSectionsDraft(prev => {
+      const next = { ...prev };
+      delete next[pageId];
+      return next;
+    });
+    setPageSectionsPublished(prev => {
+      const next = { ...prev };
+      delete next[pageId];
+      return next;
+    });
+  };
+
   const contextValue = useMemo(() => ({
     pageTypes, setPageTypes,
     pages, setPages, getPage,
     pageSectionsDraft, pageSectionsPublished,
-    getPageSections, getDraftSections, saveDraftSections, publishPageSections, createPage, updatePage,
+    getPageSections, getDraftSections, saveDraftSections, publishPageSections, createPage, updatePage, deletePage,
     sections, setSections,
     blocks, setBlocks,
     menus, setMenus,

@@ -125,7 +125,14 @@ export const CMSDashboard = () => {
 };
 
 export const PageCenter = () => {
-  const { pages, pageTypes } = useCMS();
+  const { pages, pageTypes, deletePage } = useCMS();
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this page? This action cannot be undone.")) {
+      deletePage(id);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center">
@@ -164,6 +171,7 @@ export const PageCenter = () => {
                   <Link to={`${p.id}/builder`} className="text-primary hover:text-indigo-900 font-medium">Builder</Link>
                   <Link to={`${p.id}/preview`} className="text-neutral-600 hover:text-neutral-900 font-medium">Preview</Link>
                   <Link to={`${p.id}/edit`} className="text-neutral-600 hover:text-neutral-900 font-medium">Edit</Link>
+                  <button onClick={() => handleDelete(p.id)} className="text-red-600 hover:text-red-800 font-medium">Delete</button>
                 </td>
               </tr>
             ))}
@@ -345,7 +353,7 @@ export const PageBuilder = () => {
         <div className="p-4 border-b border-neutral-200">
           <h2 className="font-bold text-neutral-900">Add Section</h2>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
           <div className="space-y-2">
             <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Layout</h3>
             <div className="p-3 border border-neutral-200 rounded cursor-move hover:border-neutral-400 bg-neutral-50 text-sm">Hero</div>
@@ -468,6 +476,8 @@ export const PageBuilder = () => {
 export const SectionLibrary = () => {
   const { sections, setSections } = useCMS();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [editingSectionId, setEditingSectionId] = React.useState(null);
   const [formData, setFormData] = React.useState({ name: '', type: 'Hero', category: 'Hero' });
   const [content, setContent] = React.useState({
     title: '',
@@ -479,10 +489,39 @@ export const SectionLibrary = () => {
     ]
   });
 
-  const handleCreate = (e) => {
-    e.preventDefault();
-    const newTemplate = {
+  const handleEdit = (section) => {
+    setEditingSectionId(section.id);
+    setFormData({ name: section.name, type: section.type, category: section.category });
+    setContent({
+      title: section.content?.title || '',
+      subtitle: section.content?.subtitle || '',
+      ctaText: section.content?.ctaText || '',
+      ctaUrl: section.content?.ctaUrl || '',
+      items: section.content?.items?.length > 0 ? section.content.items : [{ id: Date.now(), imageUrl: '', title: '', link: '' }]
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDuplicate = (section) => {
+    const newSection = {
+      ...section,
       id: `SEC-${Date.now()}`,
+      name: `${section.name} (Copy)`,
+      updatedAt: new Date().toISOString().split('T')[0]
+    };
+    setSections([...sections, newSection]);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingSectionId(null);
+    setFormData({ name: '', type: 'Hero', category: 'Hero' });
+    setContent({ title: '', subtitle: '', ctaText: '', ctaUrl: '', items: [{ id: Date.now(), imageUrl: '', title: '', link: '' }] });
+  };
+
+  const handleCreateOrUpdate = (e) => {
+    e.preventDefault();
+    const sectionData = {
       name: formData.name || 'New Section',
       category: formData.category,
       type: formData.type,
@@ -498,7 +537,6 @@ export const SectionLibrary = () => {
           { id: 1, imageUrl: '/images/default.jpg', title: 'Default', link: '/shop' }
         ]
       },
-      // Keep defaultSchema synced so AddSectionDrawer can consume it properly
       defaultSchema: {
         title: content.title || "Creations with purpose",
         subtitle: content.subtitle || "Many choices based on your space",
@@ -510,25 +548,50 @@ export const SectionLibrary = () => {
       }
     };
     
-    setSections([...sections, newTemplate]);
-    setIsModalOpen(false);
-    setFormData({ name: '', type: 'Hero', category: 'Hero' });
-    setContent({ title: '', subtitle: '', ctaText: '', ctaUrl: '', items: [{ id: Date.now(), imageUrl: '', title: '', link: '' }] });
+    if (editingSectionId) {
+      setSections(sections.map(s => s.id === editingSectionId ? { ...s, ...sectionData } : s));
+    } else {
+      setSections([...sections, { ...sectionData, id: `SEC-${Date.now()}` }]);
+    }
+    
+    closeModal();
   };
+
+  const filteredSections = sections.filter(s => {
+    if (s.type === 'NAVBAR' || s.type === 'FOOTER') return false;
+    
+    return s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+           s.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           s.category.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-serif text-neutral-900">Section Library</h1>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800"
-        >
-          Create Section Template
-        </button>
+        <div className="flex gap-4">
+          <input 
+            type="text" 
+            placeholder="Search sections..." 
+            className="border border-neutral-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-neutral-900 min-w-[250px]"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button 
+            onClick={() => {
+              setEditingSectionId(null);
+              setFormData({ name: '', type: 'Hero', category: 'Hero' });
+              setContent({ title: '', subtitle: '', ctaText: '', ctaUrl: '', items: [{ id: Date.now(), imageUrl: '', title: '', link: '' }] });
+              setIsModalOpen(true);
+            }}
+            className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800 shrink-0"
+          >
+            Create Section Template
+          </button>
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {sections.map(s => (
+        {filteredSections.map(s => (
           <div key={s.id} className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
             <div className="h-32 bg-neutral-100 border-b border-neutral-200 flex items-center justify-center text-neutral-400 text-sm">
               [Preview Thumbnail]
@@ -542,8 +605,8 @@ export const SectionLibrary = () => {
               <div className="flex justify-between items-center mt-auto pt-4 border-t border-neutral-100">
                 <span className="text-xs text-neutral-500">Used in {s.usageCount || 0} pages</span>
                 <div className="space-x-2 text-sm">
-                  <button className="text-primary hover:text-indigo-800 font-medium">Edit</button>
-                  <button className="text-neutral-600 hover:text-neutral-800 font-medium">Duplicate</button>
+                  <button onClick={() => handleEdit(s)} className="text-primary hover:text-indigo-800 font-medium">Edit</button>
+                  <button onClick={() => handleDuplicate(s)} className="text-neutral-600 hover:text-neutral-800 font-medium">Duplicate</button>
                 </div>
               </div>
             </div>
@@ -555,11 +618,11 @@ export const SectionLibrary = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
             <div className="p-6 border-b border-neutral-200">
-              <h2 className="text-xl font-serif font-bold text-neutral-900">Create Section Template</h2>
+              <h2 className="text-xl font-serif font-bold text-neutral-900">{editingSectionId ? 'Edit Section Template' : 'Create Section Template'}</h2>
             </div>
             
             <div className="p-6 overflow-y-auto max-h-[60vh] custom-scrollbar">
-              <form id="create-section-form" onSubmit={handleCreate} className="space-y-6">
+              <form id="create-section-form" onSubmit={handleCreateOrUpdate} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1">Section Name</label>
                   <input 
@@ -601,83 +664,81 @@ export const SectionLibrary = () => {
                   </div>
                 </div>
 
-                {formData.type === 'CREATIONS_SHOWCASE' && (
-                  <div className="border-t border-neutral-200 pt-6 space-y-6">
-                    <h3 className="font-bold text-neutral-900 font-serif">Section Content</h3>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">Title</label>
-                        <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.title} onChange={e => setContent({...content, title: e.target.value})} placeholder="Creations with purpose" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">Subtitle</label>
-                        <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.subtitle} onChange={e => setContent({...content, subtitle: e.target.value})} placeholder="Many choices based on your space" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Text</label>
-                        <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaText} onChange={e => setContent({...content, ctaText: e.target.value})} placeholder="Explore Now" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Link</label>
-                        <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaUrl} onChange={e => setContent({...content, ctaUrl: e.target.value})} placeholder="/shop" />
-                      </div>
-                    </div>
-
+                <div className="border-t border-neutral-200 pt-6 space-y-6">
+                  <h3 className="font-bold text-neutral-900 font-serif">Section Content</h3>
+                  
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <h4 className="font-medium text-sm text-neutral-900 mb-3">Image Items</h4>
-                      <div className="space-y-3">
-                        {content.items.map((item, index) => (
-                          <div key={item.id} className="p-4 border border-neutral-200 rounded-lg bg-neutral-50 flex gap-4 items-start">
-                             <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <div>
-                                  <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
-                                  <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.title} onChange={e => {
-                                    const newItems = [...content.items];
-                                    newItems[index].title = e.target.value;
-                                    setContent({...content, items: newItems});
-                                  }} placeholder="e.g. Living Room" />
-                                </div>
-                                <div>
-                                  <label className="block text-xs font-medium text-neutral-500 mb-1">Image URL</label>
-                                  <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.imageUrl} onChange={e => {
-                                    const newItems = [...content.items];
-                                    newItems[index].imageUrl = e.target.value;
-                                    setContent({...content, items: newItems});
-                                  }} placeholder="https://..." />
-                                </div>
-                                <div>
-                                  <label className="block text-xs font-medium text-neutral-500 mb-1">Link</label>
-                                  <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.link} onChange={e => {
-                                    const newItems = [...content.items];
-                                    newItems[index].link = e.target.value;
-                                    setContent({...content, items: newItems});
-                                  }} placeholder="/category/..." />
-                                </div>
-                             </div>
-                             <button type="button" onClick={() => {
-                               const newItems = content.items.filter(i => i.id !== item.id);
-                               setContent({...content, items: newItems});
-                             }} className="text-red-500 hover:text-red-700 mt-6 p-1 transition-colors" title="Remove Item">
-                                <Trash2 size={18} />
-                             </button>
-                          </div>
-                        ))}
-                      </div>
-                      <button type="button" onClick={() => {
-                        setContent({...content, items: [...content.items, { id: Date.now(), imageUrl: '', title: '', link: '' }]})
-                      }} className="mt-4 text-sm font-medium text-primary hover:text-indigo-800 flex items-center gap-1 transition-colors">
-                        + Add Image Item
-                      </button>
+                      <label className="block text-sm font-medium text-neutral-700 mb-1">Title</label>
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.title} onChange={e => setContent({...content, title: e.target.value})} placeholder="Section Title" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-1">Subtitle</label>
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.subtitle} onChange={e => setContent({...content, subtitle: e.target.value})} placeholder="Section Subtitle" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Text</label>
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaText} onChange={e => setContent({...content, ctaText: e.target.value})} placeholder="Explore Now" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Link</label>
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaUrl} onChange={e => setContent({...content, ctaUrl: e.target.value})} placeholder="/shop" />
                     </div>
                   </div>
-                )}
+
+                  <div>
+                    <h4 className="font-medium text-sm text-neutral-900 mb-3">Image Items</h4>
+                    <div className="space-y-3">
+                      {content.items.map((item, index) => (
+                        <div key={item.id} className="p-4 border border-neutral-200 rounded-lg bg-neutral-50 flex gap-4 items-start">
+                           <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                              <div>
+                                <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
+                                <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.title} onChange={e => {
+                                  const newItems = [...content.items];
+                                  newItems[index].title = e.target.value;
+                                  setContent({...content, items: newItems});
+                                }} placeholder="e.g. Living Room" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-neutral-500 mb-1">Image URL</label>
+                                <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.imageUrl} onChange={e => {
+                                  const newItems = [...content.items];
+                                  newItems[index].imageUrl = e.target.value;
+                                  setContent({...content, items: newItems});
+                                }} placeholder="https://..." />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-neutral-500 mb-1">Link</label>
+                                <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.link} onChange={e => {
+                                  const newItems = [...content.items];
+                                  newItems[index].link = e.target.value;
+                                  setContent({...content, items: newItems});
+                                }} placeholder="/category/..." />
+                              </div>
+                           </div>
+                           <button type="button" onClick={() => {
+                             const newItems = content.items.filter(i => i.id !== item.id);
+                             setContent({...content, items: newItems});
+                           }} className="text-red-500 hover:text-red-700 mt-6 p-1 transition-colors" title="Remove Item">
+                              <Trash2 size={18} />
+                           </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button type="button" onClick={() => {
+                      setContent({...content, items: [...content.items, { id: Date.now(), imageUrl: '', title: '', link: '' }]})
+                    }} className="mt-4 text-sm font-medium text-primary hover:text-indigo-800 flex items-center gap-1 transition-colors">
+                      + Add Image Item
+                    </button>
+                  </div>
+                </div>
               </form>
             </div>
             
             <div className="p-6 border-t border-neutral-200 bg-neutral-50 rounded-b-lg flex justify-end gap-2 shrink-0">
-              <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded hover:bg-white transition-colors">Cancel</button>
-              <button type="submit" form="create-section-form" className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors">Create Template</button>
+              <button type="button" onClick={closeModal} className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded hover:bg-white transition-colors">Cancel</button>
+              <button type="submit" form="create-section-form" className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors">{editingSectionId ? 'Save Changes' : 'Create Template'}</button>
             </div>
           </div>
         </div>

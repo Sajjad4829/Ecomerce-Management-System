@@ -7,28 +7,7 @@ export function generateSlug(name) {
 }
 
 export function BrandProvider({ children }) {
-  const [brands, setBrands] = useState([
-    {
-      id: 'brand-1',
-      name: 'Aurelia Signature',
-      slug: 'aurelia-signature',
-      status: 'published',
-      featured: true,
-      productCount: 156,
-      updatedAt: '2026-08-08',
-      logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?auto=format&fit=crop&q=80&w=200',
-    },
-    {
-      id: 'brand-2',
-      name: 'Nordic Heritage',
-      slug: 'nordic-heritage',
-      status: 'published',
-      featured: false,
-      productCount: 34,
-      updatedAt: '2026-08-01',
-      logo: 'https://images.unsplash.com/photo-1599305090598-fe179d501227?auto=format&fit=crop&q=80&w=200',
-    }
-  ]);
+  const [brands, setBrands] = useState([]);
 
   const value = useMemo(() => ({
     brands,

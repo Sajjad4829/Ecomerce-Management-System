@@ -28,7 +28,7 @@ export default function SectionList({
         </div>
 
         {/* List */}
-        <div className="p-4 bg-gray-50 flex-1">
+        <div className="p-4 bg-gray-50 flex-1 overflow-y-auto custom-scrollbar">
           <Reorder.Group axis="y" values={sections} onReorder={onReorder} className="space-y-2">
             <AnimatePresence>
               {sections.map((section) => (

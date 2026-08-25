@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 
-export default function NewsletterSection() {
+export default function NewsletterSection({ data }) {
+  const content = data?.content || {};
+  const title = content.title !== undefined ? content.title : "Stay Inspired";
+  const subtitle = content.subtitle !== undefined ? content.subtitle : "Get new collections, design inspiration and exclusive offers.";
+  const placeholder = content.placeholder !== undefined ? content.placeholder : "Enter your email";
+  const buttonText = content.buttonText !== undefined ? content.buttonText : "Subscribe";
+
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, loading, success
 
@@ -18,9 +24,9 @@ export default function NewsletterSection() {
   return (
     <section className="py-24 bg-white border-t border-gray-100">
       <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4 tracking-tight">Stay Inspired</h2>
+        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4 tracking-tight">{title}</h2>
         <p className="text-gray-600 mb-8 leading-relaxed">
-          Get new collections, design inspiration and exclusive offers.
+          {subtitle}
         </p>
         
         {status === 'success' ? (
@@ -33,7 +39,7 @@ export default function NewsletterSection() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder={placeholder}
               className="w-full sm:w-auto flex-grow max-w-sm bg-transparent border border-gray-300 py-4 px-6 outline-none text-gray-900 placeholder-gray-500 text-sm focus:border-black transition-colors"
               required
             />
@@ -42,7 +48,7 @@ export default function NewsletterSection() {
               disabled={status === 'loading'}
               className="w-full sm:w-auto px-10 py-4 bg-black text-white text-xs font-bold tracking-widest uppercase hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
-              Subscribe
+              {buttonText}
             </button>
           </form>
         )}

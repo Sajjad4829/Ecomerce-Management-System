@@ -1,51 +1,48 @@
 import React, { useState } from 'react';
 import { FiLayout, FiImage, FiType, FiSearch, FiUser, FiShoppingCart, FiHeart, FiSettings, FiCheck, FiPlus, FiTrash2, FiMenu, FiChevronDown } from 'react-icons/fi';
+import { Search, User, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCMS } from '../../../context/cms/CMSContext';
 import MegaMenuBuilder from '../../../components/cms/navigation/MegaMenuBuilder';
 
 export default function NavbarEditor() {
-  const { setSections } = useCMS();
-  const [logoType, setLogoType] = useState('text');
-  const [logoText, setLogoText] = useState('AURELIAN');
-  const [logoImage, setLogoImage] = useState('https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200&h=100&fit=crop');
-  const [isSticky, setIsSticky] = useState(true);
-  const [isTransparent, setIsTransparent] = useState(false);
-  const [showSearch, setShowSearch] = useState(true);
-  const [showUser, setShowUser] = useState(true);
-  const [showCart, setShowCart] = useState(true);
+  const { headerConfig, setHeaderConfig, menus, setMenus } = useCMS();
+  
+  const [logoType, setLogoType] = useState(headerConfig?.logoType || 'text');
+  const [logoText, setLogoText] = useState(headerConfig?.logoText || 'AURELIAN');
+  const [logoImage, setLogoImage] = useState(headerConfig?.logoImage || 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200&h=100&fit=crop');
+  const [isSticky, setIsSticky] = useState(headerConfig?.stickyOnScroll ?? true);
+  const [isTransparent, setIsTransparent] = useState(headerConfig?.transparentOnTop ?? false);
+  const [hoverTransparent, setHoverTransparent] = useState(headerConfig?.hoverTransparent ?? false);
+  const [showSearch, setShowSearch] = useState(headerConfig?.enableSearch ?? true);
+  const [showUser, setShowUser] = useState(headerConfig?.enableUser ?? true);
+  const [showCart, setShowCart] = useState(headerConfig?.enableCart ?? true);
   const [activeLinkId, setActiveLinkId] = useState(null);
   
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
-    fetch('/api/navbar')
-      .then(res => res.json())
-      .then(data => {
-        if (data.navItems && data.navItems.length > 0) {
-          // Map navbar structure to links array
-          const mappedLinks = data.navItems.map(item => ({
-            id: item.id,
-            text: item.label,
-            hasDropdown: item.hasMegaMenu,
-            dropdownData: item.megaMenu
-          }));
-          setLinks(mappedLinks);
-        } else {
-          // Fallback to defaults
-          setLinks([
-            { id: 'home', text: 'Home' },
-            { id: 'categories', text: 'Categories', hasDropdown: true }
-          ]);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to load navbar from API:', err);
-        setLoading(false);
-      });
-  }, []);
+    // Load from CMSContext
+    const primaryMenuId = headerConfig?.primaryMenuId || 'MNU-001';
+    const globalMenu = menus?.find(m => m.id === primaryMenuId);
+    
+    if (globalMenu && globalMenu.items && globalMenu.items.length > 0) {
+      const mappedLinks = globalMenu.items.map((item, idx) => ({
+        id: item.id || `link-${idx}`,
+        text: item.title,
+        hasDropdown: item.megaMenu ? true : false,
+        dropdownData: item.megaMenu || null
+      }));
+      setLinks(mappedLinks);
+    } else {
+      setLinks([
+        { id: 'home', text: 'Home' },
+        { id: 'categories', text: 'Categories', hasDropdown: true }
+      ]);
+    }
+    setLoading(false);
+  }, [menus, headerConfig]);
 
   const activeLink = links.find(l => l.id === activeLinkId);
 
@@ -65,7 +62,7 @@ export default function NavbarEditor() {
   };
 
   const addLink = () => {
-    setLinks([...links, { id: Date.now(), text: 'New Menu Item' }]);
+    setLinks([...links, { id: `link-${Date.now()}`, text: 'New Menu Item' }]);
   };
 
   const handlePublish = () => {
@@ -87,30 +84,42 @@ export default function NavbarEditor() {
       }
     }
 
-    const newNavbarData = {
-      navItems: links.map(link => ({
-        id: link.id,
-        label: link.text,
-        order: link.id,
-        hasMegaMenu: link.hasDropdown || false,
-        megaMenu: link.dropdownData || null
-      }))
-    };
-
-    fetch('/api/navbar', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newNavbarData)
-    })
-    .then(res => {
-      if (!res.ok) {
-        return res.json().then(err => { throw new Error(err.error) });
-      }
-      alert('Navbar successfully published and saved!');
-    })
-    .catch(err => {
-      alert(`Error publishing navbar: ${err.message}`);
+    // Save to CMSContext
+    setHeaderConfig({
+      ...headerConfig,
+      logoType,
+      logoText,
+      logoImage,
+      stickyOnScroll: isSticky,
+      transparentOnTop: isTransparent,
+      hoverTransparent: hoverTransparent,
+      enableSearch: showSearch,
+      enableUser: showUser,
+      enableCart: showCart,
+      primaryMenuId: 'MNU-001'
     });
+
+    const newNavItems = links.map(link => ({
+      id: link.id,
+      title: link.text,
+      visibility: true,
+      referenceType: link.text.toLowerCase() === 'home' ? 'page' : 'custom',
+      referenceId: link.text.toLowerCase() === 'home' ? '/' : null,
+      link: link.text.toLowerCase() === 'home' ? '/' : '#',
+      megaMenu: link.hasDropdown ? link.dropdownData : null
+    }));
+
+    setMenus(prevMenus => {
+      const existingMenuIndex = prevMenus.findIndex(m => m.id === 'MNU-001');
+      if (existingMenuIndex >= 0) {
+        const updatedMenus = [...prevMenus];
+        updatedMenus[existingMenuIndex] = { ...updatedMenus[existingMenuIndex], items: newNavItems };
+        return updatedMenus;
+      }
+      return [...prevMenus, { id: 'MNU-001', name: 'Global Navigation', items: newNavItems }];
+    });
+
+    alert('Navbar successfully published to your CMS!');
   };
 
   if (loading) return <div className="p-8">Loading Navbar...</div>;
@@ -216,7 +225,14 @@ export default function NavbarEditor() {
                       <input 
                         type="checkbox" 
                         checked={link.hasDropdown || false}
-                        onChange={(e) => setLinks(links.map(l => l.id === link.id ? { ...l, hasDropdown: e.target.checked } : l))}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          setLinks(links.map(l => l.id === link.id ? { 
+                            ...l, 
+                            hasDropdown: isChecked,
+                            dropdownData: isChecked ? (l.dropdownData || { columns: [{ id: `col-${Date.now()}`, groups: [] }] }) : null
+                          } : l));
+                        }}
                         className="rounded text-[#635BFF]"
                       />
                       Mega Menu
@@ -294,6 +310,12 @@ export default function NavbarEditor() {
                   <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform ${isTransparent ? 'translate-x-3' : 'translate-x-0'}`} />
                 </div>
               </label>
+              <label className="flex items-center justify-between cursor-pointer">
+                <span className="text-sm font-medium text-gray-700">Solid on Hover</span>
+                <div className={`w-8 h-5 rounded-full flex items-center px-0.5 transition-colors ${hoverTransparent ? 'bg-[#635BFF]' : 'bg-gray-300'}`} onClick={(e) => { e.preventDefault(); setHoverTransparent(!hoverTransparent); }}>
+                  <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform ${hoverTransparent ? 'translate-x-3' : 'translate-x-0'}`} />
+                </div>
+              </label>
             </div>
           </div>
 
@@ -334,35 +356,33 @@ export default function NavbarEditor() {
                 ))}
               </div>
 
-              {/* Actions */}
-              <div className={`flex items-center gap-5 ${isTransparent ? 'text-white' : 'text-gray-700'}`}>
-                {showSearch && <FiSearch size={20} className="cursor-pointer hover:text-[#635BFF] transition-colors" />}
-                {showUser && <FiUser size={20} className="cursor-pointer hover:text-[#635BFF] transition-colors" />}
+              {/* Actions & Utilities */}
+              <div className={`flex items-center gap-6 ${isTransparent ? 'text-white' : 'text-gray-900'}`}>
+                {showSearch && <Search size={20} />}
+                {showUser && <User size={20} />}
                 {showCart && (
-                  <div className="relative cursor-pointer hover:text-[#635BFF] transition-colors">
-                    <FiShoppingCart size={20} />
-                    <span className="absolute -top-1.5 -right-2 bg-[#635BFF] text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center border border-white">2</span>
+                  <div className="relative">
+                    <ShoppingBag size={20} />
+                    <span className="absolute -top-2 -right-2.5 bg-[#635BFF] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Dummy Content below to show context */}
-            <div className="w-full h-[600px] bg-[#fcfdff] p-12 relative">
-              <div className="max-w-xl">
-                <div className="inline-block px-3 py-1 bg-[#635BFF]/10 text-[#635BFF] text-[10px] font-bold tracking-widest uppercase rounded-full mb-6">
-                  Preview Context
-                </div>
-                <h1 className="text-4xl font-extrabold text-[#1a1a1a] leading-tight mb-6 font-sans">
-                  See how your navbar looks over content.
-                </h1>
-                <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-md">
-                  This area simulates the rest of your page so you can visualize transparent or sticky navbar behaviors.
-                </p>
-                <div className="w-32 h-10 bg-gray-200 rounded-lg animate-pulse" />
-              </div>
-              <div className="absolute right-0 bottom-0 w-[500px] h-[500px] bg-gray-50 rounded-tl-full opacity-50 pointer-events-none" />
+            {/* Preview Content Area */}
+            <div className={`pt-32 pb-48 px-12 text-center flex flex-col items-start justify-center transition-colors ${isTransparent ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+              <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 ${isTransparent ? 'bg-white/20 text-white' : 'bg-[#635BFF]/10 text-[#635BFF]'}`}>
+                Preview Context
+              </span>
+              <h1 className="text-4xl font-black tracking-tight mb-4 text-left">
+                See how your navbar looks over content.
+              </h1>
+              <p className={`text-sm max-w-md text-left mb-8 ${isTransparent ? 'text-gray-300' : 'text-gray-500'}`}>
+                This area simulates the rest of your page so you can visualize transparent or sticky navbar behaviors.
+              </p>
+              <div className={`w-32 h-8 rounded-full ${isTransparent ? 'bg-white/10' : 'bg-gray-200'}`} />
             </div>
+            <div className="absolute right-0 bottom-0 w-[500px] h-[500px] bg-gray-50 rounded-tl-full opacity-50 pointer-events-none" />
           </div>
           )}
         </div>

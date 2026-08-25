@@ -8,7 +8,11 @@ export default function CMSPage() {
   const { pages, getPageSections } = useCMS();
   
   // Find page by slug. Need to prepend '/' since slugs in CMS are stored like '/about'
-  const matchedPage = pages.find(p => p.slug === `/${slug}` || p.slug === slug);
+  const matchedPage = pages.find(p => 
+    p.slug === `/${slug}` || 
+    p.slug === slug || 
+    (slug === undefined && p.slug === '/')
+  );
 
   useEffect(() => {
     if (matchedPage) {

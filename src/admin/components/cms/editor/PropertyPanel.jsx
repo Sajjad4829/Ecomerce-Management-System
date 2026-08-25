@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FiType, FiLayout, FiImage, FiSettings, FiMaximize, FiArrowRight, FiEye, FiMonitor, FiTablet, FiSmartphone, FiPlay, FiCode, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiType, FiLayout, FiImage, FiSettings, FiMaximize, FiArrowRight, FiEye, FiMonitor, FiTablet, FiSmartphone, FiPlay, FiCode, FiChevronDown, FiChevronUp, FiTrash2, FiPlus } from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
 import { getSectionSchema, FIELD_TYPES } from './sectionEditorSchemas';
 
@@ -106,6 +106,67 @@ const DynamicField = ({ field, value, onChange }) => {
             />
           </div>
         );
+      case FIELD_TYPES.GALLERY:
+        const galleryItems = Array.isArray(value) ? value : [];
+        return (
+          <div className="space-y-4">
+            {galleryItems.map((item, idx) => (
+              <div key={idx} className="p-3 bg-white border border-black/5 rounded-lg space-y-2 relative shadow-sm group">
+                <input
+                  type="text"
+                  value={item.title || ''}
+                  onChange={(e) => {
+                    const newItems = [...galleryItems];
+                    newItems[idx] = { ...item, title: e.target.value };
+                    onChange(field.name, newItems);
+                  }}
+                  placeholder="Title (e.g. Living Room)"
+                  className="w-full px-2 py-1.5 bg-background border border-black/5 rounded text-xs focus:outline-none focus:bg-surface transition-colors"
+                />
+                <input
+                  type="text"
+                  value={item.image || ''}
+                  onChange={(e) => {
+                    const newItems = [...galleryItems];
+                    newItems[idx] = { ...item, image: e.target.value };
+                    onChange(field.name, newItems);
+                  }}
+                  placeholder="Image URL..."
+                  className="w-full px-2 py-1.5 bg-background border border-black/5 rounded text-xs focus:outline-none focus:bg-surface transition-colors"
+                />
+                <input
+                  type="text"
+                  value={item.link || ''}
+                  onChange={(e) => {
+                    const newItems = [...galleryItems];
+                    newItems[idx] = { ...item, link: e.target.value };
+                    onChange(field.name, newItems);
+                  }}
+                  placeholder="Link (/category/...)"
+                  className="w-full px-2 py-1.5 bg-background border border-black/5 rounded text-xs focus:outline-none focus:bg-surface transition-colors"
+                />
+                <button
+                  onClick={() => {
+                    const newItems = galleryItems.filter((_, i) => i !== idx);
+                    onChange(field.name, newItems);
+                  }}
+                  className="absolute top-2 right-2 p-1.5 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity bg-red-50 hover:bg-red-100 rounded"
+                  title="Remove Image"
+                >
+                  <FiTrash2 size={12} />
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={() => {
+                onChange(field.name, [...galleryItems, { title: '', image: '', link: '' }]);
+              }}
+              className="flex items-center gap-1 text-xs font-semibold text-[#635BFF] hover:text-[#4A43D0] transition-colors p-1"
+            >
+              <FiPlus size={14} /> Add Image Item
+            </button>
+          </div>
+        );
       default:
         return null;
     }
@@ -137,6 +198,22 @@ export default function PropertyPanel({ activeSectionId, sections, onUpdateSecti
 
   const section = sections.find(s => s.id === activeSectionId);
   if (!section) return null;
+
+  if (section.type === 'NAVBAR' || section.type === 'FOOTER') {
+    const isNavbar = section.type === 'NAVBAR';
+    return (
+      <div className="w-[280px] bg-surface border-l border-black/10 flex flex-col h-full shrink-0 z-10 p-8 items-center justify-center text-center">
+        <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center text-[#635BFF] mb-4 border border-black/5 shadow-sm">
+          <FiSettings size={24} />
+        </div>
+        <h3 className="text-sm font-bold text-text-primary mb-2">Global Component</h3>
+        <p className="text-xs text-text-muted font-medium leading-relaxed mb-4">
+          This {isNavbar ? 'navbar' : 'footer'} is configured globally. 
+          To edit its links, colors, and layout, please use the {isNavbar ? 'Navbar Builder' : 'Footer Builder'} in the CMS dashboard.
+        </p>
+      </div>
+    );
+  }
 
   const schema = getSectionSchema(section.type);
 

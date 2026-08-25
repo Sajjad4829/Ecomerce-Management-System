@@ -5,7 +5,8 @@ export const FIELD_TYPES = {
   TOGGLE: 'toggle',
   SELECT: 'select',
   NUMBER: 'number',
-  URL: 'url'
+  URL: 'url',
+  GALLERY: 'gallery'
 };
 
 const COMMON_LAYOUT = [
@@ -59,7 +60,7 @@ export const SECTION_SCHEMAS = {
       { name: 'ctaUrl', label: 'Primary Button Link', type: FIELD_TYPES.URL, defaultValue: '/shop' },
       { name: 'secondaryCtaText', label: 'Secondary Button Text', type: FIELD_TYPES.TEXT, defaultValue: '' },
       { name: 'secondaryCtaUrl', label: 'Secondary Button Link', type: FIELD_TYPES.URL, defaultValue: '' },
-      { name: 'image', label: 'Background Image', type: FIELD_TYPES.IMAGE, defaultValue: '' }
+      { name: 'slides', label: 'Image Items', type: FIELD_TYPES.GALLERY, defaultValue: [] }
     ],
     settings: [
       { name: 'align', label: 'Alignment', type: FIELD_TYPES.SELECT, options: ['left', 'center', 'right'], defaultValue: 'center' },
@@ -81,7 +82,7 @@ export const SECTION_SCHEMAS = {
       { name: 'description', label: 'Description', type: FIELD_TYPES.TEXTAREA, defaultValue: 'Elevate your space.' },
       { name: 'ctaText', label: 'Button Text', type: FIELD_TYPES.TEXT, defaultValue: 'Explore' },
       { name: 'ctaUrl', label: 'Button Link', type: FIELD_TYPES.URL, defaultValue: '/shop' },
-      { name: 'image', label: 'Side Image', type: FIELD_TYPES.IMAGE, defaultValue: '' }
+      { name: 'slides', label: 'Image Items', type: FIELD_TYPES.GALLERY, defaultValue: [] }
     ],
     settings: [
       { name: 'imageAlign', label: 'Image Alignment', type: FIELD_TYPES.SELECT, options: ['left', 'right'], defaultValue: 'right' },
@@ -99,7 +100,8 @@ export const SECTION_SCHEMAS = {
       { name: 'title', label: 'Heading', type: FIELD_TYPES.TEXT, defaultValue: 'Up to 50% Off' },
       { name: 'subtitle', label: 'Subtitle', type: FIELD_TYPES.TEXTAREA, defaultValue: 'Limited time only.' },
       { name: 'ctaText', label: 'Button Text', type: FIELD_TYPES.TEXT, defaultValue: 'Shop Sale' },
-      { name: 'ctaUrl', label: 'Button Link', type: FIELD_TYPES.URL, defaultValue: '/sale' }
+      { name: 'ctaUrl', label: 'Button Link', type: FIELD_TYPES.URL, defaultValue: '/sale' },
+      { name: 'slides', label: 'Image Items', type: FIELD_TYPES.GALLERY, defaultValue: [] }
     ],
     settings: [
       ...COMMON_APPEARANCE,

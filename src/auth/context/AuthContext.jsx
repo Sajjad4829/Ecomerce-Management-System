@@ -60,7 +60,7 @@ export function AuthProvider({ children }) {
     await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API
 
     if (type === 'admin') {
-      if (email === 'admin@example.com' && password === 'password') {
+      if (email === 'admin@example.com' && password === 'pass123') {
         setUser(MOCK_ADMIN_USER);
         localStorage.setItem('mock_auth_type', 'admin');
         setSessionStatus('authenticated');

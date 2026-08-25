@@ -2,11 +2,11 @@ import React from 'react';
 
 export default function HeroPreview({ section = {} }) {
   const content = section.content || section.defaultContent || {};
-  const title = content.title || 'Discover Products That Inspire';
-  const subtitle = content.subtitle || 'Premium quality products with modern designs crafted for your lifestyle.';
-  const ctaText = content.ctaText || 'Shop Now';
-  const secondaryCtaText = content.secondaryCtaText || 'Explore Categories';
-  const image = content.image || section.image || 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=800';
+  const title = content.title !== undefined ? content.title : 'Discover Products That Inspire';
+  const subtitle = content.subtitle !== undefined ? content.subtitle : 'Premium quality products with modern designs crafted for your lifestyle.';
+  const ctaText = content.ctaText !== undefined ? content.ctaText : 'Shop Now';
+  const secondaryCtaText = content.secondaryCtaText !== undefined ? content.secondaryCtaText : 'Explore Categories';
+  const image = content.image !== undefined && content.image !== '' ? content.image : (section.image || 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=800');
 
   return (
     <div className="w-full bg-[#fcfdff] pt-20 pb-16 px-12 flex items-center justify-between overflow-hidden relative">

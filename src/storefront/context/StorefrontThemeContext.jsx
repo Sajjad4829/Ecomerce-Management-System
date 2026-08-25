@@ -6,12 +6,7 @@ export const storefrontThemes = [
   {
     id: 'classic-furniture',
     name: 'Classic Furniture',
-    heroSlides: [
-      { id: 1, image: "/hero/living.png", category: "Living Room" },
-      { id: 2, image: "/hero/bedroom.png", category: "Bedroom" },
-      { id: 3, image: "/hero/dining.png", category: "Dining" },
-      { id: 4, image: "/hero/office.png", category: "Office" }
-    ],
+    heroSlides: [],
     description: 'Existing premium furniture storefront',
     preview: { bg: '#F7F7F7', primary: '#E31E24', accent: '#000000' },
     tokens: {
@@ -52,12 +47,7 @@ export const storefrontThemes = [
   {
     id: 'modern-luxury',
     name: 'Modern Luxury',
-    heroSlides: [
-      { id: 1, image: "/hero/living.png", category: "Living Room" },
-      { id: 2, image: "/hero/bedroom.png", category: "Bedroom" },
-      { id: 3, image: "/hero/dining.png", category: "Dining" },
-      { id: 4, image: "/hero/office.png", category: "Office" }
-    ],
+    heroSlides: [],
     description: 'Modern premium ecommerce experience',
     preview: { bg: '#FAFAFA', primary: '#111827', accent: '#4B5563' },
     tokens: {
