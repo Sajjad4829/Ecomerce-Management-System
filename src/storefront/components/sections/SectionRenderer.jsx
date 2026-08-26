@@ -104,11 +104,31 @@ export default function SectionRenderer({ sections = [] }) {
     return null;
   }
 
+  const resolveComponentForType = (type) => {
+    if (!type) return null;
+    const t = type.toUpperCase();
+    if (SECTION_COMPONENTS[t]) return SECTION_COMPONENTS[t];
+    
+    if (t.includes('NAVBAR') || t.includes('HEADER')) return SECTION_COMPONENTS.NAVBAR;
+    if (t.includes('HERO')) return SECTION_COMPONENTS.HERO_BANNER;
+    if (t.includes('PRODUCT') || t === 'GRID') return SECTION_COMPONENTS.PRODUCT_GRID;
+    if (t.includes('CATEGORY')) return SECTION_COMPONENTS.CATEGORY_GRID;
+    if (t.includes('PROMO') || t.includes('BANNER')) return SECTION_COMPONENTS.PROMO_BANNER;
+    if (t.includes('TESTIMONIAL') || t.includes('REVIEW')) return SECTION_COMPONENTS.TESTIMONIALS;
+    if (t.includes('FEATURE')) return SECTION_COMPONENTS.FEATURE_GRID;
+    if (t.includes('CREATION') || t.includes('PURPOSE')) return SECTION_COMPONENTS.CREATIONS_SHOWCASE;
+    if (t.includes('FAQ')) return SECTION_COMPONENTS.FAQ;
+    
+    return undefined;
+  };
+
   return (
     <div className="w-full">
       {sections.map((section, index) => {
+        if (section.isHidden) return null;
+
         const sectionType = section.type; 
-        const TargetComponent = SECTION_COMPONENTS[sectionType];
+        const TargetComponent = resolveComponentForType(sectionType);
         
         const schema = getSectionSchema(sectionType);
         const schemaDefaultContent = {};

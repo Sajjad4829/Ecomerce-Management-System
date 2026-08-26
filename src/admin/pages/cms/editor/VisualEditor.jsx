@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { FiMonitor, FiTablet, FiSmartphone, FiRotateCcw, FiRotateCw, FiExternalLink } from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
 import { useParams } from 'react-router-dom';
 import { useCMS } from '../../../context/cms/CMSContext';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
 import EditorToolbar from '../../../components/cms/editor/EditorToolbar';
 import SectionList from '../../../components/cms/editor/SectionList';
 import PropertyPanel from '../../../components/cms/editor/PropertyPanel';
@@ -11,10 +12,12 @@ import PreviewCanvas from '../../../components/cms/editor/PreviewCanvas';
 import PageSettingsDrawer from '../../../components/cms/editor/PageSettingsDrawer';
 import AddSectionDrawer from '../../../components/cms/editor/AddSectionDrawer';
 import SaveBlockModal from '../../../components/cms/blocks/SaveBlockModal';
+import HeroEditorModal from '../../../components/cms/editor/HeroEditorModal';
 
 export default function VisualEditor() {
   const { pageId } = useParams();
   const { getDraftSections, saveDraftSections, publishPageSections, getPage } = useCMS();
+  const { addToast } = useToast();
   const page = getPage(pageId) || { name: 'Unknown Page', status: 'Draft' };
 
   const [device, setDevice] = useState('desktop');
@@ -22,16 +25,32 @@ export default function VisualEditor() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [blockToSave, setBlockToSave] = useState(null);
+  const [isHeroEditorOpen, setIsHeroEditorOpen] = useState(false);
   const [sections, setSections] = useState(() => getDraftSections(pageId));
+  const isRouting = useRef(false);
+
+  const prevPageId = useRef(pageId);
+  useEffect(() => {
+    if (prevPageId.current !== pageId) {
+      isRouting.current = true;
+      setSections(getDraftSections(pageId));
+      setActiveSectionId(null);
+      prevPageId.current = pageId;
+    }
+  }, [pageId, getDraftSections]);
 
   // Auto-save drafts when sections change
   useEffect(() => {
+    if (isRouting.current) {
+      isRouting.current = false;
+      return; // Skip saving on initial mount or route change to prevent overwriting
+    }
     saveDraftSections(pageId, sections);
-  }, [sections, pageId]);
+  }, [sections, pageId, saveDraftSections]);
 
   const handlePublish = () => {
-    publishPageSections(pageId);
-    alert('Page published successfully!');
+    publishPageSections(pageId, sections);
+    addToast('Page published successfully', 'success');
   };
 
   // Handlers
@@ -43,8 +62,8 @@ export default function VisualEditor() {
       category: sectionTemplate.category,
       icon: sectionTemplate.icon,
       isHidden: false,
-      content: sectionTemplate.defaultContent || {},
-      settings: sectionTemplate.defaultSettings || {}
+      content: sectionTemplate.content || sectionTemplate.defaultContent || {},
+      settings: sectionTemplate.settings || sectionTemplate.defaultSettings || {}
     };
     setSections([...sections, newSection]);
     setActiveSectionId(newSection.id);
@@ -183,6 +202,7 @@ export default function VisualEditor() {
           onUpdateSection={handleUpdateSection}
           device={device}
           setDevice={setDevice}
+          onOpenHeroEditor={() => setIsHeroEditorOpen(true)}
         />
       </div>
 
@@ -207,6 +227,13 @@ export default function VisualEditor() {
           setBlockToSave(null);
         }}
       />
+      {isHeroEditorOpen && (
+        <HeroEditorModal 
+          section={sections.find(s => s.id === activeSectionId)}
+          onUpdate={handleUpdateSection}
+          onClose={() => setIsHeroEditorOpen(false)}
+        />
+      )}
     </div>
   );
 }

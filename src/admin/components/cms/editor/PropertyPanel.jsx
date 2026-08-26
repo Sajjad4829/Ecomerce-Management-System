@@ -46,6 +46,15 @@ const DynamicField = ({ field, value, onChange }) => {
             className="w-full px-3 py-2 bg-background border border-black/5 rounded-lg text-sm focus:outline-none focus:bg-surface focus:border-black/30 transition-colors"
           />
         );
+      case FIELD_TYPES.COLOR:
+        return (
+          <input
+            type="color"
+            value={value || field.defaultValue || '#000000'}
+            onChange={handleChange}
+            className="w-full h-10 rounded cursor-pointer border border-black/10 bg-transparent p-0"
+          />
+        );
       case FIELD_TYPES.TEXTAREA:
         return (
           <textarea
@@ -184,7 +193,7 @@ const DynamicField = ({ field, value, onChange }) => {
   );
 };
 
-export default function PropertyPanel({ activeSectionId, sections, onUpdateSection, device, setDevice }) {
+export default function PropertyPanel({ activeSectionId, sections, onUpdateSection, device, setDevice, onOpenHeroEditor }) {
   if (!activeSectionId) {
     return (
       <div className="w-[280px] bg-surface border-l border-black/10 flex flex-col h-full shrink-0 z-10 p-8 items-center justify-center text-center">
@@ -273,6 +282,21 @@ export default function PropertyPanel({ activeSectionId, sections, onUpdateSecti
             />
           </div>
         </PropertyGroup>
+
+        {section.type === 'HERO_BANNER' && (
+          <div className="p-4 border-b border-black/5">
+            <button
+              onClick={onOpenHeroEditor}
+              className="w-full py-2.5 bg-[#5946ff] text-white text-xs font-semibold rounded-lg hover:bg-[#4335cc] transition-colors flex items-center justify-center gap-2 shadow-sm"
+            >
+              <FiMaximize size={14} />
+              Open Advanced Hero Editor
+            </button>
+            <p className="text-[10px] text-text-muted mt-2 text-center">
+              Manage slides, overlay, and layout in the full-screen editor.
+            </p>
+          </div>
+        )}
 
         {schema.content && schema.content.length > 0 && (
           <PropertyGroup title="Content" icon={FiType} defaultOpen={true}>

@@ -6,7 +6,8 @@ export const FIELD_TYPES = {
   SELECT: 'select',
   NUMBER: 'number',
   URL: 'url',
-  GALLERY: 'gallery'
+  GALLERY: 'gallery',
+  COLOR: 'color'
 };
 
 const COMMON_LAYOUT = [
@@ -41,6 +42,9 @@ export const SECTION_SCHEMAS = {
       { name: 'showCart', label: 'Shopping Cart', type: FIELD_TYPES.TOGGLE, defaultValue: true }
     ],
     settings: [
+      { name: 'menuColor', label: 'Menu Text Color', type: FIELD_TYPES.COLOR, defaultValue: '#000000' },
+      { name: 'hoverTextColor', label: 'Hover Text Color', type: FIELD_TYPES.COLOR, defaultValue: '' },
+      { name: 'hoverBgColor', label: 'Hover Background Color', type: FIELD_TYPES.COLOR, defaultValue: '' },
       { name: 'stickyOnScroll', label: 'Sticky on Scroll', type: FIELD_TYPES.TOGGLE, defaultValue: true },
       { name: 'transparentOnTop', label: 'Transparent on Top', type: FIELD_TYPES.TOGGLE, defaultValue: false },
       ...COMMON_LAYOUT,
@@ -525,5 +529,21 @@ export const SECTION_SCHEMAS = {
 };
 
 export const getSectionSchema = (type) => {
-  return SECTION_SCHEMAS[type] || SECTION_SCHEMAS.DEFAULT;
+  if (!type) return SECTION_SCHEMAS.DEFAULT;
+  const t = type.toUpperCase();
+  
+  if (SECTION_SCHEMAS[t]) return SECTION_SCHEMAS[t];
+  
+  if (t.includes('HERO')) return SECTION_SCHEMAS.HERO_BANNER;
+  if (t.includes('PRODUCT') || t === 'GRID') return SECTION_SCHEMAS.PRODUCT_GRID;
+  if (t.includes('CATEGORY')) return SECTION_SCHEMAS.CATEGORY_GRID;
+  if (t.includes('PROMO') || t.includes('BANNER')) return SECTION_SCHEMAS.PROMO_BANNER;
+  if (t.includes('TESTIMONIAL') || t.includes('REVIEW')) return SECTION_SCHEMAS.TESTIMONIALS;
+  if (t.includes('FEATURE')) return SECTION_SCHEMAS.FEATURE_GRID;
+  if (t.includes('CREATION') || t.includes('PURPOSE')) return SECTION_SCHEMAS.CREATIONS_SHOWCASE;
+  if (t.includes('FAQ')) return SECTION_SCHEMAS.FAQ;
+  if (t === 'NAVBAR' || t.includes('NAVBAR') || t.includes('HEADER')) return SECTION_SCHEMAS.NAVBAR;
+  if (t === 'FOOTER') return SECTION_SCHEMAS.FOOTER;
+
+  return SECTION_SCHEMAS.DEFAULT;
 };

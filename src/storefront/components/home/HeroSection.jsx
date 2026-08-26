@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 export default function HeroSection({ data }) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -8,38 +9,76 @@ export default function HeroSection({ data }) {
   const heroTokens = activeTheme.tokens.hero;
   
   const content = data?.content || {};
-  console.log("HeroSection received data:", data);
-  const slides = (content.slides && content.slides.length > 0) ? content.slides : (activeTheme.heroSlides || []);
+  const settings = data?.settings || {
+    autoplay: true,
+    autoplaySpeed: 5,
+    transitionEffect: 'Fade',
+    showDots: true,
+    showArrows: false,
+    infiniteLoop: true
+  };
   
-  const title = content.title || '';
-  const subtitle = content.subtitle || '';
-  const ctaText = content.ctaText || '';
-  const secondaryCtaText = content.secondaryCtaText || '';
-
+  // Get active slides only, or fallback to theme defaults
+  const rawSlides = (content.slides && content.slides.length > 0) ? content.slides : (activeTheme.heroSlides || []);
+  const slides = rawSlides.filter(s => s.active !== false);
+  
   useEffect(() => {
+    if (!settings.autoplay || slides.length <= 1) return;
+    
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 5000); // Change slide every 5 seconds
+      setCurrentSlide((prev) => {
+        if (prev === slides.length - 1) {
+          return settings.infiniteLoop ? 0 : prev;
+        }
+        return prev + 1;
+      });
+    }, (settings.autoplaySpeed || 5) * 1000);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [slides.length, settings.autoplay, settings.autoplaySpeed, settings.infiniteLoop]);
+
+  const nextSlide = () => setCurrentSlide((prev) => prev === slides.length - 1 ? (settings.infiniteLoop ? 0 : prev) : prev + 1);
+  const prevSlide = () => setCurrentSlide((prev) => prev === 0 ? (settings.infiniteLoop ? slides.length - 1 : prev) : prev - 1);
+
+  // Active slide details
+  const activeSlide = slides[currentSlide] || {};
+  const title = activeSlide.title || content.title || '';
+  const subtitle = activeSlide.subtitle2 || activeSlide.subtitle || content.subtitle || '';
+  const ctaText = activeSlide.ctaText || content.ctaText || '';
+  const ctaLink = activeSlide.ctaLink || content.ctaUrl || '/products';
 
   return (
-    <section className="relative w-full h-screen min-h-[600px] flex items-center bg-[#F7F7F7] overflow-hidden">
-      {/* Slider Images */}
-      {slides.length > 0 ? slides.map((slide, index) => (
-        <div
-          key={slide.id || index}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? 'opacity-100 z-0' : 'opacity-0 z-[-1]'
-          }`}
-        >
-          <img
-            src={slide.image}
-            alt={slide.title || title}
-            className="w-full h-full object-cover object-center"
-          />
-        </div>
-      )) : (
+    <section className="relative w-full h-screen min-h-[600px] flex items-center bg-[#F7F7F7] overflow-hidden group">
+      
+      {/* Slider Images Background */}
+      {slides.length > 0 ? (
+        settings.transitionEffect === 'Slide' ? (
+          <div 
+            className="absolute inset-0 flex transition-transform duration-1000 ease-in-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {slides.map((slide, index) => (
+              <div key={slide.id || index} className="w-full h-full flex-shrink-0 relative">
+                <img src={slide.image} alt={slide.title || title} className="w-full h-full object-cover object-center" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          slides.map((slide, index) => (
+            <div
+              key={slide.id || index}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentSlide ? 'opacity-100 z-0' : 'opacity-0 z-[-1]'
+              }`}
+            >
+              <img
+                src={slide.image}
+                alt={slide.title || title}
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+          ))
+        )
+      ) : (
         <div className="absolute inset-0 bg-neutral-200 flex items-center justify-center text-neutral-400">
            {content.image ? (
              <img src={content.image} alt={title} className="w-full h-full object-cover object-center" />
@@ -49,11 +88,17 @@ export default function HeroSection({ data }) {
         </div>
       )}
       
-      {/* Dark overlay to give a premium, moody feel and make text pop */}
-      <div className={`absolute inset-0 z-0 ${heroTokens.overlay}`}></div>
+      {/* Dark overlay */}
+      {settings.overlay !== false && (
+        <div 
+          className="absolute inset-0 z-0 bg-black transition-opacity duration-300"
+          style={{ opacity: settings.overlayOpacity || '0.2' }}
+        ></div>
+      )}
       
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="max-w-4xl text-white pt-10">
+      {/* Text Content Overlay */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-16 lg:mt-24 transition-opacity duration-700" key={`content-${currentSlide}`}>
+        <div className="max-w-4xl text-white">
           <span className="block text-xs font-bold tracking-[0.3em] uppercase mb-4 opacity-90 text-gray-200">
             {data?.category || ''}
           </span>
@@ -71,37 +116,51 @@ export default function HeroSection({ data }) {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 ml-0 md:ml-[232px]">
-            <Link 
-              to="/products" 
-              className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonPrimary}`}
-            >
-              {ctaText}
-            </Link>
-            {secondaryCtaText && (
+            {ctaText && (
               <Link 
-                to="/collections/new" 
-                className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonSecondary}`}
+                to={ctaLink} 
+                className={`inline-flex items-center justify-center px-10 py-4 text-xs font-bold tracking-widest transition-colors uppercase ${heroTokens.buttonPrimary}`}
               >
-                {secondaryCtaText}
+                {ctaText}
               </Link>
             )}
           </div>
         </div>
       </div>
       
+      {/* Arrows */}
+      {settings.showArrows && slides.length > 1 && (
+        <>
+          <button 
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-black/20 hover:bg-black/40 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+          >
+            <FiChevronLeft size={24} />
+          </button>
+          <button 
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-black/20 hover:bg-black/40 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+          >
+            <FiChevronRight size={24} />
+          </button>
+        </>
+      )}
+
       {/* Slider Navigation Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-3">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              index === currentSlide ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/80'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
+      {settings.showDots && slides.length > 1 && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-3">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all ${
+                index === currentSlide ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/80'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Mobile Number inside banner at bottom left */}
       <a href="tel:09678777777" className="absolute bottom-6 left-6 md:bottom-8 md:left-8 z-20 flex items-center space-x-2 text-white hover:text-gray-300 transition-colors">

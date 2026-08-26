@@ -2,7 +2,7 @@ import { cn } from '../../../../utils/cn';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiArrowUp, FiArrowDown, FiTrash2, FiCopy, FiSave, FiLock } from 'react-icons/fi';
 import * as Icons from 'react-icons/fi';
-import HeroPreview from './preview/HeroPreview';
+import HeroSection from '../../../../storefront/components/home/HeroSection';
 import NavbarPreview from './preview/NavbarPreview';
 import ProductGridPreview from './preview/ProductGridPreview';
 import BannerPreview from './preview/BannerPreview';
@@ -70,28 +70,19 @@ export default function PreviewCanvas({
     );
 
     let content = null;
-    switch (section.type) {
-      case 'NAVBAR': content = <NavbarPreview section={section} device={device} />; break;
-      case 'hero':
-      case 'HERO_BANNER': content = <HeroPreview section={section} device={device} />; break;
-      case 'FEATURE_GRID':
-      case 'features': content = <FeaturesPreview section={section} device={device} />; break;
-      case 'grid':
-      case 'PRODUCT_GRID': content = <ProductGridPreview section={section} device={device} />; break;
-      case 'banner':
-      case 'CTA_BANNER':
-      case 'PROMO_BANNER': content = <BannerPreview section={section} device={device} />; break;
-      case 'category':
-      case 'CATEGORY_GRID': content = <CategoryGridPreview section={section} device={device} />; break;
-      case 'testimonials':
-      case 'TESTIMONIALS': content = <TestimonialsPreview section={section} device={device} />; break;
-      case 'faq':
-      case 'FAQ': content = <FAQPreview section={section} device={device} />; break;
-      case 'footer':
-      case 'FOOTER': content = <FooterPreview section={section} device={device} />; break;
-      case 'CREATIONS_SHOWCASE': content = <CreationsShowcasePreview section={section} device={device} />; break;
-      default: content = <GenericPreview section={section} device={device} />;
-    }
+    const typeStr = (section.type || '').toUpperCase();
+
+    if (typeStr.includes('NAVBAR')) content = <NavbarPreview section={section} device={device} />;
+    else if (typeStr === 'FOOTER') content = <FooterPreview section={section} device={device} />;
+    else if (typeStr.includes('HERO')) content = <HeroSection data={section} />;
+    else if (typeStr.includes('PRODUCT') || typeStr === 'GRID') content = <ProductGridPreview section={section} device={device} />;
+    else if (typeStr.includes('CATEGORY')) content = <CategoryGridPreview section={section} device={device} />;
+    else if (typeStr.includes('PROMO') || typeStr.includes('BANNER')) content = <BannerPreview section={section} device={device} />;
+    else if (typeStr.includes('TESTIMONIAL') || typeStr.includes('REVIEW')) content = <TestimonialsPreview section={section} device={device} />;
+    else if (typeStr.includes('FEATURE')) content = <FeaturesPreview section={section} device={device} />;
+    else if (typeStr.includes('CREATION') || typeStr.includes('PURPOSE')) content = <CreationsShowcasePreview section={section} device={device} />;
+    else if (typeStr.includes('FAQ')) content = <FAQPreview section={section} device={device} />;
+    else content = <GenericPreview section={section} device={device} />;
 
     return (
       <motion.div

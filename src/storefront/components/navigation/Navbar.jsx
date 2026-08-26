@@ -45,6 +45,9 @@ export default function Navbar({ data }) {
   // Navbar is solid white if we are scrolled, NOT marked as transparent on top, or if the user is hovering (only if the Hover toggle is ON)
   const isSolid = isScrolled || !isTransparentOnTop || (hoverTransparent && (isHovered || hoveredCategoryId !== null));
 
+  const currentTextColor = (isSolid || isHovered) ? (data?.settings?.hoverTextColor || data?.settings?.menuColor) : data?.settings?.menuColor;
+  const currentBgColor = (isSolid || isHovered) ? data?.settings?.hoverBgColor : undefined;
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -96,17 +99,21 @@ export default function Navbar({ data }) {
       className={`fixed top-0 left-0 right-0 z-50 w-full transition-colors duration-300 border-b h-[72px] md:h-[84px] ${
         isSolid ? headerTokens.solid : headerTokens.transparent
       }`}
+      style={currentBgColor ? { backgroundColor: currentBgColor } : {}}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="w-full mx-auto flex items-center justify-between xl:grid xl:grid-cols-3 h-full px-5">
         {/* Left Section: Brand Logo */}
         <div className="flex items-center xl:justify-self-start h-full">
-          <Link to="/" className={`transition-all flex items-center justify-center px-3 py-0.5 md:px-4 md:py-1 ${headerConfig?.logoType !== 'image' ? activeTheme.tokens.primary : ''}`}>
+          <Link to="/" className="flex items-center gap-2 group">
             {headerConfig?.logoType === 'image' && headerConfig?.logoImage ? (
               <img src={headerConfig.logoImage} alt={headerConfig?.logoText || 'Logo'} className="h-8 md:h-10 object-contain" />
             ) : (
-              <span className="text-3xl md:text-[40px] font-black tracking-tighter uppercase text-center leading-none">
+              <span 
+                className="text-3xl md:text-[40px] font-black tracking-tighter uppercase text-center leading-none"
+                style={currentTextColor ? { color: currentTextColor } : {}}
+              >
                 {headerConfig?.logoText || 'DORY'}
               </span>
             )}
@@ -125,13 +132,20 @@ export default function Navbar({ data }) {
               >
                 <Link 
                   to={link}
-                  className={`whitespace-nowrap h-full flex items-center gap-1 px-3 xl:px-4 text-sm xl:text-base font-semibold transition-colors duration-200 ${
+                  className={`whitespace-nowrap h-full flex items-center px-3 xl:px-4 text-sm xl:text-base font-semibold transition-colors duration-200 ${
                     hoveredCategoryId === item.referenceId 
                       ? (isSolid ? headerTokens.linkActiveSolid : headerTokens.linkActiveTransparent)
                       : (isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent)
                   }`}
+                  style={currentTextColor ? { color: currentTextColor } : {}}
                 >
-                  {title} {hasDropdown && <ChevronDown size={14} />}
+                  <span className="relative py-1">
+                    {title}
+                    <span 
+                      className="absolute bottom-0 left-1/2 w-4/5 -translate-x-1/2 h-[1.5px] bg-current scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" 
+                      style={currentTextColor ? { backgroundColor: currentTextColor } : {}}
+                    />
+                  </span>
                 </Link>
                 {hasDropdown && (
                   <StorefrontMegaMenu data={item.megaMenu} onClose={() => {}} />
@@ -142,9 +156,12 @@ export default function Navbar({ data }) {
         </nav>
 
         {/* Right Section: Utilities */}
-        <div className={`flex items-center space-x-4 md:space-x-5 xl:justify-self-end ${
-          isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
-        }`}>
+        <div 
+          className={`flex items-center space-x-4 md:space-x-5 xl:justify-self-end ${
+            isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
+          }`}
+          style={currentTextColor ? { color: currentTextColor } : {}}
+        >
           {headerConfig?.enableSearch && (
             <button 
               onClick={() => setIsSearchOpen(true)}

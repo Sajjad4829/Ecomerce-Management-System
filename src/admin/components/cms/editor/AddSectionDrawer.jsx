@@ -6,9 +6,20 @@ import { cn } from '../../../../utils/cn';
 import { useCMS } from '../../../context/cms/CMSContext';
 
 export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
-  const { sections, blocks } = useCMS();
+  const { sections, blocks, pageSectionsDraft } = useCMS();
   const [activeTab, setActiveTab] = useState('sections');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const getUsageCount = (templateType) => {
+    let count = 0;
+    if (!pageSectionsDraft) return count;
+    Object.values(pageSectionsDraft).forEach(pageSections => {
+      if (Array.isArray(pageSections) && pageSections.some(instance => instance.type === templateType)) {
+        count++;
+      }
+    });
+    return count;
+  };
   
   if (!isOpen) return null;
 
@@ -108,41 +119,47 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
                    )}
                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                      {sections.map((sec, idx) => (
-                       <div key={idx} className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-300 transition-all flex flex-col relative group">
+                       <div key={idx} className="group bg-white rounded-2xl border border-gray-200/70 shadow-sm hover:shadow-xl hover:shadow-[#5946ff]/10 hover:border-[#5946ff]/40 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative">
                           {/* Overlay for Adding */}
-                          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity z-10 flex items-center justify-center pointer-events-none">
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center pointer-events-none backdrop-blur-[2px]">
                              <button 
                                onClick={() => onAdd(sec)} 
-                               className="px-6 py-3 bg-[#1A1A1A] text-white text-sm font-bold rounded-lg hover:scale-105 transition-transform flex items-center gap-2 shadow-xl pointer-events-auto"
+                               className="px-6 py-3 bg-white text-gray-900 text-sm font-bold rounded-lg hover:scale-105 transition-transform flex items-center gap-2 shadow-xl pointer-events-auto hover:bg-[#5946ff] hover:text-white"
                              >
                                <FiPlus size={16} /> Add to Page
                              </button>
                           </div>
 
                           {/* Thumbnail */}
-                          <div className="h-48 bg-[#F9FAFB] flex items-center justify-center border-b border-gray-100 p-4">
-                             {sec.image ? (
-                               <img src={sec.image} alt={sec.name} className="w-full h-full object-contain mix-blend-multiply" />
-                             ) : (
-                               <span className="text-gray-400 font-medium text-sm tracking-wide">[Preview Thumbnail]</span>
-                             )}
+                          <div className="h-44 bg-gray-50 border-b border-gray-100 flex items-center justify-center text-gray-400 text-sm overflow-hidden relative">
+                             {(() => {
+                               const previewImg = 
+                                 (sec.content?.slides && sec.content.slides.length > 0 && sec.content.slides[0].image) ||
+                                 (sec.content?.items && sec.content.items.length > 0 && sec.content.items[0].imageUrl) ||
+                                 sec.image;
+                                 
+                               return previewImg ? (
+                                 <img src={previewImg} alt={sec.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                               ) : (
+                                 <span className="font-medium tracking-wide">[Preview Thumbnail]</span>
+                               );
+                             })()}
                           </div>
 
                           {/* Details */}
-                          <div className="p-5 flex-1 flex flex-col">
-                             <div className="flex justify-between items-start mb-2">
-                                <h3 className="text-[15px] font-bold text-gray-900 truncate pr-4">{sec.name}</h3>
-                                <span className="text-[10px] uppercase font-bold tracking-widest text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full shrink-0">
+                          <div className="p-5 flex-1 flex flex-col relative bg-white">
+                             <div className="flex justify-between items-start mb-1.5">
+                                <h3 className="font-bold text-[15px] text-gray-900 tracking-tight truncate pr-4">{sec.name}</h3>
+                                <span className="shrink-0 text-[10px] font-bold tracking-widest uppercase bg-[#5946ff]/10 text-[#5946ff] px-2.5 py-1 rounded-full">
                                   {sec.category || (activeTab === 'blocks' ? 'GLOBAL' : 'SECTION')}
                                 </span>
                              </div>
-                             <p className="text-xs text-gray-500 mb-6 font-mono tracking-tight">Type: {sec.type}</p>
+                             <div className="text-xs font-mono text-gray-500 mb-6 truncate opacity-80">TYPE: {sec.type}</div>
                              
-                             <div className="mt-auto border-t border-gray-100 pt-4 flex justify-between items-center">
-                                <span className="text-xs text-gray-400 font-medium">Used in 0 pages</span>
-                                <div className="flex gap-4">
-                                   <button className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Edit</button>
-                                   <button className="text-xs font-bold text-gray-600 hover:text-gray-900 transition-colors">Duplicate</button>
+                             <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100/80">
+                                <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500">
+                                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                   Used in <span className="text-gray-900">{getUsageCount(sec.type)}</span> pages
                                 </div>
                              </div>
                           </div>

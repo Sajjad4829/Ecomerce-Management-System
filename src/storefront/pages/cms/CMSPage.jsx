@@ -8,11 +8,20 @@ export default function CMSPage() {
   const { pages, getPageSections } = useCMS();
   
   // Find page by slug. Need to prepend '/' since slugs in CMS are stored like '/about'
-  const matchedPage = pages.find(p => 
-    p.slug === `/${slug}` || 
-    p.slug === slug || 
-    (slug === undefined && p.slug === '/')
-  );
+  let matchedPage = pages.find(p => {
+    if (!slug) {
+      // If we are at the root ('/'), match pages with slug '/', '', or 'home'
+      return p.slug === '/' || p.slug === '' || p.slug === 'home';
+    }
+    // Otherwise match the exact slug with or without leading slash
+    return p.slug === `/${slug}` || p.slug === slug;
+  });
+
+  // If we are at the root and didn't find a explicitly named 'home' page, 
+  // just show the very first page in their CMS as a fallback so they don't see a 404.
+  if (!matchedPage && !slug && pages.length > 0) {
+    matchedPage = pages[0];
+  }
 
   useEffect(() => {
     if (matchedPage) {

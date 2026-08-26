@@ -19,21 +19,27 @@ export const generateSlug = (name) => {
 };
 
 export function CategoryProvider({ children }) {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const loadFromStorage = (key, fallback) => {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : fallback;
+    } catch {
+      return fallback;
+    }
+  };
+
+  const INITIAL_CATEGORIES = [
+    { id: 'cat-1', name: 'Living Room', slug: 'living-room', status: 'Active', parentId: null },
+    { id: 'cat-2', name: 'Bedroom', slug: 'bedroom', status: 'Active', parentId: null },
+    { id: 'cat-3', name: 'Sofas', slug: 'sofas', status: 'Active', parentId: 'cat-1' }
+  ];
+
+  const [categories, setCategories] = useState(() => loadFromStorage('commerce_categories', INITIAL_CATEGORIES));
+  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
-    fetch('/api/categories')
-      .then(res => res.json())
-      .then(data => {
-        setCategories(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch categories:', err);
-        setLoading(false);
-      });
-  }, []);
+    localStorage.setItem('commerce_categories', JSON.stringify(categories));
+  }, [categories]);
 
   // Get full category hierarchy (Tree structure)
   const getCategoryTree = useCallback((cats = categories, parentId = null) => {
@@ -97,67 +103,32 @@ export function CategoryProvider({ children }) {
   const addCategory = useCallback(async (categoryData) => {
     const newCategory = {
       ...categoryData,
+      id: `cat-${Date.now()}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    try {
-      const res = await fetch('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newCategory)
-      });
-      if (res.ok) {
-        const savedCategory = await res.json();
-        setCategories(prev => [...prev, savedCategory]);
-        return savedCategory;
-      } else {
-        const err = await res.json();
-        throw new Error(err.error || 'Failed to add category');
-      }
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
+    setCategories(prev => [...prev, newCategory]);
+    return newCategory;
   }, []);
 
   // Update Category
   const updateCategory = useCallback(async (id, updates) => {
-    try {
-      const res = await fetch(`/api/categories/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...updates, updatedAt: new Date().toISOString() })
-      });
-      if (res.ok) {
-        const updatedCategory = await res.json();
-        setCategories(prev => prev.map(c => c.id === id ? updatedCategory : c));
-      } else {
-        const err = await res.json();
-        throw new Error(err.error || 'Failed to update category');
+    let updatedCategory = null;
+    setCategories(prev => prev.map(c => {
+      if (c.id === id) {
+        updatedCategory = { ...c, ...updates, updatedAt: new Date().toISOString() };
+        return updatedCategory;
       }
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
+      return c;
+    }));
+    return updatedCategory;
   }, []);
 
   // Delete Category
   const deleteCategory = useCallback(async (id, products = []) => {
     // Restriction removed per user request
-    try {
-      const res = await fetch(`/api/categories/${id}`, {
-        method: 'DELETE'
-      });
-      if (res.ok) {
-        setCategories(prev => prev.filter(c => c.id !== id));
-      } else {
-        const err = await res.json();
-        throw new Error(err.error || 'Failed to delete category');
-      }
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
+    setCategories(prev => prev.filter(c => c.id !== id));
+    return true;
   }, [canDeleteCategory]);
 
   // Bulk Actions

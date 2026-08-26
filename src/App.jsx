@@ -503,6 +503,7 @@ import {
   RelatedProductsManager, RelatedProductsForm,
   CrossSellManager, CrossSellForm
 } from './admin/pages/experience/ExperiencePages';
+import HeroManager from './admin/pages/experience/HeroManager';
 
 
 

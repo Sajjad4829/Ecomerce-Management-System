@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import HeroEditorModal from '../../components/cms/editor/HeroEditorModal';
 import { useCMS } from '../../context/cms/CMSContext';
 import { useCategories } from '../../context/commerce/CategoryContext';
 import { useProducts } from '../../context/commerce/ProductContext';
@@ -474,10 +475,22 @@ export const PageBuilder = () => {
 };
 
 export const SectionLibrary = () => {
-  const { sections, setSections } = useCMS();
+  const { sections, setSections, pageSectionsDraft } = useCMS();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isHeroModalOpen, setIsHeroModalOpen] = React.useState(false);
+  const [heroSectionToEdit, setHeroSectionToEdit] = React.useState(null);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [editingSectionId, setEditingSectionId] = React.useState(null);
+
+  const getUsageCount = (templateType) => {
+    let count = 0;
+    Object.values(pageSectionsDraft).forEach(pageSections => {
+      if (Array.isArray(pageSections) && pageSections.some(instance => instance.type === templateType)) {
+        count++;
+      }
+    });
+    return count;
+  };
   const [formData, setFormData] = React.useState({ name: '', type: 'Hero', category: 'Hero' });
   const [content, setContent] = React.useState({
     title: '',
@@ -490,6 +503,12 @@ export const SectionLibrary = () => {
   });
 
   const handleEdit = (section) => {
+    if (section.type && section.type.includes('HERO')) {
+      setHeroSectionToEdit(section);
+      setIsHeroModalOpen(true);
+      return;
+    }
+    
     setEditingSectionId(section.id);
     setFormData({ name: section.name, type: section.type, category: section.category });
     setContent({
@@ -557,6 +576,10 @@ export const SectionLibrary = () => {
     closeModal();
   };
 
+  const handleHeroModalUpdate = (id, updates) => {
+    setSections(sections.map(s => s.id === id ? { ...s, ...updates } : s));
+  };
+
   const filteredSections = sections.filter(s => {
     if (s.type === 'NAVBAR' || s.type === 'FOOTER') return false;
     
@@ -592,21 +615,43 @@ export const SectionLibrary = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {filteredSections.map(s => (
-          <div key={s.id} className="bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
-            <div className="h-32 bg-neutral-100 border-b border-neutral-200 flex items-center justify-center text-neutral-400 text-sm">
-              [Preview Thumbnail]
-            </div>
-            <div className="p-4 flex-1">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-medium text-neutral-900">{s.name}</h3>
-                <span className="text-xs bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">{s.category}</span>
+          <div key={s.id} className="group bg-white rounded-2xl border border-gray-200/70 shadow-sm hover:shadow-xl hover:shadow-[#5946ff]/10 hover:border-[#5946ff]/40 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative">
+            <div className="h-44 bg-gray-50 border-b border-gray-100 flex items-center justify-center text-gray-400 text-sm overflow-hidden relative">
+              {(() => {
+                const previewImg = 
+                  (s.content?.slides && s.content.slides.length > 0 && s.content.slides[0].image) ||
+                  (s.content?.items && s.content.items.length > 0 && s.content.items[0].imageUrl) ||
+                  s.image;
+                  
+                return previewImg ? (
+                  <img src={previewImg} alt={s.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                ) : (
+                  <span className="font-medium tracking-wide">[Preview Thumbnail]</span>
+                );
+              })()}
+              
+              {/* Overlay on hover for quick actions */}
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-[2px]">
+                 <button onClick={() => handleEdit(s)} className="p-2.5 bg-white text-gray-900 rounded-full hover:bg-[#5946ff] hover:text-white hover:scale-110 transition-all shadow-lg" title="Edit Template">
+                    <Edit2 size={16} />
+                 </button>
+                 <button onClick={() => handleDuplicate(s)} className="p-2.5 bg-white text-gray-900 rounded-full hover:bg-[#5946ff] hover:text-white hover:scale-110 transition-all shadow-lg" title="Duplicate Template">
+                    <Copy size={16} />
+                 </button>
               </div>
-              <div className="text-sm text-neutral-500 mb-4">Type: {s.type}</div>
-              <div className="flex justify-between items-center mt-auto pt-4 border-t border-neutral-100">
-                <span className="text-xs text-neutral-500">Used in {s.usageCount || 0} pages</span>
-                <div className="space-x-2 text-sm">
-                  <button onClick={() => handleEdit(s)} className="text-primary hover:text-indigo-800 font-medium">Edit</button>
-                  <button onClick={() => handleDuplicate(s)} className="text-neutral-600 hover:text-neutral-800 font-medium">Duplicate</button>
+            </div>
+            
+            <div className="p-5 flex-1 flex flex-col relative bg-white">
+              <div className="flex justify-between items-start mb-1.5">
+                <h3 className="font-bold text-[15px] text-gray-900 tracking-tight truncate pr-4">{s.name}</h3>
+                <span className="shrink-0 text-[10px] font-bold tracking-widest uppercase bg-[#5946ff]/10 text-[#5946ff] px-2.5 py-1 rounded-full">{s.category}</span>
+              </div>
+              <div className="text-xs font-mono text-gray-500 mb-6 truncate opacity-80">TYPE: {s.type}</div>
+              
+              <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100/80">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500">
+                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                   Used in <span className="text-gray-900">{getUsageCount(s.type)}</span> pages
                 </div>
               </div>
             </div>
@@ -742,6 +787,17 @@ export const SectionLibrary = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {isHeroModalOpen && heroSectionToEdit && (
+        <HeroEditorModal 
+          section={heroSectionToEdit}
+          onUpdate={handleHeroModalUpdate}
+          onClose={() => {
+            setIsHeroModalOpen(false);
+            setHeroSectionToEdit(null);
+          }}
+        />
       )}
     </div>
   );
