@@ -4,9 +4,11 @@ import { FiX, FiSearch, FiPlus, FiGlobe, FiLayout } from 'react-icons/fi';
 import * as Icons from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
 import { useCMS } from '../../../context/cms/CMSContext';
+import { useStorefrontTheme } from '../../../../storefront/context/StorefrontThemeContext';
 
 export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
   const { sections, blocks, pageSectionsDraft } = useCMS();
+  const { activeTheme } = useStorefrontTheme();
   const [activeTab, setActiveTab] = useState('sections');
   const [searchQuery, setSearchQuery] = useState('');
   
@@ -133,10 +135,21 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd }) {
                           {/* Thumbnail */}
                           <div className="h-44 bg-gray-50 border-b border-gray-100 flex items-center justify-center text-gray-400 text-sm overflow-hidden relative">
                              {(() => {
-                               const previewImg = 
+                               let previewImg = 
                                  (sec.content?.slides && sec.content.slides.length > 0 && sec.content.slides[0].image) ||
                                  (sec.content?.items && sec.content.items.length > 0 && sec.content.items[0].imageUrl) ||
                                  sec.image;
+                               
+                               // Fallbacks for hero banners from active theme
+                               if (!previewImg && sec.type === 'HERO_BANNER') {
+                                 previewImg = activeTheme?.heroSlides?.[0]?.image;
+                               }
+                               if (!previewImg && sec.type === 'SPLIT_HERO') {
+                                 previewImg = activeTheme?.heroSlides?.[1]?.image || activeTheme?.heroSlides?.[0]?.image;
+                               }
+                               if (!previewImg && sec.type === 'PROMO_HERO') {
+                                 previewImg = activeTheme?.promoBanners?.[0]?.image || activeTheme?.heroSlides?.[0]?.image;
+                               }
                                  
                                return previewImg ? (
                                  <img src={previewImg} alt={sec.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Search, User, ShoppingBag, ChevronDown } from 'lucide-react';
+import { Search, User, ShoppingBag, ChevronDown, Menu } from 'lucide-react';
 import { useCMS } from '../../../../context/cms/CMSContext';
 import { useCategories } from '../../../../context/commerce/CategoryContext';
 import { useProducts } from '../../../../context/commerce/ProductContext';
 import { useCollections } from '../../../../context/commerce/CollectionContext';
 import { useBrands } from '../../../../context/commerce/BrandContext';
 
-export default function NavbarPreview({ section = {} }) {
+export default function NavbarPreview({ section = {}, device = 'desktop' }) {
   const settings = section.settings || {};
   const [isHovered, setIsHovered] = useState(false);
   const { headerConfig, menus } = useCMS();
@@ -62,20 +62,24 @@ export default function NavbarPreview({ section = {} }) {
           )}
         </div>
         
-        <div 
-          className={`hidden md:flex items-center gap-8 text-sm font-semibold ${previewId}-text ${isTransparent ? 'text-white/90' : 'text-gray-700'}`}
-          style={settings.menuColor ? { color: settings.menuColor } : {}}
-        >
-          {headerMenu.length > 0 ? headerMenu.map((item, idx) => (
-            <span key={idx} className="cursor-pointer">{resolveItemTitle(item)} {item.hasDropdown && <ChevronDown size={14} className="inline-block ml-0.5" />}</span>
-          )) : (
-            <span className="text-gray-400 italic">No Menu Items</span>
-          )}
-        </div>
+        {device === 'desktop' ? (
+          <div 
+            className={`flex flex-wrap justify-center items-center gap-4 lg:gap-8 text-sm font-semibold ${previewId}-text ${isTransparent ? 'text-white/90' : 'text-gray-700'}`}
+            style={settings.menuColor ? { color: settings.menuColor } : {}}
+          >
+            {headerMenu.length > 0 ? headerMenu.map((item, idx) => (
+              <span key={idx} className="cursor-pointer whitespace-nowrap">{resolveItemTitle(item)} {item.hasDropdown && <ChevronDown size={14} className="inline-block ml-0.5" />}</span>
+            )) : (
+              <span className="text-gray-400 italic">No Menu Items</span>
+            )}
+          </div>
+        ) : (
+          <div className="flex-1"></div>
+        )}
 
         <div 
           className={`flex items-center gap-6 ${previewId}-text ${isTransparent ? 'text-white' : 'text-gray-700'}`}
-          style={settings.menuColor ? { color: settings.menuColor } : {}}
+          style={headerConfig?.iconColor ? { color: headerConfig.iconColor } : (settings.menuColor ? { color: settings.menuColor } : {})}
         >
         {showSearch && <Search size={20} className="cursor-pointer hover:opacity-75" />}
         {showUser && <User size={20} className="cursor-pointer hover:opacity-75" />}
@@ -84,6 +88,9 @@ export default function NavbarPreview({ section = {} }) {
             <ShoppingBag size={20} />
             <span className={`absolute -top-1.5 -right-2 ${isTransparent ? 'bg-white text-black' : 'bg-[#635BFF] text-white'} text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center`}>2</span>
           </div>
+        )}
+        {device !== 'desktop' && (
+          <Menu size={24} className="cursor-pointer hover:opacity-75 ml-2" />
         )}
       </div>
     </div>

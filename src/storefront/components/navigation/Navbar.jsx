@@ -39,14 +39,25 @@ export default function Navbar({ data }) {
   const headerMenu = menus.find(m => m.id === primaryMenuId)?.items?.filter(i => i.visibility) || [];
 
   // Read settings from the global header config (which the Navbar Builder saves to)
-  const isTransparentOnTop = headerConfig?.transparentOnTop || false;
+  const isTransparentStyle = headerConfig?.navbarStyle === 'transparent';
   const hoverTransparent = headerConfig?.hoverTransparent || false;
   
-  // Navbar is solid white if we are scrolled, NOT marked as transparent on top, or if the user is hovering (only if the Hover toggle is ON)
-  const isSolid = isScrolled || !isTransparentOnTop || (hoverTransparent && (isHovered || hoveredCategoryId !== null));
+  // Navbar is solid if we are scrolled, NOT marked as transparent, or if hovering (if hover setting is on)
+  const isSolid = isScrolled || !isTransparentStyle || (hoverTransparent && (isHovered || hoveredCategoryId !== null));
 
-  const currentTextColor = (isSolid || isHovered) ? (data?.settings?.hoverTextColor || data?.settings?.menuColor) : data?.settings?.menuColor;
-  const currentBgColor = (isSolid || isHovered) ? data?.settings?.hoverBgColor : undefined;
+  // Determine dynamic colors based on state and user config
+  let currentBgColor = isSolid ? (headerConfig?.backgroundColor || '#ffffff') : 'transparent';
+  let currentTextColor;
+  
+  if (isTransparentStyle && !isSolid) {
+    currentTextColor = headerConfig?.textColor || '#ffffff';
+  } else if (isTransparentStyle && isSolid) {
+    currentTextColor = '#111111'; // Default dark text when transparent navbar becomes solid (scrolled)
+  } else {
+    currentTextColor = headerConfig?.textColor || (headerConfig?.navbarStyle === 'dark' ? '#ffffff' : '#111111');
+  }
+
+  const currentIconColor = headerConfig?.iconColor || currentTextColor;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -124,7 +135,46 @@ export default function Navbar({ data }) {
         <nav className="hidden lg:flex items-center h-full xl:justify-self-center relative">
           {headerMenu.map((item, idx) => {
             const { title, link } = resolveMenuItem(item);
-            const hasDropdown = item.megaMenu ? true : false;
+            
+            // Look up any top-level categories that were linked to this navigation menu item
+            const rootCategories = categories.filter(c => c.navMenuId === item.id);
+            let combinedMegaMenu = item.megaMenu ? JSON.parse(JSON.stringify(item.megaMenu)) : null;
+
+            if (rootCategories.length > 0) {
+              const numCols = Math.min(4, rootCategories.length);
+              const dynamicColumns = Array.from({ length: numCols }, (_, i) => ({
+                id: `dyn-col-${item.id}-${i}`,
+                groups: []
+              }));
+
+              rootCategories.forEach((rootCat, i) => {
+                const subCats = categories.filter(c => c.parentId === rootCat.id);
+                const group = {
+                  id: `dyn-group-${rootCat.id}`,
+                  title: `${rootCat.name} →`,
+                  link: `/categories/${rootCat.slug}`,
+                  items: subCats.map(sub => ({
+                    id: sub.id,
+                    title: sub.name,
+                    referenceType: 'category',
+                    referenceId: sub.id,
+                    link: `/categories/${sub.slug}`
+                  }))
+                };
+                
+                const colIdx = i % numCols;
+                dynamicColumns[colIdx].groups.push(group);
+              });
+              
+              if (combinedMegaMenu && combinedMegaMenu.columns) {
+                combinedMegaMenu.columns.push(...dynamicColumns);
+              } else {
+                combinedMegaMenu = { columns: dynamicColumns };
+              }
+            }
+
+            const hasDropdown = !!combinedMegaMenu;
+            
             return (
               <div 
                 key={item.id || idx}
@@ -133,22 +183,22 @@ export default function Navbar({ data }) {
                 <Link 
                   to={link}
                   className={`whitespace-nowrap h-full flex items-center px-3 xl:px-4 text-sm xl:text-base font-semibold transition-colors duration-200 ${
-                    hoveredCategoryId === item.referenceId 
-                      ? (isSolid ? headerTokens.linkActiveSolid : headerTokens.linkActiveTransparent)
-                      : (isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent)
+                    isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
                   }`}
                   style={currentTextColor ? { color: currentTextColor } : {}}
                 >
                   <span className="relative py-1">
                     {title}
-                    <span 
-                      className="absolute bottom-0 left-1/2 w-4/5 -translate-x-1/2 h-[1.5px] bg-current scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" 
-                      style={currentTextColor ? { backgroundColor: currentTextColor } : {}}
-                    />
+                    {headerConfig?.enableHoverAnimation !== false && (
+                      <span 
+                        className="absolute bottom-0 left-1/2 w-4/5 -translate-x-1/2 h-[1.5px] bg-current scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" 
+                        style={currentTextColor ? { backgroundColor: currentTextColor } : {}}
+                      />
+                    )}
                   </span>
                 </Link>
                 {hasDropdown && (
-                  <StorefrontMegaMenu data={item.megaMenu} onClose={() => {}} />
+                  <StorefrontMegaMenu data={combinedMegaMenu} onClose={() => {}} />
                 )}
               </div>
             );
@@ -160,7 +210,7 @@ export default function Navbar({ data }) {
           className={`flex items-center space-x-4 md:space-x-5 xl:justify-self-end ${
             isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
           }`}
-          style={currentTextColor ? { color: currentTextColor } : {}}
+          style={currentIconColor ? { color: currentIconColor } : {}}
         >
           {headerConfig?.enableSearch && (
             <button 

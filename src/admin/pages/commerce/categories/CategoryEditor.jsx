@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fi';
 import { Rocket } from 'lucide-react';
 import { useCategories, generateSlug } from '../../../context/commerce/CategoryContext';
+import { useCMS } from '../../../context/cms/CMSContext';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
 import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
 
@@ -47,18 +48,10 @@ export default function CategoryEditor() {
     robots: 'index,follow'
   });
 
-  const [navItems, setNavItems] = useState([]);
-
-  useEffect(() => {
-    fetch('/api/navbar')
-      .then(res => res.json())
-      .then(data => {
-        if (data.navItems) {
-          setNavItems(data.navItems);
-        }
-      })
-      .catch(err => console.error('Failed to load navbar from API:', err));
-  }, []);
+  const { menus, headerConfig } = useCMS();
+  const primaryMenuId = headerConfig?.primaryMenuId || 'MNU-001';
+  const globalMenu = menus?.find(m => m.id === primaryMenuId);
+  const navItems = globalMenu?.items || [];
 
   const { categories, getCategoryById, addCategory, updateCategory } = useCategories();
 
@@ -88,10 +81,13 @@ export default function CategoryEditor() {
   }, [id, isNew, getCategoryById]);
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => {
+      const next = { ...prev, [field]: value };
+      if (field === 'navMenuId' && value) {
+        next.parentId = 'none';
+      }
+      return next;
+    });
     setHasUnsavedChanges(true);
   };
 
@@ -299,29 +295,31 @@ export default function CategoryEditor() {
                       >
                         <option value="">None</option>
                         {navItems.map(item => (
-                          <option key={item.id} value={item.id}>{item.label}</option>
+                          <option key={item.id} value={item.id}>{item.title || item.label}</option>
                         ))}
                       </select>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-text-primary mb-1.5">Parent Category Group <span className="text-[#FF4D4F]">*</span></label>
-                      <select 
-                        value={formData.parentId || ''}
-                        onChange={(e) => handleChange('parentId', e.target.value)}
-                        className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary"
-                        required
-                      >
-                        <option value="">Select a Group</option>
-                        <option value="none">None (Top Level)</option>
-                        {categories
-                          .filter(c => c.id !== id)
-                          .filter(c => !formData.navMenuId || c.navMenuId === formData.navMenuId)
-                          .map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                      </select>
-                    </div>
+                    {!formData.navMenuId && (
+                      <div>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Parent Category Group <span className="text-[#FF4D4F]">*</span></label>
+                        <select 
+                          value={formData.parentId || ''}
+                          onChange={(e) => handleChange('parentId', e.target.value)}
+                          className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary"
+                          required={!formData.navMenuId}
+                        >
+                          <option value="">Select a Group</option>
+                          <option value="none">None (Top Level)</option>
+                          {categories
+                            .filter(c => c.id !== id)
+                            .filter(c => !!c.navMenuId)
+                            .map(c => (
+                                <option key={c.id} value={c.id}>{c.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
 
 
 

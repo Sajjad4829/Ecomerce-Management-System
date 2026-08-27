@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FiEye, FiSave, FiMoreVertical, FiPlus, FiTrash2, 
+  FiEye, FiSave, FiMoreVertical, FiPlus, FiMinus, FiTrash2, 
   FiImage, FiUploadCloud, FiFolder, FiChevronDown, FiSettings, FiX
 } from 'react-icons/fi';
 import { GripVertical } from 'lucide-react';
@@ -260,7 +260,7 @@ export default function HeroEditorModal({ section, onUpdate, onClose }) {
                         min="1" 
                         max="10" 
                         value={settings.autoplaySpeed}
-                        onChange={(e) => setSettings({...settings, autoplaySpeed: e.target.value})}
+                        onChange={(e) => setSettings({...settings, autoplaySpeed: Number(e.target.value)})}
                         className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#5946ff]"
                       />
                     </div>
@@ -275,8 +275,39 @@ export default function HeroEditorModal({ section, onUpdate, onClose }) {
                         >
                           <option value="Fade">Fade</option>
                           <option value="Slide">Slide</option>
+                          <option value="None">None</option>
                         </select>
                         <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-700 font-medium block">Overlay Opacity</span>
+                        <span className="text-[10px] text-gray-500 font-medium bg-gray-100 px-1.5 py-0.5 rounded">{Math.round((parseFloat(settings.overlayOpacity) || 0.2) * 100)}%</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => setSettings({...settings, overlayOpacity: Math.max(0, (parseFloat(settings.overlayOpacity) || 0.2) - 0.1).toFixed(1)})}
+                          className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
+                        >
+                          <FiMinus size={14} />
+                        </button>
+                        <input 
+                          type="range" 
+                          min="0" 
+                          max="1" 
+                          step="0.1"
+                          value={parseFloat(settings.overlayOpacity) || 0.2}
+                          onChange={(e) => setSettings({...settings, overlayOpacity: e.target.value})}
+                          className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#5946ff]"
+                        />
+                        <button 
+                          onClick={() => setSettings({...settings, overlayOpacity: Math.min(1, (parseFloat(settings.overlayOpacity) || 0.2) + 0.1).toFixed(1)})}
+                          className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
+                        >
+                          <FiPlus size={14} />
+                        </button>
                       </div>
                     </div>
 
@@ -302,6 +333,30 @@ export default function HeroEditorModal({ section, onUpdate, onClose }) {
                         <input type="checkbox" className="sr-only peer" checked={settings.infiniteLoop} onChange={(e) => setSettings({...settings, infiniteLoop: e.target.checked})} />
                         <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#5946ff]"></div>
                       </label>
+                    </div>
+
+                    <div className="pt-4 border-t border-gray-100">
+                      <span className="text-xs text-gray-900 font-bold mb-3 block">Text Content Position</span>
+                      <div className="space-y-4">
+                        <div>
+                          <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Padding (Top, Right, Bottom, Left)</span>
+                          <div className="grid grid-cols-4 gap-2">
+                            <input type="number" placeholder="T" value={settings.textPaddingTop || ''} onChange={(e) => setSettings({...settings, textPaddingTop: e.target.value})} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Top" />
+                            <input type="number" placeholder="R" value={settings.textPaddingRight || ''} onChange={(e) => setSettings({...settings, textPaddingRight: e.target.value})} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Right" />
+                            <input type="number" placeholder="B" value={settings.textPaddingBottom || ''} onChange={(e) => setSettings({...settings, textPaddingBottom: e.target.value})} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Bottom" />
+                            <input type="number" placeholder="L" value={settings.textPaddingLeft || ''} onChange={(e) => setSettings({...settings, textPaddingLeft: e.target.value})} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Left" />
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Margin (Top, Right, Bottom, Left)</span>
+                          <div className="grid grid-cols-4 gap-2">
+                            <input type="number" placeholder="T" value={settings.textMarginTop || ''} onChange={(e) => setSettings({...settings, textMarginTop: e.target.value})} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Top" />
+                            <input type="number" placeholder="R" value={settings.textMarginRight || ''} onChange={(e) => setSettings({...settings, textMarginRight: e.target.value})} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Right" />
+                            <input type="number" placeholder="B" value={settings.textMarginBottom || ''} onChange={(e) => setSettings({...settings, textMarginBottom: e.target.value})} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Bottom" />
+                            <input type="number" placeholder="L" value={settings.textMarginLeft || ''} onChange={(e) => setSettings({...settings, textMarginLeft: e.target.value})} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Left" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                   </div>
@@ -337,7 +392,7 @@ export default function HeroEditorModal({ section, onUpdate, onClose }) {
                     <div className="p-6 space-y-6 flex-1">
                       {/* Form Grid */}
                       <div className="grid grid-cols-2 gap-5">
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 col-span-2">
                           <label className="text-xs font-medium text-gray-700">Slide Title</label>
                           <input 
                             type="text" 
@@ -356,22 +411,39 @@ export default function HeroEditorModal({ section, onUpdate, onClose }) {
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-xs font-medium text-gray-700">CTA Text</label>
+                          <label className="text-xs font-medium text-gray-700">Phone Number</label>
                           <input 
                             type="text" 
-                            value={activeSlide.ctaText || ''}
-                            onChange={(e) => handleUpdateActiveSlide({ ctaText: e.target.value })}
+                            value={activeSlide.phoneNumber || ''}
+                            onChange={(e) => handleUpdateActiveSlide({ phoneNumber: e.target.value })}
+                            placeholder="e.g. 09 678 7777 77"
                             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]/50 focus:border-[#5946ff] transition-shadow" 
                           />
                         </div>
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-medium text-gray-700">CTA Link</label>
-                          <input 
-                            type="text" 
-                            value={activeSlide.ctaLink || ''}
-                            onChange={(e) => handleUpdateActiveSlide({ ctaLink: e.target.value })}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]/50 focus:border-[#5946ff] transition-shadow" 
-                          />
+                      </div>
+
+                      {/* Text Position Settings (Per-slide) */}
+                      <div className="pt-2">
+                        <span className="text-xs text-gray-900 font-bold mb-3 block">Text Content Position (Optional overrides)</span>
+                        <div className="space-y-4">
+                          <div>
+                            <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Padding (Top, Right, Bottom, Left)</span>
+                            <div className="grid grid-cols-4 gap-2">
+                              <input type="number" placeholder="T" value={activeSlide.textPaddingTop || ''} onChange={(e) => handleUpdateActiveSlide({ textPaddingTop: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Top" />
+                              <input type="number" placeholder="R" value={activeSlide.textPaddingRight || ''} onChange={(e) => handleUpdateActiveSlide({ textPaddingRight: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Right" />
+                              <input type="number" placeholder="B" value={activeSlide.textPaddingBottom || ''} onChange={(e) => handleUpdateActiveSlide({ textPaddingBottom: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Bottom" />
+                              <input type="number" placeholder="L" value={activeSlide.textPaddingLeft || ''} onChange={(e) => handleUpdateActiveSlide({ textPaddingLeft: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Left" />
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Margin (Top, Right, Bottom, Left)</span>
+                            <div className="grid grid-cols-4 gap-2">
+                              <input type="number" placeholder="T" value={activeSlide.textMarginTop || ''} onChange={(e) => handleUpdateActiveSlide({ textMarginTop: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Top" />
+                              <input type="number" placeholder="R" value={activeSlide.textMarginRight || ''} onChange={(e) => handleUpdateActiveSlide({ textMarginRight: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Right" />
+                              <input type="number" placeholder="B" value={activeSlide.textMarginBottom || ''} onChange={(e) => handleUpdateActiveSlide({ textMarginBottom: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Bottom" />
+                              <input type="number" placeholder="L" value={activeSlide.textMarginLeft || ''} onChange={(e) => handleUpdateActiveSlide({ textMarginLeft: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Left" />
+                            </div>
+                          </div>
                         </div>
                       </div>
 

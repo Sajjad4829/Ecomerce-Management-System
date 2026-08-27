@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 
 const CMSContext = createContext(null);
 
@@ -54,11 +54,46 @@ export const CMSProvider = ({ children }) => {
 
   const [headerConfig, setHeaderConfig] = useState(() => loadFromStorage('cms_header_config', {
     primaryMenuId: 'MNU-001',
-    logoText: 'DORY',
+    logoType: 'text',
+    logoText: 'HATIL',
+    logoImage: '',
     enableSearch: true,
-    enableAccount: true,
-    enableWishlist: false,
-    enableCart: true
+    enableUser: true,
+    enableCart: true,
+    navbarStyle: 'default',
+    backgroundColor: '#FFFFFF',
+    textHoverColor: '#6F4CFF',
+    textColor: '#111111',
+    borderBottomStyle: 'solid',
+    borderColor: '#E5E7EB',
+    borderWidth: 1,
+    borderRadius: 0,
+    containerWidth: 'Full Width',
+    contentAlignment: 'center',
+    verticalAlignment: 'center',
+    height: 72,
+    paddingTop: 16, paddingRight: 24, paddingBottom: 16, paddingLeft: 24,
+    fontFamily: 'Inter',
+    fontSize: 15,
+    fontWeight: '500',
+    textTransform: 'None',
+    letterSpacing: 0,
+    spaceBetweenItems: 28,
+    dropdownIndicator: true,
+    uppercase: false,
+    underlineOnHover: false,
+    activeIndicator: 'Bottom Line',
+    indicatorColor: '#6F4CFF',
+    indicatorHeight: 2,
+    megaMenuEnabled: true,
+    megaMenuWidth: 'Full Width',
+    megaMenuAnimation: 'Fade',
+    megaMenuBackground: '#FFFFFF',
+    stickyOnScroll: true,
+    transparentOnTop: false,
+    hoverTransparent: false,
+    hideOnScrollDown: false,
+    blurEffect: false
   }));
 
   useEffect(() => {
@@ -99,7 +134,7 @@ export const CMSProvider = ({ children }) => {
 
   const INITIAL_SECTIONS = [
     { id: 'lib-navbar', type: 'HEADER_NAVBAR', name: 'Header & Navigation', category: 'GLOBAL', description: 'Top navigation bar with logo and menus', icon: 'FiLayout', defaultContent: {}, defaultSettings: { theme: 'light' }, status: 'Active' },
-    { id: 'lib-hero-banner', type: 'HERO_BANNER', name: 'Hero Banner', category: 'HERO', description: 'Full-width hero with background image and CTA', icon: 'FiImage', defaultContent: { title: 'New Collection', subtitle: 'Discover premium designs', ctaText: 'Shop Now' }, defaultSettings: { padding: 'none', align: 'center' }, status: 'Active', image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=400' },
+    { id: 'lib-hero-banner', type: 'HERO_BANNER', name: 'Hero Banner', category: 'HERO', description: 'Full-width hero with background image and CTA', icon: 'FiImage', defaultContent: { title: 'Compliments your lifestyle', subtitle: 'The expression of rest', phoneNumber: '09 678 7777 77' }, defaultSettings: { padding: 'none', align: 'center' }, status: 'Active', image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=400' },
     { id: 'lib-split-hero', type: 'SPLIT_HERO', name: 'Split Hero', category: 'HERO', description: '50/50 split with image and text', icon: 'FiLayout', defaultContent: { title: 'Modern Living', description: 'Elevate your space.' }, defaultSettings: { imageAlign: 'right' }, status: 'Active' },
     { id: 'lib-promo-hero', type: 'PROMO_HERO', name: 'Promotional Hero', category: 'HERO', description: 'Hero section focused on a major promotion', icon: 'FiStar', defaultContent: { badge: 'Summer Sale', title: 'Up to 50% Off' }, defaultSettings: { colorScheme: 'dark' }, status: 'Active' },
     { id: 'lib-feat-prod', type: 'FEATURED_PRODUCTS', name: 'Featured Products', category: 'PRODUCTS', description: 'Highlight specific products', icon: 'FiBox', defaultContent: { title: 'Featured' }, defaultSettings: { columns: 4 }, status: 'Active' },
@@ -191,19 +226,19 @@ export const CMSProvider = ({ children }) => {
     { id: 'VER-001', pageId: 'PG-001', version: 'v1.2', author: 'Admin', changeSummary: 'Updated hero image', createdAt: '2024-06-10' }
   ]);
 
-  const getPage = (id) => pages.find(p => p.id === id);
+  const getPage = useCallback((id) => pages.find(p => p.id === id), [pages]);
 
-  const getPageSections = (pageId) => {
+  const getPageSections = useCallback((pageId) => {
     return pageSectionsPublished[pageId] || [];
-  };
+  }, [pageSectionsPublished]);
 
-  const getDraftSections = (pageId) => {
+  const getDraftSections = useCallback((pageId) => {
     return pageSectionsDraft[pageId] || [];
-  };
+  }, [pageSectionsDraft]);
 
-  const saveDraftSections = (pageId, currentSections) => {
+  const saveDraftSections = useCallback((pageId, currentSections) => {
     setPageSectionsDraft(prev => ({ ...prev, [pageId]: currentSections }));
-  };
+  }, []);
 
   const publishPageSections = (pageId, explicitSections = null) => {
     const sectionsToPublish = explicitSections || getDraftSections(pageId);
@@ -262,7 +297,7 @@ export const CMSProvider = ({ children }) => {
     redirects, setRedirects,
     versions, setVersions,
     headerConfig, setHeaderConfig
-  }), [pageTypes, pages, pageSectionsDraft, pageSectionsPublished, sections, blocks, menus, banners, seo, redirects, versions, headerConfig]);
+  }), [pageTypes, pages, pageSectionsDraft, pageSectionsPublished, sections, blocks, menus, banners, seo, redirects, versions, headerConfig, getPage, getPageSections, getDraftSections, saveDraftSections]);
 
   return (
     <CMSContext.Provider value={contextValue}>

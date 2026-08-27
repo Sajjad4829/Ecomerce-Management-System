@@ -8,6 +8,8 @@ export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
 
+  console.log('[ROUTING] AdminLayout render. Pathname:', location.pathname);
+
   const isBuilderRoute = location.pathname.includes('/builder') || location.pathname.endsWith('/header') || location.pathname.endsWith('/cms') || location.pathname.endsWith('/cms/');
 
   // Close sidebar on mobile when route changes

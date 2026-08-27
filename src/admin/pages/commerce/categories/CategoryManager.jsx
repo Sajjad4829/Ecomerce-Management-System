@@ -8,6 +8,7 @@ import CategoryGrid from '../../../components/commerce/categories/CategoryGrid';
 import CategoryPreview from '../../../components/commerce/categories/CategoryPreview';
 import { useCategories } from '../../../context/commerce/CategoryContext';
 import { useProducts } from '../../../context/commerce/ProductContext';
+import { useCMS } from '../../../context/cms/CMSContext';
 
 export default function CategoryManager() {
   const navigate = useNavigate();
@@ -19,6 +20,13 @@ export default function CategoryManager() {
   const [viewMode, setViewMode] = useState('list');
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [previewCategory, setPreviewCategory] = useState(null);
+
+  const { menus, headerConfig } = useCMS();
+  const navItems = useMemo(() => {
+    const primaryMenuId = headerConfig?.primaryMenuId || 'MNU-001';
+    const globalMenu = menus?.find(m => m.id === primaryMenuId);
+    return globalMenu?.items || [];
+  }, [menus, headerConfig]);
 
   // Dynamically augment categories with live product counts
   const categoriesWithCounts = useMemo(() => {
@@ -98,6 +106,7 @@ export default function CategoryManager() {
               categories={categoryTree}
               searchQuery={searchQuery}
               selectedCategories={selectedCategories}
+              navItems={navItems}
               onSelectAll={handleSelectAll}
               onSelectOne={handleSelectOne}
               onEdit={(id) => navigate(`/admin/catalog/categories/${id}`)}

@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCategories } from '../../../admin/context/commerce/CategoryContext';
+import { useCMS } from '../../../admin/context/cms/CMSContext';
 
 export default function StorefrontMegaMenu({ data, onClose }) {
   const { categories } = useCategories();
+  const { headerConfig } = useCMS();
 
   if (!data || !data.columns) return null;
 
@@ -22,17 +24,21 @@ export default function StorefrontMegaMenu({ data, onClose }) {
     return { title: resolvedTitle || 'Unknown', link: resolvedLink };
   };
 
+  const alignment = headerConfig?.megaMenuAlignment || 'left';
+  const alignmentClass = alignment === 'center' ? 'text-center items-center' : 
+                         alignment === 'right' ? 'text-right items-end' : 'text-left items-start';
+
   return (
     <div 
       className="absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-xl overflow-hidden transition-all duration-300 origin-top opacity-0 invisible group-hover:opacity-100 group-hover:visible"
       style={{ zIndex: 100 }}
     >
-      <div className="max-w-7xl mx-auto flex w-full">
+      <div className={`max-w-7xl mx-auto flex w-full ${alignment === 'center' ? 'justify-center' : alignment === 'right' ? 'justify-end' : 'justify-start'}`}>
         {/* Columns Area */}
-        <div className="flex-1 p-8 grid gap-8" style={{ gridTemplateColumns: `repeat(${data.columns.length}, minmax(0, 1fr))` }}>
-          {data.columns.map((col, colIdx) => (
-            <div key={col.id || colIdx} className="flex flex-col gap-8">
-              {(col.groups || []).map((group, groupIdx) => {
+        <div className="p-8 w-full flex justify-between gap-8">
+          {data.columns.filter(col => col.groups && col.groups.length > 0).map((col, colIdx) => (
+            <div key={col.id || colIdx} className={`flex-1 flex flex-col gap-6 min-w-[140px] ${alignmentClass}`}>
+              {col.groups.map((group, groupIdx) => {
                 const groupResolved = resolveItem(group);
                 return (
                   <div key={group.id || groupIdx}>

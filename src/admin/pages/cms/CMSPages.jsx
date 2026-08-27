@@ -8,6 +8,7 @@ import { useCollections } from '../../context/commerce/CollectionContext';
 import { useBrands } from '../../context/commerce/BrandContext';
 import { FileText, Layers, Navigation, Search, ArrowLeft, MoveUp, MoveDown, Copy, Eye, EyeOff, Trash2, Edit2 } from 'lucide-react';
 import SectionRenderer from '../../../storefront/components/sections/SectionRenderer';
+import { useStorefrontTheme } from '../../../storefront/context/StorefrontThemeContext';
 
 const ReferenceItemSelector = ({ item, onChange, categories, products, collections, brands, small = false }) => {
   return (
@@ -476,6 +477,7 @@ export const PageBuilder = () => {
 
 export const SectionLibrary = () => {
   const { sections, setSections, pageSectionsDraft } = useCMS();
+  const { activeTheme } = useStorefrontTheme();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isHeroModalOpen, setIsHeroModalOpen] = React.useState(false);
   const [heroSectionToEdit, setHeroSectionToEdit] = React.useState(null);
@@ -618,10 +620,21 @@ export const SectionLibrary = () => {
           <div key={s.id} className="group bg-white rounded-2xl border border-gray-200/70 shadow-sm hover:shadow-xl hover:shadow-[#5946ff]/10 hover:border-[#5946ff]/40 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative">
             <div className="h-44 bg-gray-50 border-b border-gray-100 flex items-center justify-center text-gray-400 text-sm overflow-hidden relative">
               {(() => {
-                const previewImg = 
+                let previewImg = 
                   (s.content?.slides && s.content.slides.length > 0 && s.content.slides[0].image) ||
                   (s.content?.items && s.content.items.length > 0 && s.content.items[0].imageUrl) ||
                   s.image;
+                  
+                // Fallbacks for hero banners from active theme
+                if (!previewImg && s.type === 'HERO_BANNER') {
+                  previewImg = activeTheme?.heroSlides?.[0]?.image;
+                }
+                if (!previewImg && s.type === 'SPLIT_HERO') {
+                  previewImg = activeTheme?.heroSlides?.[1]?.image || activeTheme?.heroSlides?.[0]?.image;
+                }
+                if (!previewImg && s.type === 'PROMO_HERO') {
+                  previewImg = activeTheme?.promoBanners?.[0]?.image || activeTheme?.heroSlides?.[0]?.image;
+                }
                   
                 return previewImg ? (
                   <img src={previewImg} alt={s.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -905,6 +918,7 @@ export const NavigationCenter = () => {
   const { products } = useProducts();
   const { collections } = useCollections();
   const { brands } = useBrands();
+  
   const [activeMenuId, setActiveMenuId] = React.useState(null);
   const [activeItemId, setActiveItemId] = React.useState(null);
 

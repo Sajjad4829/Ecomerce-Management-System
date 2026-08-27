@@ -58,12 +58,9 @@ export const SECTION_SCHEMAS = {
   // HERO CATEGORY
   HERO_BANNER: {
     content: [
-      { name: 'title', label: 'Heading', type: FIELD_TYPES.TEXT, defaultValue: 'Hero Heading' },
-      { name: 'subtitle', label: 'Subtitle', type: FIELD_TYPES.TEXTAREA, defaultValue: 'Hero Subtitle text goes here.' },
-      { name: 'ctaText', label: 'Primary Button Text', type: FIELD_TYPES.TEXT, defaultValue: 'Shop Now' },
-      { name: 'ctaUrl', label: 'Primary Button Link', type: FIELD_TYPES.URL, defaultValue: '/shop' },
-      { name: 'secondaryCtaText', label: 'Secondary Button Text', type: FIELD_TYPES.TEXT, defaultValue: '' },
-      { name: 'secondaryCtaUrl', label: 'Secondary Button Link', type: FIELD_TYPES.URL, defaultValue: '' },
+      { name: 'title', label: 'Heading', type: FIELD_TYPES.TEXT, defaultValue: 'Compliments your lifestyle' },
+      { name: 'subtitle', label: 'Subtitle', type: FIELD_TYPES.TEXTAREA, defaultValue: 'The expression of rest' },
+      { name: 'phoneNumber', label: 'Phone Number', type: FIELD_TYPES.TEXT, defaultValue: '09 678 7777 77' },
       { name: 'slides', label: 'Image Items', type: FIELD_TYPES.GALLERY, defaultValue: [] }
     ],
     settings: [

@@ -8,6 +8,7 @@ const CategoryNode = ({
   depth = 0, 
   searchQuery, 
   selectedCategories, 
+  navItems,
   onSelectOne, 
   onEdit, 
   onPreview,
@@ -59,9 +60,16 @@ const CategoryNode = ({
           </div>
           
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-text-primary group-hover:text-warning transition-colors">
-              {node.name}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-text-primary group-hover:text-warning transition-colors">
+                {node.name}
+                {node.navMenuId && node.navMenuId !== 'none' && (() => {
+                  const menuItem = navItems?.find(n => n.id === node.navMenuId);
+                  const menuDisplay = menuItem ? (menuItem.title || menuItem.label) : node.navMenuId;
+                  return ` : ${menuDisplay}`;
+                })()}
+              </span>
+            </div>
             <span className="text-xs text-text-muted font-mono">/{node.slug}</span>
           </div>
         </div>
@@ -117,9 +125,13 @@ const CategoryNode = ({
         {isExpanded && hasChildren && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
+            animate={{ 
+              height: 'auto', 
+              opacity: 1,
+              transitionEnd: { overflow: 'visible' } 
+            }}
+            exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
+            style={{ overflow: 'hidden' }}
           >
             {node.children.map(child => (
               <CategoryNode 
@@ -128,6 +140,7 @@ const CategoryNode = ({
                 depth={depth + 1}
                 searchQuery={searchQuery}
                 selectedCategories={selectedCategories}
+                navItems={navItems}
                 onSelectOne={onSelectOne}
                 onEdit={onEdit}
                 onPreview={onPreview}
@@ -145,6 +158,7 @@ export default function CategoryTree({
   categories, 
   searchQuery,
   selectedCategories,
+  navItems,
   onSelectAll,
   onSelectOne,
   onEdit,
@@ -152,8 +166,8 @@ export default function CategoryTree({
   onDelete
 }) {
   return (
-    <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between p-4 bg-background border-b border-border">
+    <div className="bg-surface rounded-xl border border-border shadow-sm">
+      <div className="flex items-center justify-between p-4 bg-background border-b border-border rounded-t-xl">
         <div className="flex items-center gap-3 pl-7">
           <input 
             type="checkbox"
@@ -168,13 +182,14 @@ export default function CategoryTree({
         </div>
       </div>
 
-      <div className="divide-y divide-stone-100 overflow-y-auto max-h-[600px] custom-scrollbar">
+      <div className="divide-y divide-stone-100 max-h-[600px] overflow-y-auto custom-scrollbar">
         {categories.map(category => (
           <CategoryNode 
             key={category.id}
             node={category}
             searchQuery={searchQuery}
             selectedCategories={selectedCategories}
+            navItems={navItems}
             onSelectOne={onSelectOne}
             onEdit={onEdit}
             onPreview={onPreview}
