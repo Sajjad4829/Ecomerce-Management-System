@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import HeroEditorModal from '../../components/cms/editor/HeroEditorModal';
 import { useCMS } from '../../context/cms/CMSContext';
@@ -13,7 +13,7 @@ import { useStorefrontTheme } from '../../../storefront/context/StorefrontThemeC
 const ReferenceItemSelector = ({ item, onChange, categories, products, collections, brands, small = false }) => {
   return (
     <div className={`flex ${small ? 'flex-col gap-2' : 'gap-4'} w-full`}>
-      <select 
+      <select
         value={item.referenceType || 'custom'}
         onChange={(e) => {
           const type = e.target.value;
@@ -48,15 +48,15 @@ const ReferenceItemSelector = ({ item, onChange, categories, products, collectio
         </select>
       ) : (
         <div className={`flex ${small ? 'flex-col gap-2' : 'gap-4 flex-1'}`}>
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Title"
             value={item.title || ''}
             onChange={(e) => onChange({ ...item, title: e.target.value })}
             className={`flex-1 border-neutral-300 rounded-md shadow-sm border ${small ? 'p-1 text-xs' : 'p-2 text-sm'}`}
           />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="URL"
             value={item.link || ''}
             onChange={(e) => onChange({ ...item, link: e.target.value })}
@@ -77,7 +77,7 @@ export const CMSDashboard = () => {
           <Link to="pages/create" className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Create Page</Link>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
@@ -156,15 +156,14 @@ export const PageCenter = () => {
           <tbody className="divide-y divide-neutral-200">
             {pages.map(p => (
               <tr key={p.id} className="hover:bg-neutral-50">
-                <td className="px-6 py-4 font-medium text-neutral-900">{p.name}</td>
+                <td className="px-6 py-4 font-medium text-neutral-900">{p.title || p.name}</td>
                 <td className="px-6 py-4 text-neutral-600">{p.slug}</td>
                 <td className="px-6 py-4 text-neutral-600">
                   {pageTypes?.find(pt => pt.id === p.pageTypeId)?.name || 'Unknown'}
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    p.status === 'Published' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${p.status === 'Published' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    }`}>
                     {p.status}
                   </span>
                 </td>
@@ -188,18 +187,26 @@ export const PageForm = () => {
   const { pageTypes, getPage, createPage, updatePage, pages } = useCMS();
   const { pageId } = useParams();
   const navigate = useNavigate();
-  
+
   const existingPage = pageId ? getPage(pageId) : null;
-  const [formData, setFormData] = React.useState(existingPage || {
-    name: '', title: '', slug: '', pageTypeId: '', status: 'Draft',
-    description: '', seoDescription: '', ogImage: '', template: 'default', visibility: 'Public',
+  const [formData, setFormData] = React.useState({
+    title: existingPage?.title || '',
+    seoTitle: existingPage?.seo?.metaTitle || '',
+    slug: existingPage?.slug || '',
+    pageTypeId: existingPage?.pageTypeId || '',
+    status: existingPage?.status || 'Draft',
+    description: existingPage?.description || '',
+    seoDescription: existingPage?.seo?.metaDescription || '',
+    ogImage: existingPage?.seo?.ogImage || '',
+    template: existingPage?.template || 'default',
+    visibility: existingPage?.visibility || 'Public',
   });
 
   const availableTypes = pageTypes.filter(pt => pt.status === 'Active');
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.slug || !formData.pageTypeId) {
+    if (!formData.title || !formData.slug || !formData.pageTypeId) {
       alert("Name, Slug, and Page Type are required.");
       return;
     }
@@ -210,10 +217,10 @@ export const PageForm = () => {
     }
 
     if (pageId) {
-      updatePage(pageId, formData);
+      await updatePage(pageId, formData);
       navigate(`/admin/cms/pages/${pageId}/builder`);
     } else {
-      const newPage = createPage(formData);
+      const newPage = await createPage(formData);
       navigate(`/admin/cms/pages/${newPage.id}/builder`);
     }
   };
@@ -241,23 +248,23 @@ export const PageForm = () => {
             <div className="grid grid-cols-1 gap-5">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1.5">Page Name *</label>
-                <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. About Us" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
+                <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. About Us" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1.5">Page Description</label>
-                <textarea className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" rows="3" placeholder="Internal description for this page" value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} />
+                <textarea className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" rows="3" placeholder="Internal description for this page" value={formData.description || ''} onChange={e => setFormData({ ...formData, description: e.target.value })} />
               </div>
               <div className="grid grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1.5">Slug *</label>
-                  <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. /about" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} required />
+                  <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. /about" value={formData.slug} onChange={e => setFormData({ ...formData, slug: e.target.value })} required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1.5">Page Type *</label>
-                  <select 
+                  <select
                     className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white"
                     value={formData.pageTypeId}
-                    onChange={(e) => setFormData({...formData, pageTypeId: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, pageTypeId: e.target.value })}
                     required
                   >
                     <option value="">Select a Page Type...</option>
@@ -276,15 +283,15 @@ export const PageForm = () => {
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1.5">SEO Title</label>
-                <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. Our Story | Luxury Hotels" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+                <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="e.g. Our Story | Luxury Hotels" value={formData.seoTitle} onChange={e => setFormData({ ...formData, seoTitle: e.target.value })} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1.5">SEO Description</label>
-                <textarea className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" rows="3" placeholder="Description shown in search results..." value={formData.seoDescription || ''} onChange={e => setFormData({...formData, seoDescription: e.target.value})} />
+                <textarea className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" rows="3" placeholder="Description shown in search results..." value={formData.seoDescription || ''} onChange={e => setFormData({ ...formData, seoDescription: e.target.value })} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1.5">OG Image URL</label>
-                <input type="url" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="https://example.com/image.jpg" value={formData.ogImage || ''} onChange={e => setFormData({...formData, ogImage: e.target.value})} />
+                <input type="url" className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors" placeholder="https://example.com/image.jpg" value={formData.ogImage || ''} onChange={e => setFormData({ ...formData, ogImage: e.target.value })} />
               </div>
             </div>
           </div>
@@ -297,7 +304,7 @@ export const PageForm = () => {
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1.5">Status</label>
-                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}>
+                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}>
                   <option value="Draft">Draft</option>
                   <option value="Published">Published</option>
                   <option value="Scheduled">Scheduled</option>
@@ -307,7 +314,7 @@ export const PageForm = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1.5">Visibility</label>
-                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.visibility || 'Public'} onChange={e => setFormData({...formData, visibility: e.target.value})}>
+                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.visibility || 'Public'} onChange={e => setFormData({ ...formData, visibility: e.target.value })}>
                   <option value="Public">Public</option>
                   <option value="Hidden">Hidden (Direct Link Only)</option>
                   <option value="Password Protected">Password Protected</option>
@@ -315,14 +322,14 @@ export const PageForm = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1.5">Template</label>
-                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.template || 'default'} onChange={e => setFormData({...formData, template: e.target.value})}>
+                <select className="w-full border-neutral-300 rounded-md shadow-sm p-2.5 border focus:ring-1 focus:ring-neutral-500 focus:border-neutral-500 outline-none transition-colors bg-white" value={formData.template || 'default'} onChange={e => setFormData({ ...formData, template: e.target.value })}>
                   <option value="default">Default Template</option>
                   <option value="blank">Blank Canvas</option>
                   <option value="landing">Landing Page</option>
                   <option value="full-width">Full Width</option>
                 </select>
               </div>
-              
+
               {pageId && (
                 <div className="pt-5 border-t border-neutral-100 space-y-3">
                   <div className="flex justify-between text-sm text-neutral-500">
@@ -346,7 +353,7 @@ export const PageForm = () => {
 export const PageBuilder = () => {
   const { pageId } = useParams();
   const { getPage } = useCMS();
-  const page = getPage(pageId) || { name: 'Unknown Page' };
+  const page = getPage(pageId) || { title: 'Unknown Page' };
 
   return (
     <div className="flex h-[calc(100vh-4rem)] -m-8"> {/* Negative margin to break out of layout padding */}
@@ -381,8 +388,8 @@ export const PageBuilder = () => {
       <div className="flex-1 bg-neutral-100 flex flex-col">
         <div className="bg-surface border-b border-neutral-200 p-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <Link to="/admin/cms/pages" className="text-neutral-500 hover:text-neutral-900"><ArrowLeft className="w-5 h-5"/></Link>
-            <span className="font-medium">{page.name}</span>
+            <Link to="/admin/cms/pages" className="text-neutral-500 hover:text-neutral-900"><ArrowLeft className="w-5 h-5" /></Link>
+            <span className="font-medium">{page.title || page.name}</span>
           </div>
           <div className="flex gap-2">
             <Link to={`/admin/cms/pages/${pageId}/preview`} className="px-3 py-1.5 border border-neutral-200 rounded text-sm hover:bg-neutral-50">Preview</Link>
@@ -394,18 +401,18 @@ export const PageBuilder = () => {
             {/* Mock Canvas Content */}
             <div className="border-2 border-indigo-500 rounded relative group bg-surface shadow-sm">
               <div className="absolute top-0 right-0 -mt-3 mr-2 hidden group-hover:flex gap-1">
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveUp className="w-3 h-3"/></button>
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveDown className="w-3 h-3"/></button>
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><Copy className="w-3 h-3"/></button>
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><EyeOff className="w-3 h-3"/></button>
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-danger-soft text-danger"><Trash2 className="w-3 h-3"/></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveUp className="w-3 h-3" /></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveDown className="w-3 h-3" /></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><Copy className="w-3 h-3" /></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><EyeOff className="w-3 h-3" /></button>
+                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-danger-soft text-danger"><Trash2 className="w-3 h-3" /></button>
               </div>
               <div className="h-48 bg-neutral-200 flex flex-col items-center justify-center rounded m-1 border-2 border-dashed border-neutral-300">
                 <div className="font-serif text-2xl text-neutral-800 mb-2">Hero Section</div>
                 <div className="px-4 py-2 bg-neutral-800 text-white text-sm rounded">CTA Button</div>
               </div>
             </div>
-            
+
             <div className="border border-neutral-200 rounded relative group hover:border-indigo-300 bg-surface shadow-sm transition-colors cursor-pointer">
               <div className="h-32 flex items-center justify-center p-6 gap-6 m-1">
                 <div className="w-1/3 bg-neutral-200 h-full rounded border-2 border-dashed border-neutral-300"></div>
@@ -416,7 +423,7 @@ export const PageBuilder = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="border-2 border-dashed border-neutral-300 rounded h-24 flex items-center justify-center bg-surface text-neutral-400 hover:bg-neutral-50 hover:border-neutral-400 cursor-pointer transition-colors">
               Drop Section Here
             </div>
@@ -449,7 +456,7 @@ export const PageBuilder = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="space-y-4">
             <h3 className="text-sm font-medium border-b border-neutral-100 pb-2">Layout</h3>
             <div>
@@ -510,7 +517,7 @@ export const SectionLibrary = () => {
       setIsHeroModalOpen(true);
       return;
     }
-    
+
     setEditingSectionId(section.id);
     setFormData({ name: section.name, type: section.type, category: section.category });
     setContent({
@@ -568,13 +575,13 @@ export const SectionLibrary = () => {
         ]
       }
     };
-    
+
     if (editingSectionId) {
       setSections(sections.map(s => s.id === editingSectionId ? { ...s, ...sectionData } : s));
     } else {
       setSections([...sections, { ...sectionData, id: `SEC-${Date.now()}` }]);
     }
-    
+
     closeModal();
   };
 
@@ -584,10 +591,10 @@ export const SectionLibrary = () => {
 
   const filteredSections = sections.filter(s => {
     if (s.type === 'NAVBAR' || s.type === 'FOOTER') return false;
-    
-    return s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-           s.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           s.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.category.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   return (
@@ -595,14 +602,14 @@ export const SectionLibrary = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-serif text-neutral-900">Section Library</h1>
         <div className="flex gap-4">
-          <input 
-            type="text" 
-            placeholder="Search sections..." 
+          <input
+            type="text"
+            placeholder="Search sections..."
             className="border border-neutral-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-neutral-900 min-w-[250px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button 
+          <button
             onClick={() => {
               setEditingSectionId(null);
               setFormData({ name: '', type: 'Hero', category: 'Hero' });
@@ -619,52 +626,31 @@ export const SectionLibrary = () => {
         {filteredSections.map(s => (
           <div key={s.id} className="group bg-white rounded-2xl border border-gray-200/70 shadow-sm hover:shadow-xl hover:shadow-[#5946ff]/10 hover:border-[#5946ff]/40 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative">
             <div className="h-44 bg-gray-50 border-b border-gray-100 flex items-center justify-center text-gray-400 text-sm overflow-hidden relative">
-              {(() => {
-                let previewImg = 
-                  (s.content?.slides && s.content.slides.length > 0 && s.content.slides[0].image) ||
-                  (s.content?.items && s.content.items.length > 0 && s.content.items[0].imageUrl) ||
-                  s.image;
-                  
-                // Fallbacks for hero banners from active theme
-                if (!previewImg && s.type === 'HERO_BANNER') {
-                  previewImg = activeTheme?.heroSlides?.[0]?.image;
-                }
-                if (!previewImg && s.type === 'SPLIT_HERO') {
-                  previewImg = activeTheme?.heroSlides?.[1]?.image || activeTheme?.heroSlides?.[0]?.image;
-                }
-                if (!previewImg && s.type === 'PROMO_HERO') {
-                  previewImg = activeTheme?.promoBanners?.[0]?.image || activeTheme?.heroSlides?.[0]?.image;
-                }
-                  
-                return previewImg ? (
-                  <img src={previewImg} alt={s.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                ) : (
-                  <span className="font-medium tracking-wide">[Preview Thumbnail]</span>
-                );
-              })()}
-              
-              {/* Overlay on hover for quick actions */}
+              {/* Render a live scaled-down component preview instead of a static image */}
+              <div className="w-[400%] h-[400%] transform origin-top-left scale-25 pointer-events-none absolute top-0 left-0 bg-white">
+                <SectionRenderer sections={[{ ...s, isHidden: false }]} />
+              </div>
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-[2px]">
-                 <button onClick={() => handleEdit(s)} className="p-2.5 bg-white text-gray-900 rounded-full hover:bg-[#5946ff] hover:text-white hover:scale-110 transition-all shadow-lg" title="Edit Template">
-                    <Edit2 size={16} />
-                 </button>
-                 <button onClick={() => handleDuplicate(s)} className="p-2.5 bg-white text-gray-900 rounded-full hover:bg-[#5946ff] hover:text-white hover:scale-110 transition-all shadow-lg" title="Duplicate Template">
-                    <Copy size={16} />
-                 </button>
+                <button onClick={() => handleEdit(s)} className="p-2.5 bg-white text-gray-900 rounded-full hover:bg-[#5946ff] hover:text-white hover:scale-110 transition-all shadow-lg" title="Edit Template">
+                  <Edit2 size={16} />
+                </button>
+                <button onClick={() => handleDuplicate(s)} className="p-2.5 bg-white text-gray-900 rounded-full hover:bg-[#5946ff] hover:text-white hover:scale-110 transition-all shadow-lg" title="Duplicate Template">
+                  <Copy size={16} />
+                </button>
               </div>
             </div>
-            
+
             <div className="p-5 flex-1 flex flex-col relative bg-white">
               <div className="flex justify-between items-start mb-1.5">
                 <h3 className="font-bold text-[15px] text-gray-900 tracking-tight truncate pr-4">{s.name}</h3>
                 <span className="shrink-0 text-[10px] font-bold tracking-widest uppercase bg-[#5946ff]/10 text-[#5946ff] px-2.5 py-1 rounded-full">{s.category}</span>
               </div>
               <div className="text-xs font-mono text-gray-500 mb-6 truncate opacity-80">TYPE: {s.type}</div>
-              
+
               <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100/80">
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500">
-                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                   Used in <span className="text-gray-900">{getUsageCount(s.type)}</span> pages
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                  Used in <span className="text-gray-900">{getUsageCount(s.type)}</span> pages
                 </div>
               </div>
             </div>
@@ -678,27 +664,27 @@ export const SectionLibrary = () => {
             <div className="p-6 border-b border-neutral-200">
               <h2 className="text-xl font-serif font-bold text-neutral-900">{editingSectionId ? 'Edit Section Template' : 'Create Section Template'}</h2>
             </div>
-            
+
             <div className="p-6 overflow-y-auto max-h-[60vh] custom-scrollbar">
               <form id="create-section-form" onSubmit={handleCreateOrUpdate} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1">Section Name</label>
-                  <input 
-                    required 
-                    type="text" 
-                    className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" 
-                    value={formData.name} 
-                    onChange={e => setFormData({...formData, name: e.target.value})} 
-                    placeholder="e.g., Summer Promo Carousel" 
+                  <input
+                    required
+                    type="text"
+                    className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900"
+                    value={formData.name}
+                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g., Summer Promo Carousel"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-neutral-700 mb-1">Category</label>
-                    <select 
-                      className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" 
-                      value={formData.category} 
-                      onChange={e => setFormData({...formData, category: e.target.value})}
+                    <select
+                      className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900"
+                      value={formData.category}
+                      onChange={e => setFormData({ ...formData, category: e.target.value })}
                     >
                       <option>Hero</option>
                       <option>Carousel</option>
@@ -709,10 +695,10 @@ export const SectionLibrary = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-neutral-700 mb-1">Type</label>
-                    <select 
-                      className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" 
-                      value={formData.type} 
-                      onChange={e => setFormData({...formData, type: e.target.value})}
+                    <select
+                      className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900"
+                      value={formData.type}
+                      onChange={e => setFormData({ ...formData, type: e.target.value })}
                     >
                       <option>Hero</option>
                       <option>Product</option>
@@ -724,23 +710,23 @@ export const SectionLibrary = () => {
 
                 <div className="border-t border-neutral-200 pt-6 space-y-6">
                   <h3 className="font-bold text-neutral-900 font-serif">Section Content</h3>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-neutral-700 mb-1">Title</label>
-                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.title} onChange={e => setContent({...content, title: e.target.value})} placeholder="Section Title" />
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.title} onChange={e => setContent({ ...content, title: e.target.value })} placeholder="Section Title" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-neutral-700 mb-1">Subtitle</label>
-                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.subtitle} onChange={e => setContent({...content, subtitle: e.target.value})} placeholder="Section Subtitle" />
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.subtitle} onChange={e => setContent({ ...content, subtitle: e.target.value })} placeholder="Section Subtitle" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Text</label>
-                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaText} onChange={e => setContent({...content, ctaText: e.target.value})} placeholder="Explore Now" />
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaText} onChange={e => setContent({ ...content, ctaText: e.target.value })} placeholder="Explore Now" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Link</label>
-                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaUrl} onChange={e => setContent({...content, ctaUrl: e.target.value})} placeholder="/shop" />
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaUrl} onChange={e => setContent({ ...content, ctaUrl: e.target.value })} placeholder="/shop" />
                     </div>
                   </div>
 
@@ -749,43 +735,43 @@ export const SectionLibrary = () => {
                     <div className="space-y-3">
                       {content.items.map((item, index) => (
                         <div key={item.id} className="p-4 border border-neutral-200 rounded-lg bg-neutral-50 flex gap-4 items-start">
-                           <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
-                              <div>
-                                <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
-                                <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.title} onChange={e => {
-                                  const newItems = [...content.items];
-                                  newItems[index].title = e.target.value;
-                                  setContent({...content, items: newItems});
-                                }} placeholder="e.g. Living Room" />
-                              </div>
-                              <div>
-                                <label className="block text-xs font-medium text-neutral-500 mb-1">Image URL</label>
-                                <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.imageUrl} onChange={e => {
-                                  const newItems = [...content.items];
-                                  newItems[index].imageUrl = e.target.value;
-                                  setContent({...content, items: newItems});
-                                }} placeholder="https://..." />
-                              </div>
-                              <div>
-                                <label className="block text-xs font-medium text-neutral-500 mb-1">Link</label>
-                                <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.link} onChange={e => {
-                                  const newItems = [...content.items];
-                                  newItems[index].link = e.target.value;
-                                  setContent({...content, items: newItems});
-                                }} placeholder="/category/..." />
-                              </div>
-                           </div>
-                           <button type="button" onClick={() => {
-                             const newItems = content.items.filter(i => i.id !== item.id);
-                             setContent({...content, items: newItems});
-                           }} className="text-red-500 hover:text-red-700 mt-6 p-1 transition-colors" title="Remove Item">
-                              <Trash2 size={18} />
-                           </button>
+                          <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                              <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
+                              <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.title} onChange={e => {
+                                const newItems = [...content.items];
+                                newItems[index].title = e.target.value;
+                                setContent({ ...content, items: newItems });
+                              }} placeholder="e.g. Living Room" />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-neutral-500 mb-1">Image URL</label>
+                              <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.imageUrl} onChange={e => {
+                                const newItems = [...content.items];
+                                newItems[index].imageUrl = e.target.value;
+                                setContent({ ...content, items: newItems });
+                              }} placeholder="https://..." />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-neutral-500 mb-1">Link</label>
+                              <input type="text" className="w-full text-sm border border-neutral-300 rounded p-1.5 focus:ring-1 focus:ring-neutral-900" value={item.link} onChange={e => {
+                                const newItems = [...content.items];
+                                newItems[index].link = e.target.value;
+                                setContent({ ...content, items: newItems });
+                              }} placeholder="/category/..." />
+                            </div>
+                          </div>
+                          <button type="button" onClick={() => {
+                            const newItems = content.items.filter(i => i.id !== item.id);
+                            setContent({ ...content, items: newItems });
+                          }} className="text-red-500 hover:text-red-700 mt-6 p-1 transition-colors" title="Remove Item">
+                            <Trash2 size={18} />
+                          </button>
                         </div>
                       ))}
                     </div>
                     <button type="button" onClick={() => {
-                      setContent({...content, items: [...content.items, { id: Date.now(), imageUrl: '', title: '', link: '' }]})
+                      setContent({ ...content, items: [...content.items, { id: Date.now(), imageUrl: '', title: '', link: '' }] })
                     }} className="mt-4 text-sm font-medium text-primary hover:text-indigo-800 flex items-center gap-1 transition-colors">
                       + Add Image Item
                     </button>
@@ -793,7 +779,7 @@ export const SectionLibrary = () => {
                 </div>
               </form>
             </div>
-            
+
             <div className="p-6 border-t border-neutral-200 bg-neutral-50 rounded-b-lg flex justify-end gap-2 shrink-0">
               <button type="button" onClick={closeModal} className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded hover:bg-white transition-colors">Cancel</button>
               <button type="submit" form="create-section-form" className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800 transition-colors">{editingSectionId ? 'Save Changes' : 'Create Template'}</button>
@@ -803,7 +789,7 @@ export const SectionLibrary = () => {
       )}
 
       {isHeroModalOpen && heroSectionToEdit && (
-        <HeroEditorModal 
+        <HeroEditorModal
           section={heroSectionToEdit}
           onUpdate={handleHeroModalUpdate}
           onClose={() => {
@@ -841,9 +827,8 @@ export const BlockCenter = () => {
                 <td className="px-6 py-4 font-medium text-neutral-900">{b.name}</td>
                 <td className="px-6 py-4 text-neutral-600">{b.type}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    b.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${b.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    }`}>
                     {b.status}
                   </span>
                 </td>
@@ -877,14 +862,14 @@ const MegaMenuEditableItem = ({ item, onChange, onDelete, onMoveUp, onMoveDown, 
   if (isEditing) {
     return (
       <div className="p-3 bg-white border border-primary rounded shadow-sm space-y-3 mb-2">
-        <ReferenceItemSelector 
-          item={item} 
-          onChange={onChange} 
-          categories={categories} 
-          products={products} 
-          collections={collections} 
-          brands={brands} 
-          small={true} 
+        <ReferenceItemSelector
+          item={item}
+          onChange={onChange}
+          categories={categories}
+          products={products}
+          collections={collections}
+          brands={brands}
+          small={true}
         />
         <div className="flex justify-end gap-2">
           {onDelete && <button onClick={onDelete} className="text-xs text-red-500 hover:text-red-700 px-2 py-1">Delete</button>}
@@ -918,7 +903,7 @@ export const NavigationCenter = () => {
   const { products } = useProducts();
   const { collections } = useCollections();
   const { brands } = useBrands();
-  
+
   const [activeMenuId, setActiveMenuId] = React.useState(null);
   const [activeItemId, setActiveItemId] = React.useState(null);
 
@@ -939,8 +924,8 @@ export const NavigationCenter = () => {
     setMenus(menus.map(m => m.id === updatedMenu.id ? updatedMenu : m));
   };
 
-  const handleDragStart = (e, index) => { 
-    e.dataTransfer.setData('index', index); 
+  const handleDragStart = (e, index) => {
+    e.dataTransfer.setData('index', index);
   };
   const handleDrop = (e, targetIndex) => {
     e.preventDefault();
@@ -971,7 +956,7 @@ export const NavigationCenter = () => {
           <div className="col-span-1 bg-surface rounded-lg shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
             <div className="p-4 border-b border-neutral-200 bg-neutral-50 flex justify-between items-center">
               <h2 className="font-medium text-neutral-900">Menu Items</h2>
-              <button 
+              <button
                 onClick={() => {
                   const newItem = { id: `new-top-${Date.now()}`, title: 'New Item', link: '/', visibility: true, isMegaMenu: false, columns: [], promoBanner: { imageUrl: '', link: '', altText: '' } };
                   handleUpdateMenu({ ...activeMenu, items: [...(activeMenu.items || []), newItem] });
@@ -984,24 +969,23 @@ export const NavigationCenter = () => {
             </div>
             <div className="p-2 space-y-2 overflow-y-auto max-h-[600px]">
               {(activeMenu.items || []).map((item, idx) => (
-                <div 
+                <div
                   key={item.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, idx)}
                   onDrop={(e) => handleDrop(e, idx)}
                   onDragOver={handleDragOver}
                   onClick={() => setActiveItemId(item.id)}
-                  className={`p-3 rounded border cursor-pointer flex justify-between items-center transition-colors ${
-                    activeItemId === item.id ? 'border-primary bg-indigo-50/50' : 'border-neutral-200 hover:border-neutral-300'
-                  }`}
+                  className={`p-3 rounded border cursor-pointer flex justify-between items-center transition-colors ${activeItemId === item.id ? 'border-primary bg-indigo-50/50' : 'border-neutral-200 hover:border-neutral-300'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="text-neutral-400 cursor-grab px-1">≡</div>
                     <div>
                       <div className="font-medium text-sm text-neutral-900">{resolveItemTitle(item)}</div>
                       <div className="text-xs text-neutral-500">
-                        {item.referenceType 
-                          ? `${item.referenceType.charAt(0).toUpperCase() + item.referenceType.slice(1)} Reference` 
+                        {item.referenceType
+                          ? `${item.referenceType.charAt(0).toUpperCase() + item.referenceType.slice(1)} Reference`
                           : (item.isMegaMenu ? 'Mega Menu' : 'Standard Link')}
                       </div>
                     </div>
@@ -1022,7 +1006,7 @@ export const NavigationCenter = () => {
                 <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6 space-y-4">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-medium text-neutral-900">Item Settings</h3>
-                    <button 
+                    <button
                       onClick={() => {
                         handleUpdateMenu({ ...activeMenu, items: activeMenu.items.filter(i => i.id !== activeItem.id) });
                         setActiveItemId(null);
@@ -1032,7 +1016,7 @@ export const NavigationCenter = () => {
                       <Trash2 size={18} />
                     </button>
                   </div>
-                  
+
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-neutral-700 mb-2">Item Link Configuration</label>
                     <ReferenceItemSelector
@@ -1049,8 +1033,8 @@ export const NavigationCenter = () => {
 
                   <div className="flex items-center gap-6 pt-2">
                     <label className="flex items-center gap-2 text-sm cursor-pointer">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         checked={activeItem.visibility}
                         onChange={(e) => {
                           const updated = { ...activeItem, visibility: e.target.checked };
@@ -1061,8 +1045,8 @@ export const NavigationCenter = () => {
                       Visible
                     </label>
                     <label className="flex items-center gap-2 text-sm cursor-pointer">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         checked={activeItem.isMegaMenu}
                         onChange={(e) => {
                           const updated = { ...activeItem, isMegaMenu: e.target.checked };
@@ -1079,7 +1063,7 @@ export const NavigationCenter = () => {
                   <div className="bg-surface rounded-lg shadow-sm border border-neutral-200 p-6 space-y-6">
                     <div className="flex justify-between items-center">
                       <h3 className="text-lg font-medium text-neutral-900">Mega Menu Columns</h3>
-                      <button 
+                      <button
                         onClick={() => {
                           const newCol = { id: `col-${Date.now()}`, groups: [] };
                           const updated = { ...activeItem, columns: [...(activeItem.columns || []), newCol] };
@@ -1094,7 +1078,7 @@ export const NavigationCenter = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {(activeItem.columns || []).map((col, colIdx) => (
                         <div key={col.id} className="border border-neutral-200 rounded p-4 bg-neutral-50 relative">
-                          <button 
+                          <button
                             onClick={() => {
                               const updatedCols = activeItem.columns.filter(c => c.id !== col.id);
                               const updated = { ...activeItem, columns: updatedCols };
@@ -1105,7 +1089,7 @@ export const NavigationCenter = () => {
                             <Trash2 size={14} />
                           </button>
                           <div className="font-medium text-sm text-neutral-700 mb-3">Column {colIdx + 1}</div>
-                          
+
                           <div className="space-y-4">
                             {col.groups.map((group, groupIdx) => (
                               <div key={group.id} className="bg-white border border-neutral-200 rounded p-3">
@@ -1185,20 +1169,20 @@ export const NavigationCenter = () => {
                                     />
                                   ))}
                                   <button onClick={() => {
-                                      const updatedCols = [...activeItem.columns];
-                                      updatedCols[colIdx].groups.find(g => g.id === group.id).items.push({ id: `lnk-${Date.now()}`, title: '', link: '', referenceType: '', referenceId: '' });
-                                      const updated = { ...activeItem, columns: updatedCols };
-                                      handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                                    const updatedCols = [...activeItem.columns];
+                                    updatedCols[colIdx].groups.find(g => g.id === group.id).items.push({ id: `lnk-${Date.now()}`, title: '', link: '', referenceType: '', referenceId: '' });
+                                    const updated = { ...activeItem, columns: updatedCols };
+                                    handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
                                   }} className="text-xs text-primary hover:underline mt-1 flex items-center gap-1"><span className="text-lg leading-none">+</span> Add Item</button>
                                 </div>
                               </div>
                             ))}
-                            
+
                             <button onClick={() => {
-                                const updatedCols = [...activeItem.columns];
-                                updatedCols[colIdx].groups.push({ id: `grp-${Date.now()}`, title: '', link: '', referenceType: '', referenceId: '', items: [] });
-                                const updated = { ...activeItem, columns: updatedCols };
-                                handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                              const updatedCols = [...activeItem.columns];
+                              updatedCols[colIdx].groups.push({ id: `grp-${Date.now()}`, title: '', link: '', referenceType: '', referenceId: '', items: [] });
+                              const updated = { ...activeItem, columns: updatedCols };
+                              handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
                             }} className="text-xs font-medium text-neutral-600 hover:text-neutral-900 w-full text-left bg-white border border-dashed border-neutral-300 p-2 rounded flex items-center gap-1">
                               <span className="text-lg leading-none">+</span> Add Group
                             </button>
@@ -1213,17 +1197,17 @@ export const NavigationCenter = () => {
                         <div>
                           <label className="block text-xs text-neutral-500 mb-1">Image URL</label>
                           <input type="text" value={activeItem.promoBanner?.imageUrl || ''} onChange={(e) => {
-                             const pb = { ...(activeItem.promoBanner || {}), imageUrl: e.target.value };
-                             const updated = { ...activeItem, promoBanner: pb };
-                             handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                            const pb = { ...(activeItem.promoBanner || {}), imageUrl: e.target.value };
+                            const updated = { ...activeItem, promoBanner: pb };
+                            handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
                           }} className="w-full text-sm border p-2 rounded border-neutral-300" placeholder="https://..." />
                         </div>
                         <div>
                           <label className="block text-xs text-neutral-500 mb-1">Link</label>
                           <input type="text" value={activeItem.promoBanner?.link || ''} onChange={(e) => {
-                             const pb = { ...(activeItem.promoBanner || {}), link: e.target.value };
-                             const updated = { ...activeItem, promoBanner: pb };
-                             handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
+                            const pb = { ...(activeItem.promoBanner || {}), link: e.target.value };
+                            const updated = { ...activeItem, promoBanner: pb };
+                            handleUpdateMenu({ ...activeMenu, items: activeMenu.items.map(i => i.id === activeItem.id ? updated : i) });
                           }} className="w-full text-sm border p-2 rounded border-neutral-300" placeholder="/sale" />
                         </div>
                       </div>
@@ -1267,9 +1251,8 @@ export const NavigationCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{m.type}</td>
                 <td className="px-6 py-4 text-neutral-600">{m.items?.length || 0}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    m.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${m.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    }`}>
                     {m.status}
                   </span>
                 </td>
@@ -1307,29 +1290,29 @@ export const HeaderManager = () => {
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Logo Text</label>
           <div className="flex items-center gap-4">
-            <input 
-              type="text" 
-              name="logoText" 
-              value={headerConfig?.logoText || ''} 
-              onChange={handleChange} 
-              className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm" 
+            <input
+              type="text"
+              name="logoText"
+              value={headerConfig?.logoText || ''}
+              onChange={handleChange}
+              className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm"
             />
           </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Primary Menu</label>
           <div className="flex items-center gap-4">
-            <select 
-              name="primaryMenuId" 
-              value={headerConfig?.primaryMenuId || ''} 
-              onChange={handleChange} 
+            <select
+              name="primaryMenuId"
+              value={headerConfig?.primaryMenuId || ''}
+              onChange={handleChange}
               className="flex-1 border-neutral-300 rounded-md shadow-sm p-2 border text-sm"
             >
               {headerMenus.map(m => (
                 <option key={m.id} value={m.id}>{m.name}</option>
               ))}
             </select>
-            <Link 
+            <Link
               to="/admin/cms/navigation"
               className="px-4 py-2 border border-neutral-200 text-sm font-medium rounded hover:bg-neutral-50 text-neutral-700 whitespace-nowrap"
             >
@@ -1417,9 +1400,8 @@ export const BannerManager = () => {
                 <td className="px-6 py-4 text-neutral-600">{b.placement}</td>
                 <td className="px-6 py-4 text-neutral-600">{b.startDate} - {b.endDate}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    b.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${b.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    }`}>
                     {b.status}
                   </span>
                 </td>
@@ -1459,9 +1441,8 @@ export const SEOCenter = () => {
                 <td className="px-6 py-4 font-medium text-neutral-900">{s.pageId}</td>
                 <td className="px-6 py-4 text-neutral-600">{s.title}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    s.status === 'Indexed' ? 'bg-success-soft text-green-800' : 'bg-warning-soft text-amber-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${s.status === 'Indexed' ? 'bg-success-soft text-green-800' : 'bg-warning-soft text-amber-800'
+                    }`}>
                     {s.status}
                   </span>
                 </td>
@@ -1504,9 +1485,8 @@ export const RedirectCenter = () => {
                 <td className="px-6 py-4 text-neutral-600">{r.destination}</td>
                 <td className="px-6 py-4 text-neutral-600">{r.statusCode}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    r.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${r.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
+                    }`}>
                     {r.status}
                   </span>
                 </td>
@@ -1533,30 +1513,30 @@ export const PagePreview = () => {
     <div className="flex flex-col h-[calc(100vh-4rem)] -m-8 bg-neutral-100">
       <div className="bg-surface border-b border-neutral-200 p-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link to={`/admin/cms/pages/${pageId}/builder`} className="text-neutral-500 hover:text-neutral-900"><ArrowLeft className="w-5 h-5"/></Link>
+          <Link to={`/admin/cms/pages/${pageId}/builder`} className="text-neutral-500 hover:text-neutral-900"><ArrowLeft className="w-5 h-5" /></Link>
           <span className="font-medium">{page.name} - Preview</span>
         </div>
         <div className="flex gap-2">
-           <div className="flex bg-neutral-100 rounded p-1 border border-neutral-200 mr-4">
-              <button className="px-3 py-1 text-sm bg-surface shadow-sm rounded">Desktop</button>
-              <button className="px-3 py-1 text-sm text-neutral-500 hover:text-neutral-900">Tablet</button>
-              <button className="px-3 py-1 text-sm text-neutral-500 hover:text-neutral-900">Mobile</button>
-            </div>
+          <div className="flex bg-neutral-100 rounded p-1 border border-neutral-200 mr-4">
+            <button className="px-3 py-1 text-sm bg-surface shadow-sm rounded">Desktop</button>
+            <button className="px-3 py-1 text-sm text-neutral-500 hover:text-neutral-900">Tablet</button>
+            <button className="px-3 py-1 text-sm text-neutral-500 hover:text-neutral-900">Mobile</button>
+          </div>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto flex justify-center p-8">
         <div className="bg-surface w-full max-w-6xl shadow-xl min-h-full border border-neutral-200 rounded">
-            {/* Simple Mock Header */}
-            <div className="h-16 border-b border-neutral-200 flex items-center px-8 justify-between bg-white sticky top-0 z-10">
-              <div className="font-serif font-bold text-xl uppercase tracking-widest text-black">STOREFRONT</div>
-              <div className="space-x-8 text-xs font-medium uppercase tracking-widest text-gray-500">
-                <span>Shop</span>
-                <span>Collections</span>
-                <span>About</span>
-              </div>
+          {/* Simple Mock Header */}
+          <div className="h-16 border-b border-neutral-200 flex items-center px-8 justify-between bg-white sticky top-0 z-10">
+            <div className="font-serif font-bold text-xl uppercase tracking-widest text-black">STOREFRONT</div>
+            <div className="space-x-8 text-xs font-medium uppercase tracking-widest text-gray-500">
+              <span>Shop</span>
+              <span>Collections</span>
+              <span>About</span>
             </div>
-            
-            <SectionRenderer sections={sections} />
+          </div>
+
+          <SectionRenderer sections={sections} />
         </div>
       </div>
     </div>
@@ -1651,9 +1631,8 @@ export const PageTypeCenter = () => {
                   <td className="px-6 py-4 text-neutral-600">{pt.description}</td>
                   <td className="px-6 py-4 text-neutral-600">{usageCount}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      pt.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${pt.status === 'Active' ? 'bg-success-soft text-green-800' : 'bg-neutral-100 text-neutral-800'
+                      }`}>
                       {pt.status}
                     </span>
                   </td>
@@ -1679,9 +1658,9 @@ export const PageTypeCenter = () => {
 export const PageTypeForm = () => {
   const { pageTypes, setPageTypes } = useCMS();
   const { id } = useParams();
-  
+
   const [formData, setFormData] = React.useState(
-    id 
+    id
       ? (pageTypes.find(pt => pt.id === id) || { name: '', slug: '', description: '', template: '', status: 'Active' })
       : { name: '', slug: '', description: '', template: '', status: 'Active' }
   );
@@ -1707,23 +1686,23 @@ export const PageTypeForm = () => {
       <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm space-y-4">
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Name</label>
-          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. Furniture Guide" />
+          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Furniture Guide" />
         </div>
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Slug</label>
-          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} placeholder="e.g. furniture-guide" />
+          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.slug} onChange={e => setFormData({ ...formData, slug: e.target.value })} placeholder="e.g. furniture-guide" />
         </div>
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Description</label>
-          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="e.g. Dynamic guide for furniture" />
+          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="e.g. Dynamic guide for furniture" />
         </div>
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Template Reference</label>
-          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.template} onChange={e => setFormData({...formData, template: e.target.value})} placeholder="e.g. default-guide" />
+          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.template} onChange={e => setFormData({ ...formData, template: e.target.value })} placeholder="e.g. default-guide" />
         </div>
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Status</label>
-          <select className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}>
+          <select className="w-full border-neutral-300 rounded-md shadow-sm p-2 border" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
           </select>

@@ -12,6 +12,7 @@ import MobileMenu from '../components/layout/MobileMenu';
 import Navbar from '../components/navigation/Navbar';
 import { useStorefrontTheme } from '../context/StorefrontThemeContext';
 import { useCMS } from '../../admin/context/cms/CMSContext';
+import PageLoader from '../components/layout/PageLoader';
 
 export default function StorefrontLayout() {
   const { activeTheme } = useStorefrontTheme();
@@ -22,12 +23,32 @@ export default function StorefrontLayout() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Show loader on every hard reload (always starts true).
+  // The PageLoader calls onDone() after its animation completes,
+  // which sets this to false and reveals the page.
+  const [showLoader, setShowLoader] = useState(true);
+
+  const handleLoaderDone = () => {
+    setShowLoader(false);
+  };
+
+  const isTransparentOnTop = headerConfig?.navbarStyle === 'transparent' || headerConfig?.transparentOnTop;
+  const navHeight = headerConfig?.height || 72;
+
   return (
-    <div className={`min-h-screen flex flex-col font-sans ${activeTheme.tokens.background} ${activeTheme.tokens.text.primary}`}>
-      <main className="flex-1 flex flex-col w-full">
-        <Outlet />
-      </main>
-      <CartDrawer />
-    </div>
+    <>
+      {showLoader && <PageLoader onDone={handleLoaderDone} />}
+      <div className={`min-h-screen flex flex-col font-sans ${activeTheme.tokens.background} ${activeTheme.tokens.text.primary}`}>
+        <Navbar />
+        <main
+          className="flex-1 flex flex-col w-full"
+          style={{ paddingTop: isTransparentOnTop ? 0 : `${navHeight}px` }}
+        >
+          <Outlet />
+        </main>
+        <CartDrawer />
+      </div>
+    </>
   );
 }
+

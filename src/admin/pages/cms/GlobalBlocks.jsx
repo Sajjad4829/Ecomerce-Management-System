@@ -7,55 +7,10 @@ import BlockGrid from '../../components/cms/blocks/BlockGrid';
 import BlockPreviewDrawer from '../../components/cms/blocks/BlockPreviewDrawer';
 import EmptyState from '../../components/cms/sections/EmptyState'; // Reusing from sections
 
-// Mock Data for Global Blocks
-const MOCK_BLOCKS = [
-  {
-    id: 'block-1',
-    name: 'Summer Sale Promo Banner',
-    category: 'Banners',
-    description: 'Global promotional banner for the Summer Sale. Used across all category pages.',
-    version: '1.2',
-    tags: ['Promo', 'Summer', 'Sale'],
-    status: 'published',
-    usageCount: 14,
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800'
-  },
-  {
-    id: 'block-2',
-    name: 'Standard Footer - 2024',
-    category: 'Footers',
-    description: 'The main global footer containing newsletter signup, links, and copyright.',
-    version: '3.0',
-    tags: ['Footer', 'Global', 'Navigation'],
-    status: 'published',
-    usageCount: 42,
-    image: ''
-  },
-  {
-    id: 'block-3',
-    name: 'Newsletter CTA - Inline',
-    category: 'Newsletters',
-    description: 'Inline newsletter signup block intended for use within blog posts or long-form content.',
-    version: '1.0',
-    tags: ['Newsletter', 'Conversion'],
-    status: 'draft',
-    usageCount: 0,
-    image: ''
-  },
-  {
-    id: 'block-4',
-    name: 'Featured Products Grid - Homepage',
-    category: 'Product Grids',
-    description: 'A curated 4-column grid of top-selling products.',
-    version: '2.1',
-    tags: ['Products', 'Homepage', 'Bestsellers'],
-    status: 'published',
-    usageCount: 1,
-    image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=800'
-  }
-];
+import { useCMS } from '../../context/cms/CMSContext';
 
 export default function GlobalBlocks() {
+  const { blocks } = useCMS();
   const [activeCategory, setActiveCategory] = useState('All Blocks');
   const [searchQuery, setSearchQuery] = useState('');
   const [view, setView] = useState('grid');
@@ -63,7 +18,7 @@ export default function GlobalBlocks() {
 
   // Filter Logic
   const filteredBlocks = useMemo(() => {
-    return MOCK_BLOCKS.filter(block => {
+    return blocks.filter(block => {
       const matchesCategory = 
         activeCategory === 'All Blocks' || 
         block.category === activeCategory;
@@ -75,7 +30,7 @@ export default function GlobalBlocks() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [blocks, activeCategory, searchQuery]);
 
   return (
     <div className="space-y-8 pb-12">

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { FiType, FiLayout, FiImage, FiSettings, FiMaximize, FiArrowRight, FiEye, FiMonitor, FiTablet, FiSmartphone, FiPlay, FiCode, FiChevronDown, FiChevronUp, FiTrash2, FiPlus } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiType, FiLayout, FiImage, FiSettings, FiMaximize, FiArrowRight, FiEye, FiMonitor, FiTablet, FiSmartphone, FiPlay, FiCode, FiChevronDown, FiChevronUp, FiTrash2, FiPlus, FiExternalLink } from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
 import { getSectionSchema, FIELD_TYPES } from './sectionEditorSchemas';
 
@@ -193,7 +194,7 @@ const DynamicField = ({ field, value, onChange }) => {
   );
 };
 
-export default function PropertyPanel({ activeSectionId, sections, onUpdateSection, device, setDevice, onOpenHeroEditor }) {
+export default function PropertyPanel({ activeSectionId, sections, onUpdateSection, device, setDevice, onOpenHeroEditor, onOpenFeaturedEditor }) {
   if (!activeSectionId) {
     return (
       <div className="w-[280px] bg-surface border-l border-black/10 flex flex-col h-full shrink-0 z-10 p-8 items-center justify-center text-center">
@@ -216,9 +217,21 @@ export default function PropertyPanel({ activeSectionId, sections, onUpdateSecti
           <FiSettings size={24} />
         </div>
         <h3 className="text-sm font-bold text-text-primary mb-2">Global Component</h3>
-        <p className="text-xs text-text-muted font-medium leading-relaxed mb-4">
-          This {isNavbar ? 'navbar' : 'footer'} is configured globally. 
-          To edit its links, colors, and layout, please use the {isNavbar ? 'Navbar Builder' : 'Footer Builder'} in the CMS dashboard.
+        <p className="text-xs text-text-muted font-medium leading-relaxed mb-6">
+          This {isNavbar ? 'navbar' : 'footer'} is a <span className="font-bold text-text-primary">global section</span> — it appears
+          on all pages and is configured in the{' '}
+          {isNavbar ? 'Navbar Builder' : 'Footer Builder'}.
+        </p>
+        <Link
+          to={isNavbar ? '/admin/cms/header' : '/admin/cms/footer'}
+          className="w-full py-2.5 bg-[#5946ff] text-white text-xs font-semibold rounded-lg hover:bg-[#4335cc] transition-colors flex items-center justify-center gap-2 shadow-sm mb-3"
+        >
+          <FiExternalLink size={14} />
+          Open {isNavbar ? 'Header' : 'Footer'} Config
+        </Link>
+        <p className="text-[10px] text-text-muted leading-relaxed">
+          Links, colors, logo, and layout can only be changed inside the{' '}
+          {isNavbar ? 'Header Config' : 'Footer Config'} section.
         </p>
       </div>
     );
@@ -294,6 +307,21 @@ export default function PropertyPanel({ activeSectionId, sections, onUpdateSecti
             </button>
             <p className="text-[10px] text-text-muted mt-2 text-center">
               Manage slides, overlay, and layout in the full-screen editor.
+            </p>
+          </div>
+        )}
+        
+        {section.type === 'FEATURED_SHOWCASE' && (
+          <div className="p-4 border-b border-black/5">
+            <button
+              onClick={onOpenFeaturedEditor}
+              className="w-full py-2.5 bg-[#5946ff] text-white text-xs font-semibold rounded-lg hover:bg-[#4335cc] transition-colors flex items-center justify-center gap-2 shadow-sm"
+            >
+              <FiMaximize size={14} />
+              Open Advanced Featured Editor
+            </button>
+            <p className="text-[10px] text-text-muted mt-2 text-center">
+              Manage grid images and titles in the full-screen editor.
             </p>
           </div>
         )}

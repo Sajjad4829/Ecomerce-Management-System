@@ -98,84 +98,23 @@ export default function ProductEditor() {
 
   useEffect(() => {
     if (!isNew) {
-      const initialData = {
-        status: 'published',
-        basicInfo: {
-          name: 'The Sovereign Curved Sofa',
-          badge: 'NEW ARRIVAL',
-          sku: 'AUR-SOF-001',
-          brand: 'AURA',
-          shortDescription: 'A masterclass in modern seating, featuring a sweeping curved silhouette and premium upholstery designed for both striking aesthetic impact and enveloping comfort.',
-          description: 'The Sovereign Curved Sofa challenges the conventional with its organic, sweeping lines and sculptural presence. Inspired by natural forms, this masterwork anchors any room with a feeling of fluidity and grace. Every curve is meticulously engineered to provide ergonomic support, ensuring that this piece is as exceptionally comfortable as it is visually arresting.'
-        },
-        organization: {
-          categoryId: 'cat-1-1-1',
-          subCategory: 'Sofas & Sectionals',
-          childCategory: 'Curved Sofas',
-          collection: 'The Sanctuary',
-          tags: ['curved', 'luxury', 'boucle']
-        },
-        media: {
-          primaryImage: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800',
-          gallery: [
-            'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800',
-            'https://images.unsplash.com/photo-1583847268964-b28ce8f52859?auto=format&fit=crop&q=80&w=800'
-          ],
-          view360: {
-            enabled: true,
-            autoRotate: true,
-            speed: 50,
-            frames: [
-              'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800',
-              'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800',
-              'https://images.unsplash.com/photo-1583847268964-b28ce8f52859?auto=format&fit=crop&q=80&w=800'
-            ]
+      const fetchProduct = async () => {
+        try {
+          const res = await fetch(`/api/products/${id}`);
+          if (res.ok) {
+            const data = await res.json();
+            setFormData(data);
+            if (data.variants && data.variants.length > 0) setActivePreviewVariant(data.variants[0]);
+          } else {
+            addToast({ type: 'error', message: 'Failed to load product' });
           }
-        },
-        variants: [
-          { id: 'v1', name: 'Alabaster Bouclé', sku: 'AUR-SOF-001-ALB', price: 12850, stock: 3, image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800', color: 'White' },
-          { id: 'v2', name: 'Charcoal Velvet', sku: 'AUR-SOF-001-CHA', price: 13200, stock: 2, image: 'https://images.unsplash.com/photo-1583847268964-b28ce8f52859?auto=format&fit=crop&q=80&w=800', color: 'DarkGray' }
-        ],
-        pricing: {
-          regularPrice: 14000,
-          salePrice: 12850,
-          emi: 50,
-          cost: 6000,
-          currency: 'USD'
-        },
-        inventory: {
-          totalStock: 5,
-          status: 'In Stock'
-        },
-        furnitureDetails: {
-          dimensions: { width: '96"', height: '30"', depth: '42"', seatHeight: '18"', weight: '185 lbs' },
-          materials: { frameMaterial: 'Kiln-dried hardwood', woodType: 'Ash', woodFinish: 'Natural', upholsteryMaterial: 'Bouclé', fabric: 'Premium Italian Bouclé', leather: '', color: 'Alabaster' },
-          specifications: { assemblyRequired: 'No', roomType: 'Living Room', seatingCapacity: '3' },
-          care: { furniture: 'Keep away from direct sunlight.', upholstery: 'Vacuum regularly with a soft brush attachment. For spills, blot immediately.' },
-          warranty: { duration: '10-Year Limited Warranty', description: 'Covers the frame and spring system.', returnPolicy: 'Custom or made-to-order items are non-returnable. White Glove Delivery included.' },
-          story: 'Meticulously crafted by master artisans over 40 hours.'
-        },
-        seo: {
-          slug: 'sovereign-curved-sofa',
-          metaTitle: 'The Sovereign Curved Sofa | Aurelia Furniture',
-          metaDescription: 'Discover the Sovereign Curved Sofa. Premium bespoke seating.',
-          metaKeywords: 'curved sofa, luxury sofa, boucle, modern seating',
-          canonicalUrl: 'https://aurelia.com/products/sovereign-curved-sofa',
-          openGraphImage: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200'
-        },
-        reviews: {
-          averageRating: 4.8, reviewCount: 12,
-          published: [
-            { id: 1, rating: 5, author: 'Jane D.', text: 'Absolutely stunning and comfortable.', date: '2023-10-12' },
-            { id: 2, rating: 4, author: 'Michael R.', text: 'Beautiful piece, but delivery took longer than expected.', date: '2023-09-28' }
-          ],
-          pending: []
+        } catch (err) {
+          addToast({ type: 'error', message: 'Error loading product' });
         }
       };
-      setFormData(initialData);
-      if (initialData.variants.length > 0) setActivePreviewVariant(initialData.variants[0]);
+      fetchProduct();
     }
-  }, [id, isNew]);
+  }, [id, isNew, addToast]);
 
   const handleChange = (section, field, value) => {
     setFormData(prev => {
@@ -233,8 +172,8 @@ export default function ProductEditor() {
 
   const updateVariants = (updateFn) => {
     setFormData(prev => {
-      const mockFlat = { variants: prev.variants };
-      const nextFlat = updateFn(mockFlat);
+      const currentFlat = { variants: prev.variants };
+      const nextFlat = updateFn(currentFlat);
       setHasUnsavedChanges(true);
       return { ...prev, variants: nextFlat.variants };
     });

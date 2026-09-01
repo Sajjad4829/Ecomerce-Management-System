@@ -36,7 +36,7 @@ export default function EditorToolbar({ page, onSaveDraft, onPublish }) {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center justify-between w-48 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-gray-900 hover:border-gray-300 transition-colors"
             >
-              <span className="font-medium truncate">{page?.name || 'Unknown Page'}</span>
+              <span className="font-medium truncate">{page?.title || page?.name || 'Unknown Page'}</span>
               <FiChevronDown className="text-gray-400 shrink-0 ml-2" />
             </button>
             
@@ -57,7 +57,7 @@ export default function EditorToolbar({ page, onSaveDraft, onPublish }) {
                         className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center justify-between ${page?.id === p.id ? 'bg-blue-50/50 text-[#635BFF] font-medium' : 'text-gray-700'}`}
                       >
                         <div className="flex flex-col truncate">
-                          <span className="truncate">{p.name}</span>
+                          <span className="truncate">{p.title || p.name}</span>
                           <span className="text-xs text-gray-400 truncate font-mono">{p.slug || '/'}</span>
                         </div>
                         {page?.id === p.id && <FiCheck className="text-[#635BFF] shrink-0 ml-2" />}

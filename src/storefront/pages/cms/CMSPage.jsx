@@ -5,7 +5,7 @@ import SectionRenderer from '../../components/sections/SectionRenderer';
 
 export default function CMSPage() {
   const { slug } = useParams();
-  const { pages, getPageSections } = useCMS();
+  const { pages, getPageSections, loadPageSections, pagesLoading } = useCMS();
   
   // Find page by slug. Need to prepend '/' since slugs in CMS are stored like '/about'
   let matchedPage = pages.find(p => {
@@ -25,9 +25,14 @@ export default function CMSPage() {
 
   useEffect(() => {
     if (matchedPage) {
-      document.title = matchedPage.title || matchedPage.name;
+      document.title = matchedPage.title || matchedPage.name || 'Store';
+      loadPageSections(matchedPage.id);
     }
-  }, [matchedPage]);
+  }, [matchedPage, loadPageSections]);
+
+  if (pagesLoading) {
+    return <div className="min-h-screen bg-surface"></div>;
+  }
 
   if (!matchedPage) {
     return (
@@ -38,7 +43,7 @@ export default function CMSPage() {
     );
   }
 
-  if (matchedPage.status !== 'Published') {
+  if (matchedPage.status?.toLowerCase() !== 'published') {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col pt-24 bg-surface text-text-primary">
         <h1 className="text-4xl font-serif mb-4">Coming Soon</h1>
@@ -47,7 +52,7 @@ export default function CMSPage() {
     );
   }
 
-  const sections = getPageSections(matchedPage.id);
+  const sections = getPageSections(matchedPage.id) || [];
 
   return (
     <div className="bg-surface min-h-screen">

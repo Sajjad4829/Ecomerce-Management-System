@@ -50,39 +50,46 @@ export default function MediaUploader({ onClose }) {
 
   const startUpload = () => {
     setUploading(true);
-    // Mock upload process
     const pendingFiles = files.filter(f => f.status === 'pending');
     
-    pendingFiles.forEach((fileObj, index) => {
-      setTimeout(() => {
-        setFiles(prev => prev.map(f => f.id === fileObj.id ? { ...f, status: 'uploading', progress: 50 } : f));
-        
-        setTimeout(() => {
-          // Finish upload
-          setFiles(prev => prev.map(f => f.id === fileObj.id ? { ...f, status: 'success', progress: 100 } : f));
-          
-          // Add to mock store
-          addAsset({
-            filename: fileObj.file.name,
-            title: fileObj.file.name.split('.')[0],
-            altText: '',
-            type: fileObj.file.type.startsWith('image/') ? 'Image' : 'Document',
-            mimeType: fileObj.file.type || 'application/octet-stream',
-            size: fileObj.file.size,
-            url: 'https://placehold.co/800x800/1a1a1a/ffffff?text=New+Upload', // Mock URL
-            folderId: 'all',
-            collectionIds: [],
-            tags: []
-          });
+    pendingFiles.forEach(async (fileObj, index) => {
+      // Set to uploading
+      setFiles(prev => prev.map(f => f.id === fileObj.id ? { ...f, status: 'uploading', progress: 50 } : f));
+      
+      const formData = new FormData();
+      formData.append('file', fileObj.file);
 
-          // If last file, close after a delay
-          if (index === pendingFiles.length - 1) {
-            setTimeout(() => {
-              onClose();
-            }, 1000);
-          }
-        }, 800);
-      }, index * 500); // Stagger uploads slightly
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('Upload failed');
+        }
+
+        const newAsset = await response.json();
+
+        // Finish upload
+        setFiles(prev => prev.map(f => f.id === fileObj.id ? { ...f, status: 'success', progress: 100 } : f));
+        
+        // Add to store
+        addAsset(newAsset);
+
+        // If last file, close after a delay
+        if (index === pendingFiles.length - 1) {
+          setTimeout(() => {
+            onClose();
+          }, 1000);
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+        setFiles(prev => prev.map(f => f.id === fileObj.id ? { ...f, status: 'error', progress: 0 } : f));
+        if (index === pendingFiles.length - 1) {
+          setUploading(false); // Let the user see the error
+        }
+      }
     });
   };
 

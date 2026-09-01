@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
+import React, { createContext, useState, useContext, useMemo } from 'react';
 
 export const AuthContext = createContext(null);
 
@@ -32,28 +32,21 @@ const MOCK_CUSTOMER_USER = {
 };
 
 export function AuthProvider({ children }) {
-  const [sessionStatus, setSessionStatus] = useState('loading'); // loading, authenticated, unauthenticated
-  const [user, setUser] = useState(null);
-
-  // Mock initial session check
-  useEffect(() => {
-    const initAuth = async () => {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const storedAuth = localStorage.getItem('mock_auth_type');
-      if (storedAuth === 'admin') {
-        setUser(MOCK_ADMIN_USER);
-        setSessionStatus('authenticated');
-      } else if (storedAuth === 'customer') {
-        setUser(MOCK_CUSTOMER_USER);
-        setSessionStatus('authenticated');
-      } else {
-        setSessionStatus('unauthenticated');
-      }
-    };
-    initAuth();
-  }, []);
+  // Read auth state synchronously from localStorage so the navbar
+  // and route guards have the correct state on the very first render
+  // — no async delay, no re-render flash.
+  const [sessionStatus, setSessionStatus] = useState(() => {
+    const storedAuth = localStorage.getItem('mock_auth_type');
+    return storedAuth === 'admin' || storedAuth === 'customer'
+      ? 'authenticated'
+      : 'unauthenticated';
+  });
+  const [user, setUser] = useState(() => {
+    const storedAuth = localStorage.getItem('mock_auth_type');
+    if (storedAuth === 'admin') return MOCK_ADMIN_USER;
+    if (storedAuth === 'customer') return MOCK_CUSTOMER_USER;
+    return null;
+  });
 
   const login = async (email, password, type = 'customer') => {
     setSessionStatus('loading');

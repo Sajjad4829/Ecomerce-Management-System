@@ -7,18 +7,9 @@ import PageCard from '../../components/cms/pages/PageCard';
 import CMSStats from '../../components/cms/CMSStats';
 import EmptyState from '../../components/cms/EmptyState';
 
-const MOCK_PAGES = [
-  { id: '1', title: 'Home Page V2', slug: '/', status: 'Published', visibility: 'Public', template: 'Hero + Blocks', author: 'Admin User', lastUpdated: '2 hours ago', seoScore: 92 },
-  { id: '2', title: 'About the Craft', slug: '/about', status: 'Published', visibility: 'Public', template: 'Story Article', author: 'Content Editor', lastUpdated: '1 day ago', seoScore: 85 },
-  { id: '3', title: 'Summer Sale Landing', slug: '/summer-sale', status: 'Draft', visibility: 'Public', template: 'Landing Page', author: 'Marketing Lead', lastUpdated: '3 hours ago', seoScore: 45 },
-  { id: '4', title: 'Contact Us', slug: '/contact', status: 'Published', visibility: 'Public', template: 'Standard Page', author: 'Admin User', lastUpdated: '2 weeks ago', seoScore: 100 },
-  { id: '5', title: 'Terms of Service', slug: '/terms', status: 'Published', visibility: 'Public', template: 'Legal Policy', author: 'Legal Team', lastUpdated: '1 month ago', seoScore: 60 },
-  { id: '6', title: 'Holiday Lookbook', slug: '/lookbook/holiday', status: 'Scheduled', visibility: 'Public', template: 'Gallery Lookbook', author: 'Design Team', lastUpdated: '10 mins ago', seoScore: 78 },
-  { id: '7', title: 'Internal Guidelines', slug: '/internal/guides', status: 'Private', visibility: 'Private', template: 'Standard Page', author: 'Admin User', lastUpdated: '3 days ago', seoScore: 20 },
-  { id: '8', title: 'Old Home Page', slug: '/home-old', status: 'Archived', visibility: 'Public', template: 'Hero + Blocks', author: 'Admin User', lastUpdated: '1 year ago', seoScore: 50 },
-];
-
+import { useCMS } from '../../context/cms/CMSContext';
 export default function PagesManagement() {
+  const { pages, pagesLoading } = useCMS();
   const [viewMode, setViewMode] = useState('table'); // 'table' | 'grid'
   const [selectedIds, setSelectedIds] = useState([]);
   
@@ -30,10 +21,10 @@ export default function PagesManagement() {
   };
 
   const toggleAll = () => {
-    if (selectedIds.length === MOCK_PAGES.length) {
+    if (selectedIds.length === pages.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(MOCK_PAGES.map(p => p.id));
+      setSelectedIds(pages.map(p => p.id));
     }
   };
 
@@ -77,7 +68,9 @@ export default function PagesManagement() {
 
       {/* Content Area */}
       <div className="pt-2">
-        {MOCK_PAGES.length > 0 ? (
+        {pagesLoading ? (
+          <div className="py-12 flex justify-center"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div></div>
+        ) : pages.length > 0 ? (
           <AnimatePresence mode="wait">
             {viewMode === 'table' ? (
               <motion.div
@@ -88,7 +81,7 @@ export default function PagesManagement() {
                 transition={{ duration: 0.3 }}
               >
                 <PageTable 
-                  data={MOCK_PAGES} 
+                  data={pages} 
                   selectedIds={selectedIds} 
                   toggleSelection={toggleSelection} 
                   toggleAll={toggleAll}
@@ -103,7 +96,7 @@ export default function PagesManagement() {
                 transition={{ duration: 0.3 }}
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
               >
-                {MOCK_PAGES.map((page, index) => (
+                {pages.map((page, index) => (
                   <PageCard 
                     key={page.id} 
                     page={page} 

@@ -484,11 +484,12 @@ import { StorefrontThemeProvider } from './storefront/context/StorefrontThemeCon
 import { CMSProvider } from './admin/context/cms/CMSContext';
 import CMSLayout from './admin/layouts/CMSLayout';
 import {
-  CMSDashboard, PageCenter, PageForm, PageBuilder, SectionLibrary,
+  CMSDashboard, PageCenter, PageForm, PageBuilder,
   BlockCenter, NavigationCenter, FooterManager,
   BannerManager, SEOCenter, RedirectCenter, PagePreview,
   PageTypeCenter, PageTypeForm
 } from './admin/pages/cms/CMSPages';
+import SectionLibrary from './admin/pages/cms/SectionLibrary';
 import NavbarEditor from './admin/pages/cms/editor/NavbarEditor';
 import VisualEditor from './admin/pages/cms/editor/VisualEditor';
 
@@ -831,7 +832,7 @@ export default function App() {
 
                                                           {/* CMS Routes */}
                                                           <Route path="cms" element={<CMSLayout />}>
-                                                            <Route index element={<VisualEditor />} />
+                                                            <Route index element={<Navigate to="pages" replace />} />
                                                             <Route path="pages" element={<PageCenter />} />
                                                             <Route path="pages/create" element={<PageForm />} />
                                                             <Route path="pages/:pageId/edit" element={<PageForm />} />

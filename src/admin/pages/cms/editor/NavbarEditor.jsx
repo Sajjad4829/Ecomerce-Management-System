@@ -4,7 +4,7 @@ import {
   FiCheck, FiPlus, FiTrash2, FiMenu, FiSettings, FiNavigation,
   FiBox, FiMonitor, FiSmartphone, FiTablet, FiChevronDown, FiX
 } from 'react-icons/fi';
-import { Search, User, ShoppingBag } from 'lucide-react';
+import { Search, User, ShoppingBag, ChevronRight, ChevronsRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCMS } from '../../../context/cms/CMSContext';
 import MegaMenuBuilder from '../../../components/cms/navigation/MegaMenuBuilder';
@@ -21,10 +21,17 @@ const TABS = [
 ];
 
 export default function NavbarEditor() {
-  const { headerConfig, setHeaderConfig, menus, setMenus } = useCMS();
+  const { headerConfig, setHeaderConfig, menus, setMenus, configLoading } = useCMS();
   
   const [activeTab, setActiveTab] = useState('style');
   const [config, setConfig] = useState(headerConfig || {});
+
+  // Sync config once data loads from backend (on browser reload)
+  useEffect(() => {
+    if (!configLoading && headerConfig) {
+      setConfig(headerConfig);
+    }
+  }, [configLoading, headerConfig]);
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeLinkId, setActiveLinkId] = useState(null);
@@ -54,11 +61,23 @@ export default function NavbarEditor() {
 
   const activeLink = links.find(l => l.id === activeLinkId);
 
+  // Logo is stored as base64 directly in MongoDB (inside headerConfig).
+  // This keeps the logo self-contained — no external CDN dependency.
+  // The localStorage cache (CMSContext) makes it load instantly on every reload.
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => updateConfig('logoImage', reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleInverseImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => updateConfig('logoImageInverse', reader.result);
       reader.readAsDataURL(file);
     }
   };
@@ -96,7 +115,7 @@ export default function NavbarEditor() {
         <div className="flex items-center gap-4">
           <div className="flex items-center text-xl font-black shrink-0">
             {config.logoType === 'text' ? (
-              <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || 'HATIL'}</span>
+                    <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || ''}</span>
             ) : (
               config.logoImage ? <img src={config.logoImage} alt="Logo" className="h-8 object-contain" /> : <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">LOGO</span>
             )}
@@ -106,15 +125,17 @@ export default function NavbarEditor() {
             <p className="text-sm text-gray-500">Customize and design your website navigation</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <button type="button" onClick={() => setConfig(headerConfig)} className="px-5 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+        <div className="flex items-center gap-3 mr-2">
+          <button type="button" onClick={() => setConfig(headerConfig)} className="px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-full transition-all">
             Reset
           </button>
-          <button type="button" className="px-5 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+          
+          <button type="button" className="px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-full transition-all">
              Preview
           </button>
-          <button type="button" onClick={handlePublish} className="px-5 py-2 bg-[#635BFF] text-white text-sm font-medium rounded-lg hover:bg-[#524be0] flex items-center gap-2 transition-colors">
-            <FiCheck /> Publish Navbar
+
+          <button type="button" onClick={handlePublish} className="px-6 py-2.5 bg-gradient-to-r from-[#9b27b0] to-[#ff5252] text-white text-[12px] font-bold uppercase tracking-widest rounded-full shadow-[0_8px_16px_-4px_rgba(255,82,82,0.5)] hover:shadow-[0_12px_20px_-4px_rgba(255,82,82,0.6)] hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-1.5 transition-all duration-300">
+            Publish <ChevronsRight size={18} strokeWidth={2.5} />
           </button>
         </div>
       </div>
@@ -143,11 +164,13 @@ export default function NavbarEditor() {
 
         {/* Middle Settings Column */}
         <div className="w-80 shrink-0 bg-white border-r border-gray-200 h-full overflow-y-auto p-6">
-          <SettingsPanel activeTab={activeTab} config={config} updateConfig={updateConfig} links={links} setLinks={setLinks} activeLinkId={activeLinkId} setActiveLinkId={setActiveLinkId} handleImageUpload={handleImageUpload} />
+          <SettingsPanel activeTab={activeTab} config={config} updateConfig={updateConfig} links={links}
+           setLinks={setLinks} activeLinkId={activeLinkId} setActiveLinkId={setActiveLinkId}
+           handleImageUpload={handleImageUpload} handleInverseImageUpload={handleInverseImageUpload} />
         </div>
 
         {/* Right Preview Area */}
-        <div className="flex-1 overflow-auto bg-gray-50 flex flex-col relative custom-scrollbar">
+        <div className="flex-1 overflow-auto bg-white flex flex-col relative custom-scrollbar">
           <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200 shrink-0 z-10">
             <h3 className="font-bold text-gray-900">Live Preview</h3>
             <div className="flex bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
@@ -166,16 +189,38 @@ export default function NavbarEditor() {
                />
              </div>
           ) : (
-            <div className={`w-full flex-1 bg-white relative transition-all ${
+            <div className={`w-full flex-1 bg-white relative transition-all overflow-x-auto custom-scrollbar ${
               device === 'mobile' ? 'max-w-[375px] mx-auto shadow-lg border-x border-gray-200' : device === 'tablet' ? 'max-w-[768px] mx-auto shadow-lg border-x border-gray-200' : 'max-w-full'
             }`}>
               
               {/* Dynamic Navbar Render */}
+              {(() => {
+                const navAlignment = config.navAlignment || 'space-between';
+                let containerClasses = 'w-full min-w-max flex items-center justify-between';
+                let logoClasses = 'flex items-center text-xl font-black shrink-0';
+                let menuClasses = 'flex items-center flex-1 flex-nowrap';
+                let actionsClasses = 'flex items-center gap-5 shrink-0 ml-4';
+                let menuJustify = config.contentAlignment || 'center';
+
+                if (device === 'desktop') {
+                  if (navAlignment === 'space-between') {
+                    containerClasses += ' grid grid-cols-3';
+                    logoClasses += ' justify-self-start';
+                    actionsClasses = 'flex items-center gap-5 shrink-0 justify-self-end';
+                  } else {
+                    containerClasses += ' gap-8';
+                    if (navAlignment === 'left') menuJustify = 'flex-start';
+                    if (navAlignment === 'center') menuJustify = 'center';
+                    if (navAlignment === 'right') menuJustify = 'flex-end';
+                  }
+                }
+                
+                return (
               <div 
                 style={{
                   backgroundColor: config.backgroundColor,
                   color: config.textColor,
-                  borderBottom: `${config.borderWidth || 1}px ${config.borderBottomStyle || 'solid'} ${config.borderColor || '#e5e7eb'}`,
+                  borderBottom: 'none',
                   height: `${config.height || 72}px`,
                   paddingTop: `${config.paddingTop || 0}px`,
                   paddingBottom: `${config.paddingBottom || 0}px`,
@@ -183,12 +228,20 @@ export default function NavbarEditor() {
                   paddingRight: `${config.paddingRight || 24}px`,
                   fontFamily: config.fontFamily || 'Inter',
                 }}
-                className={`w-full flex items-center justify-between ${config.navbarStyle === 'transparent' ? 'absolute top-0 left-0 z-10 !bg-transparent !border-none text-white' : ''} ${config.navbarStyle === 'dark' ? '!bg-gray-900 !text-white' : ''}`}
+                className={`${containerClasses} custom-scrollbar ${config.navbarStyle === 'transparent' ? 'absolute top-0 left-0 z-10 !bg-transparent !border-none text-white' : ''} ${config.navbarStyle === 'dark' ? '!bg-gray-900 !text-white' : ''}`}
               >
+                {/* Inject hover styles for preview */}
+                {config.textHoverColor && (
+                  <style>{`
+                    .preview-nav-link:hover {
+                      color: ${config.textHoverColor} !important;
+                    }
+                  `}</style>
+                )}
                 {/* Logo */}
-                <div className="flex items-center text-xl font-black shrink-0">
+                <div className={logoClasses}>
                   {config.logoType === 'text' ? (
-                    <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || 'HATIL'}</span>
+                    <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || ''}</span>
                   ) : (
                     config.logoImage ? <img src={config.logoImage} alt="Logo" className="h-8 object-contain" /> : 'LOGO'
                   )}
@@ -196,11 +249,11 @@ export default function NavbarEditor() {
                 
                 {/* Links */}
                 {device === 'desktop' && (
-                  <div className={`flex items-center flex-1 flex-wrap`} style={{ gap: `${config.spaceBetweenItems || 28}px`, justifyContent: config.contentAlignment || 'center' }}>
+                  <div className={menuClasses} style={{ gap: `${config.spaceBetweenItems ?? 16}px`, justifyContent: menuJustify }}>
                     {links.map(link => (
                       <span 
                         key={link.id} 
-                        className="cursor-pointer transition-colors relative group flex items-center gap-1 whitespace-nowrap"
+                        className="preview-nav-link cursor-pointer transition-colors relative group flex items-center gap-1 whitespace-nowrap"
                         style={{
                           fontSize: `${config.fontSize || 15}px`,
                           fontWeight: config.fontWeight || '500',
@@ -209,7 +262,6 @@ export default function NavbarEditor() {
                         }}
                       >
                         {link.text}
-                        {link.hasDropdown && config.dropdownIndicator && <FiChevronDown size={14} />}
                         {config.underlineOnHover && <div className="absolute left-0 bottom-[-4px] w-0 h-px bg-current group-hover:w-full transition-all duration-300" />}
                       </span>
                     ))}
@@ -218,24 +270,33 @@ export default function NavbarEditor() {
                 
                 {/* Actions */}
                 <div 
-                  className="flex items-center gap-5 shrink-0 ml-4"
+                  className={actionsClasses}
                   style={config.iconColor ? { color: config.iconColor } : {}}
                 >
-                  {config.enableSearch && <Search size={20} />}
-                  {config.enableUser && <div className="flex items-center gap-1"><User size={20} /><FiChevronDown size={14} className="text-gray-600" /></div>}
+                  {config.enableSearch && (
+                    <button className="preview-nav-icon transition-colors hover:opacity-70 p-1">
+                      <Search size={20} />
+                    </button>
+                  )}
+                  {config.enableUser && (
+                    <div className="flex items-center gap-1 preview-nav-icon transition-colors hover:opacity-70 p-1 cursor-pointer">
+                      <User size={20} /><FiChevronDown size={14} className="text-gray-600" />
+                    </div>
+                  )}
                   {config.enableCart && (
-                    <div className="relative">
+                    <div className="relative preview-nav-icon transition-colors hover:opacity-70 p-1 cursor-pointer">
                       <ShoppingBag size={20} />
                       <span className="absolute -top-2 -right-2 bg-[#e60000] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
                     </div>
                   )}
                   {device !== 'desktop' && (
-                    <button onClick={() => setIsMobileMenuOpen(true)} className="ml-2 text-gray-900">
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="ml-2 text-gray-900 preview-nav-icon transition-colors hover:opacity-70 p-1">
                       <FiMenu size={26} />
                     </button>
                   )}
                 </div>
               </div>
+              );})()}
 
               {/* Mobile Sidebar Menu */}
               {device !== 'desktop' && isMobileMenuOpen && (
@@ -245,7 +306,7 @@ export default function NavbarEditor() {
                     <div className="flex items-center justify-between p-4 border-b border-gray-100 shrink-0">
                       <div className="flex items-center text-xl font-black shrink-0">
                         {config.logoType === 'text' ? (
-                          <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || 'HATIL'}</span>
+                          <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || ''}</span>
                         ) : (
                           config.logoImage ? <img src={config.logoImage} alt="Logo" className="h-8 object-contain" /> : <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">LOGO</span>
                         )}
@@ -287,7 +348,7 @@ export default function NavbarEditor() {
                 
                 const bgClass = isTransparent 
                   ? (needsLightBackground ? 'bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200' : 'bg-gradient-to-br from-slate-900 via-[#1e1b4b] to-black')
-                  : 'bg-gray-50';
+                  : 'bg-white';
                   
                 const textColorClass = isTransparent
                   ? (needsLightBackground ? 'text-gray-800' : 'text-white')
@@ -319,24 +380,37 @@ export default function NavbarEditor() {
   );
 }
 
-function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activeLinkId, setActiveLinkId, handleImageUpload }) {
+function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activeLinkId, setActiveLinkId, handleImageUpload, handleInverseImageUpload }) {
   if (activeTab === 'style') {
     return (
       <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-300">
         <h2 className="font-bold text-gray-900 text-lg mb-6">Navbar Style</h2>
         
-        <div className="space-y-3">
-          <label className="text-sm font-semibold text-gray-700">Type</label>
-          <div className="grid grid-cols-2 gap-2">
-            {['default', 'transparent', 'sticky', 'dark'].map(style => (
-              <button 
-                key={style}
-                onClick={() => updateConfig('navbarStyle', style)}
-                className={`py-2 px-3 border rounded-lg text-xs capitalize font-medium ${config.navbarStyle === style ? 'border-[#635BFF] bg-[#635BFF]/5 text-[#635BFF]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}
-              >
-                {style}
-              </button>
-            ))}
+        <div className="space-y-4">
+          <label className="text-sm font-semibold text-gray-900 block">Type</label>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+             {['default', 'transparent', 'sticky', 'dark'].map((style) => (
+                <div key={style} className="relative w-full">
+                  {config.navbarStyle === style ? (
+                    <>
+                      <div className="absolute inset-0 bg-white border border-[#574fef]/30 rounded-full translate-x-1 translate-y-1"></div>
+                      <button
+                        onClick={() => updateConfig('navbarStyle', style)}
+                        className="relative z-10 w-full py-2.5 px-2 bg-gradient-to-r from-[#827af7] to-[#574fef] text-white text-[11px] font-bold uppercase tracking-widest rounded-full flex items-center justify-center gap-1 transition-transform active:translate-x-1 active:translate-y-1"
+                      >
+                        {style} <ChevronRight size={14} strokeWidth={3} />
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => updateConfig('navbarStyle', style)}
+                      className="w-full py-2.5 px-2 bg-white text-gray-500 border border-gray-200 text-[11px] font-bold uppercase tracking-widest rounded-full hover:bg-gray-50 hover:text-gray-800 transition-colors"
+                    >
+                      {style}
+                    </button>
+                  )}
+                </div>
+             ))}
           </div>
         </div>
 
@@ -350,25 +424,30 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
              </button>
           </div>
         </div>
+
+        <div className="space-y-3">
+          <label className="text-sm font-semibold text-gray-700">Hover Background Color</label>
+          <div className="flex gap-2 items-center">
+             <input type="color" value={config.navbarHoverBgColor || '#f9fafb'} onChange={(e) => updateConfig('navbarHoverBgColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+             <input type="text" value={config.navbarHoverBgColor || ''} onChange={(e) => updateConfig('navbarHoverBgColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+             <button onClick={() => updateConfig('navbarHoverBgColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+               <FiX size={16} />
+             </button>
+          </div>
+        </div>
         
         <div className="space-y-3">
-          <label className="text-sm font-semibold text-gray-700">Bottom Border</label>
-          <select value={config.borderBottomStyle || 'solid'} onChange={(e) => updateConfig('borderBottomStyle', e.target.value)} className="w-full p-2 border rounded-lg text-sm mb-2">
-            <option value="none">None</option>
-            <option value="solid">Solid</option>
-            <option value="dashed">Dashed</option>
-          </select>
-          {config.borderBottomStyle !== 'none' && (
-             <div className="flex gap-2 items-center">
-               <input type="color" value={config.borderColor || '#e5e7eb'} onChange={(e) => updateConfig('borderColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-               <input type="text" value={config.borderColor || ''} onChange={(e) => updateConfig('borderColor', e.target.value)} placeholder="Default" className="w-24 p-2 border rounded-lg text-sm uppercase" />
-               <input type="number" value={config.borderWidth || 1} onChange={(e) => updateConfig('borderWidth', e.target.value)} className="flex-1 p-2 border rounded-lg text-sm" placeholder="Width (px)" />
-               <button onClick={() => updateConfig('borderColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
-                 <FiX size={16} />
-               </button>
-             </div>
-          )}
+          <label className="text-sm font-semibold text-gray-700">Hover Text Color</label>
+          <div className="flex gap-2 items-center">
+             <input type="color" value={config.navbarHoverTextColor || '#111111'} onChange={(e) => updateConfig('navbarHoverTextColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+             <input type="text" value={config.navbarHoverTextColor || ''} onChange={(e) => updateConfig('navbarHoverTextColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+             <button onClick={() => updateConfig('navbarHoverTextColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+               <FiX size={16} />
+             </button>
+          </div>
         </div>
+        
+
       </div>
     );
   }
@@ -386,10 +465,24 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="space-y-3">
             <label className="text-sm font-semibold text-gray-700">Content Alignment</label>
             <div className="flex bg-gray-100 p-1 rounded-lg">
-              {['left', 'center', 'right'].map(align => (
-                <button key={align} onClick={() => updateConfig('contentAlignment', align)} className={`flex-1 py-1.5 text-xs capitalize font-medium rounded-md ${config.contentAlignment === align ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}>{align}</button>
+              {['space-between', 'left', 'center', 'right'].map(align => (
+                <button key={align} onClick={() => updateConfig('navAlignment', align)} className={`flex-1 py-1.5 text-[10px] capitalize font-medium rounded-md ${config.navAlignment === align || (!config.navAlignment && align === 'space-between') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}>{align.replace('-', ' ')}</button>
               ))}
             </div>
+         </div>
+
+         <div className="space-y-3">
+            <label className="text-sm font-semibold text-gray-700">Menus Alignment</label>
+            <div className="flex bg-gray-100 p-1 rounded-lg">
+              {['left', 'center', 'right'].map(align => (
+                <button key={align} onClick={() => updateConfig('contentAlignment', align)} className={`flex-1 py-1.5 text-xs capitalize font-medium rounded-md ${config.contentAlignment === align || (!config.contentAlignment && align === 'center') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}>{align}</button>
+              ))}
+            </div>
+         </div>
+
+         <div className="space-y-3">
+            <label className="text-sm font-semibold text-gray-700">Menu Item Gap (px)</label>
+            <input type="number" value={config.spaceBetweenItems ?? 16} onChange={(e) => updateConfig('spaceBetweenItems', Number(e.target.value))} className="w-full p-2 border rounded-lg text-sm" />
          </div>
 
          <div className="space-y-3">
@@ -432,7 +525,7 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
              </div>
          </div>
          <div className="space-y-3">
-             <label className="text-sm font-semibold text-gray-700">Hover / Active Color</label>
+             <label className="text-sm font-semibold text-gray-700">Hover Text Color</label>
              <div className="flex gap-2 items-center">
                 <input type="color" value={config.textHoverColor || '#000000'} onChange={(e) => updateConfig('textHoverColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
                 <input type="text" value={config.textHoverColor || ''} onChange={(e) => updateConfig('textHoverColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
@@ -452,9 +545,19 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="space-y-3">
             <label className="text-sm font-semibold text-gray-700">Font Family</label>
             <select value={config.fontFamily || 'Inter'} onChange={(e) => updateConfig('fontFamily', e.target.value)} className="w-full p-2 border rounded-lg text-sm">
-              <option value="Inter">Inter, sans-serif</option>
-              <option value="Roboto">Roboto, sans-serif</option>
-              <option value="serif">Playfair Display, serif</option>
+              <optgroup label="Sans-Serif (Clean & Modern)">
+                <option value="Inter">Inter (Hatil Nav Default)</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Poppins">Poppins</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Lato">Lato</option>
+                <option value="Open Sans">Open Sans</option>
+              </optgroup>
+              <optgroup label="Serif (Elegant & Classic)">
+                <option value="Playfair Display">Playfair Display (Hatil Logo)</option>
+                <option value="Lora">Lora</option>
+                <option value="Georgia">Georgia</option>
+              </optgroup>
             </select>
          </div>
          <div className="grid grid-cols-2 gap-4">
@@ -499,10 +602,6 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          </div>
          
          <div className="space-y-3 mt-4">
-            <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-               <span className="text-sm font-medium">Dropdown Indicator</span>
-               <input type="checkbox" checked={config.dropdownIndicator ?? true} onChange={(e) => updateConfig('dropdownIndicator', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
-            </label>
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <span className="text-sm font-medium">Underline on Hover</span>
                <input type="checkbox" checked={config.underlineOnHover ?? false} onChange={(e) => updateConfig('underlineOnHover', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
@@ -557,12 +656,32 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
             {config.logoType === 'text' ? (
                <div className="space-y-2">
                  <label className="text-[10px] text-gray-500 uppercase tracking-wider block">Logo Text</label>
-                 <input type="text" value={config.logoText || ''} onChange={(e) => updateConfig('logoText', e.target.value)} className="w-full p-2 border rounded-lg text-sm font-medium" placeholder="HATIL" />
+                 <input type="text" value={typeof config.logoText === 'string' ? config.logoText : ''} onChange={(e) => updateConfig('logoText', e.target.value)} className="w-full p-2 border rounded-lg text-sm font-medium" placeholder="PREMIUM" />
                </div>
             ) : (
-               <div className="space-y-2">
-                  <label className="text-[10px] text-gray-500 uppercase tracking-wider block">Upload Logo</label>
-                  <input type="file" onChange={handleImageUpload} className="w-full text-sm border p-2 rounded-lg bg-gray-50" />
+               <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] text-gray-500 uppercase tracking-wider block flex justify-between items-center">
+                      <span>Default Logo</span>
+                      {config.logoImage && <button onClick={() => updateConfig('logoImage', '')} className="text-red-500 hover:text-red-700 capitalize text-[9px]">Remove</button>}
+                    </label>
+                    {config.logoImage && (
+                      <img src={config.logoImage} alt="Logo preview" className="h-10 object-contain border rounded-lg p-1 bg-gray-50" />
+                    )}
+                    <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full text-sm border p-2 rounded-lg bg-gray-50" />
+                    <p className="text-[9px] text-gray-400">Saved in MongoDB. Used for solid or light backgrounds.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] text-gray-500 uppercase tracking-wider block flex justify-between items-center">
+                      <span>Inverse Logo (Optional)</span>
+                      {config.logoImageInverse && <button onClick={() => updateConfig('logoImageInverse', '')} className="text-red-500 hover:text-red-700 capitalize text-[9px]">Remove</button>}
+                    </label>
+                    {config.logoImageInverse && (
+                      <img src={config.logoImageInverse} alt="Inverse logo preview" className="h-10 object-contain border rounded-lg p-1 bg-gray-800" />
+                    )}
+                    <input type="file" accept="image/*" onChange={handleInverseImageUpload} className="w-full text-sm border p-2 rounded-lg bg-gray-50" />
+                    <p className="text-[9px] text-gray-400">Saved in MongoDB. Used for transparent or dark backgrounds.</p>
+                  </div>
                </div>
             )}
          </div>
@@ -589,6 +708,17 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
                   <input type="color" value={config.iconColor || '#000000'} onChange={(e) => updateConfig('iconColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
                   <input type="text" value={config.iconColor || ''} onChange={(e) => updateConfig('iconColor', e.target.value)} placeholder="Default (Matches Text)" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
                   <button onClick={() => updateConfig('iconColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                    <FiX size={16} />
+                  </button>
+               </div>
+            </div>
+            
+            <div className="mt-2 space-y-3">
+               <label className="text-sm font-semibold text-gray-700">Icon Hover Color</label>
+               <div className="flex gap-2 items-center">
+                  <input type="color" value={config.iconHoverColor || '#000000'} onChange={(e) => updateConfig('iconHoverColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                  <input type="text" value={config.iconHoverColor || ''} onChange={(e) => updateConfig('iconHoverColor', e.target.value)} placeholder="Hover Color" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                  <button onClick={() => updateConfig('iconHoverColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Hover Color">
                     <FiX size={16} />
                   </button>
                </div>

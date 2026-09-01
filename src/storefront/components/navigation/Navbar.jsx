@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu, ChevronDown, ArrowRight } from 'lucide-react';
 import { useCommerce } from '../../context/CommerceContext';
@@ -26,12 +26,26 @@ export default function Navbar({ data }) {
   const { openCartDrawer } = useCommerce();
   const { isAuthenticated, user } = useAuth();
   const { activeTheme } = useStorefrontTheme();
-  const { menus, headerConfig, pages } = useCMS();
+  const { menus, headerConfig, configLoading } = useCMS();
   
   const { categories } = useCategories();
   const { products } = useProducts();
   const { collections } = useCollections();
   const { brands } = useBrands();
+
+  // navReady: becomes true after one animation frame so the ENTIRE navbar
+  // fades in as one unit — no logo-first / icons-later flicker.
+  const [navReady, setNavReady] = useState(false);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    // Wait for one rAF so all context values (cache + API) have settled
+    // into a single consistent render before revealing the navbar.
+    rafRef.current = requestAnimationFrame(() => {
+      setNavReady(true);
+    });
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
   const headerTokens = activeTheme.tokens.header;
   
@@ -40,24 +54,40 @@ export default function Navbar({ data }) {
 
   // Read settings from the global header config (which the Navbar Builder saves to)
   const isTransparentStyle = headerConfig?.navbarStyle === 'transparent';
-  const hoverTransparent = headerConfig?.hoverTransparent || false;
   
-  // Navbar is solid if we are scrolled, NOT marked as transparent, or if hovering (if hover setting is on)
-  const isSolid = isScrolled || !isTransparentStyle || (hoverTransparent && (isHovered || hoveredCategoryId !== null));
+  // Navbar is solid if we are scrolled, NOT marked as transparent, or if hovering over it
+  const isSolid = isScrolled || !isTransparentStyle || isHovered || hoveredCategoryId !== null;
 
   // Determine dynamic colors based on state and user config
   let currentBgColor = isSolid ? (headerConfig?.backgroundColor || '#ffffff') : 'transparent';
-  let currentTextColor;
+  if (isHovered && headerConfig?.navbarHoverBgColor) {
+    currentBgColor = headerConfig.navbarHoverBgColor;
+  }
   
-  if (isTransparentStyle && !isSolid) {
-    currentTextColor = headerConfig?.textColor || '#ffffff';
-  } else if (isTransparentStyle && isSolid) {
-    currentTextColor = '#111111'; // Default dark text when transparent navbar becomes solid (scrolled)
-  } else {
-    currentTextColor = headerConfig?.textColor || (headerConfig?.navbarStyle === 'dark' ? '#ffffff' : '#111111');
+  let currentTextColor = headerConfig?.textColor;
+  
+  if (isHovered && headerConfig?.navbarHoverTextColor) {
+    currentTextColor = headerConfig.navbarHoverTextColor;
+  } else if (!currentTextColor) {
+    if (isHovered && headerConfig?.navbarHoverBgColor) {
+      currentTextColor = '#111111'; // Default dark if custom hover bg is provided
+    } else if (isTransparentStyle && !isSolid) {
+      currentTextColor = '#ffffff';
+    } else if (isTransparentStyle && isSolid) {
+      currentTextColor = '#111111'; // Default dark text when transparent navbar becomes solid (scrolled)
+    } else {
+      currentTextColor = headerConfig?.navbarStyle === 'dark' ? '#ffffff' : '#111111';
+    }
   }
 
-  const currentIconColor = headerConfig?.iconColor || currentTextColor;
+  let currentIconColor = headerConfig?.iconColor || currentTextColor;
+  if (isHovered && headerConfig?.iconHoverColor) {
+    currentIconColor = headerConfig.iconHoverColor;
+  } else if ((isTransparentStyle && isSolid) || (isHovered && headerConfig?.navbarHoverTextColor)) {
+    // When a transparent navbar becomes solid, or when the navbar is hovered,
+    // force icons to match the text color so they don't disappear on the changing background.
+    currentIconColor = currentTextColor;
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -105,34 +135,100 @@ export default function Navbar({ data }) {
     return { title: resolvedTitle || 'Unknown', link: resolvedLink || '#' };
   };
 
+  const navAlignment = headerConfig?.navAlignment || 'space-between';
+  
+  let containerClasses = 'w-full mx-auto flex items-center h-full justify-between';
+  let logoClasses = 'flex items-center h-full shrink-0 group';
+  let menuClasses = 'hidden lg:flex items-center h-full relative flex-1 flex-wrap';
+  let iconsClasses = `flex items-center space-x-4 md:space-x-5 shrink-0 ${
+    isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
+  }`;
+
+  let menuJustify = headerConfig?.contentAlignment || 'center';
+
+  if (navAlignment === 'space-between') {
+    containerClasses += ' xl:grid xl:grid-cols-3';
+    logoClasses += ' xl:justify-self-start';
+    iconsClasses += ' xl:justify-self-end';
+  } else {
+    containerClasses += ' xl:gap-8';
+    if (navAlignment === 'left') menuJustify = 'flex-start';
+    if (navAlignment === 'center') menuJustify = 'center';
+    if (navAlignment === 'right') menuJustify = 'flex-end';
+  }
+
+  // ── Skeleton: on very first visit (no localStorage cache) show a solid
+  // placeholder bar so the layout space is reserved and nothing pops in.
+  const hasCache = !configLoading || headerConfig?.logoText || headerConfig?.logoImage;
+  if (!navReady && configLoading && !hasCache) {
+    return (
+      <header
+        className="fixed top-0 left-0 w-full z-[100]"
+        style={{
+          height: `${headerConfig?.height || 72}px`,
+          backgroundColor: headerConfig?.backgroundColor || '#ffffff',
+        }}
+      />
+    );
+  }
+
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 w-full transition-colors duration-300 border-b h-[72px] md:h-[84px] ${
-        isSolid ? headerTokens.solid : headerTokens.transparent
+      className={`fixed top-0 left-0 w-full z-[100] transition-[colors,opacity] duration-300 ${
+        isSolid ? 'shadow-sm' : ''
+      } ${
+        navReady ? 'opacity-100' : 'opacity-0'
       }`}
-      style={currentBgColor ? { backgroundColor: currentBgColor } : {}}
+      style={{ 
+        backgroundColor: currentBgColor,
+        borderBottom: 'none',
+        height: `${headerConfig?.height || 72}px`,
+        paddingTop: `${headerConfig?.paddingTop || 16}px`,
+        paddingBottom: `${headerConfig?.paddingBottom || 16}px`,
+        paddingLeft: `${headerConfig?.paddingLeft || 24}px`,
+        paddingRight: `${headerConfig?.paddingRight || 24}px`,
+        fontFamily: headerConfig?.fontFamily || 'Inter',
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="w-full mx-auto flex items-center justify-between xl:grid xl:grid-cols-3 h-full px-5">
+      {/* Inject dynamic hover styles */}
+      {headerConfig?.textHoverColor && (
+        <style>{`
+          .nav-link-dynamic:hover {
+            color: ${headerConfig.textHoverColor} !important;
+          }
+        `}</style>
+      )}
+      <div className={containerClasses}>
         {/* Left Section: Brand Logo */}
-        <div className="flex items-center xl:justify-self-start h-full">
+        <div className={logoClasses}>
           <Link to="/" className="flex items-center gap-2 group">
-            {headerConfig?.logoType === 'image' && headerConfig?.logoImage ? (
-              <img src={headerConfig.logoImage} alt={headerConfig?.logoText || 'Logo'} className="h-8 md:h-10 object-contain" />
+            {headerConfig?.logoType === 'image' && (headerConfig?.logoImage || headerConfig?.logoImageInverse) ? (
+              <img 
+                src={(currentTextColor === '#ffffff' || currentTextColor === '#fff' || currentTextColor?.toLowerCase() === 'white') && headerConfig?.logoImageInverse ? headerConfig.logoImageInverse : (headerConfig?.logoImage || headerConfig?.logoImageInverse)} 
+                alt={typeof headerConfig?.logoText === 'string' ? headerConfig.logoText : 'Logo'} 
+                className="h-8 md:h-10 object-contain transition-opacity duration-300" 
+              />
             ) : (
               <span 
                 className="text-3xl md:text-[40px] font-black tracking-tighter uppercase text-center leading-none"
                 style={currentTextColor ? { color: currentTextColor } : {}}
               >
-                {headerConfig?.logoText || 'DORY'}
+                {headerConfig?.logoText || ''}
               </span>
             )}
           </Link>
         </div>
 
         {/* Center Section: Categories (Desktop) */}
-        <nav className="hidden lg:flex items-center h-full xl:justify-self-center relative">
+        <nav 
+          className={menuClasses} 
+          style={{ 
+            gap: `${headerConfig?.spaceBetweenItems || 28}px`,
+            justifyContent: menuJustify 
+          }}
+        >
           {headerMenu.map((item, idx) => {
             const { title, link } = resolveMenuItem(item);
             
@@ -182,10 +278,16 @@ export default function Navbar({ data }) {
               >
                 <Link 
                   to={link}
-                  className={`whitespace-nowrap h-full flex items-center px-3 xl:px-4 text-sm xl:text-base font-semibold transition-colors duration-200 ${
+                  className={`nav-link-dynamic whitespace-nowrap h-full flex items-center px-3 xl:px-4 transition-colors duration-200 ${
                     isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
                   }`}
-                  style={currentTextColor ? { color: currentTextColor } : {}}
+                  style={{
+                    color: currentTextColor,
+                    fontSize: `${headerConfig?.fontSize || 15}px`,
+                    fontWeight: headerConfig?.fontWeight || '500',
+                    textTransform: headerConfig?.uppercase ? 'uppercase' : (headerConfig?.textTransform || 'none'),
+                    letterSpacing: `${headerConfig?.letterSpacing || 0}px`
+                  }}
                 >
                   <span className="relative py-1">
                     {title}
@@ -207,25 +309,23 @@ export default function Navbar({ data }) {
 
         {/* Right Section: Utilities */}
         <div 
-          className={`flex items-center space-x-4 md:space-x-5 xl:justify-self-end ${
-            isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
-          }`}
+          className={iconsClasses}
           style={currentIconColor ? { color: currentIconColor } : {}}
         >
-          {headerConfig?.enableSearch && (
+          {headerConfig?.enableSearch !== false && (
             <button 
               onClick={() => setIsSearchOpen(true)}
-              className="p-1 transition-colors hover:opacity-70"
+              className="p-1 transition-colors hover:opacity-70 nav-icon-dynamic"
               aria-label="Search"
             >
               <Search size={20} />
             </button>
           )}
           
-          {headerConfig?.enableAccount && (
+          {headerConfig?.enableUser !== false && (
             <Link 
               to={isAuthenticated ? "/account" : "/account/login"} 
-              className="p-1 transition-colors hidden sm:flex items-center hover:opacity-70"
+              className="p-1 transition-colors hidden sm:flex items-center hover:opacity-70 nav-icon-dynamic"
               aria-label="Account"
             >
               <User size={20} />
@@ -233,10 +333,10 @@ export default function Navbar({ data }) {
             </Link>
           )}
           
-          {headerConfig?.enableCart && (
+          {headerConfig?.enableCart !== false && (
             <button 
               onClick={openCartDrawer}
-              className="p-1 transition-colors relative hover:opacity-70"
+              className="p-1 transition-colors relative hover:opacity-70 nav-icon-dynamic"
               aria-label="Cart"
             >
               <ShoppingBag size={20} />
@@ -247,7 +347,7 @@ export default function Navbar({ data }) {
           {/* Mobile Menu Toggle */}
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
-            className="p-1 transition-colors lg:hidden ml-2 hover:opacity-70"
+            className="p-1 transition-colors lg:hidden ml-2 hover:opacity-70 nav-icon-dynamic"
             aria-label="Menu"
           >
             <Menu size={24} />

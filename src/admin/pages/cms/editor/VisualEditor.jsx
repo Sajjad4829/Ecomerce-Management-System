@@ -13,12 +13,13 @@ import PageSettingsDrawer from '../../../components/cms/editor/PageSettingsDrawe
 import AddSectionDrawer from '../../../components/cms/editor/AddSectionDrawer';
 import SaveBlockModal from '../../../components/cms/blocks/SaveBlockModal';
 import HeroEditorModal from '../../../components/cms/editor/HeroEditorModal';
+import FeaturedShowcaseEditorModal from '../../../components/cms/editor/FeaturedShowcaseEditorModal';
 
 export default function VisualEditor() {
   const { pageId } = useParams();
-  const { getDraftSections, saveDraftSections, publishPageSections, getPage } = useCMS();
+  const { getDraftSections, saveDraftSections, publishPageSections, getPage, loadPageSections } = useCMS();
   const { addToast } = useToast();
-  const page = getPage(pageId) || { name: 'Unknown Page', status: 'Draft' };
+  const page = getPage(pageId) || { title: 'Unknown Page', status: 'Draft' };
 
   const [device, setDevice] = useState('desktop');
   const [activeSectionId, setActiveSectionId] = useState(null);
@@ -26,27 +27,53 @@ export default function VisualEditor() {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [blockToSave, setBlockToSave] = useState(null);
   const [isHeroEditorOpen, setIsHeroEditorOpen] = useState(false);
+  const [isFeaturedEditorOpen, setIsFeaturedEditorOpen] = useState(false);
   const [sections, setSections] = useState(() => getDraftSections(pageId));
-  const isRouting = useRef(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const isRouting = useRef(true); // Start true to prevent initial mount autosave
 
   const prevPageId = useRef(pageId);
+  
+  // Load sections from DB on mount and when pageId changes
   useEffect(() => {
+    let isMounted = true;
+    
+    const fetchSections = async () => {
+      setIsLoading(true);
+      const data = await loadPageSections(pageId);
+      if (isMounted && data) {
+        const draft = data.sectionsDraft || [];
+        const published = data.sectionsPublished || [];
+        // If draft was accidentally wiped but published exists, restore from published
+        if (draft.length === 0 && published.length > 0) {
+          setSections(published);
+        } else {
+          setSections(draft);
+        }
+      }
+      if (isMounted) setIsLoading(false);
+    };
+
     if (prevPageId.current !== pageId) {
       isRouting.current = true;
-      setSections(getDraftSections(pageId));
       setActiveSectionId(null);
       prevPageId.current = pageId;
     }
-  }, [pageId, getDraftSections]);
+    
+    fetchSections();
+    
+    return () => { isMounted = false; };
+  }, [pageId, loadPageSections]);
 
   // Auto-save drafts when sections change
   useEffect(() => {
+    if (isLoading) return; // Do not auto-save while fetching
     if (isRouting.current) {
       isRouting.current = false;
       return; // Skip saving on initial mount or route change to prevent overwriting
     }
     saveDraftSections(pageId, sections);
-  }, [sections, pageId, saveDraftSections]);
+  }, [sections, pageId, saveDraftSections, isLoading]);
 
   const handlePublish = () => {
     publishPageSections(pageId, sections);
@@ -203,6 +230,7 @@ export default function VisualEditor() {
           device={device}
           setDevice={setDevice}
           onOpenHeroEditor={() => setIsHeroEditorOpen(true)}
+          onOpenFeaturedEditor={() => setIsFeaturedEditorOpen(true)}
         />
       </div>
 
@@ -215,6 +243,7 @@ export default function VisualEditor() {
         isOpen={isLibraryOpen}
         onClose={() => setIsLibraryOpen(false)}
         onAdd={handleAddSection}
+        currentPageSections={sections}
       />
 
       {/* Modals */}
@@ -232,6 +261,13 @@ export default function VisualEditor() {
           section={sections.find(s => s.id === activeSectionId)}
           onUpdate={handleUpdateSection}
           onClose={() => setIsHeroEditorOpen(false)}
+        />
+      )}
+      {isFeaturedEditorOpen && (
+        <FeaturedShowcaseEditorModal 
+          section={sections.find(s => s.id === activeSectionId)}
+          onUpdate={handleUpdateSection}
+          onClose={() => setIsFeaturedEditorOpen(false)}
         />
       )}
     </div>

@@ -163,6 +163,22 @@ export const SECTION_SCHEMAS = {
       { name: 'columns', label: 'Columns', type: FIELD_TYPES.SELECT, options: ['1', '2', '3', '4'], defaultValue: undefined }
     ]
   },
+  FEATURED_SHOWCASE: {
+    content: [
+      { name: 'title', label: 'Section Title', type: FIELD_TYPES.TEXT, defaultValue: 'Creations with purpose' },
+      { name: 'subtitle', label: 'Subtitle', type: FIELD_TYPES.TEXTAREA, defaultValue: 'Many choices based on your space' },
+      { name: 'ctaText', label: 'Button Text', type: FIELD_TYPES.TEXT, defaultValue: 'Explore Now' },
+      { name: 'ctaUrl', label: 'Button Link', type: FIELD_TYPES.URL, defaultValue: '/shop' },
+      { name: 'items', label: 'Image Grid Items', type: FIELD_TYPES.GALLERY, defaultValue: [] }
+    ],
+    settings: [
+      ...COMMON_LAYOUT,
+      ...COMMON_VISIBILITY
+    ],
+    responsive: [
+      ...COMMON_RESPONSIVE
+    ]
+  },
   NEW_ARRIVALS: {
     content: [
       { name: 'title', label: 'Section Title', type: FIELD_TYPES.TEXT, defaultValue: 'Just Landed' }
@@ -508,7 +524,7 @@ export const SECTION_SCHEMAS = {
       ...COMMON_RESPONSIVE
     ]
   },
-  
+
   // DEFAULT
   DEFAULT: {
     content: [
@@ -528,16 +544,16 @@ export const SECTION_SCHEMAS = {
 export const getSectionSchema = (type) => {
   if (!type) return SECTION_SCHEMAS.DEFAULT;
   const t = type.toUpperCase();
-  
+
   if (SECTION_SCHEMAS[t]) return SECTION_SCHEMAS[t];
-  
+
   if (t.includes('HERO')) return SECTION_SCHEMAS.HERO_BANNER;
   if (t.includes('PRODUCT') || t === 'GRID') return SECTION_SCHEMAS.PRODUCT_GRID;
   if (t.includes('CATEGORY')) return SECTION_SCHEMAS.CATEGORY_GRID;
   if (t.includes('PROMO') || t.includes('BANNER')) return SECTION_SCHEMAS.PROMO_BANNER;
   if (t.includes('TESTIMONIAL') || t.includes('REVIEW')) return SECTION_SCHEMAS.TESTIMONIALS;
   if (t.includes('FEATURE')) return SECTION_SCHEMAS.FEATURE_GRID;
-  if (t.includes('CREATION') || t.includes('PURPOSE')) return SECTION_SCHEMAS.CREATIONS_SHOWCASE;
+  if (t.includes('CREATION') || t.includes('PURPOSE') || t.includes('SHOWCASE')) return SECTION_SCHEMAS.FEATURED_SHOWCASE;
   if (t.includes('FAQ')) return SECTION_SCHEMAS.FAQ;
   if (t === 'NAVBAR' || t.includes('NAVBAR') || t.includes('HEADER')) return SECTION_SCHEMAS.NAVBAR;
   if (t === 'FOOTER') return SECTION_SCHEMAS.FOOTER;

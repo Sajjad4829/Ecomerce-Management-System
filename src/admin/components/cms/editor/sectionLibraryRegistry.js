@@ -63,6 +63,27 @@ export const LIBRARY_SECTIONS = [
     },
     defaultSettings: {},
     image: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=400'
+  },
+  
+  // NEW DYNAMIC SHOWCASE
+  {
+    id: 'lib-feat-show',
+    type: 'FEATURED_SHOWCASE',
+    name: 'Featured Showcase',
+    category: 'CATEGORIES',
+    description: 'Dynamic showcase with an advanced grid image editor.',
+    icon: 'FiLayout',
+    defaultContent: {
+      title: "Featured Showcase",
+      subtitle: "Highlight your top collections",
+      ctaText: "Discover More",
+      ctaUrl: "/collections",
+      items: [
+        { id: "1", imageUrl: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=800", title: "Living Space", link: "/category/living-room" },
+        { id: "2", imageUrl: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&q=80&w=800", title: "Office", link: "/category/office" }
+      ]
+    },
+    defaultSettings: {}
   }
 ];
 
