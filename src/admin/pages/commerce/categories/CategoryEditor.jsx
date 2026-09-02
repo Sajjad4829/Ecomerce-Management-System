@@ -6,7 +6,9 @@ import {
   FiAlertCircle, FiMonitor, FiTablet, FiSmartphone 
 } from 'react-icons/fi';
 import { Rocket } from 'lucide-react';
-import { useCategories, generateSlug } from '../../../context/commerce/CategoryContext';
+import { useCategories } from '../../../context/commerce/CategoryContext';
+import SearchableSelect from '../../../../components/ui/SearchableSelect';
+import { generateSlug } from '../../../context/commerce/CategoryContext';
 import { useCMS } from '../../../context/cms/CMSContext';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
 import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
@@ -101,63 +103,64 @@ export default function CategoryEditor() {
     setHasUnsavedChanges(true);
   };
 
-  const handleSaveDraft = () => {
-    setIsSaving(true);
-    setTimeout(() => {
-      setFormData(prev => ({ ...prev, status: 'draft' }));
-      handleSave('draft');
-      setIsSaving(false);
-      setHasUnsavedChanges(false);
+  const handleSaveDraft = async () => {
+    try {
+      await handleSave('draft');
       addToast({ type: 'success', message: 'Category saved as draft' });
-    }, 800);
+    } catch (error) {
+      addToast({ type: 'error', message: error.message || 'Failed to save draft' });
+    }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (!formData.name.trim()) {
       addToast({ type: 'error', message: 'Category Name is required' });
       return;
     }
     
-    
-    
-    setIsSaving(true);
-    setTimeout(() => {
-      setFormData(prev => ({ ...prev, status: 'published' }));
-      handleSave('published');
-      setIsSaving(false);
-      setHasUnsavedChanges(false);
+    try {
+      await handleSave('published');
       addToast({ type: 'success', message: 'Category published successfully' });
       navigate('/admin/catalog/categories');
-    }, 1000);
+    } catch (error) {
+      addToast({ type: 'error', message: error.message || 'Failed to publish category' });
+    }
   };
 
   const handleSave = async (forceStatus = null) => {
     setIsSaving(true);
-    const payload = {
-      name: formData.name,
-      slug: formData.slug || generateSlug(formData.name),
-      description: formData.description,
-      parentId: formData.parentId === 'none' ? null : (formData.parentId || null),
-      navMenuId: formData.navMenuId || null,
-      status: typeof forceStatus === 'string' ? forceStatus : formData.status,
-      featured: formData.featured,
-      sortOrder: Number(formData.sortOrder) || 1,
-      image: formData.image,
-      bannerImage: formData.bannerImage,
-      icon: formData.icon,
-      seo: {
-        metaTitle: formData.seoTitle,
-        metaDescription: formData.seoDescription,
-        metaKeywords: formData.metaKeywords,
-        canonicalUrl: formData.canonicalUrl,
-        robots: formData.robots
-      }
-    };
+    try {
+      const payload = {
+        name: formData.name,
+        slug: formData.slug || generateSlug(formData.name),
+        description: formData.description,
+        parentId: formData.parentId === 'none' ? null : (formData.parentId || null),
+        navMenuId: formData.navMenuId || null,
+        status: typeof forceStatus === 'string' ? forceStatus : formData.status,
+        featured: formData.featured,
+        sortOrder: Number(formData.sortOrder) || 1,
+        image: formData.image,
+        bannerImage: formData.bannerImage,
+        icon: formData.icon,
+        seo: {
+          metaTitle: formData.seoTitle,
+          metaDescription: formData.seoDescription,
+          metaKeywords: formData.metaKeywords,
+          canonicalUrl: formData.canonicalUrl,
+          robots: formData.robots
+        }
+      };
 
-    if (isNew) {
-      await addCategory(payload);
-    } else {
-      await updateCategory(id, payload);
+      if (isNew) {
+        await addCategory(payload);
+      } else {
+        await updateCategory(id, payload);
+      }
+      
+      setFormData(prev => ({ ...prev, status: typeof forceStatus === 'string' ? forceStatus : prev.status }));
+      setHasUnsavedChanges(false);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -270,7 +273,7 @@ export default function CategoryEditor() {
                         type="text" 
                         value={formData.name}
                         onChange={handleNameChange}
-                        placeholder="e.g. Living Room"
+                        placeholder="Category Name"
                         className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
                       />
                     </div>
@@ -281,7 +284,7 @@ export default function CategoryEditor() {
                         type="text" 
                         value={formData.slug}
                         onChange={(e) => handleChange('slug', e.target.value)}
-                        placeholder="e.g. living-room"
+                        placeholder="Slug"
                         className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F] font-mono"
                       />
                     </div>
@@ -303,21 +306,21 @@ export default function CategoryEditor() {
                     {!formData.navMenuId && (
                       <div>
                         <label className="block text-xs font-bold text-text-primary mb-1.5">Parent Category Group <span className="text-[#FF4D4F]">*</span></label>
-                        <select 
+                        <SearchableSelect 
                           value={formData.parentId || ''}
-                          onChange={(e) => handleChange('parentId', e.target.value)}
-                          className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary"
+                          onChange={(val) => handleChange('parentId', val)}
+                          options={[
+                            { value: 'none', label: 'None (Top Level)' },
+                            ...categories
+                              .filter(c => c.id !== id)
+                              .filter(c => !!c.navMenuId)
+                              .map(c => ({ value: c.id, label: c.name }))
+                          ]}
+                          placeholder="Select a Group"
+                          searchPlaceholder="Search categories..."
+                          className="w-full"
                           required={!formData.navMenuId}
-                        >
-                          <option value="">Select a Group</option>
-                          <option value="none">None (Top Level)</option>
-                          {categories
-                            .filter(c => c.id !== id)
-                            .filter(c => !!c.navMenuId)
-                            .map(c => (
-                                <option key={c.id} value={c.id}>{c.name}</option>
-                          ))}
-                        </select>
+                        />
                       </div>
                     )}
 

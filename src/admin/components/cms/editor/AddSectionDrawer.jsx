@@ -265,6 +265,33 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd, currentPageSe
                       // Works for every current and future section type automatically.
                       const resolvedSection = resolveSectionPreview(sec, sectionPreviewMap);
                       const fromMongo = resolvedSection._previewSource === 'mongodb';
+                      
+                      // Match SectionCard's static image preview logic for identical visuals
+                      const getPreviewImage = (section) => {
+                        if (section.content?.slides?.[0]?.image) return section.content.slides[0].image;
+                        if (section.content?.image) return section.content.image;
+                        if (section.content?.backgroundImage) return section.content.backgroundImage;
+                        if (section.content?.media?.url) return section.content.media.url;
+                        
+                        const searchForImage = (obj) => {
+                          if (!obj) return null;
+                          if (typeof obj === 'string' && (obj.startsWith('http') || obj.startsWith('data:image'))) return obj;
+                          if (typeof obj === 'object') {
+                            for (const key in obj) {
+                              if (key === 'icon') continue;
+                              const res = searchForImage(obj[key]);
+                              if (res) return res;
+                            }
+                          }
+                          return null;
+                        };
+                        const found = searchForImage(section.content);
+                        if (found) return found;
+
+                        return section.image;
+                      };
+                      
+                      const displayImage = getPreviewImage(resolvedSection);
 
                       return (
                         <div key={idx} className="group bg-white rounded-2xl border border-gray-200/70 shadow-sm hover:shadow-xl hover:shadow-[#5946ff]/10 hover:border-[#5946ff]/40 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative">
@@ -277,9 +304,16 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd, currentPageSe
                             </button>
                           </div>
 
-                          {/* Thumbnail — generic live preview for all section types */}
+                          {/* Thumbnail — static image match with Section Library */}
                           <div className="h-44 border-b border-gray-100 relative overflow-hidden bg-gray-50">
-                            <SectionLibraryPreview section={resolvedSection} scale={0.25} />
+                            {displayImage ? (
+                              <img src={displayImage} alt={sec.name} className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity" />
+                            ) : (
+                              <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                                <div className="text-xs uppercase tracking-widest font-bold">Preview</div>
+                                <div className="text-[10px] uppercase tracking-widest">{sec.category}</div>
+                              </div>
+                            )}
 
                             {/* MongoDB saved data indicator */}
                             {fromMongo && (

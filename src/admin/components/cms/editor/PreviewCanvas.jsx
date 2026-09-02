@@ -79,8 +79,8 @@ export default function PreviewCanvas({
     else if (typeStr.includes('CATEGORY')) content = <CategoryGridPreview section={section} device={device} />;
     else if (typeStr.includes('PROMO') || typeStr.includes('BANNER')) content = <BannerPreview section={section} device={device} />;
     else if (typeStr.includes('TESTIMONIAL') || typeStr.includes('REVIEW')) content = <TestimonialsPreview section={section} device={device} />;
+    else if (typeStr.includes('SHOWCASE') || typeStr.includes('CREATION') || typeStr.includes('PURPOSE')) content = <CreationsShowcasePreview section={section} device={device} />;
     else if (typeStr.includes('FEATURE')) content = <FeaturesPreview section={section} device={device} />;
-    else if (typeStr.includes('CREATION') || typeStr.includes('PURPOSE')) content = <CreationsShowcasePreview section={section} device={device} />;
     else if (typeStr.includes('FAQ')) content = <FAQPreview section={section} device={device} />;
     else content = <GenericPreview section={section} device={device} />;
 

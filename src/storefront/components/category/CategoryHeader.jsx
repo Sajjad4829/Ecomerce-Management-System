@@ -1,18 +1,35 @@
-export default function CategoryHeader({ category, productCount }) {
+import { FiSliders } from 'react-icons/fi';
+import CategoryBreadcrumb from './CategoryBreadcrumb';
+
+export default function CategoryHeader({ category, parentCategory, grandparentCategory, productCount, onOpenFilters }) {
   return (
-    <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white border-b border-gray-100">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#1A1A1A] tracking-tight">
-            {category ? category.name : 'Category'}
-          </h1>
-          {category?.description && (
-            <p className="text-gray-500 mt-2 max-w-2xl text-base">{category.description}</p>
-          )}
+    <div className="py-2 px-4 md:px-8 lg:px-16 w-full max-w-[1920px] mx-auto bg-white mb-8">
+      <div className="grid grid-cols-3 items-center">
+        {/* Left: Filters Button */}
+        <div className="flex items-center">
+          <button 
+            onClick={onOpenFilters}
+            className="flex items-center text-sm font-semibold text-[#1a1a1a] hover:text-black transition-colors"
+          >
+            <FiSliders size={18} className="mr-2" /> Filters
+          </button>
         </div>
-        <p className="text-sm text-gray-500 font-medium sm:mt-2">
-          Showing {productCount} {productCount === 1 ? 'product' : 'products'}
-        </p>
+
+        {/* Center: Breadcrumb (Replacing Title) */}
+        <div className="flex items-center justify-center w-full">
+          <CategoryBreadcrumb 
+            category={category} 
+            parentCategory={parentCategory} 
+            grandparentCategory={grandparentCategory}
+          />
+        </div>
+
+        {/* Right: Product Count */}
+        <div className="flex items-center justify-end">
+          <p className="text-sm text-gray-500">
+            Showing {productCount} of {productCount} {productCount === 1 ? 'product' : 'products'}
+          </p>
+        </div>
       </div>
     </div>
   );

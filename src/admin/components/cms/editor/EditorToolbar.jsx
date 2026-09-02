@@ -92,7 +92,7 @@ export default function EditorToolbar({ page, onSaveDraft, onPublish }) {
           onClick={onPublish} 
           className="px-5 py-2 bg-[#635BFF] text-white text-sm font-medium rounded-lg hover:bg-[#524be0] transition-colors shadow-sm flex items-center gap-2"
         >
-          Publish <FiChevronDown size={14} />
+          {page?.status === 'Published' ? 'Update' : 'Publish'} <FiChevronDown size={14} />
         </button>
       </div>
     </div>

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiEye, FiSave, FiMoreVertical, FiPlus, FiMinus, FiTrash2, 
-  FiImage, FiUploadCloud, FiFolder, FiChevronDown, FiSettings, FiX
+  FiImage, FiUploadCloud, FiFolder, FiChevronDown, FiSettings, FiX,
+  FiMonitor, FiTablet, FiSmartphone
 } from 'react-icons/fi';
 import { GripVertical } from 'lucide-react';
 import { cn } from '../../../../utils/cn';
@@ -10,6 +11,9 @@ import { cn } from '../../../../utils/cn';
 export default function HeroEditorModal({ section, onUpdate, onClose }) {
   const [slides, setSlides] = useState([]);
   const [activeSlideId, setActiveSlideId] = useState(null);
+  const [activeDevice, setActiveDevice] = useState('desktop');
+
+  const getPropName = (baseProp) => activeDevice === 'desktop' ? baseProp : `${baseProp}_${activeDevice}`;
   
   const [settings, setSettings] = useState({
     autoplay: true,
@@ -424,31 +428,212 @@ export default function HeroEditorModal({ section, onUpdate, onClose }) {
 
                       {/* Text Position Settings (Per-slide) */}
                       <div className="pt-2">
-                        <span className="text-xs text-gray-900 font-bold mb-3 block">Text Content Position (Optional overrides)</span>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs text-gray-900 font-bold block">Text Content Position (Optional overrides)</span>
+                          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                            <button
+                              onClick={() => setActiveDevice('desktop')}
+                              className={cn(
+                                "p-1.5 rounded-md transition-colors",
+                                activeDevice === 'desktop' ? "bg-white shadow-sm text-[#5946ff]" : "text-gray-500 hover:text-gray-700"
+                              )}
+                              title="Desktop"
+                            >
+                              <FiMonitor size={14} />
+                            </button>
+                            <button
+                              onClick={() => setActiveDevice('tablet')}
+                              className={cn(
+                                "p-1.5 rounded-md transition-colors",
+                                activeDevice === 'tablet' ? "bg-white shadow-sm text-[#5946ff]" : "text-gray-500 hover:text-gray-700"
+                              )}
+                              title="Tablet"
+                            >
+                              <FiTablet size={14} />
+                            </button>
+                            <button
+                              onClick={() => setActiveDevice('mobile')}
+                              className={cn(
+                                "p-1.5 rounded-md transition-colors",
+                                activeDevice === 'mobile' ? "bg-white shadow-sm text-[#5946ff]" : "text-gray-500 hover:text-gray-700"
+                              )}
+                              title="Mobile"
+                            >
+                              <FiSmartphone size={14} />
+                            </button>
+                          </div>
+                        </div>
                         <div className="space-y-4">
                           <div>
-                            <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Padding (Top, Right, Bottom, Left)</span>
+                            <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Block Padding (Top, Right, Bottom, Left)</span>
                             <div className="grid grid-cols-4 gap-2">
-                              <input type="number" placeholder="T" value={activeSlide.textPaddingTop || ''} onChange={(e) => handleUpdateActiveSlide({ textPaddingTop: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Top" />
-                              <input type="number" placeholder="R" value={activeSlide.textPaddingRight || ''} onChange={(e) => handleUpdateActiveSlide({ textPaddingRight: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Right" />
-                              <input type="number" placeholder="B" value={activeSlide.textPaddingBottom || ''} onChange={(e) => handleUpdateActiveSlide({ textPaddingBottom: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Bottom" />
-                              <input type="number" placeholder="L" value={activeSlide.textPaddingLeft || ''} onChange={(e) => handleUpdateActiveSlide({ textPaddingLeft: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Left" />
+                              <input type="text" placeholder="T" value={activeSlide[getPropName('textPaddingTop')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('textPaddingTop')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Top" />
+                              <input type="text" placeholder="R" value={activeSlide[getPropName('textPaddingRight')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('textPaddingRight')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Right" />
+                              <input type="text" placeholder="B" value={activeSlide[getPropName('textPaddingBottom')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('textPaddingBottom')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Bottom" />
+                              <input type="text" placeholder="L" value={activeSlide[getPropName('textPaddingLeft')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('textPaddingLeft')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Padding Left" />
                             </div>
                           </div>
                           <div>
-                            <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Margin (Top, Right, Bottom, Left)</span>
+                            <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Block Margin (Top, Right, Bottom, Left)</span>
                             <div className="grid grid-cols-4 gap-2">
-                              <input type="number" placeholder="T" value={activeSlide.textMarginTop || ''} onChange={(e) => handleUpdateActiveSlide({ textMarginTop: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Top" />
-                              <input type="number" placeholder="R" value={activeSlide.textMarginRight || ''} onChange={(e) => handleUpdateActiveSlide({ textMarginRight: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Right" />
-                              <input type="number" placeholder="B" value={activeSlide.textMarginBottom || ''} onChange={(e) => handleUpdateActiveSlide({ textMarginBottom: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Bottom" />
-                              <input type="number" placeholder="L" value={activeSlide.textMarginLeft || ''} onChange={(e) => handleUpdateActiveSlide({ textMarginLeft: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Left" />
+                              <input type="text" placeholder="T" value={activeSlide[getPropName('textMarginTop')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('textMarginTop')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Top" />
+                              <input type="text" placeholder="R" value={activeSlide[getPropName('textMarginRight')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('textMarginRight')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Right" />
+                              <input type="text" placeholder="B" value={activeSlide[getPropName('textMarginBottom')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('textMarginBottom')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Bottom" />
+                              <input type="text" placeholder="L" value={activeSlide[getPropName('textMarginLeft')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('textMarginLeft')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Margin Left" />
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Title Margin (Top, Right, Bottom, Left)</span>
+                            <div className="grid grid-cols-4 gap-2">
+                              <input type="text" placeholder="T" value={activeSlide[getPropName('titleMarginTop')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('titleMarginTop')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Title Margin Top" />
+                              <input type="text" placeholder="R" value={activeSlide[getPropName('titleMarginRight')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('titleMarginRight')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Title Margin Right" />
+                              <input type="text" placeholder="B" value={activeSlide[getPropName('titleMarginBottom')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('titleMarginBottom')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Title Margin Bottom" />
+                              <input type="text" placeholder="L" value={activeSlide[getPropName('titleMarginLeft')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('titleMarginLeft')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Title Margin Left" />
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Subtitle Margin (Top, Right, Bottom, Left)</span>
+                            <div className="grid grid-cols-4 gap-2">
+                              <input type="text" placeholder="T" value={activeSlide[getPropName('subtitleMarginTop')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('subtitleMarginTop')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Subtitle Margin Top" />
+                              <input type="text" placeholder="R" value={activeSlide[getPropName('subtitleMarginRight')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('subtitleMarginRight')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Subtitle Margin Right" />
+                              <input type="text" placeholder="B" value={activeSlide[getPropName('subtitleMarginBottom')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('subtitleMarginBottom')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Subtitle Margin Bottom" />
+                              <input type="text" placeholder="L" value={activeSlide[getPropName('subtitleMarginLeft')] || ''} onChange={(e) => handleUpdateActiveSlide({ [getPropName('subtitleMarginLeft')]: e.target.value })} className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]" title="Subtitle Margin Left" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Typography Settings (Per-slide) */}
+                      <div className="pt-4 border-t border-gray-100">
+                        <span className="text-xs text-gray-900 font-bold mb-3 block">Typography (Optional overrides)</span>
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-4 gap-2">
+                            <div>
+                              <label className="text-[10px] font-medium text-gray-600 block mb-1">Title Font</label>
+                              <select 
+                                value={activeSlide.titleFontFamily || ''}
+                                onChange={(e) => handleUpdateActiveSlide({ titleFontFamily: e.target.value })}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                              >
+                                <option value="">Theme Default</option>
+                                <option value="font-['Montserrat']">Montserrat</option>
+                                <option value="font-['Poppins']">Poppins</option>
+                                <option value="font-['Roboto']">Roboto</option>
+                                <option value="font-['Playfair_Display']">Playfair</option>
+                                <option value="font-sans">System Sans</option>
+                                <option value="font-serif">System Serif</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="text-[10px] font-medium text-gray-600 block mb-1">Title Weight</label>
+                              <select 
+                                value={activeSlide.titleFontWeight || ''}
+                                onChange={(e) => handleUpdateActiveSlide({ titleFontWeight: e.target.value })}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                              >
+                                <option value="">Theme Default</option>
+                                <option value="font-light">Light (300)</option>
+                                <option value="font-normal">Normal (400)</option>
+                                <option value="font-medium">Medium (500)</option>
+                                <option value="font-bold">Bold (700)</option>
+                                <option value="font-black">Black (900)</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="text-[10px] font-medium text-gray-600 block mb-1">Title Size</label>
+                              <input 
+                                type="text"
+                                placeholder="e.g. 72px"
+                                value={activeSlide[getPropName('titleFontSize')] || ''}
+                                onChange={(e) => handleUpdateActiveSlide({ [getPropName('titleFontSize')]: e.target.value })}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] font-medium text-gray-600 block mb-1">Title Color</label>
+                              <div className="flex gap-1 items-center">
+                                <input 
+                                  type="color"
+                                  value={activeSlide[getPropName('titleColor')] || '#ffffff'}
+                                  onChange={(e) => handleUpdateActiveSlide({ [getPropName('titleColor')]: e.target.value })}
+                                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                                />
+                                <input 
+                                  type="text"
+                                  placeholder="#ffffff"
+                                  value={activeSlide[getPropName('titleColor')] || ''}
+                                  onChange={(e) => handleUpdateActiveSlide({ [getPropName('titleColor')]: e.target.value })}
+                                  className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-4 gap-2">
+                            <div>
+                              <label className="text-[10px] font-medium text-gray-600 block mb-1">Subtitle Font</label>
+                              <select 
+                                value={activeSlide.subtitleFontFamily || ''}
+                                onChange={(e) => handleUpdateActiveSlide({ subtitleFontFamily: e.target.value })}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                              >
+                                <option value="">Theme Default</option>
+                                <option value="font-['Montserrat']">Montserrat</option>
+                                <option value="font-['Poppins']">Poppins</option>
+                                <option value="font-['Roboto']">Roboto</option>
+                                <option value="font-['Playfair_Display']">Playfair</option>
+                                <option value="font-sans">System Sans</option>
+                                <option value="font-serif">System Serif</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="text-[10px] font-medium text-gray-600 block mb-1">Subtitle Weight</label>
+                              <select 
+                                value={activeSlide.subtitleFontWeight || ''}
+                                onChange={(e) => handleUpdateActiveSlide({ subtitleFontWeight: e.target.value })}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                              >
+                                <option value="">Theme Default</option>
+                                <option value="font-light">Light (300)</option>
+                                <option value="font-normal">Normal (400)</option>
+                                <option value="font-medium">Medium (500)</option>
+                                <option value="font-bold">Bold (700)</option>
+                                <option value="font-black">Black (900)</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="text-[10px] font-medium text-gray-600 block mb-1">Subtitle Size</label>
+                              <input 
+                                type="text"
+                                placeholder="e.g. 36px"
+                                value={activeSlide[getPropName('subtitleFontSize')] || ''}
+                                onChange={(e) => handleUpdateActiveSlide({ [getPropName('subtitleFontSize')]: e.target.value })}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] font-medium text-gray-600 block mb-1">Subtitle Color</label>
+                              <div className="flex gap-1 items-center">
+                                <input 
+                                  type="color"
+                                  value={activeSlide[getPropName('subtitleColor')] || '#ffffff'}
+                                  onChange={(e) => handleUpdateActiveSlide({ [getPropName('subtitleColor')]: e.target.value })}
+                                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                                />
+                                <input 
+                                  type="text"
+                                  placeholder="#ffffff"
+                                  value={activeSlide[getPropName('subtitleColor')] || ''}
+                                  onChange={(e) => handleUpdateActiveSlide({ [getPropName('subtitleColor')]: e.target.value })}
+                                  className="w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       {/* Image Preview */}
-                      <div className="space-y-1.5 pt-2">
+                      <div className="space-y-1.5 pt-4 border-t border-gray-100">
                         <label className="text-xs font-medium text-gray-700">Slide Image</label>
                         
                         <label className="relative w-full h-[300px] bg-gray-100 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-[#5946ff] group flex flex-col items-center justify-center cursor-pointer transition-colors block">

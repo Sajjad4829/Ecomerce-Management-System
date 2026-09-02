@@ -111,9 +111,12 @@ export default function ProductManager() {
           if (action === 'delete') {
             bulkDelete(selectedProducts);
           } else if (action === 'publish') {
-            bulkUpdateStatus(selectedProducts, 'published');
-          } else if (action === 'draft') {
-            bulkUpdateStatus(selectedProducts, 'draft');
+            bulkUpdateStatus(selectedProducts, 'Active');
+          } else if (action === 'archive') {
+            bulkUpdateStatus(selectedProducts, 'archived');
+          } else if (action === 'update_tags') {
+            // Placeholder for update tags logic
+            console.log('Update tags for:', selectedProducts);
           }
           setSelectedProducts([]);
         }}

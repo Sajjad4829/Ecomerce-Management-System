@@ -24,6 +24,12 @@ import { SearchAnalytics as GlobalSearchAnalytics, ZeroResultAnalysis, SearchRed
 
 import StorefrontLayout from './storefront/layouts/StorefrontLayout';
 import CMSPage from './storefront/pages/cms/CMSPage';
+import CartPage from './storefront/pages/cart/CartPage';
+import CategoriesPage from './storefront/pages/category/CategoriesPage';
+import CategoryPage from './storefront/pages/category/CategoryPage';
+import ProductDetailPage from './storefront/pages/product/ProductDetailPage';
+import ShopPage from './storefront/pages/product/ShopPage';
+import WishlistPage from './storefront/pages/wishlist/WishlistPage';
 import DashboardHome from './admin/pages/DashboardHome';
 import AdminLogin from './admin/pages/auth/AdminLogin';
 import CustomerLogin from './storefront/pages/auth/CustomerLogin';
@@ -545,6 +551,17 @@ export default function App() {
                                                         {/* Storefront Layout Routes */}
                                                         <Route element={<StorefrontLayout />}>
                                                           <Route index element={<CMSPage />} />
+                                                          <Route path="/cart" element={<CartPage />} />
+                                                          <Route path="/checkout" element={<CheckoutPage />} />
+                                                          <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+                                                          <Route path="/tracking" element={<TrackOrder />} />
+                                                          <Route path="/wishlist" element={<WishlistPage />} />
+                                                          <Route path="/categories" element={<CategoriesPage />} />
+                                                          <Route path="/categories/:slug" element={<CategoryPage />} />
+                                                          <Route path="/products" element={<ShopPage />} />
+                                                          <Route path="/product/:slug" element={<ProductDetailPage />} />
+                                                          <Route path="/products/:id" element={<ProductDetailPage />} />
+                                                          <Route path="/search" element={<SearchResultsPage />} />
                                                           <Route path="/:slug" element={<CMSPage />} />
                                                         </Route>
 

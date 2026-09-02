@@ -552,8 +552,8 @@ export const getSectionSchema = (type) => {
   if (t.includes('CATEGORY')) return SECTION_SCHEMAS.CATEGORY_GRID;
   if (t.includes('PROMO') || t.includes('BANNER')) return SECTION_SCHEMAS.PROMO_BANNER;
   if (t.includes('TESTIMONIAL') || t.includes('REVIEW')) return SECTION_SCHEMAS.TESTIMONIALS;
-  if (t.includes('FEATURE')) return SECTION_SCHEMAS.FEATURE_GRID;
   if (t.includes('CREATION') || t.includes('PURPOSE') || t.includes('SHOWCASE')) return SECTION_SCHEMAS.FEATURED_SHOWCASE;
+  if (t.includes('FEATURE')) return SECTION_SCHEMAS.FEATURE_GRID || SECTION_SCHEMAS.DEFAULT;
   if (t.includes('FAQ')) return SECTION_SCHEMAS.FAQ;
   if (t === 'NAVBAR' || t.includes('NAVBAR') || t.includes('HEADER')) return SECTION_SCHEMAS.NAVBAR;
   if (t === 'FOOTER') return SECTION_SCHEMAS.FOOTER;

@@ -534,6 +534,41 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
                 </button>
              </div>
          </div>
+         
+         <div className="pt-4 border-t border-gray-200 mt-6 mb-4">
+           <h3 className="font-bold text-gray-900 text-md mb-4">Scrolled Colors</h3>
+         </div>
+
+         <div className="space-y-3">
+             <label className="text-sm font-semibold text-gray-700">Scrolled Background Color</label>
+             <div className="flex gap-2 items-center">
+                <input type="color" value={config.scrolledBackgroundColor || '#ffffff'} onChange={(e) => updateConfig('scrolledBackgroundColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                <input type="text" value={config.scrolledBackgroundColor || ''} onChange={(e) => updateConfig('scrolledBackgroundColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                <button onClick={() => updateConfig('scrolledBackgroundColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                  <FiX size={16} />
+                </button>
+             </div>
+         </div>
+         <div className="space-y-3">
+             <label className="text-sm font-semibold text-gray-700">Scrolled Text Color</label>
+             <div className="flex gap-2 items-center">
+                <input type="color" value={config.scrolledTextColor || '#000000'} onChange={(e) => updateConfig('scrolledTextColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                <input type="text" value={config.scrolledTextColor || ''} onChange={(e) => updateConfig('scrolledTextColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                <button onClick={() => updateConfig('scrolledTextColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                  <FiX size={16} />
+                </button>
+             </div>
+         </div>
+         <div className="space-y-3">
+             <label className="text-sm font-semibold text-gray-700">Scrolled Accent Color</label>
+             <div className="flex gap-2 items-center">
+                <input type="color" value={config.scrolledAccentColor || '#000000'} onChange={(e) => updateConfig('scrolledAccentColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                <input type="text" value={config.scrolledAccentColor || ''} onChange={(e) => updateConfig('scrolledAccentColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                <button onClick={() => updateConfig('scrolledAccentColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                  <FiX size={16} />
+                </button>
+             </div>
+         </div>
       </div>
     );
   }

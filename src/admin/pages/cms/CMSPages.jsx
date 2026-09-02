@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import HeroEditorModal from '../../components/cms/editor/HeroEditorModal';
 import { useCMS } from '../../context/cms/CMSContext';
@@ -585,8 +585,8 @@ export const SectionLibrary = () => {
     closeModal();
   };
 
-  const handleHeroModalUpdate = (id, updates) => {
-    setSections(sections.map(s => s.id === id ? { ...s, ...updates } : s));
+  const handleHeroModalUpdate = (updatedSection) => {
+    setSections(sections.map(s => s.id === updatedSection.id ? updatedSection : s));
   };
 
   const filteredSections = sections.filter(s => {

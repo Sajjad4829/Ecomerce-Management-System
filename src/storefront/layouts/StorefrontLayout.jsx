@@ -32,7 +32,8 @@ export default function StorefrontLayout() {
     setShowLoader(false);
   };
 
-  const isTransparentOnTop = headerConfig?.navbarStyle === 'transparent' || headerConfig?.transparentOnTop;
+  const isHomePage = location.pathname === '/';
+  const isTransparentOnTop = (headerConfig?.navbarStyle === 'transparent' && isHomePage) || headerConfig?.transparentOnTop;
   const navHeight = headerConfig?.height || 72;
 
   return (

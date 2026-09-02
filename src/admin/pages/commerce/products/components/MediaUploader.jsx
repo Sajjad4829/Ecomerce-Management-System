@@ -112,18 +112,18 @@ export default function MediaUploader({ media, onChange }) {
       {(media.primaryImage || media.gallery.length > 0) && (
         <div className="mt-8 space-y-4">
           <h3 className="text-sm font-bold text-text-primary">Uploaded Media</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex flex-wrap gap-4">
             
             {/* Primary Image */}
             {media.primaryImage && (
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden border-2 border-primary bg-background relative group">
+              <div className="w-32 h-32 rounded-xl overflow-hidden border border-gray-200 ring-2 ring-primary/20 shadow-sm bg-background relative group transition-all hover:shadow-md">
                 <img src={media.primaryImage} alt="Primary" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <button onClick={() => removeImage(media.primaryImage, true)} className="p-2 bg-surface/20 hover:bg-danger-soft0 rounded-full text-white backdrop-blur">
+                  <button onClick={() => removeImage(media.primaryImage, true)} className="p-1.5 bg-white/20 hover:bg-red-500 rounded-full text-white backdrop-blur-sm transition-colors">
                     <FiX size={16} />
                   </button>
                 </div>
-                <div className="absolute top-2 left-2 px-2 py-1 bg-primary text-white text-[10px] font-bold uppercase rounded-md shadow-sm">
+                <div className="absolute top-2 left-2 px-2 py-0.5 bg-white/90 backdrop-blur-sm text-primary text-[10px] font-extrabold uppercase rounded shadow-sm tracking-wider">
                   Primary
                 </div>
               </div>
@@ -131,13 +131,13 @@ export default function MediaUploader({ media, onChange }) {
 
             {/* Gallery Images */}
             {media.gallery.map((img, idx) => (
-              <div key={idx} className="aspect-[4/3] rounded-2xl overflow-hidden border border-border bg-background relative group">
+              <div key={idx} className="w-32 h-32 rounded-xl overflow-hidden border border-gray-200 bg-background relative group transition-all hover:shadow-md">
                 <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 flex-col">
-                  <button onClick={() => setAsPrimary(img)} className="px-3 py-1.5 bg-surface text-text-primary text-xs font-bold rounded-lg shadow-sm hover:bg-primary-soft">
+                  <button onClick={() => setAsPrimary(img)} className="px-2.5 py-1 bg-white/90 backdrop-blur-sm text-gray-900 text-[10px] font-bold rounded shadow hover:bg-white transition-colors">
                     Set Primary
                   </button>
-                  <button onClick={() => removeImage(img, false)} className="p-2 bg-surface/20 hover:bg-danger-soft0 rounded-full text-white backdrop-blur">
+                  <button onClick={() => removeImage(img, false)} className="p-1.5 bg-white/20 hover:bg-red-500 rounded-full text-white backdrop-blur-sm transition-colors">
                     <FiX size={16} />
                   </button>
                 </div>

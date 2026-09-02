@@ -53,40 +53,77 @@ export default function Navbar({ data }) {
   const headerMenu = menus.find(m => m.id === primaryMenuId)?.items?.filter(i => i.visibility) || [];
 
   // Read settings from the global header config (which the Navbar Builder saves to)
-  const isTransparentStyle = headerConfig?.navbarStyle === 'transparent';
+  const isConfigTransparent = headerConfig?.navbarStyle === 'transparent';
+  const isHomePage = location.pathname === '/';
+  const isTransparentStyle = isConfigTransparent && isHomePage;
   
   // Navbar is solid if we are scrolled, NOT marked as transparent, or if hovering over it
   const isSolid = isScrolled || !isTransparentStyle || isHovered || hoveredCategoryId !== null;
 
   // Determine dynamic colors based on state and user config
-  let currentBgColor = isSolid ? (headerConfig?.backgroundColor || '#ffffff') : 'transparent';
-  if (isHovered && headerConfig?.navbarHoverBgColor) {
-    currentBgColor = headerConfig.navbarHoverBgColor;
-  }
-  
-  let currentTextColor = headerConfig?.textColor;
-  
-  if (isHovered && headerConfig?.navbarHoverTextColor) {
-    currentTextColor = headerConfig.navbarHoverTextColor;
-  } else if (!currentTextColor) {
-    if (isHovered && headerConfig?.navbarHoverBgColor) {
-      currentTextColor = '#111111'; // Default dark if custom hover bg is provided
-    } else if (isTransparentStyle && !isSolid) {
-      currentTextColor = '#ffffff';
-    } else if (isTransparentStyle && isSolid) {
-      currentTextColor = '#111111'; // Default dark text when transparent navbar becomes solid (scrolled)
-    } else {
-      currentTextColor = headerConfig?.navbarStyle === 'dark' ? '#ffffff' : '#111111';
-    }
-  }
+  let currentBgColor;
+  let currentTextColor;
+  let currentIconColor;
+  let currentAccentColor;
 
-  let currentIconColor = headerConfig?.iconColor || currentTextColor;
-  if (isHovered && headerConfig?.iconHoverColor) {
-    currentIconColor = headerConfig.iconHoverColor;
-  } else if ((isTransparentStyle && isSolid) || (isHovered && headerConfig?.navbarHoverTextColor)) {
-    // When a transparent navbar becomes solid, or when the navbar is hovered,
-    // force icons to match the text color so they don't disappear on the changing background.
-    currentIconColor = currentTextColor;
+  if (!isHomePage) {
+    // Force default styles for all non-home pages (solid white bg, black text/icons)
+    currentBgColor = '#ffffff';
+    currentTextColor = '#111111';
+    currentIconColor = '#111111';
+    currentAccentColor = '#111111';
+  } else {
+    currentBgColor = isSolid ? (headerConfig?.backgroundColor || '#ffffff') : 'transparent';
+    if (isScrolled && headerConfig?.scrolledBackgroundColor) {
+      currentBgColor = headerConfig.scrolledBackgroundColor;
+    }
+    if (isHovered && headerConfig?.navbarHoverBgColor) {
+      currentBgColor = headerConfig.navbarHoverBgColor;
+    }
+    
+    // Helper to determine text color based on background brightness
+    const getContrastColor = (bg) => {
+      if (!bg || bg === 'transparent') return '#111111';
+      let hex = bg.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      if (hex.length !== 6) return '#111111';
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      return luma < 128 ? '#ffffff' : '#111111';
+    };
+
+    currentTextColor = headerConfig?.textColor;
+    if (isScrolled && headerConfig?.scrolledTextColor) {
+      currentTextColor = headerConfig.scrolledTextColor;
+    }
+    
+    if (isHovered && headerConfig?.navbarHoverTextColor) {
+      currentTextColor = headerConfig.navbarHoverTextColor;
+    } else if (!currentTextColor) {
+      if (isTransparentStyle && !isSolid) {
+        currentTextColor = '#ffffff';
+      } else {
+        currentTextColor = getContrastColor(currentBgColor);
+      }
+    }
+
+    currentIconColor = headerConfig?.iconColor || currentTextColor;
+    currentAccentColor = currentTextColor;
+
+    if (isScrolled && headerConfig?.scrolledAccentColor) {
+      currentIconColor = headerConfig.scrolledAccentColor;
+      currentAccentColor = headerConfig.scrolledAccentColor;
+    }
+
+    if (isHovered && headerConfig?.iconHoverColor) {
+      currentIconColor = headerConfig.iconHoverColor;
+    } else if (!headerConfig?.scrolledAccentColor && ((isTransparentStyle && isSolid) || (isHovered && headerConfig?.navbarHoverTextColor))) {
+      // When a transparent navbar becomes solid, or when the navbar is hovered,
+      // force icons to match the text color so they don't disappear on the changing background.
+      currentIconColor = currentTextColor;
+    }
   }
 
   useEffect(() => {
@@ -294,7 +331,7 @@ export default function Navbar({ data }) {
                     {headerConfig?.enableHoverAnimation !== false && (
                       <span 
                         className="absolute bottom-0 left-1/2 w-4/5 -translate-x-1/2 h-[1.5px] bg-current scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" 
-                        style={currentTextColor ? { backgroundColor: currentTextColor } : {}}
+                        style={currentAccentColor ? { backgroundColor: currentAccentColor } : (currentTextColor ? { backgroundColor: currentTextColor } : {})}
                       />
                     )}
                   </span>

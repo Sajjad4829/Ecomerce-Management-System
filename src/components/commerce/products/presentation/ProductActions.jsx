@@ -35,28 +35,28 @@ export default function ProductActions({ product, activeVariant }) {
   };
 
   return (
-    <div className="pt-2 space-y-4">
-      <div className="flex gap-3 h-[52px]">
+    <div className="pt-2">
+      <div className="flex flex-wrap items-center gap-3">
         {/* Quantity Selector */}
-        <div className="flex items-center bg-white border border-[#E5E7F2] rounded-[12px] h-full w-[130px] shrink-0 overflow-hidden shadow-sm">
+        <div className="flex items-center bg-white border border-[#E5E7F2] rounded-md h-9 w-[100px] shrink-0 overflow-hidden shadow-sm">
           <button 
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="w-10 h-full flex items-center justify-center text-[#4F46FF] hover:bg-[#F0EFFF] transition-colors"
+            className="w-8 h-full flex items-center justify-center text-[#4F46FF] hover:bg-[#F0EFFF] transition-colors"
           >
-            <FiMinus size={16} />
+            <FiMinus size={14} />
           </button>
           <input 
             type="number" 
             value={quantity}
             onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-            className="w-full text-center text-[15px] font-bold text-[#111A4A] bg-transparent focus:outline-none appearance-none"
+            className="w-full text-center text-xs font-semibold text-[#111A4A] bg-transparent focus:outline-none appearance-none"
             min="1"
           />
           <button 
             onClick={() => setQuantity(quantity + 1)}
-            className="w-10 h-full flex items-center justify-center text-[#4F46FF] hover:bg-[#F0EFFF] transition-colors"
+            className="w-8 h-full flex items-center justify-center text-[#4F46FF] hover:bg-[#F0EFFF] transition-colors"
           >
-            <FiPlus size={16} />
+            <FiPlus size={14} />
           </button>
         </div>
 
@@ -64,35 +64,33 @@ export default function ProductActions({ product, activeVariant }) {
         <button 
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className={`flex-1 h-full font-bold text-[13px] tracking-widest uppercase transition-all rounded-[12px] text-white shadow-md ${
+          className={`h-9 px-6 font-medium text-sm transition-all rounded-md text-white shadow-sm ${
             isOutOfStock 
-              ? 'bg-gradient-to-r from-[#8B5CF6] to-[#6366F1]'
-              : 'bg-gradient-to-r from-[#8B5CF6] to-[#6366F1] hover:shadow-lg hover:-translate-y-0.5'
+              ? 'bg-[#8B5CF6]'
+              : 'bg-[#8B5CF6] hover:bg-[#7C3AED] hover:shadow'
           }`}
         >
           {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
         </button>
-      </div>
 
-      <div className="flex gap-3 h-[52px]">
         <button 
           onClick={handleBuyNow}
           disabled={isOutOfStock}
-          className={`flex-1 h-full flex items-center justify-center gap-2 font-bold text-[13px] tracking-widest uppercase transition-all rounded-[12px] text-white shadow-md ${
+          className={`h-9 px-6 flex items-center justify-center gap-2 font-medium text-sm transition-all rounded-md text-white shadow-sm ${
             isOutOfStock 
-              ? 'bg-gradient-to-r from-[#8B5CF6] to-[#6366F1] opacity-90'
-              : 'bg-gradient-to-r from-[#8B5CF6] to-[#6366F1] hover:shadow-lg hover:-translate-y-0.5'
+              ? 'bg-[#8B5CF6] opacity-90'
+              : 'bg-[#8B5CF6] hover:bg-[#7C3AED] hover:shadow'
           }`}
         >
-          <FiShoppingBag size={18} />
+          <FiShoppingBag size={14} />
           Buy Now
         </button>
         
-        <button className="h-full w-[52px] shrink-0 border border-[#E5E7F2] text-[#6366F1] shadow-sm hover:bg-[#F0EFFF] rounded-[12px] transition-all flex items-center justify-center bg-white">
-          <FiHeart size={20} />
+        <button className="h-9 w-9 shrink-0 border border-[#E5E7F2] text-[#8B5CF6] shadow-sm hover:bg-[#F0EFFF] rounded-md transition-all flex items-center justify-center bg-white">
+          <FiHeart size={14} />
         </button>
-        <button className="h-full w-[52px] shrink-0 border border-[#E5E7F2] text-[#6366F1] shadow-sm hover:bg-[#F0EFFF] rounded-[12px] transition-all flex items-center justify-center bg-white">
-          <FiShare2 size={20} />
+        <button className="h-9 w-9 shrink-0 border border-[#E5E7F2] text-[#8B5CF6] shadow-sm hover:bg-[#F0EFFF] rounded-md transition-all flex items-center justify-center bg-white">
+          <FiShare2 size={14} />
         </button>
       </div>
     </div>

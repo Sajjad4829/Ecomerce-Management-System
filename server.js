@@ -528,6 +528,36 @@ app.put('/api/cms/library/configurations/:sectionType', async (req, res) => {
       { new: true, upsert: true }
     );
     
+    // SYNC TO ALL PAGES
+    const pages = await CMSPage.find({
+      $or: [
+        { "sectionsDraft.type": sectionType },
+        { "sectionsPublished.type": sectionType }
+      ]
+    });
+    
+    for (const page of pages) {
+      if (page.sectionsDraft && page.sectionsDraft.length > 0) {
+        page.sectionsDraft.forEach(s => {
+          if (s.type === sectionType) {
+            s.content = content;
+            s.settings = settings;
+          }
+        });
+        page.markModified('sectionsDraft');
+      }
+      if (page.sectionsPublished && page.sectionsPublished.length > 0) {
+        page.sectionsPublished.forEach(s => {
+          if (s.type === sectionType) {
+            s.content = content;
+            s.settings = settings;
+          }
+        });
+        page.markModified('sectionsPublished');
+      }
+      await page.save();
+    }
+    
     res.json(config);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -601,6 +631,49 @@ app.put('/api/cms/pages/:id/sections/draft', async (req, res) => {
     const { sections } = req.body;
     const updated = await CMSPage.findOneAndUpdate({ id: req.params.id }, { $set: { sectionsDraft: sections || [], updatedAt: new Date() } }, { new: true }).lean();
     if (!updated) return res.status(404).json({ error: 'Page not found' });
+    
+    // AUTO-SYNC TO LIBRARY AND ALL OTHER PAGES
+    if (sections && sections.length > 0) {
+      for (const sec of sections) {
+        if (!sec.type) continue;
+        // Update library
+        await SectionConfiguration.findOneAndUpdate(
+          { sectionType: sec.type },
+          { $set: { content: sec.content, settings: sec.settings } },
+          { new: true, upsert: true }
+        );
+        // Update all other pages
+        const otherPages = await CMSPage.find({
+          id: { $ne: req.params.id },
+          $or: [
+            { "sectionsDraft.type": sec.type },
+            { "sectionsPublished.type": sec.type }
+          ]
+        });
+        for (const page of otherPages) {
+          if (page.sectionsDraft && page.sectionsDraft.length > 0) {
+            page.sectionsDraft.forEach(s => {
+              if (s.type === sec.type) {
+                s.content = sec.content;
+                s.settings = sec.settings;
+              }
+            });
+            page.markModified('sectionsDraft');
+          }
+          if (page.sectionsPublished && page.sectionsPublished.length > 0) {
+            page.sectionsPublished.forEach(s => {
+              if (s.type === sec.type) {
+                s.content = sec.content;
+                s.settings = sec.settings;
+              }
+            });
+            page.markModified('sectionsPublished');
+          }
+          await page.save();
+        }
+      }
+    }
+    
     res.json({ success: true, page: updated });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -617,6 +690,49 @@ app.put('/api/cms/pages/:id/sections/publish', async (req, res) => {
       { new: true }
     ).lean();
     if (!updated) return res.status(404).json({ error: 'Page not found' });
+    
+    // AUTO-SYNC TO LIBRARY AND ALL OTHER PAGES
+    if (sections && sections.length > 0) {
+      for (const sec of sections) {
+        if (!sec.type) continue;
+        // Update library
+        await SectionConfiguration.findOneAndUpdate(
+          { sectionType: sec.type },
+          { $set: { content: sec.content, settings: sec.settings } },
+          { new: true, upsert: true }
+        );
+        // Update all other pages
+        const otherPages = await CMSPage.find({
+          id: { $ne: req.params.id },
+          $or: [
+            { "sectionsDraft.type": sec.type },
+            { "sectionsPublished.type": sec.type }
+          ]
+        });
+        for (const page of otherPages) {
+          if (page.sectionsDraft && page.sectionsDraft.length > 0) {
+            page.sectionsDraft.forEach(s => {
+              if (s.type === sec.type) {
+                s.content = sec.content;
+                s.settings = sec.settings;
+              }
+            });
+            page.markModified('sectionsDraft');
+          }
+          if (page.sectionsPublished && page.sectionsPublished.length > 0) {
+            page.sectionsPublished.forEach(s => {
+              if (s.type === sec.type) {
+                s.content = sec.content;
+                s.settings = sec.settings;
+              }
+            });
+            page.markModified('sectionsPublished');
+          }
+          await page.save();
+        }
+      }
+    }
+    
     res.json({ success: true, page: updated });
   } catch (error) {
     res.status(500).json({ error: error.message });

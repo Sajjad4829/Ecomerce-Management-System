@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiTrash2, FiEye, FiArchive, FiTag } from 'react-icons/fi';
 
-export default function BulkProductBar({ selectedCount, onClear }) {
+export default function BulkProductBar({ selectedCount, onClear, onAction }) {
   return (
     <AnimatePresence>
       {selectedCount > 0 && (
@@ -22,17 +22,17 @@ export default function BulkProductBar({ selectedCount, onClear }) {
           </div>
 
           <div className="flex items-center gap-1">
-            <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
+            <button onClick={() => onAction('publish')} className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
               <FiEye size={14} /> Publish
             </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
+            <button onClick={() => onAction('archive')} className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
               <FiArchive size={14} /> Archive
             </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
+            <button onClick={() => onAction('update_tags')} className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
               <FiTag size={14} /> Update Tags
             </button>
             <div className="w-px h-4 bg-stone-700 mx-2" />
-            <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-red-900/30 text-red-400 rounded-lg text-xs font-medium transition-colors">
+            <button onClick={() => onAction('delete')} className="flex items-center gap-2 px-3 py-1.5 hover:bg-red-900/30 text-red-400 rounded-lg text-xs font-medium transition-colors">
               <FiTrash2 size={14} /> Delete
             </button>
           </div>

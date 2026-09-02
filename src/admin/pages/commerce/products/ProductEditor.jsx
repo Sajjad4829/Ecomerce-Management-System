@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiBox, FiCheck, FiChevronRight, FiEdit2, FiImage, FiInfo, FiPlus, FiSave, FiSearch, FiSettings, FiTag, FiUploadCloud, FiX, FiDollarSign, FiAlignLeft, FiEye, FiMonitor, FiTablet, FiSmartphone, FiArrowLeft, FiAlertCircle } from 'react-icons/fi';
+import { FiBox, FiCheck, FiChevronRight, FiChevronUp, FiChevronDown, FiEdit2, FiImage, FiInfo, FiPlus, FiSave, FiSearch, FiSettings, FiTag, FiUploadCloud, FiX, FiDollarSign, FiAlignLeft, FiEye, FiMonitor, FiTablet, FiSmartphone, FiArrowLeft, FiAlertCircle } from 'react-icons/fi';
 import MediaUploader from './components/MediaUploader';
 import { Rocket } from 'lucide-react';
 import ProductStatusBadge from '../../../components/commerce/products/ProductStatusBadge';
-import VariantManager from '../../../components/commerce/products/variants/VariantManager';
+import ProductAttributesManager from '../../../components/commerce/products/attributes/ProductAttributesManager';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
 import { useCategories } from '../../../context/commerce/CategoryContext';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
 import {
   ProductGallery,
@@ -21,10 +23,21 @@ import {
 const STEPS = [
   { id: 'basic', label: 'Basic Info', number: '1', icon: FiInfo },
   { id: 'media', label: 'Media & Gallery', number: '2', icon: FiImage },
-  { id: 'variants', label: 'Variants', number: '3', icon: FiBox },
+  { id: 'variants', label: 'Attributes', number: '3', icon: FiBox },
   { id: 'pricing', label: 'Pricing & Stock', number: '4', icon: FiDollarSign },
   { id: 'seo', label: 'SEO & Publishing', number: '5', icon: FiSearch }
 ];
+
+const quillModules = {
+  toolbar: [
+    [{ 'font': [] }, { 'size': [] }],
+    ['bold', 'italic', 'underline'],
+    [{ 'color': [] }],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['link', 'clean']
+  ]
+};
 
 export default function ProductEditor() {
   const { id } = useParams();
@@ -32,6 +45,7 @@ export default function ProductEditor() {
   const isNew = !id;
 
   const [activeTab, setActiveTab] = useState('basic');
+  const [expandedSections, setExpandedSections] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [previewMode, setPreviewMode] = useState('desktop');
   const [previewLayout, setPreviewLayout] = useState('page');
@@ -84,7 +98,15 @@ export default function ProductEditor() {
       specifications: { assemblyRequired: 'No', roomType: '', seatingCapacity: '' },
       care: { furniture: '', upholstery: '' },
       warranty: { duration: '', description: '', returnPolicy: '' },
-      story: ''
+      story: '',
+      packagingInformation: '',
+      features: '',
+      customAccordion: [
+        { title: 'Exchange and Return', content: '' },
+        { title: 'Features', content: '' },
+        { title: 'Furniture Care Information', content: '' },
+        { title: 'Warranty', content: '' }
+      ]
     },
     seo: {
       slug: '', metaTitle: '', metaDescription: '', metaKeywords: '', canonicalUrl: '', openGraphImage: ''
@@ -289,7 +311,7 @@ export default function ProductEditor() {
                           type="text" 
                           value={formData.basicInfo.name}
                           onChange={(e) => handleChange('basicInfo', 'name', e.target.value)}
-                          placeholder="e.g. Modern Sofa Chair"
+                          placeholder="Product Name"
                           className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
                         />
                       </div>
@@ -315,43 +337,10 @@ export default function ProductEditor() {
                           />
                         </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-text-primary mb-1.5">Short Description <span className="text-[#FF4D4F]">*</span></label>
-                        <textarea 
-                          rows={2}
-                          value={formData.basicInfo.shortDescription}
-                          onChange={(e) => handleChange('basicInfo', 'shortDescription', e.target.value)}
-                          placeholder="Write a short description for product..."
-                          className="w-full px-4 py-3 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F] resize-none"
-                        />
-                        <div className="text-right text-[10px] text-text-muted mt-1">{formData.basicInfo.shortDescription.length}/160</div>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-text-primary mb-1.5">Full Description <span className="text-[#FF4D4F]">*</span></label>
-                        <div className="border border-border rounded-xl overflow-hidden bg-surface focus-within:border-primary focus-within:ring-1 focus-within:ring-[#4F46FF] transition-all">
-                          <div className="flex items-center gap-4 px-4 py-2.5 bg-background border-b border-border text-text-muted">
-                            <span className="text-xs font-bold text-text-primary cursor-pointer">Paragraph ▾</span>
-                            <span className="font-serif font-bold text-black cursor-pointer">B</span>
-                            <span className="font-serif italic text-black cursor-pointer">I</span>
-                            <span className="cursor-pointer">≡</span>
-                            <span className="cursor-pointer">=</span>
-                            <span className="cursor-pointer">&gt;</span>
-                            <span className="cursor-pointer">🔗</span>
-                            <span className="cursor-pointer">🖼</span>
-                          </div>
-                          <textarea 
-                            rows={6}
-                            value={formData.basicInfo.description}
-                            onChange={(e) => handleChange('basicInfo', 'description', e.target.value)}
-                            placeholder="Write full product description..."
-                            className="w-full px-4 py-4 border-none focus:outline-none focus:ring-0 text-sm text-text-primary placeholder-[#7C849F] resize-none"
-                          />
-                        </div>
-                      </div>
                     </div>
                   </div>
                   
-                  <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                  <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8 mb-6">
                     <h2 className="text-lg font-bold text-text-primary mb-6">Organization</h2>
                     <div className="space-y-5">
                       <div>
@@ -371,76 +360,110 @@ export default function ProductEditor() {
                   </div>
 
                   <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
-                    <h2 className="text-lg font-bold text-text-primary mb-6">Furniture Details & Dimensions</h2>
-                    
-                    <div className="mb-6">
-                      <h3 className="text-sm font-bold text-text-primary mb-3">Dimensions</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-                        {['width', 'height', 'depth', 'seatHeight'].map(dim => (
-                          <div key={dim}>
-                            <label className="block text-xs font-bold text-text-primary mb-1.5 capitalize">{dim.replace(/([A-Z])/g, ' $1').trim()}</label>
-                            <input type="text" value={formData.furnitureDetails.dimensions[dim] || ''} onChange={(e) => {
-                              handleChange('furnitureDetails', 'dimensions', { ...formData.furnitureDetails.dimensions, [dim]: e.target.value });
-                            }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiInfo size={16} /></div>
+                        <h2 className="text-lg font-bold text-text-primary">Product Details Sections</h2>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const current = formData.furnitureDetails.customAccordion || [];
+                          handleChange('furnitureDetails', 'customAccordion', [...current, { title: '', content: '' }]);
+                        }}
+                        className="text-primary text-xs font-bold hover:underline flex items-center gap-1 bg-primary/10 px-3 py-1.5 rounded-lg"
+                      >
+                        <FiPlus size={14} /> Add Section
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      {(formData.furnitureDetails.customAccordion || []).map((section, idx) => (
+                        <div key={idx} className="border border-border rounded-xl bg-surface focus-within:border-primary focus-within:ring-1 focus-within:ring-[#4F46FF] transition-all relative overflow-hidden">
+                          
+                          {/* Header / Toggle */}
+                          <div 
+                            className="flex items-center justify-between p-4 bg-stone-50 cursor-pointer"
+                            onClick={() => {
+                              setExpandedSections(prev => ({ ...prev, [idx]: !prev[idx] }));
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-bold text-text-primary">
+                                {section.title || `Section ${idx + 1}`}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button 
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const current = [...formData.furnitureDetails.customAccordion];
+                                  current.splice(idx, 1);
+                                  handleChange('furnitureDetails', 'customAccordion', current);
+                                }}
+                                className="text-red-500 hover:text-red-700 p-1 bg-white rounded-md shadow-sm border border-stone-200"
+                              >
+                                <FiX size={14} />
+                              </button>
+                              <div className="p-1 bg-white rounded-md shadow-sm border border-stone-200 text-stone-500">
+                                {expandedSections[idx] ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
+                              </div>
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="mb-6">
-                      <h3 className="text-sm font-bold text-text-primary mb-3">Materials</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-                        {['frameMaterial', 'woodType', 'woodFinish', 'upholsteryMaterial'].map(mat => (
-                          <div key={mat}>
-                            <label className="block text-xs font-bold text-text-primary mb-1.5 capitalize">{mat.replace(/([A-Z])/g, ' $1').trim()}</label>
-                            <input type="text" value={formData.furnitureDetails.materials[mat] || ''} onChange={(e) => {
-                              handleChange('furnitureDetails', 'materials', { ...formData.furnitureDetails.materials, [mat]: e.target.value });
-                            }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
 
-                    <div className="mb-6">
-                      <h3 className="text-sm font-bold text-text-primary mb-3">Care Instructions</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                          <label className="block text-xs font-bold text-text-primary mb-1.5">Furniture Care</label>
-                          <textarea value={formData.furnitureDetails.care?.furniture || ''} onChange={(e) => {
-                            handleChange('furnitureDetails', 'care', { ...formData.furnitureDetails.care, furniture: e.target.value });
-                          }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary resize-none" rows="3" />
+                          {/* Content Body */}
+                          <AnimatePresence>
+                            {expandedSections[idx] && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="border-t border-border"
+                              >
+                                <div className="p-4">
+                                  <div className="mb-4">
+                                    <label className="block text-xs font-bold text-text-primary mb-1.5">Section Title</label>
+                                    <input 
+                                      type="text" 
+                                      value={section.title} 
+                                      onChange={(e) => {
+                                        const current = [...formData.furnitureDetails.customAccordion];
+                                        current[idx].title = e.target.value;
+                                        handleChange('furnitureDetails', 'customAccordion', current);
+                                      }}
+                                      className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:outline-none text-sm text-text-primary font-semibold" 
+                                      placeholder="e.g. Features" 
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-xs font-bold text-text-primary mb-1.5">Content</label>
+                                    <div className="rounded-lg overflow-hidden bg-background">
+                                      <ReactQuill 
+                                        theme="snow"
+                                        value={section.content} 
+                                        onChange={(content) => {
+                                          const current = [...formData.furnitureDetails.customAccordion];
+                                          current[idx].content = content;
+                                          handleChange('furnitureDetails', 'customAccordion', current);
+                                        }}
+                                        modules={quillModules}
+                                        className="bg-background text-sm text-text-primary min-h-[150px]"
+                                        placeholder="Write section content here..."
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
-                        <div>
-                          <label className="block text-xs font-bold text-text-primary mb-1.5">Upholstery Care</label>
-                          <textarea value={formData.furnitureDetails.care?.upholstery || ''} onChange={(e) => {
-                            handleChange('furnitureDetails', 'care', { ...formData.furnitureDetails.care, upholstery: e.target.value });
-                          }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary resize-none" rows="3" />
+                      ))}
+                      {(!formData.furnitureDetails.customAccordion || formData.furnitureDetails.customAccordion.length === 0) && (
+                        <div className="text-sm text-stone-500 text-center py-8 border border-dashed border-border rounded-xl bg-stone-50">
+                          No details sections added yet. Click "Add Section" to create one (e.g. Features, Warranty).
                         </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-sm font-bold text-text-primary mb-3">Warranty & Story</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-                        <div>
-                          <label className="block text-xs font-bold text-text-primary mb-1.5">Warranty Duration</label>
-                          <input type="text" value={formData.furnitureDetails.warranty?.duration || ''} onChange={(e) => {
-                            handleChange('furnitureDetails', 'warranty', { ...formData.furnitureDetails.warranty, duration: e.target.value });
-                          }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-text-primary mb-1.5">Return Policy</label>
-                          <input type="text" value={formData.furnitureDetails.warranty?.returnPolicy || ''} onChange={(e) => {
-                            handleChange('furnitureDetails', 'warranty', { ...formData.furnitureDetails.warranty, returnPolicy: e.target.value });
-                          }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary" />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-text-primary mb-1.5">Product Story</label>
-                        <textarea value={formData.furnitureDetails.story || ''} onChange={(e) => {
-                          handleChange('furnitureDetails', 'story', e.target.value);
-                        }} className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm text-text-primary resize-none" rows="3" />
-                      </div>
+                      )}
                     </div>
                   </div>
                 </>
@@ -454,9 +477,9 @@ export default function ProductEditor() {
                 <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
                    <div className="flex items-center gap-3 mb-6">
                       <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiBox size={16} /></div>
-                      <h2 className="text-lg font-bold text-text-primary">Product Variants</h2>
+                      <h2 className="text-lg font-bold text-text-primary">Product Attributes</h2>
                    </div>
-                   <VariantManager productData={{ variants: formData.variants }} setProductData={updateVariants} />
+                   <ProductAttributesManager formData={formData} handleChange={handleChange} />
                 </div>
               )}
 

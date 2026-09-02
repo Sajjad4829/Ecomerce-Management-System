@@ -5,7 +5,7 @@ import { useProducts } from '../../../admin/context/commerce/ProductContext';
 import CategoryHero from '../../components/category/CategoryHero';
 import CategoryBreadcrumb from '../../components/category/CategoryBreadcrumb';
 import CategoryHeader from '../../components/category/CategoryHeader';
-import FilterSidebar from '../../components/category/FilterSidebar';
+
 import MobileFilterDrawer from '../../components/category/MobileFilterDrawer';
 import ResponsiveProductGrid from '../../components/category/ResponsiveProductGrid';
 import FloatingSupportButton from '../../components/category/FloatingSupportButton';
@@ -48,6 +48,7 @@ export default function CategoryPage() {
 
   const [category, setCategory] = useState(null);
   const [parentCategory, setParentCategory] = useState(null);
+  const [grandparentCategory, setGrandparentCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
@@ -59,9 +60,16 @@ export default function CategoryPage() {
     setCategory(cat);
     
     if (cat) {
-      setParentCategory(getParentCategory(cat.id));
+      const pCat = getParentCategory(cat.id);
+      setParentCategory(pCat);
+      if (pCat) {
+        setGrandparentCategory(getParentCategory(pCat.id));
+      } else {
+        setGrandparentCategory(null);
+      }
     } else {
       setParentCategory(null);
+      setGrandparentCategory(null);
     }
 
     const timer = setTimeout(() => {
@@ -171,28 +179,23 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="w-full bg-white min-h-screen pb-24">
-      <CategoryHero category={category} />
-      <CategoryBreadcrumb category={category} parentCategory={parentCategory} />
-      <CategoryHeader category={category} productCount={displayProducts.length} />
+    <div className="w-full bg-white min-h-screen pb-24 border-t border-gray-200 pt-8">
+      
+      <CategoryHeader 
+        category={category} 
+        parentCategory={parentCategory}
+        grandparentCategory={grandparentCategory}
+        productCount={displayProducts.length} 
+        onOpenFilters={() => setIsMobileFilterOpen(true)}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <div className="flex items-start gap-12">
-          <FilterSidebar 
-            filters={FILTER_CONFIG}
-            activeFilters={activeFilters}
-            onFilterChange={handleFilterChange}
-            onClearAll={handleClearAll}
-          />
-          
-          <ResponsiveProductGrid 
-            products={displayProducts} 
-            isLoading={isLoading}
-            onOpenMobileFilters={() => setIsMobileFilterOpen(true)}
-            sortOption={sortOption}
-            onSortChange={(e) => setSortOption(e.target.value)}
-          />
-        </div>
+      <div className="w-full px-4 md:px-8 lg:px-16 max-w-[1920px] mx-auto">
+        <ResponsiveProductGrid 
+          products={displayProducts} 
+          isLoading={isLoading}
+          sortOption={sortOption}
+          onSortChange={(e) => setSortOption(e.target.value)}
+        />
       </div>
 
       <MobileFilterDrawer 
@@ -202,6 +205,8 @@ export default function CategoryPage() {
         activeFilters={activeFilters}
         onFilterChange={handleFilterChange}
         onClearAll={handleClearAll}
+        sortOption={sortOption}
+        onSortChange={(val) => setSortOption(val)}
       />
 
       <FloatingSupportButton />

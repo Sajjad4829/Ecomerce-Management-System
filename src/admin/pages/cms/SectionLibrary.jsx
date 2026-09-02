@@ -20,9 +20,14 @@ export default function SectionLibrary() {
   const { 
     sections, setSections, 
     sectionPreviewMap, sectionPreviewLoading, 
-    saveLibraryConfiguration, pageSectionsDraft,
-    libraryConfigurations
+    saveLibraryConfiguration, libraryConfigurations,
+    fetchLibraryConfigurations
   } = useCMS();
+
+  useEffect(() => {
+    fetchLibraryConfigurations();
+  }, [fetchLibraryConfigurations]);
+
   const { addToast } = useToast();
   const [activeCategory, setActiveCategory] = useState('All Sections');
   const [searchQuery, setSearchQuery] = useState('');
@@ -185,7 +190,7 @@ export default function SectionLibrary() {
             onUpdate={async (id, updates) => {
               await saveLibraryConfiguration(editSection.type, {
                 content: updates.content,
-                settings: (resolveSectionPreview(editSection, sectionPreviewMap) || editSection).settings || {}
+                settings: updates.settings || (resolveSectionPreview(editSection, sectionPreviewMap) || editSection).settings || {}
               });
             }}
             onClose={() => setEditSection(null)}

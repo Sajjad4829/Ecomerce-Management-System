@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiMaximize, FiBox, FiHeart, FiX } from 'react-icons/fi';
 import { Sparkles } from 'lucide-react';
 import Product360Viewer from './Product360Viewer';
@@ -7,6 +7,29 @@ export default function ProductGallery({ product, activeVariant, previewMode = '
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [viewMode, setViewMode] = useState('gallery'); // 'gallery' | '360'
   const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  // Drag to scroll logic
+  const sliderRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e) => {
+    if (!sliderRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - sliderRef.current.offsetLeft);
+    setScrollLeft(sliderRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => setIsDragging(false);
+  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseMove = (e) => {
+    if (!isDragging || !sliderRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    sliderRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   // Derive the active image to show based on variant or primary image
   const media = product?.media || {};
@@ -48,13 +71,19 @@ export default function ProductGallery({ product, activeVariant, previewMode = '
       <div className={`flex gap-8 ${previewMode === 'desktop' ? 'flex-row' : 'flex-col w-full h-full'}`}>
       
       {/* Thumbnails */}
-      {previewMode !== 'mobile' && (
-      <div className={`flex gap-3 overflow-auto no-scrollbar ${previewMode === 'desktop' ? 'flex-col w-20 lg:w-24 shrink-0 order-1' : 'flex-row w-full shrink-0 order-2'}`}>
+      <div 
+        ref={sliderRef}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        className={`flex gap-3 overflow-auto no-scrollbar ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} ${previewMode === 'desktop' ? 'flex-col w-20 lg:w-24 shrink-0 order-1' : 'flex-row w-full shrink-0 mt-4 order-2'}`}
+      >
         
         {view360.enabled && view360.frames.length > 0 && (
           <button 
             onClick={() => setViewMode('360')}
-            className={`relative aspect-square rounded-lg border-2 overflow-hidden flex flex-col items-center justify-center transition-all ${
+            className={`relative w-20 h-20 shrink-0 rounded-lg border-2 overflow-hidden flex flex-col items-center justify-center transition-all ${
               viewMode === '360' ? 'border-stone-900 ring-2 ring-stone-900/20' : 'border-stone-200 hover:border-stone-400 bg-stone-50'
             }`}
           >
@@ -70,7 +99,7 @@ export default function ProductGallery({ product, activeVariant, previewMode = '
               setViewMode('gallery');
               setActiveImageIndex(idx);
             }}
-            className={`relative aspect-square rounded-sm border-2 overflow-hidden transition-all ${
+            className={`relative w-20 h-20 shrink-0 rounded-sm border-2 overflow-hidden transition-all ${
               viewMode === 'gallery' && activeImageIndex === idx
                 ? 'border-black opacity-100'
                 : 'border-transparent hover:border-stone-300 opacity-70 hover:opacity-100'
@@ -80,7 +109,6 @@ export default function ProductGallery({ product, activeVariant, previewMode = '
           </button>
         ))}
       </div>
-      )}
 
       {/* Main Display */}
       <div className={`flex-1 relative bg-transparent w-full ${previewMode === 'desktop' ? 'order-2' : 'order-1'}`}>
@@ -93,13 +121,13 @@ export default function ProductGallery({ product, activeVariant, previewMode = '
           />
         ) : (
           <div 
-            className="w-full relative group flex items-center justify-center rounded-[24px] overflow-hidden cursor-pointer"
+            className="w-full relative group flex items-center justify-center rounded-none bg-transparent overflow-hidden cursor-pointer min-h-[300px]"
             onClick={() => setIsFullscreen(true)}
           >
              <img 
                src={displayedImage} 
                alt={product?.basicInfo?.name || 'Product'} 
-               className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
+               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
              />
              
              {/* Overlays for Preview */}

@@ -77,7 +77,7 @@ export default function VisualEditor() {
 
   const handlePublish = () => {
     publishPageSections(pageId, sections);
-    addToast('Page published successfully', 'success');
+    addToast({ type: 'success', message: 'Page published successfully' });
   };
 
   // Handlers

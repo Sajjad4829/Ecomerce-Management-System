@@ -79,8 +79,6 @@ function routePreviewComponent(section, device = 'desktop') {
     return <ProductGridPreview section={section} device={device} />;
   if (
     typeStr.includes('CATEGORY') ||
-    typeStr.includes('CREATION') ||
-    typeStr.includes('PURPOSE') ||
     typeStr === 'FEATURED_CATEGORIES'
   )
     return <CategoryGridPreview section={section} device={device} />;
@@ -97,10 +95,10 @@ function routePreviewComponent(section, device = 'desktop') {
     return <BannerPreview section={section} device={device} />;
   if (typeStr.includes('TESTIMONIAL') || typeStr.includes('REVIEW'))
     return <TestimonialsPreview section={section} device={device} />;
+  if (typeStr.includes('SHOWCASE') || typeStr.includes('CREATION') || typeStr.includes('PURPOSE'))
+    return <CreationsShowcasePreview section={section} device={device} />;
   if (typeStr.includes('FEATURE') || typeStr.includes('TRUST') || typeStr.includes('STATISTIC') || typeStr.includes('BRAND'))
     return <FeaturesPreview section={section} device={device} />;
-  if (typeStr.includes('CREATION') || typeStr.includes('PURPOSE'))
-    return <CreationsShowcasePreview section={section} device={device} />;
   if (typeStr.includes('FAQ'))
     return <FAQPreview section={section} device={device} />;
 
