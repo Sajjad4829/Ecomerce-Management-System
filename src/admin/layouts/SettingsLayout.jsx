@@ -10,8 +10,8 @@ const navCategories = [
       { label: 'Dashboard Theme', path: '/admin/settings/appearance', icon: FiLayout }
     ]
   },
-  { 
-    name: 'General', 
+  {
+    name: 'General',
     items: [
       { label: 'Store Information', path: '/admin/settings/store', icon: FiSettings },
       { label: 'Branding', path: '/admin/settings/branding', icon: FiLayout },
@@ -65,7 +65,7 @@ export default function SettingsLayout() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-w-7xl mx-auto overflow-hidden">
-      
+
       {/* Settings Header */}
       <div className="flex items-center justify-between px-8 py-6 bg-background shrink-0 border-b border-border">
         <div>
@@ -76,14 +76,14 @@ export default function SettingsLayout() {
         </div>
         <div className="flex items-center gap-4">
           <div className="relative">
-            <input 
-              type="text" 
-              placeholder="Search settings..." 
+            <input
+              type="text"
+              placeholder="Search settings..."
               className="w-64 pl-4 pr-10 py-2 bg-surface border border-border rounded-lg text-sm focus:outline-none focus:border-primary"
             />
           </div>
           {dirty && (
-            <button 
+            <button
               onClick={saveSettings}
               disabled={loading}
               className="flex items-center gap-2 px-6 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-colors"
@@ -105,9 +105,8 @@ export default function SettingsLayout() {
                   <li key={itemIdx}>
                     <NavLink
                       to={item.path}
-                      className={({ isActive }) => 
-                        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          isActive ? 'bg-surface shadow-sm text-text-primary' : 'text-text-secondary hover:bg-background'
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-surface shadow-sm text-text-primary' : 'text-text-secondary hover:bg-background'
                         }`
                       }
                     >

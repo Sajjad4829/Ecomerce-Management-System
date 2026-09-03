@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiLoader, FiPlus } from 'react-icons/fi';
 import { useCMS } from '../../context/cms/CMSContext';
@@ -141,7 +141,6 @@ export default function SectionLibrary() {
             onPreview={setPreviewSection}
             onEdit={setEditSection}
             sectionPreviewMap={sectionPreviewMap}
-            pageSectionsDraft={pageSectionsDraft}
           />
         ) : (
           <EmptyState

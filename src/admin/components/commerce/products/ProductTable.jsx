@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiEdit2, FiCopy, FiTrash2, FiMoreVertical, FiEye } from 'react-icons/fi';
 import ProductStatusBadge from './ProductStatusBadge';
 import { useState } from 'react';
-
+import { PermissionGuard } from '../../rbac/Guards';
 export default function ProductTable({ 
   products, 
   viewMode, 
@@ -34,13 +34,12 @@ export default function ProductTable({
           className="absolute right-0 top-full mt-1 w-40 bg-surface border border-border rounded-lg shadow-xl z-10 py-1"
         >
           <PermissionGuard permission="products.edit">
-            <PermissionGuard permission="products.delete">
             <button 
-            onClick={() => { onEdit(p.id); setActiveMenu(null); }}
-            className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2"
-          >
-            <FiEdit2 size={12} /> Edit
-          </button>
+              onClick={() => { onEdit(p.id); setActiveMenu(null); }}
+              className="w-full text-left px-3 py-1.5 text-xs text-text-secondary hover:bg-background flex items-center gap-2"
+            >
+              <FiEdit2 size={12} /> Edit
+            </button>
           </PermissionGuard>
           <button 
             onClick={() => { onPreview(p); setActiveMenu(null); }}
@@ -55,12 +54,13 @@ export default function ProductTable({
             <FiCopy size={12} /> Duplicate
           </button>
           <div className="h-px bg-stone-100 my-1" />
-          <button 
-            onClick={() => { onDelete(p.id); setActiveMenu(null); }}
-            className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2"
-          >
-            <FiTrash2 size={12} /> Delete
-          </button>
+          <PermissionGuard permission="products.delete">
+            <button 
+              onClick={() => { onDelete(p.id); setActiveMenu(null); }}
+              className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2"
+            >
+              <FiTrash2 size={12} /> Delete
+            </button>
           </PermissionGuard>
         </motion.div>
       )}

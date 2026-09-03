@@ -10,7 +10,7 @@ import { useProducts } from '../../../context/commerce/ProductContext';
 
 export default function ProductManager() {
   const navigate = useNavigate();
-  const { products, bulkDelete, bulkUpdateStatus } = useProducts();
+  const { products, deleteProduct, addProduct, bulkDelete, bulkUpdateStatus } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('list');
   const [showFilters, setShowFilters] = useState(false);
@@ -35,21 +35,28 @@ export default function ProductManager() {
     p.sku.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDuplicate = (config) => {
+  const handleDuplicate = async (config) => {
     const original = products.find(p => p.id === duplicateProduct);
     if (!original) return;
     
     const duplicate = {
       ...original,
-      id: `prod-${Date.now()}`,
       sku: `${original.sku}-COPY`,
       name: `${original.name} (Copy)`,
       status: 'draft',
       updatedAt: new Date().toISOString().split('T')[0]
     };
     
-    setProducts(prev => [duplicate, ...prev]);
-    setDuplicateProduct(null);
+    delete duplicate.id;
+    delete duplicate._id;
+    
+    try {
+      await addProduct(duplicate);
+      setDuplicateProduct(null);
+    } catch (e) {
+      console.error(e);
+      alert('Failed to duplicate product');
+    }
   };
 
   return (
@@ -98,7 +105,7 @@ export default function ProductManager() {
             onEdit={(id) => navigate(`/admin/catalog/products/${id}`)}
             onPreview={(p) => setPreviewProduct(p)}
             onDuplicate={(p) => setDuplicateProduct(p.id)}
-            onDelete={(id) => setProducts(products.filter(p => p.id !== id))}
+            onDelete={(id) => deleteProduct(id)}
           />
         </div>
       </div>

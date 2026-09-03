@@ -53,26 +53,26 @@ export default function ProductGallery({ images, selectedVariants }) {
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 w-full max-w-[800px]">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 w-full">
         
         {/* Desktop Thumbnails (Left side) */}
-        <div className="hidden lg:flex flex-col gap-4 w-24 flex-shrink-0">
+        <div className="hidden lg:flex flex-col gap-4 w-32 flex-shrink-0 bg-[#f4f5f6] p-3 rounded-xl">
           {images.map((img, idx) => (
             <button
               key={idx}
               onClick={() => handleThumbnailClick(idx)}
-              className={`relative w-full aspect-[4/5] bg-gray-100 overflow-hidden rounded-md transition-all ${
-                activeIndex === idx ? 'ring-2 ring-gray-900 ring-offset-2' : 'opacity-60 hover:opacity-100'
+              className={`relative w-full aspect-square bg-white p-1 overflow-hidden rounded-lg transition-all ${
+                activeIndex === idx ? 'border-2 border-gray-900 shadow-sm' : 'border border-gray-200 shadow-sm opacity-80 hover:opacity-100'
               }`}
             >
-              <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+              <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover rounded-md" />
             </button>
           ))}
         </div>
 
         {/* Main Image Area */}
         <div 
-          className="relative w-full flex-1 aspect-[4/5] lg:aspect-[3/4] bg-gray-100 rounded-xl lg:rounded-2xl overflow-hidden group lg:cursor-zoom-in"
+          className="relative w-full flex-1 aspect-[4/5] lg:aspect-[4/3] bg-gray-100 overflow-hidden group lg:cursor-zoom-in"
           onClick={() => window.innerWidth >= 1024 && setIsLightboxOpen(true)}
         >
           <div 
@@ -117,6 +117,13 @@ export default function ProductGallery({ images, selectedVariants }) {
           ))}
         </div>
 
+      </div>
+
+      <div className="mt-6 flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-500">
+        <svg className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p>Please note: Actual product color, fabric, finish, texture, and appearance may vary slightly from the images shown due to photography, lighting, device display settings, and natural material variations.</p>
       </div>
 
       {/* Fullscreen Lightbox */}

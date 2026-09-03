@@ -5,16 +5,34 @@ export default function MediaUploader({ media, onChange }) {
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
   
-  // Convert local file to object URL just for preview purposes (assuming no real backend yet)
-  const handleFiles = (files) => {
+  const handleFiles = async (files) => {
     const validFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
-    const urls = validFiles.map(file => URL.createObjectURL(file));
     
-    if (urls.length > 0) {
-      if (!media.primaryImage && urls.length === 1 && media.gallery.length === 0) {
-        onChange('primaryImage', urls[0]);
+    const uploadedUrls = [];
+    for (const file of validFiles) {
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        if (response.ok) {
+          const data = await response.json();
+          uploadedUrls.push(data.url);
+        } else {
+          console.error("Failed to upload image");
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+      }
+    }
+    
+    if (uploadedUrls.length > 0) {
+      if (!media.primaryImage && uploadedUrls.length === 1 && media.gallery.length === 0) {
+        onChange('primaryImage', uploadedUrls[0]);
       } else {
-        onChange('gallery', [...media.gallery, ...urls]);
+        onChange('gallery', [...media.gallery, ...uploadedUrls]);
       }
     }
   };
@@ -59,12 +77,29 @@ export default function MediaUploader({ media, onChange }) {
   };
   
   // 360 viewer frames handlers
-  const handle360Files = (files) => {
+  const handle360Files = async (files) => {
     const validFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
-    const urls = validFiles.map(file => URL.createObjectURL(file));
     
-    if (urls.length > 0) {
-      onChange('view360', { ...media.view360, frames: [...media.view360.frames, ...urls] });
+    const uploadedUrls = [];
+    for (const file of validFiles) {
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        if (response.ok) {
+          const data = await response.json();
+          uploadedUrls.push(data.url);
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+      }
+    }
+    
+    if (uploadedUrls.length > 0) {
+      onChange('view360', { ...media.view360, frames: [...media.view360.frames, ...uploadedUrls] });
     }
   };
 

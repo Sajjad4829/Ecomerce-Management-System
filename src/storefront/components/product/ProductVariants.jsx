@@ -28,23 +28,24 @@ export default function ProductVariants({ variants, selectedVariants, onVariantC
   if (!variants || variants.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-3 mb-8 pb-8">
-      {variants.map((variantGroup) => {
-        const isOpen = openGroup === variantGroup.type;
-        const selectedOption = selectedVariants[variantGroup.type];
+    <div className="flex flex-col mb-8 pb-8">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100">
+        {variants.map((variantGroup) => {
+          const isOpen = openGroup === variantGroup.type;
+          const selectedOption = selectedVariants[variantGroup.type];
 
-        return (
-          <div key={variantGroup.type} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+          return (
+            <div key={variantGroup.type} className="w-full">
             <button 
               onClick={() => setOpenGroup(isOpen ? null : variantGroup.type)}
-              className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors text-left"
+              className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-gray-50 transition-colors text-left"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 flex items-center justify-center bg-gray-50 rounded-lg border border-gray-100 shrink-0">
+                <div className="w-12 h-12 flex items-center justify-center border border-gray-200 rounded-lg shrink-0">
                   {getVariantIcon(variantGroup.type)}
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-gray-900 leading-tight">
+                  <h3 className="text-[15px] font-medium text-gray-800 leading-tight">
                     {variantGroup.type}
                   </h3>
                   <p className="text-[13px] text-gray-500 mt-0.5">
@@ -98,9 +99,10 @@ export default function ProductVariants({ variants, selectedVariants, onVariantC
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-        );
-      })}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

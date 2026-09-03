@@ -831,46 +831,80 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     if (mimetype.startsWith('image/')) type = 'Image';
     else if (mimetype.startsWith('video/')) type = 'Video';
 
-    // Upload to Cloudinary using stream
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: 'premium-furniture-ecommerce',
-        resource_type: 'auto' // automatically detect image/video/raw
-      },
-      async (error, result) => {
-        if (error) {
-          console.error("Cloudinary Upload Error:", error);
-          return res.status(500).json({ error: 'Upload to Cloudinary failed' });
+    const fallbackToBase64 = () => {
+      const b64Url = `data:${mimetype};base64,${req.file.buffer.toString('base64')}`;
+      const newAsset = new MediaAsset({
+        id: `ast-${Date.now()}`,
+        filename: originalname,
+        title: originalname.split('.')[0],
+        altText: '',
+        type,
+        mimeType: mimetype,
+        size: size,
+        width: null,
+        height: null,
+        url: b64Url,
+        publicId: `local-${Date.now()}`,
+        folderId: 'all'
+      });
+      newAsset.save().then(() => {
+        res.status(201).json(newAsset.toJSON());
+      }).catch(dbError => {
+        console.error("DB Save Error:", dbError);
+        res.status(500).json({ error: 'Failed to save asset record in DB' });
+      });
+    };
+
+    if (!process.env.CLOUDINARY_URL || process.env.CLOUDINARY_URL.includes('<your_api_key>')) {
+      return fallbackToBase64();
+    }
+
+    try {
+      // Upload to Cloudinary using stream
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'premium-furniture-ecommerce',
+          resource_type: 'auto' // automatically detect image/video/raw
+        },
+        async (error, result) => {
+          if (error) {
+            console.error("Cloudinary Upload Error:", error);
+            // Fallback on error
+            return fallbackToBase64();
+          }
+
+          try {
+            // Create a record in MongoDB
+            const newAsset = new MediaAsset({
+              id: `ast-${Date.now()}`,
+              filename: originalname,
+              title: originalname.split('.')[0],
+              altText: '',
+              type,
+              mimeType: mimetype,
+              size: size,
+              width: result.width || null,
+              height: result.height || null,
+              url: result.secure_url,
+              publicId: result.public_id,
+              folderId: 'all'
+            });
+
+            await newAsset.save();
+            res.status(201).json(newAsset.toJSON());
+          } catch (dbError) {
+            console.error("DB Save Error:", dbError);
+            res.status(500).json({ error: 'Failed to save asset record in DB' });
+          }
         }
+      );
 
-        try {
-          // Create a record in MongoDB
-          const newAsset = new MediaAsset({
-            id: `ast-${Date.now()}`,
-            filename: originalname,
-            title: originalname.split('.')[0],
-            altText: '',
-            type,
-            mimeType: mimetype,
-            size: size,
-            width: result.width || null,
-            height: result.height || null,
-            url: result.secure_url,
-            publicId: result.public_id,
-            folderId: 'all'
-          });
-
-          await newAsset.save();
-          res.status(201).json(newAsset.toJSON());
-        } catch (dbError) {
-          console.error("DB Save Error:", dbError);
-          res.status(500).json({ error: 'Failed to save asset record in DB' });
-        }
-      }
-    );
-
-    // Send the buffer to Cloudinary
-    uploadStream.end(req.file.buffer);
+      // Send the buffer to Cloudinary
+      uploadStream.end(req.file.buffer);
+    } catch (cloudinaryError) {
+      console.error("Cloudinary synchronous initialization error:", cloudinaryError.message);
+      return fallbackToBase64();
+    }
 
   } catch (error) {
     res.status(500).json({ error: error.message });

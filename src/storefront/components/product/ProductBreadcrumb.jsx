@@ -10,8 +10,8 @@ export default function ProductBreadcrumb({ product, category }) {
   const hierarchy = category ? getCategoryHierarchy(category.id) : [];
 
   return (
-    <nav aria-label="Breadcrumb" className="py-4 border-b border-gray-100 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
+    <nav aria-label="Breadcrumb" className="py-4 bg-white">
+      <div className="w-full max-w-[1600px] mx-auto px-4 lg:px-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
         <ol className="flex items-center space-x-2 text-xs sm:text-sm font-medium text-gray-500">
           <li>
             <Link to="/" className="hover:text-gray-900 transition-colors">Home</Link>
@@ -35,7 +35,7 @@ export default function ProductBreadcrumb({ product, category }) {
 
           <li><FiChevronRight size={14} className="mx-1 text-gray-300" /></li>
           <li>
-            <span className="text-gray-900" aria-current="page">
+            <span className="text-[#EE2737] font-semibold" aria-current="page">
               {product.name}
             </span>
           </li>

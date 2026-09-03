@@ -23,9 +23,9 @@ const MENU_ITEMS = [
   { label: 'Communications', icon: FiMessageSquare, path: '/admin/communications/logs' },
 
   { label: 'Loyalty', icon: FiStar, path: '/admin/loyalty' },
-  { 
-    label: 'Finance', 
-    icon: FiDollarSign, 
+  {
+    label: 'Finance',
+    icon: FiDollarSign,
     path: '/admin/finance',
     subItems: [
       { label: 'Overview', path: '/admin/finance' },
@@ -36,10 +36,10 @@ const MENU_ITEMS = [
   { label: 'Procurement', icon: FiBox, path: '/admin/procurement' },
   { label: 'HR', icon: FiUsers, path: '/admin/hr' },
   { label: 'CRM', icon: FiUsers, path: '/admin/crm' },
-  { 
-    label: 'Customers', 
-    icon: FiUsers, 
-    path: '/admin/customers', 
+  {
+    label: 'Customers',
+    icon: FiUsers,
+    path: '/admin/customers',
     requiredPermission: 'customers.view',
     subItems: [
       { label: 'Directory', path: '/admin/customers' },
@@ -47,10 +47,10 @@ const MENU_ITEMS = [
       { label: 'Loyalty', path: '/admin/loyalty' }
     ]
   },
-  { 
-    label: 'CMS Builder', 
-    icon: FiFileText, 
-    path: '/admin/cms', 
+  {
+    label: 'CMS Builder',
+    icon: FiFileText,
+    path: '/admin/cms',
     requiredPermission: 'cms.pages.view',
     subItems: [
       { label: 'Page Center', path: '/admin/cms/pages', icon: FiFileText },
@@ -65,9 +65,9 @@ const MENU_ITEMS = [
       { label: 'Versions', path: '/admin/cms/versions', icon: FiClock }
     ]
   },
-  { 
-    label: 'Experience', 
-    icon: FiLayout, 
+  {
+    label: 'Experience',
+    icon: FiLayout,
     path: '/admin/experience',
     requiredPermission: 'experience.view',
     subItems: [
@@ -96,6 +96,7 @@ const MENU_ITEMS = [
   { label: 'Compliance', icon: FiFileText, path: '/admin/compliance' },
 
   { label: 'Security', icon: FiShield, path: '/admin/users', requiredPermission: 'users.manage' },
+  { label: 'Theme Settings', icon: FiLayout, path: '/admin/theme' },
   { label: 'Settings', icon: FiSettings, path: '/admin/settings' },
 ];
 
@@ -103,7 +104,7 @@ const SubMenuItem = ({ item, isOpen }) => {
   const location = useLocation();
   const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
   const hasSubItems = item.subItems && item.subItems.length > 0;
-  
+
   const [isExpanded, setIsExpanded] = useState(isActive);
 
   if (!isOpen) return null;
@@ -137,7 +138,7 @@ const SubMenuItem = ({ item, isOpen }) => {
           {item.label}
         </NavLink>
       )}
-      
+
       {hasSubItems && isExpanded && (
         <div className="mt-1 space-y-1 border-l border-white/10 ml-4 pl-2">
           {item.subItems.map((subItem, index) => (
@@ -188,7 +189,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             const isExact = item.path === '/admin';
             const hasSubItems = item.subItems && item.subItems.length > 0;
             const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-            
+
             const linkContent = (
               <div className="w-full">
                 {hasSubItems && isOpen ? (

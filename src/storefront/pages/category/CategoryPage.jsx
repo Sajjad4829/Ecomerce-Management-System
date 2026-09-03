@@ -107,7 +107,11 @@ export default function CategoryPage() {
     if (!category) return [];
 
     const allowedCategoryIds = getDescendantCategoryIds(category.id);
-    let filtered = products.filter(p => p.status === 'published' && allowedCategoryIds.includes(p.categoryId));
+    let filtered = products.filter(p => {
+      const status = (p.status || '').toLowerCase();
+      const isActive = status === 'published' || status === 'active';
+      return isActive && allowedCategoryIds.includes(p.categoryId);
+    });
 
     // Filter by availability
     if (activeFilters['availability']?.length > 0) {

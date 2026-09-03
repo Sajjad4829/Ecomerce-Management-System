@@ -1,11 +1,12 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSettings } from '../../context/settings/SettingsContext';
 import { SettingsSection, SettingsCard, SettingsField, SettingsInput, SettingsSelect, SettingsToggle } from '../../components/settings/SettingsShared';
 import { FiImage } from 'react-icons/fi';
 
 export function GeneralSettings() {
   const { settings, updateSetting } = useSettings();
+  const navigate = useNavigate();
   
   return (
     <div className="p-8 max-w-4xl">
@@ -31,6 +32,17 @@ export function GeneralSettings() {
               ]} 
             />
           </SettingsField>
+          
+          <div className="pt-6 mt-6 border-t border-gray-100">
+            <SettingsField label="Theme Customization" description="Customize the visual appearance and layout of your storefront.">
+              <button 
+                onClick={() => navigate('/admin/theme')}
+                className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
+              >
+                Open Theme Settings
+              </button>
+            </SettingsField>
+          </div>
         </SettingsCard>
       </SettingsSection>
     </div>

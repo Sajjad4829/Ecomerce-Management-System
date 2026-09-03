@@ -8,12 +8,9 @@ import ProductGallery from '../../components/product/ProductGallery';
 import ProductInfo from '../../components/product/ProductInfo';
 import ProductVariants from '../../components/product/ProductVariants';
 import ProductActions from '../../components/product/ProductActions';
-import ProductHighlights from '../../components/product/ProductHighlights';
-import ProductDescription from '../../components/product/ProductDescription';
-import ProductSpecifications from '../../components/product/ProductSpecifications';
-import ProductDelivery from '../../components/product/ProductDelivery';
 import ProductReviews from '../../components/product/ProductReviews';
 import RelatedProducts from '../../components/product/RelatedProducts';
+import ProductAccordions from '../../components/product/ProductAccordions';
 import { motion } from 'framer-motion';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
@@ -125,9 +122,16 @@ export default function ProductDetailPage() {
     });
   }
 
-  const galleryImages = product?.gallery && product.gallery.length > 0 
-    ? product.gallery 
-    : [product?.image];
+  const galleryImages = product?.images && product.images.length > 0
+    ? product.images.map(img => img.url)
+    : (product?.gallery && product.gallery.length > 0 ? product.gallery : [product?.image]);
+
+  const attributeGroups = product?.attributes && Object.keys(product.attributes).length > 0
+    ? Object.keys(product.attributes).map(type => ({
+        type,
+        options: product.attributes[type]
+      }))
+    : [];
 
   return (
     <motion.div 
@@ -139,18 +143,18 @@ export default function ProductDetailPage() {
     >
       <ProductBreadcrumb product={product} category={category} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+      <main className="w-full max-w-[1600px] mx-auto py-8 sm:py-12 px-4 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 w-full">
           
           {/* Left Column: Gallery */}
-          <div className="w-full lg:w-3/5">
+          <div className="w-full lg:w-[60%]">
             <div className="sticky top-28">
               <ProductGallery images={galleryImages} selectedVariants={selectedVariants} />
             </div>
           </div>
 
           {/* Right Column: Product Details */}
-          <div className="w-full lg:w-2/5 flex flex-col">
+          <div className="w-full lg:w-[40%] flex flex-col bg-[#f4f5f6] p-6 lg:p-8 rounded-xl">
             <ProductInfo 
               product={product} 
               ratingData={ratingData} 
@@ -160,7 +164,7 @@ export default function ProductDetailPage() {
             />
             
             <ProductVariants 
-              variants={product.variants} 
+              variants={attributeGroups} 
               selectedVariants={selectedVariants} 
               onVariantChange={handleVariantChange} 
             />
@@ -171,15 +175,12 @@ export default function ProductDetailPage() {
               activePrice={activePrice}
             />
 
-            <div className="mt-12 flex flex-col">
-              <ProductHighlights highlights={product.highlights} />
-              <ProductDescription description={product.description} />
-              <ProductDelivery product={product} />
-              <ProductSpecifications specifications={product.specifications} />
-            </div>
           </div>
 
         </div>
+        
+        {/* Full Width Accordions */}
+        <ProductAccordions product={product} />
         
         {/* Full Width Reviews Section below Main content */}
         <ProductReviews product={product} />

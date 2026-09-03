@@ -478,6 +478,7 @@ import SegmentBuilder from './admin/pages/commerce/customers/segments/SegmentBui
 import SegmentDetail from './admin/pages/commerce/customers/segments/SegmentDetail';
 import SegmentAnalytics from './admin/pages/commerce/customers/segments/SegmentAnalytics';
 import AppearanceSettings from './admin/pages/settings/appearance/AppearanceSettings';
+import ThemeCustomizer from './admin/pages/settings/appearance/ThemeCustomizer';
 import { StorefrontThemeProvider } from './storefront/context/StorefrontThemeContext';
 
 
@@ -636,6 +637,8 @@ export default function App() {
 
 
 
+                                                          <Route path="theme" element={<ThemeCustomizer />} />
+                                                          
                                                           <Route path="settings" element={<SettingsLayout />}>
                                                             <Route index element={<SettingsHome />} />
                                                             <Route path="appearance" element={<AppearanceSettings />} />

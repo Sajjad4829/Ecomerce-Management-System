@@ -8,6 +8,7 @@ import ProductStatusBadge from '../../../components/commerce/products/ProductSta
 import ProductAttributesManager from '../../../components/commerce/products/attributes/ProductAttributesManager';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
 import { useCategories } from '../../../context/commerce/CategoryContext';
+import { useProducts } from '../../../context/commerce/ProductContext';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -52,6 +53,7 @@ export default function ProductEditor() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const { addToast } = useToast();
   const { categories } = useCategories();
+  const { addProduct, updateProduct } = useProducts();
   
   const [formData, setFormData] = useState({
     status: 'draft',
@@ -125,7 +127,60 @@ export default function ProductEditor() {
           const res = await fetch(`/api/products/${id}`);
           if (res.ok) {
             const data = await res.json();
-            setFormData(data);
+            setFormData(prev => ({
+              ...prev,
+              status: data.status === 'Active' ? 'published' : 'draft',
+              basicInfo: {
+                ...prev.basicInfo,
+                name: data.name || '',
+                slug: data.slug || '',
+                sku: data.sku || '',
+                description: data.description || '',
+                shortDescription: data.shortDescription || ''
+              },
+              organization: {
+                ...prev.organization,
+                categoryId: data.categoryId || '',
+                brandId: data.brandId || '',
+                tags: data.tags || []
+              },
+              media: {
+                ...prev.media,
+                primaryImage: data.images?.find(img => img.isPrimary)?.url || data.images?.[0]?.url || '',
+                gallery: data.images?.filter(img => !img.isPrimary).map(img => img.url) || []
+              },
+              variants: data.attributes && Object.keys(data.attributes).length > 0 
+                ? Object.keys(data.attributes).map(type => ({ type, options: data.attributes[type] })) 
+                : [],
+              pricing: {
+                ...prev.pricing,
+                regularPrice: data.comparePrice ? data.comparePrice : data.price,
+                salePrice: data.comparePrice ? data.price : '',
+                cost: data.costPrice || ''
+              },
+              inventory: {
+                ...prev.inventory,
+                totalStock: data.stock || 0,
+                sku: data.sku || ''
+              },
+              furnitureDetails: {
+                ...prev.furnitureDetails,
+                dimensions: {
+                  ...prev.furnitureDetails?.dimensions,
+                  width: data.dimensions?.width || '',
+                  height: data.dimensions?.height || '',
+                  depth: data.dimensions?.length || '',
+                  weight: data.weight || ''
+                }
+              },
+              seo: {
+                ...prev.seo,
+                metaTitle: data.seo?.metaTitle || '',
+                metaDescription: data.seo?.metaDescription || '',
+                canonicalUrl: data.seo?.canonicalUrl || '',
+                metaKeywords: (data.seo?.keywords || []).join(', ')
+              }
+            }));
             if (data.variants && data.variants.length > 0) setActivePreviewVariant(data.variants[0]);
           } else {
             addToast({ type: 'error', message: 'Failed to load product' });
@@ -158,17 +213,102 @@ export default function ProductEditor() {
     setHasUnsavedChanges(true);
   };
 
-  const handleSaveDraft = () => {
-    setIsSaving(true);
-    setTimeout(() => {
-      setFormData(prev => ({ ...prev, status: 'draft' }));
-      setIsSaving(false);
-      setHasUnsavedChanges(false);
-      addToast({ type: 'success', message: 'Product saved as draft' });
-    }, 800);
+  const preparePayload = (status) => {
+    const activeAttributeGroups = (formData.variants || []).filter(g => g?.options?.length > 0);
+    
+    // Generate actual variant combinations
+    let generatedVariants = [];
+    if (activeAttributeGroups.length > 0) {
+      const combine = (groups, index = 0, current = []) => {
+        if (index === groups.length) return [current];
+        const result = [];
+        for (const option of groups[index].options) {
+          result.push(...combine(groups, index + 1, [...current, { type: groups[index].type, option }]));
+        }
+        return result;
+      };
+      
+      generatedVariants = combine(activeAttributeGroups).map((combo, idx) => {
+        const name = combo.map(c => c.option.label).join(' - ');
+        const attributes = {};
+        combo.forEach(c => { attributes[c.type] = c.option.label; });
+        return {
+          id: `var-${Date.now()}-${idx}`,
+          sku: `${formData.basicInfo.sku || 'SKU'}-${idx+1}`,
+          name,
+          price: Number(formData.pricing.salePrice) || Number(formData.pricing.regularPrice) || 0,
+          stock: Number(formData.inventory.totalStock) || 0,
+          attributes,
+          status: 'Active'
+        };
+      });
+    }
+
+    // Save attribute definitions
+    const attributeDefinitions = {};
+    activeAttributeGroups.forEach(group => {
+      attributeDefinitions[group.type] = group.options;
+    });
+
+    return {
+      name: formData.basicInfo.name,
+      slug: formData.basicInfo.slug || formData.basicInfo.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      sku: formData.basicInfo.sku || formData.inventory?.sku || `SKU-${Date.now()}`,
+      description: formData.basicInfo.description,
+      shortDescription: formData.basicInfo.shortDescription,
+      price: Number(formData.pricing.regularPrice) || Number(formData.pricing.salePrice) || 0,
+      comparePrice: Number(formData.pricing.salePrice) ? Number(formData.pricing.regularPrice) : null,
+      costPrice: Number(formData.pricing.cost) || null,
+      status: status === 'published' ? 'Active' : 'Draft',
+      categoryId: formData.organization.categoryId || null,
+      brandId: formData.organization.brandId || null,
+      tags: formData.organization.tags || [],
+      images: [
+        ...(formData.media.primaryImage ? [{ url: formData.media.primaryImage, isPrimary: true }] : []),
+        ...(formData.media.gallery.map(url => ({ url, isPrimary: false })))
+      ],
+      attributes: attributeDefinitions,
+      variants: generatedVariants,
+      hasVariants: generatedVariants.length > 0,
+      stock: Number(formData.inventory.totalStock) || 0,
+      trackInventory: true,
+      weight: Number(formData.furnitureDetails?.dimensions?.weight) || 0,
+      dimensions: {
+        length: Number(formData.furnitureDetails?.dimensions?.depth) || 0,
+        width: Number(formData.furnitureDetails?.dimensions?.width) || 0,
+        height: Number(formData.furnitureDetails?.dimensions?.height) || 0,
+        unit: 'cm'
+      },
+      seo: {
+        metaTitle: formData.seo.metaTitle,
+        metaDescription: formData.seo.metaDescription,
+        canonicalUrl: formData.seo.canonicalUrl,
+        keywords: formData.seo.metaKeywords ? formData.seo.metaKeywords.split(',').map(k => k.trim()) : []
+      }
+    };
   };
 
-  const handlePublish = () => {
+  const handleSaveDraft = async () => {
+    setIsSaving(true);
+    try {
+      const payload = preparePayload('draft');
+      if (isNew) {
+        await addProduct(payload);
+      } else {
+        await updateProduct(id, payload);
+      }
+      setFormData(prev => ({ ...prev, status: 'draft' }));
+      setHasUnsavedChanges(false);
+      addToast({ type: 'success', message: 'Product saved as draft' });
+      if (isNew) navigate('/admin/catalog/products');
+    } catch (err) {
+      addToast({ type: 'error', message: err.message || 'Failed to save draft' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePublish = async () => {
     const { basicInfo, media, pricing, organization } = formData;
     const errors = [];
     if (!basicInfo.name.trim()) errors.push('Product Name is required');
@@ -183,13 +323,22 @@ export default function ProductEditor() {
     }
     
     setIsSaving(true);
-    setTimeout(() => {
+    try {
+      const payload = preparePayload('published');
+      if (isNew) {
+        await addProduct(payload);
+      } else {
+        await updateProduct(id, payload);
+      }
       setFormData(prev => ({ ...prev, status: 'published' }));
-      setIsSaving(false);
       setHasUnsavedChanges(false);
       addToast({ type: 'success', message: 'Product published successfully' });
       navigate('/admin/catalog/products');
-    }, 1000);
+    } catch (err) {
+      addToast({ type: 'error', message: err.message || 'Failed to publish product' });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const updateVariants = (updateFn) => {

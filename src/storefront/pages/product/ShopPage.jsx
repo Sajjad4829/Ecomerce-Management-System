@@ -69,7 +69,10 @@ export default function ShopPage() {
   };
 
   const displayProducts = useMemo(() => {
-    let filtered = products.filter(p => p.status === 'published');
+    let filtered = products.filter(p => {
+      const status = (p.status || '').toLowerCase();
+      return status === 'published' || status === 'active';
+    });
 
     // Filter by availability
     if (activeFilters['availability']?.length > 0) {

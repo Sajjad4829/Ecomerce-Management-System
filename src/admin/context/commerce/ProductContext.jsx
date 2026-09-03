@@ -40,10 +40,11 @@ export function ProductProvider({ children }) {
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
-  // ── Resolve category name for each product ─────────────────────────────────
+  // ── Resolve category name and image for each product ─────────────────────────────────
   const resolvedProducts = products.map(p => {
     const cat = getCategoryById(p.categoryId);
-    return { ...p, category: cat ? cat.name : (p.category || 'Uncategorized') };
+    const primaryImage = p.images?.find(img => img.isPrimary)?.url || p.images?.[0]?.url || '';
+    return { ...p, category: cat ? cat.name : (p.category || 'Uncategorized'), image: primaryImage };
   });
 
   // ── CRUD ───────────────────────────────────────────────────────────────────
