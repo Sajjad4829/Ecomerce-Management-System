@@ -7,6 +7,7 @@ import HeroSection from '../home/HeroSection';
 import CreationsWithPurpose from '../home/CreationsWithPurpose';
 import ProductGridSection from '../home/ProductGridSection';
 import CategoryShowcase from '../home/CategoryShowcase';
+import CategoryGridSection from '../home/CategoryGridSection';
 import Testimonials from '../home/Testimonials';
 import BenefitsSection from '../home/BenefitsSection';
 import PromoBanner from '../home/PromoBanner';
@@ -38,7 +39,8 @@ const SECTION_COMPONENTS = {
   NEW_ARRIVALS: ProductGridSection,
   BEST_SELLERS: ProductGridSection,
   
-  CATEGORY_GRID: CategoryShowcase,
+  
+  CATEGORY_GRID: CategoryGridSection,
   FEATURED_CATEGORIES: CategoryShowcase,
   CATEGORY_CAROUSEL: CategoryShowcase,
   

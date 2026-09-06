@@ -60,14 +60,14 @@ export default function HeaderBannerSection({ data, activeTheme }) {
         {structure.map((item, index) => {
           if (item === 'title' && title) {
             return (
-              <h2 key={index} className={`mb-6 uppercase tracking-wide ${settings.titleSize || 'text-3xl md:text-4xl lg:text-5xl'} ${settings.titleWeight || 'font-bold'}`} style={{ color: settings.titleColor || textColor }}>
+              <h2 key={index} className={`mb-6 uppercase tracking-wide leading-tight ${settings.titleSize || 'text-3xl md:text-4xl lg:text-5xl'} ${settings.titleWeight || 'font-bold'}`} style={{ color: settings.titleColor || textColor }}>
                 {title}
               </h2>
             );
           }
           if (item === 'description' && description) {
             return (
-              <p key={index} className={`leading-relaxed max-w-lg mb-8 opacity-80 ${settings.descSize || 'text-sm md:text-base'}`} style={{ color: settings.descColor || textColor }}>
+              <p key={index} className={`leading-relaxed mb-8 ${settings.descSize || 'text-sm md:text-base'}`} style={{ color: settings.descColor || textColor }}>
                 {description}
               </p>
             );

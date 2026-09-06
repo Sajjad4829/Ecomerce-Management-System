@@ -2,7 +2,7 @@ import SectionCard from './SectionCard';
 import { cn } from '../../../../utils/cn';
 import { resolveSectionPreview } from './sectionPreviewResolver';
 
-export default function SectionGrid({ sections, view, onPreview, onEdit, pageSectionsDraft, sectionPreviewMap = {} }) {
+export default function SectionGrid({ sections, view, onPreview, onEdit, onDelete, pageSectionsDraft, sectionPreviewMap = {} }) {
   const getUsageCount = (sectionType) => {
     if (!pageSectionsDraft) return 0;
     return Object.values(pageSectionsDraft).flat().filter(s => s.type === sectionType).length;
@@ -24,6 +24,7 @@ export default function SectionGrid({ sections, view, onPreview, onEdit, pageSec
             view={view} 
             onPreview={onPreview} 
             onEdit={onEdit}
+            onDelete={onDelete}
             usageCount={getUsageCount(section.type)}
           />
         );

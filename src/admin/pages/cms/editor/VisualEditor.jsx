@@ -15,6 +15,7 @@ import SaveBlockModal from '../../../components/cms/blocks/SaveBlockModal';
 import HeroEditorModal from '../../../components/cms/editor/HeroEditorModal';
 import FeaturedShowcaseEditorModal from '../../../components/cms/editor/FeaturedShowcaseEditorModal';
 import HeaderBannerEditor from '../../../components/cms/editor/HeaderBannerEditor';
+import CategoryGridEditor from '../../../components/cms/editor/CategoryGridEditor';
 import SectionRenderer from '../../../../storefront/components/sections/SectionRenderer';
 import Navbar from '../../../../storefront/components/navigation/Navbar';
 import Footer from '../../../../storefront/components/navigation/Footer';
@@ -35,6 +36,7 @@ export default function VisualEditor() {
   const [isHeroEditorOpen, setIsHeroEditorOpen] = useState(false);
   const [isFeaturedEditorOpen, setIsFeaturedEditorOpen] = useState(false);
   const [isHeaderBannerEditorOpen, setIsHeaderBannerEditorOpen] = useState(false);
+  const [isCategoryGridEditorOpen, setIsCategoryGridEditorOpen] = useState(false);
   const [isLivePreviewOpen, setIsLivePreviewOpen] = useState(false);
   const [sections, setSections] = useState(() => getDraftSections(pageId));
   const [isLoading, setIsLoading] = useState(true);
@@ -258,6 +260,7 @@ export default function VisualEditor() {
           onOpenHeroEditor={() => setIsHeroEditorOpen(true)}
           onOpenFeaturedEditor={() => setIsFeaturedEditorOpen(true)}
           onOpenHeaderBannerEditor={() => setIsHeaderBannerEditorOpen(true)}
+          onOpenCategoryGridEditor={() => setIsCategoryGridEditorOpen(true)}
         />
       </div>
 
@@ -300,11 +303,23 @@ export default function VisualEditor() {
       {isHeaderBannerEditorOpen && (
         <HeaderBannerEditor
           section={sections.find(s => s.id === activeSectionId)}
-          onSave={(data) => {
-            handleUpdateSection(activeSectionId, { content: data.content, settings: data.settings });
+          onSave={(updatedSection) => {
+            handleUpdateSection(activeSectionId, updatedSection);
             setIsHeaderBannerEditorOpen(false);
           }}
           onCancel={() => setIsHeaderBannerEditorOpen(false)}
+        />
+      )}
+
+      {isCategoryGridEditorOpen && (
+        <CategoryGridEditor
+          section={sections.find(s => s.id === activeSectionId)}
+          pageName={page.title}
+          onSave={(updatedSection) => {
+            handleUpdateSection(activeSectionId, updatedSection);
+            setIsCategoryGridEditorOpen(false);
+          }}
+          onClose={() => setIsCategoryGridEditorOpen(false)}
         />
       )}
 

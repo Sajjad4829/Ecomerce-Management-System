@@ -15,14 +15,10 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
   const [previewMode, setPreviewMode] = useState('desktop');
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   
-  const isMockTitle = section?.content?.title === 'COMFY & BEAUTY AT ITS BEST';
-  const isMockDesc = section?.content?.description?.startsWith('Explore our interior collection');
-  const isMockImage = section?.content?.image === 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200';
-
   const [content, setContent] = React.useState({
-    title: isMockTitle ? '' : (section?.content?.title || ''),
-    description: isMockDesc ? '' : (section?.content?.description || ''),
-    image: isMockImage ? '' : (section?.content?.image || ''),
+    title: section?.content?.title || '',
+    description: section?.content?.description || '',
+    image: section?.content?.image || '',
     buttonText: section?.content?.buttonText || '',
     buttonLink: section?.content?.buttonLink || '',
     showButton: section?.content?.showButton !== undefined ? section?.content?.showButton : false,

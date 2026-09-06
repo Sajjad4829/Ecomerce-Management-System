@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FiPlus, FiEye, FiEdit2, FiLayout, FiGrid, FiStar, FiTrendingUp, FiBox, FiFlag, FiTag, FiZap, FiClock, FiMousePointer, FiType, FiAward, FiBarChart2, FiMessageSquare, FiShield, FiImage, FiVideo, FiMail, FiHelpCircle, FiPhone } from 'react-icons/fi';
+import { FiTrash2, FiEye, FiEdit2, FiLayout, FiGrid, FiStar, FiTrendingUp, FiBox, FiFlag, FiTag, FiZap, FiClock, FiMousePointer, FiType, FiAward, FiBarChart2, FiMessageSquare, FiShield, FiImage, FiVideo, FiMail, FiHelpCircle, FiPhone } from 'react-icons/fi';
 import FavoriteButton from './FavoriteButton';
 import { cn } from '../../../../utils/cn';
 
@@ -24,7 +24,7 @@ const CATEGORY_COLORS = {
   'ENGAGEMENT': 'text-emerald-500 border-emerald-500'
 };
 
-export default function SectionCard({ section, view, onPreview, onEdit, usageCount = 0 }) {
+export default function SectionCard({ section, view, onPreview, onEdit, onDelete, usageCount = 0 }) {
   const isList = view === 'list';
   const IconComponent = ICON_MAP[section.icon] || FiLayout;
   
@@ -102,10 +102,14 @@ export default function SectionCard({ section, view, onPreview, onEdit, usageCou
             <FiEdit2 size={18} />
           </button>
           <button 
-            className="w-10 h-10 bg-indigo-500 text-white rounded-full flex items-center justify-center hover:bg-indigo-400 hover:scale-110 transition-all shadow-lg"
-            title="Add to Page"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onDelete) onDelete(section);
+            }}
+            className="w-10 h-10 bg-red-500/90 text-white rounded-full flex items-center justify-center hover:bg-red-500 hover:scale-110 transition-all shadow-lg"
+            title="Delete Section"
           >
-            <FiPlus size={18} />
+            <FiTrash2 size={18} />
           </button>
         </div>
       </div>

@@ -14,13 +14,14 @@ import { useToast } from '../../../components/ui/Toast/ToastContext';
 import CreateSectionModal from '../../components/cms/sections/CreateSectionModal';
 import FeaturedShowcaseEditorModal from '../../components/cms/editor/FeaturedShowcaseEditorModal';
 import HeaderBannerEditor from '../../components/cms/editor/HeaderBannerEditor';
+import CategoryGridEditor from '../../components/cms/editor/CategoryGridEditor';
 
 export default function SectionLibrary() {
   // sectionPreviewMap: { [sectionType] → real saved section instance from MongoDB }
   // sectionPreviewLoading: true while /api/cms/sections/preview-map is in-flight
-  const { 
-    sections, setSections, 
-    sectionPreviewMap, sectionPreviewLoading, 
+  const {
+    sections, setSections,
+    sectionPreviewMap, sectionPreviewLoading,
     saveLibraryConfiguration, libraryConfigurations,
     fetchLibraryConfigurations
   } = useCMS();
@@ -37,10 +38,17 @@ export default function SectionLibrary() {
   const [editSection, setEditSection] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  const handleDeleteSection = (sectionToDelete) => {
+    if (window.confirm(`Are you sure you want to delete the "${sectionToDelete.name}" section? This action cannot be undone.`)) {
+      setSections(sections.filter(s => s.id !== sectionToDelete.id));
+      addToast({ message: `Deleted section "${sectionToDelete.name}"`, type: 'success' });
+    }
+  };
+
   // Derive categories dynamically from the loaded sections
   const dynamicCategories = useMemo(() => {
-    const realSections = sections.filter(section => section.id?.startsWith('lib-custom-') || section.id === 'lib-header-banner' || libraryConfigurations[section.type]);
-    
+    const realSections = sections.filter(section => section.id?.startsWith('lib-custom-') || section.id === 'lib-header-banner' || section.id === 'lib-cat-grid' || libraryConfigurations[section.type]);
+
     const counts = { 'All Sections': realSections.length };
     realSections.forEach(s => {
       const cat = s.category || 'Other';
@@ -71,8 +79,8 @@ export default function SectionLibrary() {
         section.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (section.tags && section.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
 
-      const isRealSection = section.id?.startsWith('lib-custom-') || section.id === 'lib-header-banner' || libraryConfigurations[section.type];
-      
+      const isRealSection = section.id?.startsWith('lib-custom-') || section.id === 'lib-header-banner' || section.id === 'lib-cat-grid' || libraryConfigurations[section.type];
+
       return matchesCategory && matchesSearch && isRealSection;
     });
   }, [sections, activeCategory, searchQuery, libraryConfigurations]);
@@ -106,14 +114,14 @@ export default function SectionLibrary() {
           </div>
         )}
         <div className="flex items-center gap-3">
-          <button 
-            onClick={() => addToast('Import Section is coming soon!', 'info')}
+          <button
+            onClick={() => addToast({ message: 'Import Section is coming soon!', type: 'info' })}
             className="flex items-center gap-2 px-4 py-2 border border-black/10 text-text-primary text-sm font-semibold rounded-lg hover:bg-black/5 transition-colors"
           >
             <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             Import Section
           </button>
-          <button 
+          <button
             onClick={() => setIsCreateModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
           >
@@ -141,6 +149,7 @@ export default function SectionLibrary() {
             view={view}
             onPreview={setPreviewSection}
             onEdit={setEditSection}
+            onDelete={handleDeleteSection}
             sectionPreviewMap={sectionPreviewMap}
           />
         ) : (
@@ -169,18 +178,21 @@ export default function SectionLibrary() {
         editSection.type.includes('HERO') ? (
           <HeroEditorModal
             section={resolveSectionPreview(editSection, sectionPreviewMap) || editSection}
-            onUpdate={(id, updates) => saveLibraryConfiguration(editSection.type, updates)}
+            onUpdate={async (id, updates) => {
+              await saveLibraryConfiguration(editSection.type, updates);
+              addToast({ message: 'Template updated successfully', type: 'success' });
+            }}
             onClose={() => setEditSection(null)}
           />
         ) : editSection.type === 'HERO_BANNER' ? (
           <HeroEditorModal
             section={editSection}
             onUpdate={async (id, updates) => {
-              // Map the updates to the expected API format
               await saveLibraryConfiguration(editSection.type, {
                 content: updates.content,
                 settings: updates.settings
               });
+              addToast({ message: 'Template updated successfully', type: 'success' });
             }}
             onClose={() => setEditSection(null)}
           />
@@ -192,6 +204,7 @@ export default function SectionLibrary() {
                 content: updates.content,
                 settings: updates.settings || (resolveSectionPreview(editSection, sectionPreviewMap) || editSection).settings || {}
               });
+              addToast({ message: 'Template updated successfully', type: 'success' });
             }}
             onClose={() => setEditSection(null)}
           />
@@ -203,9 +216,23 @@ export default function SectionLibrary() {
                 content: updatedSection.content,
                 settings: updatedSection.settings
               });
+              addToast({ message: 'Template updated successfully', type: 'success' });
               setEditSection(null);
             }}
             onCancel={() => setEditSection(null)}
+          />
+        ) : editSection.type === 'CATEGORY_GRID' ? (
+          <CategoryGridEditor
+            section={resolveSectionPreview(editSection, sectionPreviewMap) || editSection}
+            pageName="Section Library"
+            onSave={async (updatedSection) => {
+              await saveLibraryConfiguration(editSection.type, {
+                content: updatedSection.content,
+                settings: updatedSection.settings || {}
+              });
+              setEditSection(null);
+            }}
+            onClose={() => setEditSection(null)}
           />
         ) : (
           <SectionEditorModal
@@ -222,7 +249,7 @@ export default function SectionLibrary() {
         onCreate={(newSection) => {
           setSections([...sections, newSection]);
           setIsCreateModalOpen(false);
-          addToast(`Created new section "${newSection.name}"`, 'success');
+          addToast({ message: `Created new section "${newSection.name}"`, type: 'success' });
         }}
       />
     </div>

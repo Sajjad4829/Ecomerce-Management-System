@@ -194,7 +194,7 @@ const DynamicField = ({ field, value, onChange }) => {
   );
 };
 
-export default function PropertyPanel({ activeSectionId, sections, onUpdateSection, device, setDevice, onOpenHeroEditor, onOpenFeaturedEditor, onOpenHeaderBannerEditor }) {
+export default function PropertyPanel({ activeSectionId, sections, onUpdateSection, device, setDevice, onOpenHeroEditor, onOpenFeaturedEditor, onOpenHeaderBannerEditor, onOpenCategoryGridEditor }) {
   if (!activeSectionId) {
     return (
       <div className="w-[280px] bg-surface border-l border-black/10 flex flex-col h-full shrink-0 z-10 p-8 items-center justify-center text-center">
@@ -341,8 +341,23 @@ export default function PropertyPanel({ activeSectionId, sections, onUpdateSecti
           </div>
         )}
 
+        {section.type === 'CATEGORY_GRID' && (
+          <div className="p-4 border-b border-black/5">
+            <button
+              onClick={onOpenCategoryGridEditor}
+              className="w-full py-2.5 bg-[#5946ff] text-white text-xs font-semibold rounded-lg hover:bg-[#4335cc] transition-colors flex items-center justify-center gap-2 shadow-sm"
+            >
+              <FiMaximize size={14} />
+              Open Advanced Settings
+            </button>
+            <p className="text-[10px] text-text-muted mt-2 text-center">
+              Manage category content, images, and layout in the full-screen editor.
+            </p>
+          </div>
+        )}
+
         {/* Prevent rendering schema fields for full-page editor components */}
-        {!(section.type === 'HeaderBanner' || section.type === 'HEADER_BANNER' || section.type === 'HEADERBANNER' || section.type.startsWith('HeaderBanner_')) && schema.content && schema.content.length > 0 && (
+        {!(section.type === 'CATEGORY_GRID' || section.type === 'HeaderBanner' || section.type === 'HEADER_BANNER' || section.type === 'HEADERBANNER' || section.type.startsWith('HeaderBanner_')) && schema.content && schema.content.length > 0 && (
           <PropertyGroup title="Content" icon={FiType} defaultOpen={true}>
             {schema.content.map(field => (
               <DynamicField
@@ -355,7 +370,7 @@ export default function PropertyPanel({ activeSectionId, sections, onUpdateSecti
           </PropertyGroup>
         )}
 
-        {!(section.type === 'HeaderBanner' || section.type === 'HEADER_BANNER' || section.type === 'HEADERBANNER' || section.type.startsWith('HeaderBanner_')) && schema.settings && schema.settings.length > 0 && (
+        {!(section.type === 'CATEGORY_GRID' || section.type === 'HeaderBanner' || section.type === 'HEADER_BANNER' || section.type === 'HEADERBANNER' || section.type.startsWith('HeaderBanner_')) && schema.settings && schema.settings.length > 0 && (
           <PropertyGroup title="Settings" icon={FiMaximize} defaultOpen={true}>
             {schema.settings.map(field => (
               <DynamicField

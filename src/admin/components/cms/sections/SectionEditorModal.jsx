@@ -4,6 +4,7 @@ import { FiX, FiSave, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { useCMS } from '../../../context/cms/CMSContext';
 import { getSectionSchema, FIELD_TYPES } from '../editor/sectionEditorSchemas';
 import { cn } from '../../../../utils/cn';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
 
 // Reuse PropertyGroup and DynamicField logic
 const PropertyGroup = ({ title, icon: Icon, children, defaultOpen = false }) => {
@@ -112,6 +113,7 @@ const DynamicField = ({ field, value, onChange }) => {
 
 export default function SectionEditorModal({ sectionType, onClose }) {
   const { libraryConfigurations, saveLibraryConfiguration, sections } = useCMS();
+  const { addToast } = useToast();
   const [content, setContent] = useState({});
   const [settings, setSettings] = useState({});
   const [isSaving, setIsSaving] = useState(false);
@@ -138,6 +140,7 @@ export default function SectionEditorModal({ sectionType, onClose }) {
     setIsSaving(true);
     try {
       await saveLibraryConfiguration(sectionType, { content, settings });
+      addToast({ message: 'Template updated successfully', type: 'success' });
       onClose();
     } catch (err) {
       alert("Failed to save configuration");
