@@ -16,6 +16,7 @@ import EditorialSection from '../home/EditorialSection';
 import NewsletterSection from '../home/NewsletterSection';
 import Navbar from '../navigation/Navbar';
 import Footer from '../navigation/Footer';
+import HeaderBannerSection from '../home/HeaderBannerSection';
 
 // Central Registry Map
 const SECTION_COMPONENTS = {
@@ -23,6 +24,8 @@ const SECTION_COMPONENTS = {
   DEFAULT: null,
 
   // Heroes
+  HEADERBANNER: HeaderBannerSection,
+  HEADER_BANNER: HeaderBannerSection,
   HERO_BANNER: HeroSection,
   SPLIT_HERO: HeroSection,
   PROMO_HERO: HeroSection,
@@ -108,6 +111,7 @@ export default function SectionRenderer({ sections = [] }) {
     const t = type.toUpperCase();
     if (SECTION_COMPONENTS[t]) return SECTION_COMPONENTS[t];
     
+    if (t.includes('HEADERBANNER') || t.includes('HEADER_BANNER')) return SECTION_COMPONENTS.HEADERBANNER;
     if (t.includes('HERO')) return SECTION_COMPONENTS.HERO_BANNER;
     if (t.includes('PRODUCT') || t === 'GRID') return SECTION_COMPONENTS.PRODUCT_GRID;
     if (t.includes('CATEGORY')) return SECTION_COMPONENTS.CATEGORY_GRID;

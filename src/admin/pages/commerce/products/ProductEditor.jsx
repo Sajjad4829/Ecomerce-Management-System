@@ -95,6 +95,7 @@ export default function ProductEditor() {
       status: 'Out of Stock'
     },
     furnitureDetails: {
+      note: '',
       dimensions: { width: '', height: '', depth: '', seatHeight: '', weight: '' },
       materials: { frameMaterial: '', woodType: '', woodFinish: '', upholsteryMaterial: '', fabric: '', leather: '', color: '' },
       specifications: { assemblyRequired: 'No', roomType: '', seatingCapacity: '' },
@@ -165,12 +166,15 @@ export default function ProductEditor() {
               },
               furnitureDetails: {
                 ...prev.furnitureDetails,
+                ...(data.furnitureDetails || {}),
+                note: data.furnitureDetails?.note || '',
                 dimensions: {
                   ...prev.furnitureDetails?.dimensions,
-                  width: data.dimensions?.width || '',
-                  height: data.dimensions?.height || '',
-                  depth: data.dimensions?.length || '',
-                  weight: data.weight || ''
+                  ...(data.furnitureDetails?.dimensions || {}),
+                  width: data.dimensions?.width || data.furnitureDetails?.dimensions?.width || '',
+                  height: data.dimensions?.height || data.furnitureDetails?.dimensions?.height || '',
+                  depth: data.dimensions?.length || data.furnitureDetails?.dimensions?.depth || '',
+                  weight: data.weight || data.furnitureDetails?.dimensions?.weight || ''
                 }
               },
               seo: {
@@ -279,6 +283,7 @@ export default function ProductEditor() {
         height: Number(formData.furnitureDetails?.dimensions?.height) || 0,
         unit: 'cm'
       },
+      furnitureDetails: formData.furnitureDetails,
       seo: {
         metaTitle: formData.seo.metaTitle,
         metaDescription: formData.seo.metaDescription,
@@ -309,6 +314,11 @@ export default function ProductEditor() {
   };
 
   const handlePublish = async () => {
+    if (!isNew && !hasUnsavedChanges) {
+      addToast({ type: 'info', message: 'No new changes to update' });
+      return;
+    }
+
     const { basicInfo, media, pricing, organization } = formData;
     const errors = [];
     if (!basicInfo.name.trim()) errors.push('Product Name is required');
@@ -332,8 +342,8 @@ export default function ProductEditor() {
       }
       setFormData(prev => ({ ...prev, status: 'published' }));
       setHasUnsavedChanges(false);
-      addToast({ type: 'success', message: 'Product published successfully' });
-      navigate('/admin/catalog/products');
+      addToast({ type: 'success', message: isNew ? 'Product published successfully' : 'Product updated successfully' });
+      if (isNew) navigate('/admin/catalog/products');
     } catch (err) {
       addToast({ type: 'error', message: err.message || 'Failed to publish product' });
     } finally {
@@ -398,7 +408,7 @@ export default function ProductEditor() {
             className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#4F46FF] to-[#6D63FF] text-white font-semibold text-sm rounded-xl hover:opacity-90 transition-opacity shadow-[0_4px_14px_rgba(79,70,255,0.3)] disabled:opacity-50"
           >
             <Rocket size={18} />
-            Publish Product
+            {isNew ? 'Publish Product' : 'Update Product'}
           </button>
         </div>
       </header>
@@ -484,6 +494,16 @@ export default function ProductEditor() {
                             placeholder="e.g. DF-SF-001"
                             className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
                           />
+                        </div>
+                        <div className="col-span-2 mt-2">
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Product Note (Optional)</label>
+                          <textarea 
+                            value={formData.furnitureDetails.note || ''}
+                            onChange={(e) => handleChange('furnitureDetails', 'note', e.target.value)}
+                            placeholder="e.g. Please note: Actual product color may vary slightly..."
+                            className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F] min-h-[80px]"
+                          />
+                          <p className="text-[10px] text-text-muted mt-1">This note will appear directly under the main product images.</p>
                         </div>
                       </div>
                     </div>

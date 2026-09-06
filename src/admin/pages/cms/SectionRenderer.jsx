@@ -84,6 +84,24 @@ export const SectionRenderer = ({ section }) => {
           </div>
         </div>
       );
+    case 'HeaderBanner':
+      return (
+        <div className="flex flex-col md:flex-row w-full bg-white">
+          <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-[400px]">
+            {section.content?.image ? (
+              <img src={section.content.image} alt="Header Banner" className="absolute inset-0 w-full h-full object-cover" />
+            ) : (
+              <div className="absolute inset-0 bg-neutral-200"></div>
+            )}
+          </div>
+          <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">{section.content?.title || 'COMFY & BEAUTY AT ITS BEST'}</h2>
+            <p className="text-neutral-600 text-lg leading-relaxed">
+              {section.content?.description || 'Explore our interior collection for premium furniture that blends exquisite craftsmanship with timeless elegance. Discover furniture that transcends trends, offering a timeless elegance that transforms your space into a sanctuary of sophistication.'}
+            </p>
+          </div>
+        </div>
+      );
     default:
       return (
         <div className="py-12 px-8 border-2 border-dashed border-neutral-300 text-center text-neutral-500 bg-neutral-50 m-4 rounded">

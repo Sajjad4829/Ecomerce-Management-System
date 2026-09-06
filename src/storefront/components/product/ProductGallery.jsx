@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
-export default function ProductGallery({ images, selectedVariants }) {
+export default function ProductGallery({ images, selectedVariants, note }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const scrollRef = useRef(null);
@@ -13,8 +13,9 @@ export default function ProductGallery({ images, selectedVariants }) {
   useEffect(() => {
     if (selectedVariants && images) {
       Object.values(selectedVariants).forEach(option => {
-        if (option && option.image) {
-          const idx = images.findIndex(img => img === option.image);
+        const firstVariantImage = (option && option.images && option.images.length > 0) ? option.images[0] : (option && option.image);
+        if (firstVariantImage) {
+          const idx = images.findIndex(img => img === firstVariantImage);
           if (idx !== -1) {
             handleThumbnailClick(idx);
           }
@@ -81,7 +82,7 @@ export default function ProductGallery({ images, selectedVariants }) {
             className="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:overflow-hidden"
           >
             {images.map((img, idx) => (
-              <div key={idx} className="w-full h-full flex-shrink-0 snap-center relative">
+              <div key={idx} className={`w-full h-full flex-shrink-0 snap-center relative ${idx === activeIndex ? 'block' : 'block lg:hidden'}`}>
                 <motion.img
                   key={activeIndex}
                   initial={{ opacity: 0 }}
@@ -89,8 +90,8 @@ export default function ProductGallery({ images, selectedVariants }) {
                   transition={{ duration: 0.3 }}
                   src={img}
                   alt={`Product view ${idx + 1}`}
-                  className={`w-full h-full object-cover ${idx === activeIndex || window.innerWidth < 1024 ? 'block' : 'hidden lg:block'}`}
-                  onClick={() => window.innerWidth < 1024 && setIsLightboxOpen(true)}
+                  className="w-full h-full object-cover"
+                  onClick={() => window.innerWidth >= 1024 ? setIsLightboxOpen(true) : setIsLightboxOpen(true)}
                 />
               </div>
             ))}
@@ -119,12 +120,14 @@ export default function ProductGallery({ images, selectedVariants }) {
 
       </div>
 
-      <div className="mt-6 flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-500">
-        <svg className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <p>Please note: Actual product color, fabric, finish, texture, and appearance may vary slightly from the images shown due to photography, lighting, device display settings, and natural material variations.</p>
-      </div>
+      {note && (
+        <div className="mt-6 flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-500">
+          <svg className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p>{note}</p>
+        </div>
+      )}
 
       {/* Fullscreen Lightbox */}
       <AnimatePresence>

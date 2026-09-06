@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FiArrowUp, FiArrowDown, FiTrash2, FiCopy, FiSave, FiLock } from 'react-icons/fi';
 import * as Icons from 'react-icons/fi';
 import HeroSection from '../../../../storefront/components/home/HeroSection';
+import HeaderBannerSection from '../../../../storefront/components/home/HeaderBannerSection';
 import NavbarPreview from './preview/NavbarPreview';
 import ProductGridPreview from './preview/ProductGridPreview';
 import BannerPreview from './preview/BannerPreview';
@@ -74,6 +75,7 @@ export default function PreviewCanvas({
 
     if (typeStr.includes('NAVBAR')) content = <NavbarPreview section={section} device={device} />;
     else if (typeStr === 'FOOTER') content = <FooterPreview section={section} device={device} />;
+    else if (typeStr.includes('HEADERBANNER') || typeStr.includes('HEADER_BANNER')) content = <HeaderBannerSection data={section} />;
     else if (typeStr.includes('HERO')) content = <HeroSection data={section} />;
     else if (typeStr.includes('PRODUCT') || typeStr === 'GRID') content = <ProductGridPreview section={section} device={device} />;
     else if (typeStr.includes('CATEGORY')) content = <CategoryGridPreview section={section} device={device} />;

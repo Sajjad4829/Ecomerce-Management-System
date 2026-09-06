@@ -64,7 +64,7 @@ export default function ProductGallery({ product, activeVariant, previewMode = '
 
   const displayedImage = variantImage && !images.includes(variantImage) 
     ? variantImage 
-    : (images[activeImageIndex] || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800');
+    : (images[activeImageIndex] || '');
 
   return (
     <>

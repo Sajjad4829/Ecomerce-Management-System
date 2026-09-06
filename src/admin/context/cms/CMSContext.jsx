@@ -43,6 +43,33 @@ const INITIAL_SECTIONS = [
     status: 'Active',
     image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=400'
   },
+  {
+    id: 'lib-header-banner',
+    type: 'HeaderBanner',
+    name: 'Header Banner',
+    category: 'HERO',
+    description: 'Header Banner with image on left and text on right',
+    icon: 'FiLayout',
+    defaultContent: {
+      title: '',
+      description: '',
+      image: '',
+      buttonText: '',
+      buttonLink: '',
+      showButton: false
+    },
+    defaultSettings: {
+      contentAlignment: 'left',
+      verticalAlignment: 'center',
+      columnGap: 0,
+      imageWidth: 55,
+      contentWidth: 45,
+      backgroundColor: '#FFFFFF',
+      textColor: '#111827',
+      imagePosition: 'left',
+    },
+    status: 'Active'
+  },
   { id: 'lib-split-hero', type: 'SPLIT_HERO', name: 'Split Hero', category: 'HERO', description: '50/50 split with image and text', icon: 'FiLayout', defaultContent: { title: 'Modern Living', description: 'Elevate your space.' }, defaultSettings: { imageAlign: 'right' }, status: 'Active', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=400' },
   { id: 'lib-promo-hero', type: 'PROMO_HERO', name: 'Promotional Hero', category: 'HERO', description: 'Hero section focused on a major promotion', icon: 'FiStar', defaultContent: { badge: 'Summer Sale', title: 'Up to 50% Off' }, defaultSettings: { colorScheme: 'dark' }, status: 'Active' },
   { id: 'lib-feat-prod', type: 'FEATURED_PRODUCTS', name: 'Featured Products', category: 'PRODUCTS', description: 'Highlight specific products', icon: 'FiBox', defaultContent: { title: 'Featured' }, defaultSettings: { columns: 4 }, status: 'Active' },
@@ -146,7 +173,12 @@ export const CMSProvider = ({ children }) => {
   // ── Static / in-memory state ───────────────────────────────────────────────
   const [sectionsState, setSectionsState] = useState(() => {
     const cached = readCache('cms_sections_cache', null);
-    if (cached && Array.isArray(cached) && cached.length > 0) return cached;
+    if (cached && Array.isArray(cached) && cached.length > 0) {
+      // Merge missing initial sections (like HeaderBanner) into cache
+      const cachedIds = new Set(cached.map(s => s.id));
+      const missingInitial = INITIAL_SECTIONS.filter(s => !cachedIds.has(s.id));
+      return [...cached, ...missingInitial];
+    }
     return INITIAL_SECTIONS;
   });
 

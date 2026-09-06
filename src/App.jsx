@@ -559,7 +559,7 @@ export default function App() {
                                                           <Route path="/wishlist" element={<WishlistPage />} />
                                                           <Route path="/categories" element={<CategoriesPage />} />
                                                           <Route path="/categories/:slug" element={<CategoryPage />} />
-                                                          <Route path="/products" element={<ShopPage />} />
+                                                          <Route path="/shop" element={<Navigate to="/" replace />} />
                                                           <Route path="/product/:slug" element={<ProductDetailPage />} />
                                                           <Route path="/products/:id" element={<ProductDetailPage />} />
                                                           <Route path="/search" element={<SearchResultsPage />} />

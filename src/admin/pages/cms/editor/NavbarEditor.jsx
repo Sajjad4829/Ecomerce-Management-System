@@ -8,6 +8,7 @@ import { Search, User, ShoppingBag, ChevronRight, ChevronsRight } from 'lucide-r
 import { motion } from 'framer-motion';
 import { useCMS } from '../../../context/cms/CMSContext';
 import MegaMenuBuilder from '../../../components/cms/navigation/MegaMenuBuilder';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
 
 const TABS = [
   { id: 'style', label: 'Style', icon: FiLayout },
@@ -22,6 +23,7 @@ const TABS = [
 
 export default function NavbarEditor() {
   const { headerConfig, setHeaderConfig, menus, setMenus, configLoading } = useCMS();
+  const { addToast } = useToast();
   
   const [activeTab, setActiveTab] = useState('style');
   const [config, setConfig] = useState(headerConfig || {});
@@ -47,6 +49,7 @@ export default function NavbarEditor() {
       setLinks(globalMenu.items.map((item, idx) => ({
         id: item.id || `link-${idx}`,
         text: item.title,
+        link: item.link || '',
         hasDropdown: !!item.megaMenu,
         dropdownData: item.megaMenu || null
       })));
@@ -83,17 +86,30 @@ export default function NavbarEditor() {
   };
 
   const handlePublish = () => {
-    setHeaderConfig({ ...headerConfig, ...config, primaryMenuId: 'MNU-001' });
+    const isFirstTime = !headerConfig || Object.keys(headerConfig).length === 0;
+    const primaryMenuId = headerConfig?.primaryMenuId || 'MNU-001';
+    const globalMenu = menus?.find(m => m.id === primaryMenuId);
+    const existingNavItems = globalMenu?.items || [];
+
     const newNavItems = links.map(link => ({
       id: link.id,
       title: link.text,
       visibility: true,
       referenceType: link.text.toLowerCase() === 'home' ? 'page' : 'custom',
       referenceId: link.text.toLowerCase() === 'home' ? '/' : null,
-      link: link.text.toLowerCase() === 'home' ? '/' : '#',
+      link: link.link || (link.text.toLowerCase() === 'home' ? '/' : '#'),
       megaMenu: link.hasDropdown ? link.dropdownData : null
     }));
 
+    const configChanged = JSON.stringify(config) !== JSON.stringify(headerConfig || {});
+    const navChanged = JSON.stringify(newNavItems) !== JSON.stringify(existingNavItems);
+
+    if (!isFirstTime && !configChanged && !navChanged) {
+      addToast({ type: 'info', message: 'No changes to publish.' });
+      return;
+    }
+
+    setHeaderConfig({ ...headerConfig, ...config, primaryMenuId: 'MNU-001' });
     setMenus(prevMenus => {
       const existingMenuIndex = prevMenus.findIndex(m => m.id === 'MNU-001');
       if (existingMenuIndex >= 0) {
@@ -103,7 +119,12 @@ export default function NavbarEditor() {
       }
       return [...prevMenus, { id: 'MNU-001', name: 'Global Navigation', items: newNavItems }];
     });
-    alert('Navbar successfully published!');
+
+    if (isFirstTime) {
+      addToast({ type: 'success', message: 'Navbar published successfully!' });
+    } else {
+      addToast({ type: 'success', message: 'Navbar updated successfully!' });
+    }
   };
 
   if (loading) return <div className="p-8">Loading Navbar...</div>;
@@ -651,8 +672,14 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
               <div key={link.id} className={`flex flex-col p-3 bg-white border rounded-lg shadow-sm group ${activeLinkId === link.id ? 'border-[#635BFF] bg-[#635BFF]/5' : 'border-gray-200'}`}>
                 <div className="flex items-center gap-2">
                   <FiMenu className="text-gray-400 cursor-grab" />
-                  <input type="text" value={link.text} onChange={(e) => setLinks(links.map(l => l.id === link.id ? { ...l, text: e.target.value } : l))} className="flex-1 text-sm font-medium border-none p-0 focus:ring-0 bg-transparent" />
-                  <button onClick={() => setLinks(links.filter(l => l.id !== link.id))} className="text-gray-400 hover:text-red-500"><FiTrash2 size={16} /></button>
+                  <div className="flex-1 flex flex-col gap-1">
+                    <input type="text" placeholder="Menu Label" value={link.text} onChange={(e) => setLinks(links.map(l => l.id === link.id ? { ...l, text: e.target.value } : l))} className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent" />
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <span>🔗</span>
+                      <input type="text" placeholder="/page-slug" value={link.link || ''} onChange={(e) => setLinks(links.map(l => l.id === link.id ? { ...l, link: e.target.value } : l))} className="w-full border-none p-0 focus:ring-0 bg-transparent text-gray-500" />
+                    </div>
+                  </div>
+                  <button onClick={() => setLinks(links.filter(l => l.id !== link.id))} className="text-gray-400 hover:text-red-500 ml-2"><FiTrash2 size={16} /></button>
                 </div>
                 <div className="mt-3 flex justify-between items-center pl-6">
                   <label className="flex items-center gap-2 text-xs font-medium text-gray-600 cursor-pointer">

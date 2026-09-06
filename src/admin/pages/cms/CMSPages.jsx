@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import HeroEditorModal from '../../components/cms/editor/HeroEditorModal';
+import HeaderBannerEditor from '../../components/cms/editor/HeaderBannerEditor';
 import { useCMS } from '../../context/cms/CMSContext';
 import { useCategories } from '../../context/commerce/CategoryContext';
 import { useProducts } from '../../context/commerce/ProductContext';
 import { useCollections } from '../../context/commerce/CollectionContext';
 import { useBrands } from '../../context/commerce/BrandContext';
-import { FileText, Layers, Navigation, Search, ArrowLeft, MoveUp, MoveDown, Copy, Eye, EyeOff, Trash2, Edit2 } from 'lucide-react';
+import { FileText, Layers, Navigation, Search, ArrowLeft, MoveUp, MoveDown, Copy, Eye, EyeOff, Trash2, Edit2, Plus } from 'lucide-react';
 import SectionRenderer from '../../../storefront/components/sections/SectionRenderer';
 import { useStorefrontTheme } from '../../../storefront/context/StorefrontThemeContext';
 
@@ -366,6 +367,7 @@ export const PageBuilder = () => {
           <div className="space-y-2">
             <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Layout</h3>
             <div className="p-3 border border-neutral-200 rounded cursor-move hover:border-neutral-400 bg-neutral-50 text-sm">Hero</div>
+            <div className="p-3 border border-neutral-200 rounded cursor-move hover:border-neutral-400 bg-neutral-50 text-sm">Header Banner</div>
             <div className="p-3 border border-neutral-200 rounded cursor-move hover:border-neutral-400 bg-neutral-50 text-sm">Banner</div>
             <div className="p-3 border border-neutral-200 rounded cursor-move hover:border-neutral-400 bg-neutral-50 text-sm">Card Grid</div>
           </div>
@@ -399,33 +401,9 @@ export const PageBuilder = () => {
         <div className="flex-1 overflow-y-auto p-8">
           <div className="max-w-4xl mx-auto space-y-4">
             {/* Mock Canvas Content */}
-            <div className="border-2 border-indigo-500 rounded relative group bg-surface shadow-sm">
-              <div className="absolute top-0 right-0 -mt-3 mr-2 hidden group-hover:flex gap-1">
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveUp className="w-3 h-3" /></button>
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><MoveDown className="w-3 h-3" /></button>
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><Copy className="w-3 h-3" /></button>
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-neutral-50"><EyeOff className="w-3 h-3" /></button>
-                <button className="p-1 bg-surface border border-neutral-200 rounded shadow-sm hover:bg-danger-soft text-danger"><Trash2 className="w-3 h-3" /></button>
-              </div>
-              <div className="h-48 bg-neutral-200 flex flex-col items-center justify-center rounded m-1 border-2 border-dashed border-neutral-300">
-                <div className="font-serif text-2xl text-neutral-800 mb-2">Hero Section</div>
-                <div className="px-4 py-2 bg-neutral-800 text-white text-sm rounded">CTA Button</div>
-              </div>
-            </div>
-
-            <div className="border border-neutral-200 rounded relative group hover:border-indigo-300 bg-surface shadow-sm transition-colors cursor-pointer">
-              <div className="h-32 flex items-center justify-center p-6 gap-6 m-1">
-                <div className="w-1/3 bg-neutral-200 h-full rounded border-2 border-dashed border-neutral-300"></div>
-                <div className="w-2/3 space-y-2">
-                  <div className="h-4 bg-neutral-200 rounded w-1/2"></div>
-                  <div className="h-3 bg-neutral-200 rounded w-full"></div>
-                  <div className="h-3 bg-neutral-200 rounded w-3/4"></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-2 border-dashed border-neutral-300 rounded h-24 flex items-center justify-center bg-surface text-neutral-400 hover:bg-neutral-50 hover:border-neutral-400 cursor-pointer transition-colors">
-              Drop Section Here
+            <div className="border-2 border-dashed border-neutral-300 rounded h-64 flex flex-col items-center justify-center bg-surface text-neutral-400 hover:bg-neutral-50 hover:border-neutral-400 cursor-pointer transition-colors">
+              <span className="mb-2">Drop Sections Here</span>
+              <span className="text-xs">Drag and drop sections from the left panel to build your page.</span>
             </div>
           </div>
         </div>
@@ -488,6 +466,8 @@ export const SectionLibrary = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isHeroModalOpen, setIsHeroModalOpen] = React.useState(false);
   const [heroSectionToEdit, setHeroSectionToEdit] = React.useState(null);
+  const [isHeaderBannerModalOpen, setIsHeaderBannerModalOpen] = React.useState(false);
+  const [headerBannerToEdit, setHeaderBannerToEdit] = React.useState(null);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [editingSectionId, setEditingSectionId] = React.useState(null);
 
@@ -512,6 +492,12 @@ export const SectionLibrary = () => {
   });
 
   const handleEdit = (section) => {
+    if (section.type === 'HeaderBanner' || section.type === 'HEADER_BANNER' || section.type === 'HEADERBANNER') {
+      setHeaderBannerToEdit(section);
+      setIsHeaderBannerModalOpen(true);
+      return;
+    }
+
     if (section.type && section.type.includes('HERO')) {
       setHeroSectionToEdit(section);
       setIsHeroModalOpen(true);
@@ -557,8 +543,11 @@ export const SectionLibrary = () => {
       updatedAt: new Date().toISOString().split('T')[0],
       usageCount: 0,
       content: {
+        ...content,
         title: content.title || "Creations with purpose",
         subtitle: content.subtitle || "Many choices based on your space",
+        description: content.description || "Explore our interior collection for premium furniture that blends exquisite craftsmanship with timeless elegance.",
+        image: content.image || "",
         ctaText: content.ctaText || "Explore Now",
         ctaUrl: content.ctaUrl || "/shop",
         items: content.items.length > 0 ? content.items : [
@@ -566,8 +555,11 @@ export const SectionLibrary = () => {
         ]
       },
       defaultSchema: {
+        ...content,
         title: content.title || "Creations with purpose",
         subtitle: content.subtitle || "Many choices based on your space",
+        description: content.description || "Explore our interior collection for premium furniture that blends exquisite craftsmanship with timeless elegance.",
+        image: content.image || "",
         ctaText: content.ctaText || "Explore Now",
         ctaUrl: content.ctaUrl || "/shop",
         items: content.items.length > 0 ? content.items : [
@@ -587,6 +579,12 @@ export const SectionLibrary = () => {
 
   const handleHeroModalUpdate = (updatedSection) => {
     setSections(sections.map(s => s.id === updatedSection.id ? updatedSection : s));
+  };
+
+  const handleHeaderBannerUpdate = (updatedSection) => {
+    setSections(sections.map(s => s.id === updatedSection.id ? updatedSection : s));
+    setIsHeaderBannerModalOpen(false);
+    setHeaderBannerToEdit(null);
   };
 
   const filteredSections = sections.filter(s => {
@@ -687,6 +685,7 @@ export const SectionLibrary = () => {
                       onChange={e => setFormData({ ...formData, category: e.target.value })}
                     >
                       <option>Hero</option>
+                      <option>Header Banner</option>
                       <option>Carousel</option>
                       <option>CTA</option>
                       <option>Content</option>
@@ -701,6 +700,7 @@ export const SectionLibrary = () => {
                       onChange={e => setFormData({ ...formData, type: e.target.value })}
                     >
                       <option>Hero</option>
+                      <option>HeaderBanner</option>
                       <option>Product</option>
                       <option>Newsletter</option>
                       <option>CREATIONS_SHOWCASE</option>
@@ -727,6 +727,14 @@ export const SectionLibrary = () => {
                     <div>
                       <label className="block text-sm font-medium text-neutral-700 mb-1">CTA Link</label>
                       <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.ctaUrl} onChange={e => setContent({ ...content, ctaUrl: e.target.value })} placeholder="/shop" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-1">Description</label>
+                      <textarea className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.description || ''} onChange={e => setContent({ ...content, description: e.target.value })} placeholder="Section Description" rows="3" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-1">Main Image URL</label>
+                      <input type="text" className="w-full border border-neutral-300 rounded p-2 focus:ring-1 focus:ring-neutral-900" value={content.image || ''} onChange={e => setContent({ ...content, image: e.target.value })} placeholder="https://..." />
                     </div>
                   </div>
 
@@ -795,6 +803,17 @@ export const SectionLibrary = () => {
           onClose={() => {
             setIsHeroModalOpen(false);
             setHeroSectionToEdit(null);
+          }}
+        />
+      )}
+
+      {isHeaderBannerModalOpen && headerBannerToEdit && (
+        <HeaderBannerEditor
+          section={headerBannerToEdit}
+          onSave={handleHeaderBannerUpdate}
+          onCancel={() => {
+            setIsHeaderBannerModalOpen(false);
+            setHeaderBannerToEdit(null);
           }}
         />
       )}

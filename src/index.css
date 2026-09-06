@@ -106,3 +106,53 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-text-muted);
 }
+
+/* ReactQuill Content Styling */
+.quill-content {
+  @apply text-[15px] leading-relaxed;
+}
+.quill-content p {
+  @apply mb-3;
+}
+.quill-content p:last-child {
+  @apply mb-0;
+}
+.quill-content ul {
+  @apply list-disc pl-6 mb-4 space-y-1;
+}
+.quill-content ol {
+  @apply list-decimal pl-6 mb-4 space-y-1;
+}
+.quill-content h1 {
+  @apply text-2xl font-bold mb-3 mt-4;
+}
+.quill-content h2 {
+  @apply text-xl font-bold mb-3 mt-4;
+}
+.quill-content h3 {
+  @apply text-lg font-semibold mb-2 mt-3;
+}
+.quill-content strong, .quill-content b {
+  @apply font-bold text-gray-900;
+}
+.quill-content em, .quill-content i {
+  @apply italic;
+}
+.quill-content a {
+  @apply text-blue-600 underline hover:text-blue-800;
+}
+.quill-content u {
+  @apply underline;
+}
+.quill-content blockquote {
+  @apply border-l-4 border-gray-300 pl-4 py-1 italic bg-gray-50 my-4;
+}
+
+/* ReactQuill Toolbox Formatting (Align, Size, etc) */
+.ql-align-center { @apply text-center; }
+.ql-align-right { @apply text-right; }
+.ql-align-justify { @apply text-justify; }
+
+.ql-size-small { @apply text-xs; }
+.ql-size-large { @apply text-xl; }
+.ql-size-huge { @apply text-3xl; }

@@ -52,9 +52,9 @@ export default function ProductActions({ product, selectedVariants, activePrice 
 
   return (
     <>
-      <div className="flex flex-col gap-4 mt-6">
+      <div className="flex flex-col gap-4 mt-2">
         {/* Quantity Selector */}
-        <div className="flex items-center justify-between h-[60px] mb-6 mt-2 border-b border-gray-200 pb-8">
+        <div className="flex items-center justify-between h-[60px] border-b border-gray-200 pb-4">
           <span className="text-[17px] font-normal text-slate-700 tracking-wide">Quantity</span>
           <div className="flex items-center justify-between border border-gray-100 h-[60px] w-[220px] rounded-xl bg-white">
             <button 
@@ -103,12 +103,12 @@ export default function ProductActions({ product, selectedVariants, activePrice 
         </button>
 
         {/* EMI Button */}
-        <button className="w-full h-[52px] bg-[#FCE8E8] text-[#EE2737] font-bold text-[16px] rounded-[24px] hover:bg-[#F9D6D6] transition-colors mb-6 tracking-wide shadow-sm">
-          EMI 956 BDT
+        <button className="w-full h-[52px] bg-[#FCE8E8] text-[#EE2737] font-bold text-[16px] rounded-[24px] hover:bg-[#F9D6D6] transition-colors tracking-wide shadow-sm">
+          EMI 1,188 BDT
         </button>
 
         {/* Small Accordions */}
-        <div className="flex flex-col bg-white rounded-[16px] shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100 mb-8">
+        <div className="flex flex-col bg-white rounded-[16px] shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100 mb-2">
           <button className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
             <div className="flex items-center gap-4 text-gray-400">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -52,14 +52,15 @@ export function CommerceProvider({ children }) {
 
         // Calculate active price
         Object.values(selectedVariants).forEach(option => {
+          const img = (option && option.images && option.images.length > 0) ? option.images[0] : (option && option.image);
+          if (img) {
+            variantImage = img;
+          }
           if (option && option.price) {
             activePrice = option.price;
             activeComparePrice = null;
           } else if (option && option.priceModifier) {
             activePrice += option.priceModifier;
-          }
-          if (option && option.image) {
-            variantImage = option.image;
           }
         });
       }

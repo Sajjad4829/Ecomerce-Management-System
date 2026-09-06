@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { FiMap, FiBox, FiMaximize, FiCopy, FiAperture, FiChevronDown, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiMap, FiBox, FiMaximize, FiCopy, FiAperture, FiChevronDown, FiPlus, FiTrash2, FiUpload, FiChevronUp } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import CustomColorPicker from './CustomColorPicker';
 
 const getVariantIcon = (type) => {
   const t = type.toLowerCase();
@@ -150,35 +151,78 @@ export default function ProductAttributesManager({ formData, handleChange }) {
                 >
                   <div className="p-5 space-y-4">
                     {variantGroup.options.map((option, idx) => (
-                      <div key={option.id} className="flex items-start gap-3 bg-surface p-3 rounded-lg border border-border shadow-sm">
+                      <div key={option.id} className="flex items-start gap-4 bg-surface p-3 rounded-xl border border-border shadow-sm">
                         <div className="flex-1">
                           <label className="block text-[10px] font-bold text-text-muted uppercase mb-1">Option Name</label>
                           <input
                             type="text"
                             value={option.label}
                             onChange={(e) => handleUpdateOption(variantGroup.type, option.id, 'label', e.target.value)}
-                            placeholder="e.g. Linen, Oak, Small"
+                            placeholder="e.g. Linen, Oak"
                             className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary"
                           />
                         </div>
                         
                         {(variantGroup.type === 'Color' || variantGroup.type === 'Fabric') && (
-                          <div className="w-24">
-                            <label className="block text-[10px] font-bold text-text-muted uppercase mb-1">Color HEX</label>
-                            <input
-                              type="text"
-                              value={option.colorCode}
-                              onChange={(e) => handleUpdateOption(variantGroup.type, option.id, 'colorCode', e.target.value)}
-                              placeholder="#000000"
-                              className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary"
-                            />
+                          <div className="flex gap-4 items-start shrink-0">
+                            <div className="w-20 shrink-0">
+                              <label className="block text-[10px] font-bold text-text-muted uppercase mb-1">Color</label>
+                              <CustomColorPicker 
+                                color={option.colorCode}
+                                onChange={(color) => handleUpdateOption(variantGroup.type, option.id, 'colorCode', color)}
+                              />
+                            </div>
+                            <div className="flex-1 max-w-[240px]">
+                              <label className="block text-[10px] font-bold text-text-muted uppercase mb-1">Images</label>
+                              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                                {(option.images || (option.image ? [option.image] : [])).map((img, i) => (
+                                  <div key={i} className="relative group w-16 h-10 shrink-0 rounded-full border border-border shadow-sm overflow-hidden bg-background">
+                                    <img src={img} alt="upload" className="w-full h-full object-cover" />
+                                    <button 
+                                      onClick={() => {
+                                        const newImages = (option.images || (option.image ? [option.image] : [])).filter((_, idx) => idx !== i);
+                                        handleUpdateOption(variantGroup.type, option.id, 'images', newImages);
+                                      }}
+                                      className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity"
+                                      title="Remove image"
+                                    >
+                                      <FiTrash2 size={12} />
+                                    </button>
+                                  </div>
+                                ))}
+                                <label className="flex shrink-0 items-center justify-center gap-1 w-20 h-10 bg-background border border-border border-dashed rounded-full text-[11px] font-semibold text-text-secondary hover:text-primary hover:border-primary hover:bg-primary-soft transition-colors cursor-pointer">
+                                  <FiUpload size={12} />
+                                  <span>Upload</span>
+                                  <input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    multiple
+                                    className="hidden" 
+                                    onChange={(e) => {
+                                      const files = Array.from(e.target.files);
+                                      let currentImages = [...(option.images || (option.image ? [option.image] : []))];
+                                      
+                                      files.forEach(file => {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                          currentImages = [...currentImages, reader.result];
+                                          handleUpdateOption(variantGroup.type, option.id, 'images', currentImages);
+                                        };
+                                        reader.readAsDataURL(file);
+                                      });
+                                    }} 
+                                  />
+                                </label>
+                              </div>
+                            </div>
                           </div>
                         )}
                         
-                        <div className="pt-5">
+                        <div className="pt-5 shrink-0">
                           <button
                             onClick={() => handleRemoveOption(variantGroup.type, option.id)}
                             className="p-2 text-text-muted hover:text-error hover:bg-error-soft rounded-lg transition-colors"
+                            title="Remove option"
                           >
                             <FiTrash2 size={16} />
                           </button>

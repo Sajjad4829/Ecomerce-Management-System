@@ -19,7 +19,7 @@ export default function ProductBreadcrumb({ product, category }) {
           
           <li><FiChevronRight size={14} className="mx-1 text-gray-300" /></li>
           <li>
-            <Link to="/shop" className="hover:text-gray-900 transition-colors">Shop</Link>
+            <Link to="/" className="hover:text-gray-900 transition-colors">Shop</Link>
           </li>
           
           {hierarchy.map((cat) => (

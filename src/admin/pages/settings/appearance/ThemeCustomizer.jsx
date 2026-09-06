@@ -122,18 +122,6 @@ export default function ThemeCustomizer() {
             </div>
           </div>
 
-          {/* Checkout Section */}
-          <div>
-            <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-50">
-              <div className="flex items-center gap-3 text-xs font-semibold text-stone-500 tracking-wider uppercase">
-                <div className="w-6 h-6 rounded-md bg-purple-100 flex items-center justify-center text-purple-600">
-                  <FiShoppingCart size={12} />
-                </div>
-                Checkout
-              </div>
-              <FiChevronRight className="text-stone-400" size={16} />
-            </button>
-          </div>
 
         </div>
       </div>
@@ -288,30 +276,6 @@ export default function ThemeCustomizer() {
                 </div>
               </div>
 
-              {/* Checkout */}
-              <div className="col-span-12 bg-white rounded-2xl shadow-sm border border-stone-100 p-6 h-[140px] flex items-center justify-between">
-                <div className="flex items-center gap-3 w-1/3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white"><FiShoppingCart size={20} /></div>
-                  <div>
-                    <h3 className="font-bold text-stone-900 text-base">Checkout</h3>
-                    <p className="text-sm text-stone-500">Customize the checkout experience.</p>
-                  </div>
-                </div>
-
-                <div className="flex-1 flex items-center justify-between px-12 relative">
-                  <div className="absolute left-16 right-16 top-1/2 -translate-y-1/2 h-0.5 bg-stone-200"></div>
-                  {['Cart', 'Information', 'Shipping', 'Payment'].map((step, i) => (
-                    <div key={step} className="flex flex-col items-center gap-2 relative z-10">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${i === 0 ? 'bg-indigo-600 text-white' : 'bg-white border-2 border-stone-200 text-stone-400'}`}>
-                        {i === 0 ? <FiShoppingCart size={14} /> : i === 1 ? <FiLayout size={14} /> : i === 2 ? <FiBox size={14} /> : <FiCreditCard size={14} />}
-                      </div>
-                      <span className={`text-xs font-medium ${i === 0 ? 'text-stone-900' : 'text-stone-500'}`}>{step}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <FiChevronRight className="text-stone-400 ml-8" size={24} />
-              </div>
 
             </div>
           </div>

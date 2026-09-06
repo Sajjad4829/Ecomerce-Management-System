@@ -1,16 +1,9 @@
-import { useState } from 'react';
-import { FiX, FiSearch, FiCheck, FiImage, FiGrid, FiFolder } from 'react-icons/fi';
+import { useState, useEffect, useRef } from 'react';
+import { FiX, FiSearch, FiCheck, FiImage, FiGrid, FiFolder, FiUploadCloud, FiTrash2 } from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
 
-// Sample media dataset for the picker modal
-const SAMPLE_PICKER_ASSETS = [
-  { id: 'm1', title: 'Velvet Sofa Cream HD', fileName: 'velvet_sofa_cream.webp', url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80', size: '2.4 MB', dimensions: '3840x2160', format: 'webp', type: 'image', folder: 'Sofas' },
-  { id: 'm2', title: 'Aurelian Marble Coffee Table', fileName: 'marble_coffee_table.webp', url: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=800&q=80', size: '1.8 MB', dimensions: '2560x1440', format: 'webp', type: 'image', folder: 'Tables' },
-  { id: 'm3', title: 'Scandinavian Oak Chair', fileName: 'scandi_oak_chair.jpg', url: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80', size: '1.2 MB', dimensions: '1920x1080', format: 'jpg', type: 'image', folder: 'Chairs' },
-  { id: 'm4', title: 'Minimalist Dining Set Lookbook', fileName: 'dining_set_lookbook.webp', url: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800&q=80', size: '3.1 MB', dimensions: '3840x2560', format: 'webp', type: 'image', folder: 'Collections' },
-  { id: 'm5', title: 'Aurelian Luxury Living Hero', fileName: 'hero_living_room_lux.webp', url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80', size: '4.2 MB', dimensions: '4096x2304', format: 'webp', type: 'image', folder: 'Banners' },
-  { id: 'm6', title: 'Nordic Walnut Bed Frame', fileName: 'walnut_bed_frame.jpg', url: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80', size: '2.9 MB', dimensions: '2560x1440', format: 'jpg', type: 'image', folder: 'Beds' }
-];
+// Empty array for initial picker assets so only uploaded images exist
+const SAMPLE_PICKER_ASSETS = [];
 
 export default function MediaPickerModal({
   isOpen,
@@ -22,10 +15,37 @@ export default function MediaPickerModal({
   const [search, setSearch] = useState('');
   const [selectedFolder, setSelectedFolder] = useState('all');
   const [selectedItemIds, setSelectedItemIds] = useState([]);
+  const [assets, setAssets] = useState(SAMPLE_PICKER_ASSETS);
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      const stored = localStorage.getItem('cms_custom_assets');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          // Purge any old mock data (ids starting with 'm')
+          const onlyUploads = parsed.filter(asset => asset.id.startsWith('upload_'));
+          setAssets(onlyUploads);
+          if (parsed.length !== onlyUploads.length) {
+            localStorage.setItem('cms_custom_assets', JSON.stringify(onlyUploads));
+          }
+        } catch (e) {}
+      } else {
+        localStorage.setItem('cms_custom_assets', JSON.stringify(SAMPLE_PICKER_ASSETS));
+        setAssets(SAMPLE_PICKER_ASSETS);
+      }
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const filteredAssets = SAMPLE_PICKER_ASSETS.filter(a => {
+  const saveAssets = (newAssets) => {
+    setAssets(newAssets);
+    localStorage.setItem('cms_custom_assets', JSON.stringify(newAssets));
+  };
+
+  const filteredAssets = assets.filter(a => {
     const matchesSearch = a.title.toLowerCase().includes(search.toLowerCase()) || a.fileName.toLowerCase().includes(search.toLowerCase());
     const matchesFolder = selectedFolder === 'all' || a.folder === selectedFolder;
     return matchesSearch && matchesFolder;
@@ -42,13 +62,47 @@ export default function MediaPickerModal({
   };
 
   const handleConfirm = () => {
-    const selectedAssets = SAMPLE_PICKER_ASSETS.filter(a => selectedItemIds.includes(a.id));
+    const selectedAssets = assets.filter(a => selectedItemIds.includes(a.id));
     if (allowMultiple) {
       onSelectMedia(selectedAssets);
     } else {
       onSelectMedia(selectedAssets[0] || null);
     }
     onClose();
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newAsset = {
+          id: `upload_${Date.now()}`,
+          title: file.name,
+          fileName: file.name,
+          url: reader.result,
+          size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+          dimensions: 'Original',
+          format: file.name.split('.').pop(),
+          type: 'image',
+          folder: 'Uploads'
+        };
+        const newAssets = [newAsset, ...assets];
+        saveAssets(newAssets);
+        // Automatically select it
+        if (!allowMultiple) setSelectedItemIds([newAsset.id]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDelete = (e, id) => {
+    e.stopPropagation();
+    const newAssets = assets.filter(a => a.id !== id);
+    saveAssets(newAssets);
+    if (selectedItemIds.includes(id)) {
+      setSelectedItemIds(selectedItemIds.filter(i => i !== id));
+    }
   };
 
   return (
@@ -91,12 +145,28 @@ export default function MediaPickerModal({
             className="px-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs font-semibold text-text-secondary"
           >
             <option value="all">All Folders</option>
+            <option value="Uploads">Uploads</option>
             <option value="Sofas">Sofas</option>
             <option value="Tables">Tables</option>
             <option value="Chairs">Chairs</option>
             <option value="Collections">Collections</option>
             <option value="Banners">Banners</option>
           </select>
+
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2 px-3 py-1.5 bg-black text-white rounded-lg text-xs font-semibold hover:bg-black/80 transition-colors"
+          >
+            <FiUploadCloud size={14} />
+            Upload
+          </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            accept="image/*"
+            className="hidden"
+          />
         </div>
 
         {/* Media Assets Picker Grid */}
@@ -125,9 +195,19 @@ export default function MediaPickerModal({
                     </div>
                   </div>
 
-                  <div className="p-2.5">
-                    <h4 className="text-xs font-bold text-text-primary truncate">{asset.title}</h4>
-                    <span className="text-[10px] font-mono text-text-muted">{asset.dimensions}</span>
+                  <div className="p-2.5 flex items-center justify-between">
+                    <div className="overflow-hidden pr-2">
+                      <h4 className="text-xs font-bold text-text-primary truncate">{asset.title}</h4>
+                      <span className="text-[10px] font-mono text-text-muted">{asset.dimensions}</span>
+                    </div>
+                    
+                    <button
+                      onClick={(e) => handleDelete(e, asset.id)}
+                      className="p-1.5 text-black/20 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors opacity-0 group-hover:opacity-100"
+                      title="Delete Asset"
+                    >
+                      <FiTrash2 size={12} />
+                    </button>
                   </div>
                 </div>
               );

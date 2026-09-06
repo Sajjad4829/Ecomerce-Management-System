@@ -8,7 +8,7 @@ import ProductGallery from '../../components/product/ProductGallery';
 import ProductInfo from '../../components/product/ProductInfo';
 import ProductVariants from '../../components/product/ProductVariants';
 import ProductActions from '../../components/product/ProductActions';
-import ProductReviews from '../../components/product/ProductReviews';
+
 import RelatedProducts from '../../components/product/RelatedProducts';
 import ProductAccordions from '../../components/product/ProductAccordions';
 import { motion } from 'framer-motion';
@@ -122,9 +122,20 @@ export default function ProductDetailPage() {
     });
   }
 
-  const galleryImages = product?.images && product.images.length > 0
+  let galleryImages = product?.images && product.images.length > 0
     ? product.images.map(img => img.url)
-    : (product?.gallery && product.gallery.length > 0 ? product.gallery : [product?.image]);
+    : (product?.gallery && product.gallery.length > 0 ? [...product.gallery] : (product?.image ? [product.image] : []));
+
+  if (selectedVariants) {
+    Object.values(selectedVariants).forEach(option => {
+      const variantImages = option?.images || (option?.image ? [option.image] : []);
+      variantImages.forEach(img => {
+        if (img && !galleryImages.includes(img)) {
+          galleryImages = [img, ...galleryImages];
+        }
+      });
+    });
+  }
 
   const attributeGroups = product?.attributes && Object.keys(product.attributes).length > 0
     ? Object.keys(product.attributes).map(type => ({
@@ -149,7 +160,11 @@ export default function ProductDetailPage() {
           {/* Left Column: Gallery */}
           <div className="w-full lg:w-[60%]">
             <div className="sticky top-28">
-              <ProductGallery images={galleryImages} selectedVariants={selectedVariants} />
+              <ProductGallery 
+                images={galleryImages} 
+                selectedVariants={selectedVariants} 
+                note={product?.furnitureDetails?.note} 
+              />
             </div>
           </div>
 
@@ -182,8 +197,7 @@ export default function ProductDetailPage() {
         {/* Full Width Accordions */}
         <ProductAccordions product={product} />
         
-        {/* Full Width Reviews Section below Main content */}
-        <ProductReviews product={product} />
+
         
       </main>
 

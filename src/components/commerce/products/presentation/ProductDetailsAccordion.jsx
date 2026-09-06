@@ -68,7 +68,7 @@ export default function ProductDetailsAccordion({ product }) {
             onToggle={() => handleToggle(`custom-${idx}`)}
           >
             <div 
-              className="prose prose-sm max-w-none text-stone-600 font-sans" 
+              className="quill-content text-stone-600 font-sans" 
               dangerouslySetInnerHTML={{ __html: section.content }} 
             />
           </AccordionSection>

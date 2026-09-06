@@ -108,7 +108,7 @@ app.post('/api/categories', async (req, res) => {
 
 app.put('/api/categories/:id', async (req, res) => {
   try {
-    const updated = await Category.findOneAndUpdate({ id: req.params.id }, { $set: req.body }, { new: true, runValidators: true }).lean();
+    const updated = await Category.findOneAndUpdate({ id: req.params.id }, { $set: req.body }, { returnDocument: 'after', runValidators: true }).lean();
     if (!updated) return res.status(404).json({ error: 'Category not found' });
     res.json(updated);
   } catch (error) {
@@ -198,7 +198,7 @@ app.put('/api/navbar', async (req, res) => {
       }
       return item;
     });
-    await Navbar.findOneAndUpdate({ storeId: 'default' }, { $set: { navItems: cleanNavItems, settings: navbarData.settings || {} } }, { upsert: true, new: true });
+    await Navbar.findOneAndUpdate({ storeId: 'default' }, { $set: { navItems: cleanNavItems, settings: navbarData.settings || {} } }, { upsert: true, returnDocument: 'after' });
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -253,7 +253,7 @@ app.post('/api/products', async (req, res) => {
 
 app.put('/api/products/:id', async (req, res) => {
   try {
-    const updated = await Product.findOneAndUpdate({ id: req.params.id }, { $set: { ...req.body, updatedAt: new Date() } }, { new: true, runValidators: true }).lean();
+    const updated = await Product.findOneAndUpdate({ id: req.params.id }, { $set: { ...req.body, updatedAt: new Date() } }, { returnDocument: 'after', runValidators: true }).lean();
     if (!updated) return res.status(404).json({ error: 'Product not found' });
     res.json(updated);
   } catch (error) {
@@ -334,7 +334,7 @@ app.post('/api/brands', async (req, res) => {
 
 app.put('/api/brands/:id', async (req, res) => {
   try {
-    const updated = await Brand.findOneAndUpdate({ id: req.params.id }, { $set: req.body }, { new: true, runValidators: true }).lean();
+    const updated = await Brand.findOneAndUpdate({ id: req.params.id }, { $set: req.body }, { returnDocument: 'after', runValidators: true }).lean();
     if (!updated) return res.status(404).json({ error: 'Brand not found' });
     res.json(updated);
   } catch (error) {
@@ -393,7 +393,7 @@ app.post('/api/collections', async (req, res) => {
 
 app.put('/api/collections/:id', async (req, res) => {
   try {
-    const updated = await Collection.findOneAndUpdate({ id: req.params.id }, { $set: { ...req.body, updatedAt: new Date() } }, { new: true, runValidators: true }).lean();
+    const updated = await Collection.findOneAndUpdate({ id: req.params.id }, { $set: { ...req.body, updatedAt: new Date() } }, { returnDocument: 'after', runValidators: true }).lean();
     if (!updated) return res.status(404).json({ error: 'Collection not found' });
     res.json(updated);
   } catch (error) {
@@ -525,7 +525,7 @@ app.put('/api/cms/library/configurations/:sectionType', async (req, res) => {
     const config = await SectionConfiguration.findOneAndUpdate(
       { sectionType },
       { $set: { content, settings } },
-      { new: true, upsert: true }
+      { returnDocument: 'after', upsert: true }
     );
     
     // SYNC TO ALL PAGES
@@ -607,7 +607,7 @@ app.post('/api/cms/pages', async (req, res) => {
 app.put('/api/cms/pages/:id', async (req, res) => {
   try {
     const { sectionsDraft, sectionsPublished, ...metadata } = req.body;
-    const updated = await CMSPage.findOneAndUpdate({ id: req.params.id }, { $set: { ...metadata, updatedAt: new Date() } }, { new: true, runValidators: true }).lean();
+    const updated = await CMSPage.findOneAndUpdate({ id: req.params.id }, { $set: { ...metadata, updatedAt: new Date() } }, { returnDocument: 'after', runValidators: true }).lean();
     if (!updated) return res.status(404).json({ error: 'Page not found' });
     res.json(updated);
   } catch (error) {
@@ -629,7 +629,7 @@ app.delete('/api/cms/pages/:id', async (req, res) => {
 app.put('/api/cms/pages/:id/sections/draft', async (req, res) => {
   try {
     const { sections } = req.body;
-    const updated = await CMSPage.findOneAndUpdate({ id: req.params.id }, { $set: { sectionsDraft: sections || [], updatedAt: new Date() } }, { new: true }).lean();
+    const updated = await CMSPage.findOneAndUpdate({ id: req.params.id }, { $set: { sectionsDraft: sections || [], updatedAt: new Date() } }, { returnDocument: 'after' }).lean();
     if (!updated) return res.status(404).json({ error: 'Page not found' });
     
     // AUTO-SYNC TO LIBRARY AND ALL OTHER PAGES
@@ -640,7 +640,7 @@ app.put('/api/cms/pages/:id/sections/draft', async (req, res) => {
         await SectionConfiguration.findOneAndUpdate(
           { sectionType: sec.type },
           { $set: { content: sec.content, settings: sec.settings } },
-          { new: true, upsert: true }
+          { returnDocument: 'after', upsert: true }
         );
         // Update all other pages
         const otherPages = await CMSPage.find({
@@ -687,7 +687,7 @@ app.put('/api/cms/pages/:id/sections/publish', async (req, res) => {
     const updated = await CMSPage.findOneAndUpdate(
       { id: req.params.id },
       { $set: { sectionsDraft: sections || [], sectionsPublished: sections || [], status: 'published', publishedAt: new Date(), updatedAt: new Date() } },
-      { new: true }
+      { returnDocument: 'after' }
     ).lean();
     if (!updated) return res.status(404).json({ error: 'Page not found' });
     
@@ -699,7 +699,7 @@ app.put('/api/cms/pages/:id/sections/publish', async (req, res) => {
         await SectionConfiguration.findOneAndUpdate(
           { sectionType: sec.type },
           { $set: { content: sec.content, settings: sec.settings } },
-          { new: true, upsert: true }
+          { returnDocument: 'after', upsert: true }
         );
         // Update all other pages
         const otherPages = await CMSPage.find({
@@ -775,7 +775,7 @@ app.put('/api/cms/config', async (req, res) => {
     const config = await CMSConfig.findOneAndUpdate(
       { storeId: 'default' },
       { $set: { ...req.body, updatedAt: new Date() } },
-      { upsert: true, new: true, runValidators: true }
+      { upsert: true, returnDocument: 'after', runValidators: true }
     ).lean();
     res.json({ success: true, config });
   } catch (error) {
@@ -789,7 +789,7 @@ app.put('/api/cms/config/header', async (req, res) => {
     const config = await CMSConfig.findOneAndUpdate(
       { storeId: 'default' },
       { $set: { headerConfig: req.body, updatedAt: new Date() } },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     ).lean();
     res.json({ success: true, headerConfig: config.headerConfig });
   } catch (error) {
@@ -803,7 +803,7 @@ app.put('/api/cms/config/menus', async (req, res) => {
     const config = await CMSConfig.findOneAndUpdate(
       { storeId: 'default' },
       { $set: { menus: req.body, updatedAt: new Date() } },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     ).lean();
     res.json({ success: true, menus: config.menus });
   } catch (error) {

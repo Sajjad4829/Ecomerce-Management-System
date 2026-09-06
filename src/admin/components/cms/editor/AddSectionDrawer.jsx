@@ -52,10 +52,8 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd, currentPageSe
 
   const currentList = activeTab === 'sections'
     ? sections.filter(s => {
-        const isCustom = s.id?.startsWith('lib-custom-');
-        const hasConfig = !!libraryConfigurations[s.type];
-        const keep = s.status === 'Active' && (isCustom || hasConfig);
-        console.log(`AddSectionDrawer checking section: ${s.name} (type: ${s.type}) - isCustom: ${isCustom}, hasConfig: ${hasConfig}, keep: ${keep}`);
+        const isRealSection = s.id?.startsWith('lib-custom-') || s.id === 'lib-header-banner' || !!libraryConfigurations[s.type];
+        const keep = s.status === 'Active' && isRealSection;
         return keep;
       })
     : blocks.filter(b => b.status === 'Active');
@@ -263,7 +261,17 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd, currentPageSe
                     {secs.map((sec, idx) => {
                       // Generic data priority resolution — no type-specific if/else needed.
                       // Works for every current and future section type automatically.
-                      const resolvedSection = resolveSectionPreview(sec, sectionPreviewMap);
+                      let resolvedSection = resolveSectionPreview(sec, sectionPreviewMap);
+                      
+                      // IMPORTANT: For custom reusable sections, the admin's saved data lives in libraryConfigurations.
+                      // We must merge this data so the placed section actually uses it!
+                      if (libraryConfigurations[sec.type]) {
+                        resolvedSection = {
+                          ...resolvedSection,
+                          content: { ...(resolvedSection.content || {}), ...(libraryConfigurations[sec.type].content || {}) },
+                          settings: { ...(resolvedSection.settings || {}), ...(libraryConfigurations[sec.type].settings || {}) }
+                        };
+                      }
                       const fromMongo = resolvedSection._previewSource === 'mongodb';
                       
                       // Match SectionCard's static image preview logic for identical visuals
