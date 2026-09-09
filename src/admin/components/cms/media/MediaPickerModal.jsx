@@ -1,53 +1,42 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FiX, FiSearch, FiCheck, FiImage, FiGrid, FiFolder, FiUploadCloud, FiTrash2 } from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
-
-// Empty array for initial picker assets so only uploaded images exist
-const SAMPLE_PICKER_ASSETS = [];
+import { useMedia } from '../../../context/media/MediaContext';
 
 export default function MediaPickerModal({
   isOpen,
   onClose,
   onSelectMedia,
   allowMultiple = false,
-  title = "Select Media Asset"
+  title = "Select Media Asset",
+  uploadContext = null
 }) {
+  const { assets: contextAssets, addAsset: addContextAsset, deleteAsset: deleteContextAsset, folders: contextFolders } = useMedia();
   const [search, setSearch] = useState('');
   const [selectedFolder, setSelectedFolder] = useState('all');
   const [selectedItemIds, setSelectedItemIds] = useState([]);
-  const [assets, setAssets] = useState(SAMPLE_PICKER_ASSETS);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    if (isOpen) {
-      const stored = localStorage.getItem('cms_custom_assets');
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          // Purge any old mock data (ids starting with 'm')
-          const onlyUploads = parsed.filter(asset => asset.id.startsWith('upload_'));
-          setAssets(onlyUploads);
-          if (parsed.length !== onlyUploads.length) {
-            localStorage.setItem('cms_custom_assets', JSON.stringify(onlyUploads));
-          }
-        } catch (e) {}
-      } else {
-        localStorage.setItem('cms_custom_assets', JSON.stringify(SAMPLE_PICKER_ASSETS));
-        setAssets(SAMPLE_PICKER_ASSETS);
-      }
+    if (!isOpen) {
+      setSelectedItemIds([]);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const saveAssets = (newAssets) => {
-    setAssets(newAssets);
-    localStorage.setItem('cms_custom_assets', JSON.stringify(newAssets));
-  };
+  const filteredAssets = contextAssets.filter(a => {
+    // Removed context-based filtering so all media uploaded anywhere is visible everywhere.
 
-  const filteredAssets = assets.filter(a => {
-    const matchesSearch = a.title.toLowerCase().includes(search.toLowerCase()) || a.fileName.toLowerCase().includes(search.toLowerCase());
-    const matchesFolder = selectedFolder === 'all' || a.folder === selectedFolder;
+    const q = search.toLowerCase();
+    const matchesSearch = !q ||
+      (a.title && a.title.toLowerCase().includes(q)) ||
+      (a.fileName && a.fileName.toLowerCase().includes(q)) ||
+      (a.name && a.name.toLowerCase().includes(q));
+    
+    // Support both local folder strings and global folderIds
+    const matchesFolder = selectedFolder === 'all' || a.folder === selectedFolder || a.folderId === selectedFolder;
     return matchesSearch && matchesFolder;
   });
 
@@ -62,7 +51,7 @@ export default function MediaPickerModal({
   };
 
   const handleConfirm = () => {
-    const selectedAssets = assets.filter(a => selectedItemIds.includes(a.id));
+    const selectedAssets = contextAssets.filter(a => selectedItemIds.includes(a.id));
     if (allowMultiple) {
       onSelectMedia(selectedAssets);
     } else {
@@ -71,35 +60,65 @@ export default function MediaPickerModal({
     onClose();
   };
 
+
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newAsset = {
-          id: `upload_${Date.now()}`,
-          title: file.name,
-          fileName: file.name,
-          url: reader.result,
-          size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
-          dimensions: 'Original',
-          format: file.name.split('.').pop(),
-          type: 'image',
-          folder: 'Uploads'
-        };
-        const newAssets = [newAsset, ...assets];
-        saveAssets(newAssets);
-        // Automatically select it
-        if (!allowMultiple) setSelectedItemIds([newAsset.id]);
+    if (!file) return;
+
+    setIsUploading(true);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const newAsset = {
+        id: `upload_${Date.now()}`,
+        title: file.name.replace(/\.[^.]+$/, ''),
+        fileName: file.name,
+        url: reader.result,
+        src: reader.result,
+        type: file.type.startsWith('video') ? 'video' : 'image',
+        format: file.name.split('.').pop()?.toLowerCase() || 'jpg',
+        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        dimensions: 'Original',
+        folder: 'Uploads',
+        favorite: false,
+        createdAt: 'Just now',
+        tags: [],
+        usageLocations: [],
+        ...(uploadContext ? { context: uploadContext } : {}),
       };
-      reader.readAsDataURL(file);
-    }
+
+      addContextAsset(newAsset);
+
+      // Also persist to localStorage so it survives page refresh
+      const stored = localStorage.getItem('cms_custom_assets');
+      const existing = stored ? JSON.parse(stored) : [];
+      localStorage.setItem('cms_custom_assets', JSON.stringify([...existing, newAsset]));
+
+      if (!allowMultiple) {
+        setSelectedItemIds([newAsset.id]);
+      } else {
+        setSelectedItemIds(prev => [...prev, newAsset.id]);
+      }
+
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+    reader.onerror = () => {
+      alert('Failed to read file. Please try again.');
+      setIsUploading(false);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleDelete = (e, id) => {
     e.stopPropagation();
-    const newAssets = assets.filter(a => a.id !== id);
-    saveAssets(newAssets);
+    deleteContextAsset(id);
+    
+    // Clean up local storage assets just in case it was a legacy upload
+    if (id.startsWith('upload_')) {
+      const newLocalAssets = localAssets.filter(a => a.id !== id);
+      saveLocalAssets(newLocalAssets);
+    }
+    
     if (selectedItemIds.includes(id)) {
       setSelectedItemIds(selectedItemIds.filter(i => i !== id));
     }
@@ -142,23 +161,22 @@ export default function MediaPickerModal({
           <select
             value={selectedFolder}
             onChange={(e) => setSelectedFolder(e.target.value)}
-            className="px-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs font-semibold text-text-secondary"
+            className="px-3 py-1.5 bg-background border border-black/10 rounded-lg text-xs font-semibold text-text-secondary max-w-[200px]"
           >
             <option value="all">All Folders</option>
             <option value="Uploads">Uploads</option>
-            <option value="Sofas">Sofas</option>
-            <option value="Tables">Tables</option>
-            <option value="Chairs">Chairs</option>
-            <option value="Collections">Collections</option>
-            <option value="Banners">Banners</option>
+            {contextFolders && contextFolders.map(f => (
+              <option key={f.id} value={f.id}>{f.name}</option>
+            ))}
           </select>
 
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-3 py-1.5 bg-black text-white rounded-lg text-xs font-semibold hover:bg-black/80 transition-colors"
+            disabled={isUploading}
+            className="flex items-center gap-2 px-3 py-1.5 bg-black text-white rounded-lg text-xs font-semibold hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FiUploadCloud size={14} />
-            Upload
+            {isUploading ? 'Uploading...' : 'Upload'}
           </button>
           <input
             type="file"
@@ -174,6 +192,9 @@ export default function MediaPickerModal({
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {filteredAssets.map((asset) => {
               const isSelected = selectedItemIds.includes(asset.id);
+              const assetTitle = asset.title || asset.name || asset.fileName || "Untitled Asset";
+              const assetUrl = asset.url || asset.src || asset.image || "";
+              
               return (
                 <div
                   key={asset.id}
@@ -183,8 +204,12 @@ export default function MediaPickerModal({
                     isSelected && "ring-2 ring-black border-transparent"
                   )}
                 >
-                  <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
-                    <img src={asset.url} alt={asset.title} className="w-full h-full object-cover" />
+                  <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative flex items-center justify-center">
+                    {assetUrl ? (
+                      <img src={assetUrl} alt={assetTitle} className="w-full h-full object-cover" />
+                    ) : (
+                      <FiImage size={24} className="text-gray-300" />
+                    )}
                     
                     {/* Check badge */}
                     <div className={cn(
@@ -197,8 +222,8 @@ export default function MediaPickerModal({
 
                   <div className="p-2.5 flex items-center justify-between">
                     <div className="overflow-hidden pr-2">
-                      <h4 className="text-xs font-bold text-text-primary truncate">{asset.title}</h4>
-                      <span className="text-[10px] font-mono text-text-muted">{asset.dimensions}</span>
+                      <h4 className="text-xs font-bold text-text-primary truncate">{assetTitle}</h4>
+                      <span className="text-[10px] font-mono text-text-muted">{asset.dimensions || 'Original'}</span>
                     </div>
                     
                     <button
@@ -212,6 +237,19 @@ export default function MediaPickerModal({
                 </div>
               );
             })}
+            
+            {filteredAssets.length === 0 && (
+              <div className="col-span-full py-12 flex flex-col items-center justify-center text-center">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4">
+                  <FiImage size={24} />
+                </div>
+                <h3 className="text-sm font-bold text-gray-900 mb-1">No media found</h3>
+                <p className="text-xs text-gray-500 max-w-sm">
+                  We couldn't find any images matching your search or filter criteria.
+                  Upload a new one to get started.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

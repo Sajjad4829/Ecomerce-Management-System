@@ -40,6 +40,9 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
   const [settings, setSettings] = useState({
     contentAlignment: section?.settings?.contentAlignment || 'left',
     verticalAlignment: section?.settings?.verticalAlignment || 'center',
+    sectionWidth: section?.settings?.sectionWidth || 'w-full',
+    sectionHeight: section?.settings?.sectionHeight !== undefined ? section?.settings?.sectionHeight : 0,
+    sectionFixedHeight: section?.settings?.sectionFixedHeight !== undefined ? section?.settings?.sectionFixedHeight : 0,
     columnGap: section?.settings?.columnGap !== undefined ? section?.settings?.columnGap : 0,
     imageWidth: section?.settings?.imageWidth || 55,
     contentWidth: section?.settings?.contentWidth || 45,
@@ -50,8 +53,10 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
     structure: section?.settings?.structure || ['title', 'description', 'button'],
     titleSize: section?.settings?.titleSize || 'text-4xl',
     titleWeight: section?.settings?.titleWeight || 'font-bold',
+    titleStyle: section?.settings?.titleStyle || 'not-italic',
     titleColor: section?.settings?.titleColor || '',
     descSize: section?.settings?.descSize || 'text-base',
+    descStyle: section?.settings?.descStyle || 'not-italic',
     descColor: section?.settings?.descColor || '',
     paddingX: section?.settings?.paddingX !== undefined ? section?.settings?.paddingX : 40,
     paddingY: section?.settings?.paddingY !== undefined ? section?.settings?.paddingY : 40,
@@ -65,6 +70,8 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
     newStructure[index + direction] = temp;
     setSettings({ ...settings, structure: newStructure });
   };
+
+  const getPropName = (baseProp) => previewMode === 'desktop' ? baseProp : `${baseProp}_${previewMode}`;
 
   const handleSave = () => {
     onSave({
@@ -265,6 +272,17 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
                     </select>
                   </div>
                   <div>
+                    <label className="block text-xs text-neutral-500 mb-1">Font Style</label>
+                    <select 
+                      className="w-full border border-neutral-300 rounded p-2 text-sm focus:ring-1 focus:ring-indigo-500"
+                      value={settings.titleStyle || 'not-italic'}
+                      onChange={(e) => setSettings({ ...settings, titleStyle: e.target.value })}
+                    >
+                      <option value="not-italic">Normal</option>
+                      <option value="italic">Italic</option>
+                    </select>
+                  </div>
+                  <div>
                     <label className="block text-xs text-neutral-500 mb-1">Text Color (Overrides Global)</label>
                     <input 
                       type="color" 
@@ -292,6 +310,17 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
                     </select>
                   </div>
                   <div>
+                    <label className="block text-xs text-neutral-500 mb-1">Font Style</label>
+                    <select 
+                      className="w-full border border-neutral-300 rounded p-2 text-sm focus:ring-1 focus:ring-indigo-500"
+                      value={settings.descStyle || 'not-italic'}
+                      onChange={(e) => setSettings({ ...settings, descStyle: e.target.value })}
+                    >
+                      <option value="not-italic">Normal</option>
+                      <option value="italic">Italic</option>
+                    </select>
+                  </div>
+                  <div>
                     <label className="block text-xs text-neutral-500 mb-1">Text Color (Overrides Global)</label>
                     <input 
                       type="color" 
@@ -306,32 +335,39 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
 
             {activeTab === 'Advanced' && (
               <div className="space-y-6">
+                <div className="flex items-center justify-between border-b border-neutral-100 pb-2 mb-4">
+                  <span className="text-sm font-bold text-neutral-900">Responsive Padding</span>
+                  <div className="text-xs text-neutral-500 bg-neutral-100 px-2 py-1 rounded">
+                    Editing: <span className="capitalize font-bold">{previewMode}</span>
+                  </div>
+                </div>
+
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold text-neutral-900">Spacing</h3>
                   <div>
                     <div className="flex justify-between items-center mb-1">
                       <label className="text-xs text-neutral-500">Horizontal Padding</label>
-                      <span className="text-xs text-neutral-400">{settings.paddingX}px</span>
+                      <span className="text-xs text-neutral-400">{settings[getPropName('paddingX')] !== undefined ? settings[getPropName('paddingX')] : settings.paddingX}px</span>
                     </div>
                     <input 
                       type="range" 
                       min="0" max="120" step="4"
                       className="w-full accent-indigo-600"
-                      value={settings.paddingX}
-                      onChange={(e) => setSettings({ ...settings, paddingX: Number(e.target.value) })}
+                      value={settings[getPropName('paddingX')] !== undefined ? settings[getPropName('paddingX')] : settings.paddingX}
+                      onChange={(e) => setSettings({ ...settings, [getPropName('paddingX')]: Number(e.target.value) })}
                     />
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-1">
                       <label className="text-xs text-neutral-500">Vertical Padding</label>
-                      <span className="text-xs text-neutral-400">{settings.paddingY}px</span>
+                      <span className="text-xs text-neutral-400">{settings[getPropName('paddingY')] !== undefined ? settings[getPropName('paddingY')] : settings.paddingY}px</span>
                     </div>
                     <input 
                       type="range" 
                       min="0" max="120" step="4"
                       className="w-full accent-indigo-600"
-                      value={settings.paddingY}
-                      onChange={(e) => setSettings({ ...settings, paddingY: Number(e.target.value) })}
+                      value={settings[getPropName('paddingY')] !== undefined ? settings[getPropName('paddingY')] : settings.paddingY}
+                      onChange={(e) => setSettings({ ...settings, [getPropName('paddingY')]: Number(e.target.value) })}
                     />
                   </div>
                 </div>
@@ -413,31 +449,37 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
                 <h3 className="font-bold text-neutral-900 text-sm">Section Settings</h3>
               </div>
               <div className="p-5 space-y-6">
-                
+                <div className="flex items-center justify-between border-b border-neutral-100 pb-2 mb-4">
+                  <span className="text-sm font-bold text-neutral-900">Responsive Settings</span>
+                  <div className="text-xs text-neutral-500 bg-neutral-100 px-2 py-1 rounded">
+                    Editing: <span className="capitalize font-bold">{previewMode}</span>
+                  </div>
+                </div>
+
                 <div className="flex items-center justify-between">
                   <label className="text-sm text-neutral-600">Content Alignment</label>
                   <div className="flex bg-neutral-100 rounded border border-neutral-200 p-0.5">
                     <button 
-                      onClick={() => setSettings({ ...settings, contentAlignment: 'left' })}
-                      className={`p-1.5 rounded ${settings.contentAlignment === 'left' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500 hover:text-neutral-700'}`}
+                      onClick={() => setSettings({ ...settings, [getPropName('contentAlignment')]: 'left' })}
+                      className={`p-1.5 rounded ${(settings[getPropName('contentAlignment')] || settings.contentAlignment) === 'left' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500 hover:text-neutral-700'}`}
                     >
                       <AlignLeft size={16} />
                     </button>
                     <button 
-                      onClick={() => setSettings({ ...settings, contentAlignment: 'center' })}
-                      className={`p-1.5 rounded ${settings.contentAlignment === 'center' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500 hover:text-neutral-700'}`}
+                      onClick={() => setSettings({ ...settings, [getPropName('contentAlignment')]: 'center' })}
+                      className={`p-1.5 rounded ${(settings[getPropName('contentAlignment')] || settings.contentAlignment) === 'center' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500 hover:text-neutral-700'}`}
                     >
                       <AlignCenter size={16} />
                     </button>
                     <button 
-                      onClick={() => setSettings({ ...settings, contentAlignment: 'right' })}
-                      className={`p-1.5 rounded ${settings.contentAlignment === 'right' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500 hover:text-neutral-700'}`}
+                      onClick={() => setSettings({ ...settings, [getPropName('contentAlignment')]: 'right' })}
+                      className={`p-1.5 rounded ${(settings[getPropName('contentAlignment')] || settings.contentAlignment) === 'right' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500 hover:text-neutral-700'}`}
                     >
                       <AlignRight size={16} />
                     </button>
                     <button 
-                      onClick={() => setSettings({ ...settings, contentAlignment: 'justify' })}
-                      className={`p-1.5 rounded ${settings.contentAlignment === 'justify' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500 hover:text-neutral-700'}`}
+                      onClick={() => setSettings({ ...settings, [getPropName('contentAlignment')]: 'justify' })}
+                      className={`p-1.5 rounded ${(settings[getPropName('contentAlignment')] || settings.contentAlignment) === 'justify' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500 hover:text-neutral-700'}`}
                     >
                       <AlignJustify size={16} />
                     </button>
@@ -448,13 +490,59 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
                   <label className="text-sm text-neutral-600">Vertical Alignment</label>
                   <select 
                     className="border border-neutral-300 rounded p-1.5 text-sm w-40 focus:ring-1 focus:ring-indigo-500"
-                    value={settings.verticalAlignment}
-                    onChange={(e) => setSettings({ ...settings, verticalAlignment: e.target.value })}
+                    value={settings[getPropName('verticalAlignment')] || settings.verticalAlignment}
+                    onChange={(e) => setSettings({ ...settings, [getPropName('verticalAlignment')]: e.target.value })}
                   >
                     <option value="top">Top</option>
                     <option value="center">Center</option>
                     <option value="bottom">Bottom</option>
                   </select>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label className="text-sm text-neutral-600">Section Width</label>
+                  <select 
+                    className="border border-neutral-300 rounded p-1.5 text-sm w-40 focus:ring-1 focus:ring-indigo-500"
+                    value={settings.sectionWidth || 'w-full'}
+                    onChange={(e) => setSettings({ ...settings, sectionWidth: e.target.value })}
+                  >
+                    <option value="w-full">Full Width</option>
+                    <option value="max-w-screen-2xl">Ultra Wide</option>
+                    <option value="max-w-7xl">Contained (Large)</option>
+                    <option value="max-w-5xl">Contained (Medium)</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <label className="text-sm text-neutral-600 w-32">Section Min-Height</label>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="1000" 
+                    step="10"
+                    className="flex-1 h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    value={settings[getPropName('sectionHeight')] !== undefined ? settings[getPropName('sectionHeight')] : settings.sectionHeight}
+                    onChange={(e) => setSettings({ ...settings, [getPropName('sectionHeight')]: Number(e.target.value) })}
+                  />
+                  <span className="text-xs text-neutral-500 w-12 text-right">
+                    {settings[getPropName('sectionHeight')] !== undefined ? settings[getPropName('sectionHeight')] : settings.sectionHeight}px
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <label className="text-sm text-neutral-600 w-32">Section Fixed Height</label>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="1000" 
+                    step="10"
+                    className="flex-1 h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    value={settings[getPropName('sectionFixedHeight')] !== undefined ? settings[getPropName('sectionFixedHeight')] : settings.sectionFixedHeight}
+                    onChange={(e) => setSettings({ ...settings, [getPropName('sectionFixedHeight')]: Number(e.target.value) })}
+                  />
+                  <span className="text-xs text-neutral-500 w-12 text-right">
+                    {(settings[getPropName('sectionFixedHeight')] !== undefined ? settings[getPropName('sectionFixedHeight')] : settings.sectionFixedHeight) === 0 ? 'Auto' : `${settings[getPropName('sectionFixedHeight')] !== undefined ? settings[getPropName('sectionFixedHeight')] : settings.sectionFixedHeight}px`}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -464,24 +552,24 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
                     min="0" 
                     max="120" 
                     className="flex-1 h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-                    value={settings.columnGap}
-                    onChange={(e) => setSettings({ ...settings, columnGap: Number(e.target.value) })}
+                    value={settings[getPropName('columnGap')] !== undefined ? settings[getPropName('columnGap')] : settings.columnGap}
+                    onChange={(e) => setSettings({ ...settings, [getPropName('columnGap')]: Number(e.target.value) })}
                   />
-                  <span className="text-xs text-neutral-500 w-10 text-right">{settings.columnGap}px</span>
+                  <span className="text-xs text-neutral-500 w-10 text-right">{settings[getPropName('columnGap')] !== undefined ? settings[getPropName('columnGap')] : settings.columnGap}px</span>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <label className="text-sm text-neutral-600 w-32">Image Height</label>
                   <input 
                     type="range" 
-                    min="200" 
+                    min="0" 
                     max="1000" 
                     step="10"
                     className="flex-1 h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-                    value={settings.imageHeight}
-                    onChange={(e) => setSettings({ ...settings, imageHeight: Number(e.target.value) })}
+                    value={settings[getPropName('imageHeight')] !== undefined ? settings[getPropName('imageHeight')] : settings.imageHeight}
+                    onChange={(e) => setSettings({ ...settings, [getPropName('imageHeight')]: Number(e.target.value) })}
                   />
-                  <span className="text-xs text-neutral-500 w-10 text-right">{settings.imageHeight}px</span>
+                  <span className="text-xs text-neutral-500 w-10 text-right">{settings[getPropName('imageHeight')] !== undefined ? settings[getPropName('imageHeight')] : settings.imageHeight}px</span>
                 </div>
 
                 <div>
@@ -579,6 +667,7 @@ export default function HeaderBannerEditor({ section, onSave, onCancel }) {
       <MediaPickerModal 
         isOpen={isMediaPickerOpen}
         onClose={() => setIsMediaPickerOpen(false)}
+        uploadContext="header_banner"
         onSelectMedia={(selected) => {
           if (selected && selected.url) {
             setContent({ ...content, image: selected.url });

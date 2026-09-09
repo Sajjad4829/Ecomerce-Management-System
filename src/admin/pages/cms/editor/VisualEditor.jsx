@@ -105,8 +105,42 @@ export default function VisualEditor() {
     }
   };
 
-  // Handlers
+  const clearSectionContent = (content) => {
+    if (!content) return {};
+    
+    if (Array.isArray(content)) {
+      return content.map(item => clearSectionContent(item));
+    }
+    
+    if (typeof content === 'object') {
+      const cleared = {};
+      for (const key in content) {
+        if (key === 'id') {
+          cleared[key] = content[key];
+        } else if (typeof content[key] === 'string') {
+          cleared[key] = '';
+        } else if (Array.isArray(content[key])) {
+          cleared[key] = content[key].map(item => clearSectionContent(item));
+        } else if (typeof content[key] === 'object' && content[key] !== null) {
+          cleared[key] = clearSectionContent(content[key]);
+        } else {
+          cleared[key] = content[key];
+        }
+      }
+      return cleared;
+    }
+    
+    if (typeof content === 'string') {
+      return '';
+    }
+    
+    return content;
+  };
+
   const handleAddSection = (sectionTemplate) => {
+    const rawContent = sectionTemplate.content || sectionTemplate.defaultContent || {};
+    const clearedContent = clearSectionContent(rawContent);
+
     const newSection = {
       id: `sec-${Date.now()}`,
       name: sectionTemplate.name,
@@ -114,7 +148,7 @@ export default function VisualEditor() {
       category: sectionTemplate.category,
       icon: sectionTemplate.icon,
       isHidden: false,
-      content: sectionTemplate.content || sectionTemplate.defaultContent || {},
+      content: clearedContent,
       settings: sectionTemplate.settings || sectionTemplate.defaultSettings || {}
     };
     setSections([...sections, newSection]);

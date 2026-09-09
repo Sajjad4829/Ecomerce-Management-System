@@ -5,12 +5,12 @@ import { useEffect, useState, useRef } from 'react';
  * White full-screen background, brand square with letter, three bouncing dots.
  * Configurable via loaderConfig prop.
  */
-export default function PageLoader({ onDone, config = {} }) {
+export default function PageLoader({ onDone, config = {}, isLoading = false }) {
   const {
     brandLetter  = 'D',
     brandColor   = '#dc2626',  // red
     dotColor     = '#dc2626',
-    duration     = 1200,       // ms before auto-dismissing
+    minDuration  = 200,       // ms minimum display time
   } = config;
 
   const [dotPhase, setDotPhase] = useState(0); // 0,1,2 — which dot is "active"
@@ -24,17 +24,28 @@ export default function PageLoader({ onDone, config = {} }) {
       setDotPhase(p => (p + 1) % 3);
     }, 280);
 
-    // After `duration` ms, begin fade-out
-    timerRef.current = setTimeout(() => {
-      setFadeOut(true);
-      setTimeout(() => onDone?.(), 350);
-    }, duration);
-
     return () => {
       clearInterval(intervalRef.current);
-      clearTimeout(timerRef.current);
     };
-  }, [onDone, duration]);
+  }, []);
+
+  useEffect(() => {
+    let fadeTimer;
+    let doneTimer;
+
+    if (!isLoading) {
+      // Wait at least a tiny bit to ensure smooth transition and no harsh flickering
+      fadeTimer = setTimeout(() => {
+        setFadeOut(true);
+        doneTimer = setTimeout(() => onDone?.(), 350); // wait for CSS fade transition
+      }, minDuration);
+    }
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(doneTimer);
+    };
+  }, [isLoading, minDuration, onDone]);
 
   return (
     <>

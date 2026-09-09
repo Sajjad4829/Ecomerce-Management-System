@@ -9,147 +9,13 @@ import UploadZoneModal from '../../components/cms/media/UploadZoneModal';
 import MediaPickerModal from '../../components/cms/media/MediaPickerModal';
 
 // High Quality Furniture eCommerce Mock Media Assets
-const INITIAL_ASSETS = [
-  {
-    id: 'a1',
-    title: 'Aurelian Modular Velvet Sofa - Cream',
-    fileName: 'aurelian_velvet_sofa_cream_4k.webp',
-    url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80',
-    type: 'image',
-    format: 'webp',
-    size: '3.4 MB',
-    dimensions: '3840x2160',
-    folder: 'Sofas',
-    favorite: true,
-    createdAt: '2 hours ago',
-    alt: 'Cream modular velvet sofa in luxury living room setting',
-    caption: 'Hero asset for Living Room 2025 Campaign',
-    tags: ['sofa', 'velvet', 'living-room', 'cream', 'luxury'],
-    usageLocations: ['Homepage Hero', 'Living Room Lookbook', 'PDP Aurelian Sofa']
-  },
-  {
-    id: 'a2',
-    title: 'Nordic Oak Dining Table & Chairs',
-    fileName: 'nordic_oak_dining_table_set.webp',
-    url: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=1200&q=80',
-    type: 'image',
-    format: 'webp',
-    size: '2.8 MB',
-    dimensions: '3840x2560',
-    folder: 'Tables',
-    favorite: false,
-    createdAt: '1 day ago',
-    alt: 'Scandinavian dining table with six matching chairs',
-    caption: 'Dining Room centerpiece catalog feature',
-    tags: ['dining', 'table', 'oak', 'scandi'],
-    usageLocations: ['Dining Collection Page']
-  },
-  {
-    id: 'a3',
-    title: 'Aurelian Marble & Brass Coffee Table',
-    fileName: 'marble_coffee_table_brass.webp',
-    url: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=1200&q=80',
-    type: 'image',
-    format: 'webp',
-    size: '1.9 MB',
-    dimensions: '2560x1440',
-    folder: 'Tables',
-    favorite: true,
-    createdAt: '3 days ago',
-    alt: 'Italian Calacatta marble coffee table with brushed brass legs',
-    caption: 'Featured in Summer Architectural Digest edition',
-    tags: ['marble', 'coffee-table', 'brass', 'luxury'],
-    usageLocations: ['Homepage Featured Grid', 'Product Details Page']
-  },
-  {
-    id: 'a4',
-    title: 'Minimalist Bouclé Accent Chair',
-    fileName: 'boucle_accent_chair_white.jpg',
-    url: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1200&q=80',
-    type: 'image',
-    format: 'jpg',
-    size: '1.5 MB',
-    dimensions: '1920x1080',
-    folder: 'Chairs',
-    favorite: false,
-    createdAt: '4 days ago',
-    alt: 'White bouclé fabric accent arm chair with minimalist silhouette',
-    caption: 'Best selling accent seating option',
-    tags: ['chair', 'boucle', 'accent', 'white'],
-    usageLocations: ['Living Room Collection']
-  },
-  {
-    id: 'a5',
-    title: 'Aurelian Luxury Penthouse Interior Reel',
-    fileName: 'aurelian_penthouse_showcase_4k.mp4',
-    url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
-    type: 'video',
-    format: 'mp4',
-    size: '28.4 MB',
-    dimensions: '3840x2160',
-    folder: 'Banners',
-    favorite: true,
-    createdAt: '1 week ago',
-    alt: 'Full penthouse video showcase featuring complete Aurelian line',
-    caption: 'Hero background video for luxury splash campaign',
-    tags: ['video', 'hero', 'penthouse', 'showcase'],
-    usageLocations: ['Homepage Top Hero Banner']
-  },
-  {
-    id: 'a6',
-    title: 'Enterprise Furniture Care & Warranty Guide 2025',
-    fileName: 'aurelian_furniture_care_guide_2025.pdf',
-    url: '',
-    type: 'document',
-    format: 'pdf',
-    size: '4.2 MB',
-    dimensions: 'A4 Document',
-    folder: 'Brand',
-    favorite: false,
-    createdAt: '2 weeks ago',
-    alt: 'Official care instructions and warranty coverage PDF',
-    caption: 'Downloadable care guide attached to customer orders',
-    tags: ['pdf', 'care-guide', 'warranty', 'support'],
-    usageLocations: ['Customer Care Portal', 'Product Download Tab']
-  },
-  {
-    id: 'a7',
-    title: 'Walnut Wood Platform Bed Frame',
-    fileName: 'walnut_platform_bed_king.webp',
-    url: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80',
-    type: 'image',
-    format: 'webp',
-    size: '3.1 MB',
-    dimensions: '3840x2560',
-    folder: 'Beds',
-    favorite: false,
-    createdAt: '2 weeks ago',
-    alt: 'King size solid American walnut platform bed frame',
-    caption: 'Bedroom Collection flagship piece',
-    tags: ['bed', 'walnut', 'bedroom', 'king'],
-    usageLocations: ['Bedroom Category Header']
-  },
-  {
-    id: 'a8',
-    title: 'Scandi Minimalist Living Room Setup',
-    fileName: 'scandi_living_room_lookbook_full.webp',
-    url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80',
-    type: 'image',
-    format: 'webp',
-    size: '2.2 MB',
-    dimensions: '2560x1440',
-    folder: 'Collections',
-    favorite: true,
-    createdAt: '3 weeks ago',
-    alt: 'Bright Scandinavian interior design lookbook photograph',
-    caption: 'Hero image for Editorial Scandinavian post',
-    tags: ['lookbook', 'scandinavian', 'editorial'],
-    usageLocations: ['Blog Post: Scandinavian Design Trends']
-  }
-];
+export const INITIAL_ASSETS = [];
+
+import { useMedia } from '../../context/media/MediaContext';
 
 export default function MediaLibrary() {
-  const [assets, setAssets] = useState(INITIAL_ASSETS);
+  const { assets, addAsset, deleteAsset, updateAsset } = useMedia();
+  
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'favorites' | 'recent'
   const [searchQuery, setSearchQuery] = useState('');
@@ -208,25 +74,26 @@ export default function MediaLibrary() {
   };
 
   const handleToggleFavorite = (id) => {
-    setAssets(prev => prev.map(a => a.id === id ? { ...a, favorite: !a.favorite } : a));
+    const asset = assets.find(a => a.id === id);
+    if (asset) updateAsset(id, { favorite: !asset.favorite });
     if (previewAsset && previewAsset.id === id) {
       setPreviewAsset(prev => ({ ...prev, favorite: !prev.favorite }));
     }
   };
 
   const handleSaveMetadata = (updatedAsset) => {
-    setAssets(prev => prev.map(a => a.id === updatedAsset.id ? updatedAsset : a));
+    updateAsset(updatedAsset.id, updatedAsset);
     setPreviewAsset(null);
   };
 
   const handleDeleteAsset = (id) => {
-    setAssets(prev => prev.filter(a => a.id !== id));
+    deleteAsset(id);
     setSelectedIds(prev => prev.filter(i => i !== id));
     if (previewAsset?.id === id) setPreviewAsset(null);
   };
 
   const handleBulkDelete = () => {
-    setAssets(prev => prev.filter(a => !selectedIds.includes(a.id)));
+    selectedIds.forEach(id => deleteAsset(id));
     setSelectedIds([]);
   };
 
@@ -360,8 +227,10 @@ export default function MediaLibrary() {
       <UploadZoneModal
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
-        onUploadComplete={() => {
-          // Re-trigger asset refresh simulation
+        onUploadComplete={(newAssets) => {
+          if (newAssets && newAssets.length > 0) {
+            newAssets.forEach(addAsset);
+          }
         }}
         currentFolder={selectedFolder}
       />

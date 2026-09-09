@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
-export default function CreationsWithPurpose({ data }) {
+export default function CreationsWithPurpose({ data, activeTheme, ...settings }) {
   const content = data?.content || {};
   const title = content.title !== undefined ? content.title : "Creations with purpose";
   const subtitle = content.subtitle !== undefined ? content.subtitle : "Many choices based on your space";
@@ -16,28 +16,60 @@ export default function CreationsWithPurpose({ data }) {
     { id: "5", imageUrl: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800", title: "Sofa", link: "/category/sofa" },
     { id: "6", imageUrl: "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?auto=format&fit=crop&q=80&w=800", title: "Kitchen", link: "/category/kitchen" }
   ];
-  const { activeTheme } = useStorefrontTheme();
   
+  const resolveSetting = (key, defaultVal) => {
+    return {
+      desktop: settings[key] !== undefined ? settings[key] : defaultVal,
+      tablet: settings[`${key}_tablet`] !== undefined ? settings[`${key}_tablet`] : (settings[key] !== undefined ? settings[key] : defaultVal),
+      mobile: settings[`${key}_mobile`] !== undefined ? settings[`${key}_mobile`] : (settings[`${key}_tablet`] !== undefined ? settings[`${key}_tablet`] : (settings[key] !== undefined ? settings[key] : defaultVal))
+    };
+  };
+
   const itemCount = items?.length || 0;
   
   if (itemCount === 0) return null;
 
+  // Use dynamic layout settings if provided, else fallback to standard layout logic
+  const gridColsSetting = resolveSetting('gridCols', null);
   const getGridClasses = (baseClasses) => {
     let gridClasses = baseClasses;
-    if (itemCount <= 2) {
-      gridClasses += " grid-cols-1 md:grid-cols-2";
-    } else if (itemCount === 3 || itemCount === 4) {
-      gridClasses += " grid-cols-2 lg:grid-cols-2";
+    if (gridColsSetting.desktop || settings.gridColsDesktop) {
+       const m = gridColsSetting.mobile || settings.gridColsMobile || '1';
+       const t = gridColsSetting.tablet || settings.gridColsTablet || '2';
+       const d = gridColsSetting.desktop || settings.gridColsDesktop || '3';
+       gridClasses += ` grid-cols-${m} sm:grid-cols-${t} md:grid-cols-${d}`;
     } else {
-      gridClasses += " grid-cols-2 md:grid-cols-3";
+      if (itemCount <= 2) {
+        gridClasses += " grid-cols-1 md:grid-cols-2";
+      } else if (itemCount === 3 || itemCount === 4) {
+        gridClasses += " grid-cols-2 lg:grid-cols-2";
+      } else {
+        gridClasses += " grid-cols-2 md:grid-cols-3";
+      }
     }
     return gridClasses;
+  };
+
+  const imageRatioSetting = resolveSetting('imageRatio', 'Square (1:1)');
+  const getAspectRatioClass = () => {
+    // Only support desktop aspect ratio mapped to tailwind for simplicity, since it's a fixed class, 
+    // or we can map them responsive if needed. Let's map it.
+    const getCls = (val) => val === 'Portrait (3:4)' ? 'aspect-[3/4]' : (val === 'Landscape (16:9)' ? 'aspect-video' : 'aspect-square');
+    return `${getCls(imageRatioSetting.mobile)} sm:${getCls(imageRatioSetting.tablet)} md:${getCls(imageRatioSetting.desktop)}`;
+  };
+
+  const bgCol = settings.backgroundColor || null;
+  
+  const paddingSetting = resolveSetting('sectionPadding', 'Large');
+  const getPaddingClass = () => {
+     const getCls = (val) => val === 'None' ? 'py-0' : (val === 'Small' ? 'py-8' : (val === 'Medium' ? 'py-16' : 'py-24'));
+     return `${getCls(paddingSetting.mobile)} sm:${getCls(paddingSetting.tablet)} md:${getCls(paddingSetting.desktop)}`;
   };
   
   // Theme 2: Editorial Center Layout
   if (activeTheme?.id === 'modern-luxury') {
     return (
-      <section className="w-full bg-neutral-50 py-20 lg:py-32 overflow-hidden">
+      <section className={`w-full overflow-hidden ${bgCol ? '' : 'bg-neutral-50'} ${getPaddingClass()}`} style={{ backgroundColor: bgCol }}>
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
           <div className="text-center max-w-2xl mb-16">
             <h2 className="text-4xl lg:text-5xl font-serif text-neutral-900 mb-6">{title}</h2>
@@ -51,7 +83,7 @@ export default function CreationsWithPurpose({ data }) {
           </div>
           <div className={getGridClasses("w-full grid gap-4 sm:gap-6")}>
             {items.map((img) => (
-              <Link to={img.link} key={img.id} className="relative overflow-hidden aspect-[4/5] group cursor-pointer bg-neutral-200 block shadow-sm hover:shadow-xl rounded-xl">
+              <Link to={img.link} key={img.id} className={`relative overflow-hidden group cursor-pointer bg-neutral-200 block shadow-sm hover:shadow-xl rounded-xl ${getAspectRatioClass()}`}>
                 <img src={img.imageUrl} alt={img.title} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" />
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-8">
                   <span className="text-white text-xl font-serif tracking-wide translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
@@ -68,7 +100,7 @@ export default function CreationsWithPurpose({ data }) {
 
   // Theme 1: Classic Furniture Layout
   return (
-    <section className="w-full bg-white py-16 lg:py-24 overflow-hidden">
+    <section className={`w-full overflow-hidden ${bgCol ? '' : 'bg-white'} ${getPaddingClass()}`} style={{ backgroundColor: bgCol }}>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-8 items-center">
           
@@ -92,7 +124,7 @@ export default function CreationsWithPurpose({ data }) {
           <div className="w-full lg:w-[70%] order-2">
             <div className={getGridClasses("grid gap-2 sm:gap-4")}>
               {items.map((img) => (
-                <Link to={img.link} key={img.id} className="relative overflow-hidden aspect-square rounded-none group cursor-pointer bg-gray-100 block">
+                <Link to={img.link} key={img.id} className={`relative overflow-hidden rounded-none group cursor-pointer bg-gray-100 block ${getAspectRatioClass()}`}>
                   <img 
                     src={img.imageUrl} 
                     alt={img.title} 

@@ -1,14 +1,34 @@
 import { Link } from 'react-router-dom';
 
-export default function PromoBanner({ data }) {
+export default function PromoBanner({ data, ...settings }) {
   const content = data?.content || {};
   const title = content.title !== undefined ? content.title : "Elevate Your Everyday";
   const text = content.text !== undefined ? content.text : "Discover furniture designed to transform your living spaces.";
   const button = content.button !== undefined ? content.button : "Shop Now";
   const image = content.image !== undefined && content.image !== '' ? content.image : (data?.image || "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=2000");
 
+  const resolveSetting = (key, defaultVal) => {
+    const baseVal = settings[key] !== undefined ? settings[key] : defaultVal;
+    return {
+      desktop: data?.responsive?.desktop?.[key] !== undefined ? data.responsive.desktop[key] : baseVal,
+      tablet: data?.responsive?.tablet?.[key] !== undefined ? data.responsive.tablet[key] : baseVal,
+      mobile: data?.responsive?.mobile?.[key] !== undefined ? data.responsive.mobile[key] : baseVal
+    };
+  };
+
+  const paddingTop = resolveSetting('paddingTop', 'py-12');
+  const paddingBottom = resolveSetting('paddingBottom', 'py-12');
+
+  const formatPadding = (val) => {
+    if (!val) return '';
+    return val;
+  };
+
   return (
-    <section className="py-12 bg-white">
+    <section className="bg-white" style={{ 
+      paddingTop: formatPadding(paddingTop.desktop), 
+      paddingBottom: formatPadding(paddingBottom.desktop) 
+    }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative w-full overflow-hidden bg-gray-100 flex items-center min-h-[500px] lg:min-h-[600px]">
           <img 

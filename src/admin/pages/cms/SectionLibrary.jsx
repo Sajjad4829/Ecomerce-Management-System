@@ -151,6 +151,7 @@ export default function SectionLibrary() {
             onEdit={setEditSection}
             onDelete={handleDeleteSection}
             sectionPreviewMap={sectionPreviewMap}
+            libraryConfigurations={libraryConfigurations}
           />
         ) : (
           <EmptyState
@@ -177,7 +178,7 @@ export default function SectionLibrary() {
       {editSection && (
         editSection.type.includes('HERO') ? (
           <HeroEditorModal
-            section={resolveSectionPreview(editSection, sectionPreviewMap) || editSection}
+            section={resolveSectionPreview(editSection, sectionPreviewMap, libraryConfigurations) || editSection}
             onUpdate={async (id, updates) => {
               await saveLibraryConfiguration(editSection.type, updates);
               addToast({ message: 'Template updated successfully', type: 'success' });
@@ -198,11 +199,11 @@ export default function SectionLibrary() {
           />
         ) : editSection.type.includes('FEATURED_SHOWCASE') || editSection.baseType === 'FEATURED_SHOWCASE' ? (
           <FeaturedShowcaseEditorModal
-            section={resolveSectionPreview(editSection, sectionPreviewMap) || editSection}
+            section={resolveSectionPreview(editSection, sectionPreviewMap, libraryConfigurations) || editSection}
             onUpdate={async (id, updates) => {
               await saveLibraryConfiguration(editSection.type, {
                 content: updates.content,
-                settings: updates.settings || (resolveSectionPreview(editSection, sectionPreviewMap) || editSection).settings || {}
+                settings: updates.settings || (resolveSectionPreview(editSection, sectionPreviewMap, libraryConfigurations) || editSection).settings || {}
               });
               addToast({ message: 'Template updated successfully', type: 'success' });
             }}
@@ -210,7 +211,7 @@ export default function SectionLibrary() {
           />
         ) : editSection.type === 'HeaderBanner' || editSection.type === 'HEADER_BANNER' || editSection.type === 'HEADERBANNER' || editSection.baseType === 'HeaderBanner' || editSection.type.startsWith('HeaderBanner_') ? (
           <HeaderBannerEditor
-            section={resolveSectionPreview(editSection, sectionPreviewMap) || editSection}
+            section={resolveSectionPreview(editSection, sectionPreviewMap, libraryConfigurations) || editSection}
             onSave={async (updatedSection) => {
               await saveLibraryConfiguration(editSection.type, {
                 content: updatedSection.content,
@@ -223,7 +224,7 @@ export default function SectionLibrary() {
           />
         ) : editSection.type === 'CATEGORY_GRID' ? (
           <CategoryGridEditor
-            section={resolveSectionPreview(editSection, sectionPreviewMap) || editSection}
+            section={resolveSectionPreview(editSection, sectionPreviewMap, libraryConfigurations) || editSection}
             pageName="Section Library"
             onSave={async (updatedSection) => {
               await saveLibraryConfiguration(editSection.type, {

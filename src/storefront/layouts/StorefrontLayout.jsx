@@ -12,22 +12,28 @@ import MobileMenu from '../components/layout/MobileMenu';
 import Navbar from '../components/navigation/Navbar';
 import { useStorefrontTheme } from '../context/StorefrontThemeContext';
 import { useCMS } from '../../admin/context/cms/CMSContext';
+import { useProducts } from '../../admin/context/commerce/ProductContext';
+import { useCategories } from '../../admin/context/commerce/CategoryContext';
 import PageLoader from '../components/layout/PageLoader';
 
 export default function StorefrontLayout() {
   const { activeTheme } = useStorefrontTheme();
   const { openCartDrawer } = useCommerce();
-  const { pages, headerConfig } = useCMS();
+  const { pages, headerConfig, pagesLoading, configLoading } = useCMS();
+  const { loading: productsLoading } = useProducts();
+  const { loading: categoriesLoading } = useCategories();
+  
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Show loader on every hard reload (always starts true).
-  // The PageLoader calls onDone() after its animation completes,
-  // which sets this to false and reveals the page.
+  // The PageLoader will now stay visible as long as any of these are true.
+  const isAppLoading = pagesLoading || configLoading || productsLoading || categoriesLoading;
+  
   const [showLoader, setShowLoader] = useState(true);
 
+  // Fallback to manually clear if needed, but PageLoader handles it now based on isAppLoading
   const handleLoaderDone = () => {
     setShowLoader(false);
   };
@@ -38,7 +44,7 @@ export default function StorefrontLayout() {
 
   return (
     <>
-      {showLoader && <PageLoader onDone={handleLoaderDone} />}
+      {showLoader && <PageLoader isLoading={isAppLoading} onDone={handleLoaderDone} />}
       <div className={`min-h-screen flex flex-col font-sans ${activeTheme.tokens.background} ${activeTheme.tokens.text.primary}`}>
         <Navbar />
         <main

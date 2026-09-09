@@ -7,30 +7,75 @@ export default function UploadZoneModal({ isOpen, onClose, onUploadComplete, cur
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const fileInputRef = React.useRef(null);
+
   if (!isOpen) return null;
 
-  const handleSimulatedDrop = (e) => {
+  const processFiles = (files) => {
+    if (!files || files.length === 0) return;
+    setIsProcessing(true);
+    
+    const newFiles = Array.from(files).map(file => ({
+      file,
+      name: file.name,
+      size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+      type: file.type,
+      progress: 0,
+      status: 'uploading'
+    }));
+
+    setUploadingFiles(prev => [...prev, ...newFiles]);
+
+    newFiles.forEach((fileObj, index) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newAsset = {
+          id: `upload_${Date.now()}_${index}`,
+          title: fileObj.name.replace(/\.[^.]+$/, ''),
+          fileName: fileObj.name,
+          url: reader.result,
+          src: reader.result,
+          type: fileObj.type.startsWith('video') ? 'video' : 'image',
+          format: fileObj.name.split('.').pop()?.toLowerCase() || 'jpg',
+          size: fileObj.size,
+          dimensions: 'Original',
+          folder: currentFolder || 'Uploads',
+          favorite: false,
+          createdAt: 'Just now',
+          tags: [],
+          usageLocations: []
+        };
+
+        setUploadingFiles(prev => prev.map(f => 
+          f.name === fileObj.name ? { ...f, progress: 100, status: 'complete', asset: newAsset } : f
+        ));
+      };
+      reader.readAsDataURL(fileObj.file);
+    });
+
+    setIsProcessing(false);
+  };
+
+  const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-    
-    // Simulate files dropped
-    const mockFiles = [
-      { name: 'luxury_velvet_sofa_cream_hd.webp', size: '3.4 MB', type: 'image/webp', progress: 100, status: 'complete' },
-      { name: 'scandi_dining_table_oak.jpg', size: '2.1 MB', type: 'image/jpeg', progress: 85, status: 'uploading' },
-      { name: 'product_catalog_spec_sheet_2025.pdf', size: '4.8 MB', type: 'application/pdf', progress: 40, status: 'uploading' }
-    ];
-
-    setUploadingFiles(mockFiles);
-    setIsProcessing(true);
-
-    setTimeout(() => {
-      setUploadingFiles(prev => prev.map(f => ({ ...f, progress: 100, status: 'complete' })));
-      setIsProcessing(false);
-    }, 1500);
+    processFiles(e.dataTransfer.files);
   };
 
   const handleFinish = () => {
-    onUploadComplete();
+    const completedAssets = uploadingFiles.filter(f => f.status === 'complete' && f.asset).map(f => f.asset);
+    
+    if (completedAssets.length > 0) {
+      // Save to localStorage so it syncs with MediaPicker
+      const stored = localStorage.getItem('cms_custom_assets');
+      const existing = stored ? JSON.parse(stored) : [];
+      localStorage.setItem('cms_custom_assets', JSON.stringify([...existing, ...completedAssets]));
+      
+      onUploadComplete(completedAssets);
+    } else {
+      onUploadComplete([]);
+    }
+    
     onClose();
     setUploadingFiles([]);
   };
@@ -61,10 +106,9 @@ export default function UploadZoneModal({ isOpen, onClose, onUploadComplete, cur
           <div
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
-            onDrop={handleSimulatedDrop}
-            onClick={handleSimulatedDrop}
+            onDrop={handleDrop}
             className={cn(
-              "border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200",
+              "border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all duration-200",
               isDragging
                 ? "border-black bg-black/5 scale-[1.01]"
                 : "border-black/15 bg-background/60 hover:border-black/30 hover:bg-surface"
@@ -77,7 +121,17 @@ export default function UploadZoneModal({ isOpen, onClose, onUploadComplete, cur
             <p className="text-xs text-text-muted mt-1 max-w-xs">
               Supports High-Res WebP, PNG, JPG, MP4, and PDF documents up to 50MB per file.
             </p>
-            <button className="mt-4 px-4 py-2 bg-surface border border-black/15 rounded-lg text-xs font-bold uppercase tracking-wider text-text-primary shadow-xs hover:bg-background">
+            <input 
+              type="file" 
+              multiple 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={(e) => processFiles(e.target.files)} 
+            />
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="mt-4 px-4 py-2 bg-surface border border-black/15 rounded-lg text-xs font-bold uppercase tracking-wider text-text-primary shadow-xs hover:bg-background cursor-pointer"
+            >
               Browse Local Files
             </button>
           </div>

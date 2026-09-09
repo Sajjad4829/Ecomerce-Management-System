@@ -26,7 +26,7 @@ export default function ProductBreadcrumb({ product, category }) {
             <React.Fragment key={cat.id}>
               <li><FiChevronRight size={14} className="mx-1 text-gray-300" /></li>
               <li>
-                <Link to={`/category/${cat.slug}`} className="hover:text-gray-900 transition-colors">
+                <Link to={`/categories/${cat.slug}`} className="hover:text-gray-900 transition-colors">
                   {cat.name}
                 </Link>
               </li>

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiArrowLeft, FiSave, FiInfo, FiImage, FiSearch, FiLayout, 
-  FiAlertCircle, FiMonitor, FiTablet, FiSmartphone 
+  FiAlertCircle, FiMonitor, FiTablet, FiSmartphone, FiPlus, FiMinus
 } from 'react-icons/fi';
 import { Rocket } from 'lucide-react';
 import { useCategories } from '../../../context/commerce/CategoryContext';
@@ -40,6 +40,7 @@ export default function CategoryEditor() {
     status: 'draft',
     featured: false,
     sortOrder: 1,
+    cardGap: '0',
     image: '',
     bannerImage: '',
     icon: '',
@@ -68,6 +69,7 @@ export default function CategoryEditor() {
           status: cat.status || 'draft',
           featured: cat.featured || false,
           sortOrder: cat.sortOrder || 1,
+          cardGap: cat.cardGap !== undefined ? cat.cardGap : '0',
           parentId: cat.parentId || '',
           navMenuId: cat.navMenuId || '',
           image: cat.image || '',
@@ -139,6 +141,7 @@ export default function CategoryEditor() {
         status: typeof forceStatus === 'string' ? forceStatus : formData.status,
         featured: formData.featured,
         sortOrder: Number(formData.sortOrder) || 1,
+        cardGap: formData.cardGap,
         image: formData.image,
         bannerImage: formData.bannerImage,
         icon: formData.icon,
@@ -404,6 +407,38 @@ export default function CategoryEditor() {
                         className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary"
                       />
                     </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-text-primary mb-1.5">Card Gap</label>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          type="button"
+                          onClick={() => handleChange('cardGap', Math.max(0, (formData.cardGap === '' || formData.cardGap === undefined ? 0 : Number(formData.cardGap)) - 1).toString())}
+                          className="w-10 h-10 flex items-center justify-center bg-surface border border-border rounded-xl text-text-muted hover:text-text-primary hover:bg-primary-soft transition-colors shadow-sm"
+                        >
+                          <FiMinus size={16} />
+                        </button>
+                        <input 
+                          type="number" 
+                          min="0"
+                          max="100"
+                          value={formData.cardGap === '' || formData.cardGap === undefined ? 0 : Number(formData.cardGap)}
+                          onChange={(e) => handleChange('cardGap', e.target.value)}
+                          className="w-20 px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-center text-text-primary font-bold shadow-inner"
+                        />
+                        <button 
+                          type="button"
+                          onClick={() => handleChange('cardGap', Math.min(100, (formData.cardGap === '' || formData.cardGap === undefined ? 0 : Number(formData.cardGap)) + 1).toString())}
+                          className="w-10 h-10 flex items-center justify-center bg-surface border border-border rounded-xl text-text-muted hover:text-text-primary hover:bg-primary-soft transition-colors shadow-sm"
+                        >
+                          <FiPlus size={16} />
+                        </button>
+                        <div className="text-xs text-text-muted bg-background px-3 py-2 rounded-lg border border-border/50">
+                          <span className="font-mono">{formData.cardGap === '' || formData.cardGap === undefined ? 0 : Number(formData.cardGap)}px</span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-text-muted mt-2">Adjust the spacing between product cards in grids in pixels.</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -501,7 +536,10 @@ export default function CategoryEditor() {
                     <div className="w-32 h-4 bg-gray-100 rounded"></div>
                     <div className="w-24 h-8 bg-gray-100 rounded-full"></div>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div 
+                    className="grid grid-cols-2 md:grid-cols-3"
+                    style={{ gap: `${Number(formData.cardGap || 0)}px` }}
+                  >
                     {[1, 2, 3, 4, 5, 6].map(i => (
                       <div key={i} className="flex flex-col gap-3">
                         <div className="aspect-[4/5] bg-gray-100 rounded-lg"></div>

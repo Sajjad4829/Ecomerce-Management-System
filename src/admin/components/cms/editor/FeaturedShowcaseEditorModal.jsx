@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiEye, FiSave, FiMoreVertical, FiPlus, FiMinus, FiTrash2, 
-  FiImage, FiUploadCloud, FiFolder, FiChevronDown, FiSettings, FiX, FiLayout
+  FiImage, FiUploadCloud, FiFolder, FiChevronDown, FiSettings, FiX, FiLayout,
+  FiMonitor, FiTablet, FiSmartphone
 } from 'react-icons/fi';
 import { GripVertical } from 'lucide-react';
 import { cn } from '../../../../utils/cn';
 
 export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose }) {
   const [items, setItems] = useState([]);
+  const [activeDevice, setActiveDevice] = useState('desktop');
+  
+  const getPropName = (baseProp) => activeDevice === 'desktop' ? baseProp : `${baseProp}_${activeDevice}`;
   
   const [content, setContent] = useState({
     title: '',
@@ -327,46 +331,66 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
             {/* Col 3: Layout Settings */}
             <div className="lg:col-span-3 space-y-6">
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-gray-100">
+                <div className="p-4 border-b border-gray-100 flex items-center justify-between">
                   <h2 className="font-semibold text-gray-900 text-sm">Layout Settings</h2>
+                  <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => setActiveDevice('desktop')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'desktop' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Desktop"
+                    >
+                      <FiMonitor size={14} />
+                    </button>
+                    <button
+                      onClick={() => setActiveDevice('tablet')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'tablet' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Tablet"
+                    >
+                      <FiTablet size={14} />
+                    </button>
+                    <button
+                      onClick={() => setActiveDevice('mobile')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'mobile' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Mobile"
+                    >
+                      <FiSmartphone size={14} />
+                    </button>
+                  </div>
                 </div>
                 <div className="p-5 space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Grid Columns (Desktop)</label>
+                    <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Grid Columns</label>
                     <input 
                       type="number"
-                      min="1" max="6"
-                      value={settings.gridColsDesktop}
-                      onChange={(e) => setSettings({...settings, gridColsDesktop: e.target.value})}
+                      min="1" max={activeDevice === 'desktop' ? "6" : activeDevice === 'tablet' ? "4" : "2"}
+                      value={settings[getPropName('gridCols')] || (activeDevice === 'desktop' ? settings.gridColsDesktop : activeDevice === 'tablet' ? settings.gridColsTablet : settings.gridColsMobile) || '1'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSettings({...settings, [getPropName('gridCols')]: val});
+                        // Backwards compatibility sync
+                        if (activeDevice === 'desktop') setSettings(s => ({...s, gridColsDesktop: val, [getPropName('gridCols')]: val}));
+                        if (activeDevice === 'tablet') setSettings(s => ({...s, gridColsTablet: val, [getPropName('gridCols')]: val}));
+                        if (activeDevice === 'mobile') setSettings(s => ({...s, gridColsMobile: val, [getPropName('gridCols')]: val}));
+                      }}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all" 
                     />
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Grid Columns (Tablet)</label>
-                    <input 
-                      type="number"
-                      min="1" max="4"
-                      value={settings.gridColsTablet}
-                      onChange={(e) => setSettings({...settings, gridColsTablet: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all" 
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Grid Columns (Mobile)</label>
-                    <input 
-                      type="number"
-                      min="1" max="2"
-                      value={settings.gridColsMobile}
-                      onChange={(e) => setSettings({...settings, gridColsMobile: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all" 
-                    />
-                  </div>
+                  
                   <div className="space-y-1.5">
                     <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Image Ratio</label>
                     <div className="relative">
                       <select 
-                        value={settings.imageRatio}
-                        onChange={(e) => setSettings({...settings, imageRatio: e.target.value})}
+                        value={settings[getPropName('imageRatio')] || settings.imageRatio}
+                        onChange={(e) => setSettings({...settings, [getPropName('imageRatio')]: e.target.value})}
                         className="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-2.5 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white"
                       >
                         <option>Square (1:1)</option>
@@ -405,8 +429,8 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
                     <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Section Padding</label>
                     <div className="relative">
                       <select 
-                        value={settings.sectionPadding}
-                        onChange={(e) => setSettings({...settings, sectionPadding: e.target.value})}
+                        value={settings[getPropName('sectionPadding')] || settings.sectionPadding}
+                        onChange={(e) => setSettings({...settings, [getPropName('sectionPadding')]: e.target.value})}
                         className="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-2.5 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white"
                       >
                         <option>Small</option>

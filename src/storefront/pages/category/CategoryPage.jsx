@@ -72,11 +72,7 @@ export default function CategoryPage() {
       setGrandparentCategory(null);
     }
 
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 400);
-
-    return () => clearTimeout(timer);
+    setIsLoading(false);
   }, [slug, getCategoryBySlug, getParentCategory]);
 
   const handleFilterChange = (filterId, optionValue) => {

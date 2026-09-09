@@ -2,13 +2,28 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import { useCategories } from '../../../admin/context/commerce/CategoryContext';
 
-export default function CategoryShowcase({ data }) {
+export default function CategoryShowcase({ data, ...settings }) {
   const { categories } = useCategories();
   const content = data?.content || {};
   const title = content.title !== undefined ? content.title : 'Shop by Category';
   
-  // Get top-level categories and limit to 4
-  const displayCategories = categories?.filter(c => !c.parentId).slice(0, 4) || [];
+  const resolveSetting = (key, defaultVal) => {
+    const baseVal = settings[key] !== undefined ? settings[key] : defaultVal;
+    return {
+      desktop: data?.responsive?.desktop?.[key] !== undefined ? data.responsive.desktop[key] : baseVal,
+      tablet: data?.responsive?.tablet?.[key] !== undefined ? data.responsive.tablet[key] : baseVal,
+      mobile: data?.responsive?.mobile?.[key] !== undefined ? data.responsive.mobile[key] : baseVal
+    };
+  };
+
+  const columns = resolveSetting('columns', '4');
+
+  const getGridClasses = () => {
+    return `grid gap-6 grid-cols-${columns.mobile} sm:grid-cols-${columns.tablet} lg:grid-cols-${columns.desktop}`;
+  };
+
+  // Get top-level categories and limit to the desktop column count (or default 4)
+  const displayCategories = categories?.filter(c => !c.parentId).slice(0, parseInt(columns.desktop, 10) || 4) || [];
 
   if (displayCategories.length === 0) {
     return null; // Graceful empty state
@@ -26,7 +41,7 @@ export default function CategoryShowcase({ data }) {
           </Link>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className={getGridClasses()}>
           {displayCategories.map(category => (
             <Link key={category.id} to={`/category/${category.slug}`} className="group block relative overflow-hidden bg-gray-100 aspect-[4/5]">
               <img 

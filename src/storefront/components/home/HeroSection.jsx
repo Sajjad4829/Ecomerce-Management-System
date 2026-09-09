@@ -70,11 +70,20 @@ export default function HeroSection({ data }) {
   };
 
   const getProp = (propName) => {
-    if (viewport === 'desktop') {
-      return activeSlide[propName] || settings[propName];
+    // Try data.responsive first
+    if (data?.responsive && data.responsive[viewport] && data.responsive[viewport][propName] !== undefined) {
+      return data.responsive[viewport][propName];
     }
-    const deviceProp = `${propName}_${viewport}`;
-    return activeSlide[deviceProp] || settings[deviceProp] || activeSlide[propName] || settings[propName];
+    
+    // Legacy support for _viewport suffixed settings
+    if (viewport !== 'desktop') {
+      const deviceProp = `${propName}_${viewport}`;
+      if (activeSlide[deviceProp] !== undefined) return activeSlide[deviceProp];
+      if (settings[deviceProp] !== undefined) return settings[deviceProp];
+    }
+
+    // Fallbacks
+    return activeSlide[propName] !== undefined ? activeSlide[propName] : settings[propName];
   };
 
   const getLineWidth = (text, type = 'title') => {

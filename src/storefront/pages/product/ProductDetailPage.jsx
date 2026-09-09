@@ -11,7 +11,7 @@ import ProductActions from '../../components/product/ProductActions';
 
 import RelatedProducts from '../../components/product/RelatedProducts';
 import ProductAccordions from '../../components/product/ProductAccordions';
-import { motion } from 'framer-motion';
+
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 
 export default function ProductDetailPage() {
@@ -145,13 +145,7 @@ export default function ProductDetailPage() {
     : [];
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className={`${activeTheme.tokens.background} min-h-screen`}
-    >
+    <div className={`${activeTheme.tokens.background} min-h-screen`}>
       <ProductBreadcrumb product={product} category={category} />
 
       <main className="w-full max-w-[1600px] mx-auto py-8 sm:py-12 px-4 lg:px-8">
@@ -203,6 +197,6 @@ export default function ProductDetailPage() {
 
       <RelatedProducts currentProduct={product} />
 
-    </motion.div>
+    </div>
   );
 }

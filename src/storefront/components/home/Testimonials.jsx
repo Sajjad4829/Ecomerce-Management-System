@@ -1,9 +1,22 @@
 import { useReviews } from '../../../admin/context/ReviewContext';
 
-export default function Testimonials({ data }) {
+export default function Testimonials({ data, ...settings }) {
   const { reviews } = useReviews();
   const content = data?.content || {};
   const title = content.title !== undefined ? content.title : "What Our Customers Say";
+  
+  const resolveSetting = (key, defaultVal) => {
+    const baseVal = settings[key] !== undefined ? settings[key] : defaultVal;
+    return {
+      desktop: data?.responsive?.desktop?.[key] !== undefined ? data.responsive.desktop[key] : baseVal,
+      tablet: data?.responsive?.tablet?.[key] !== undefined ? data.responsive.tablet[key] : baseVal,
+      mobile: data?.responsive?.mobile?.[key] !== undefined ? data.responsive.mobile[key] : baseVal
+    };
+  };
+
+  const layout = resolveSetting('layout', 'grid');
+  // Just an example of applying responsiveness. Usually grid translates to columns.
+  const isCarousel = layout.desktop === 'carousel'; 
 
   // Get up to 3 published 5-star reviews, fallback to hardcoded if none
   const publishedReviews = reviews?.filter(r => r.status === 'Published' && r.rating >= 4).slice(0, 3) || [];
@@ -39,9 +52,9 @@ export default function Testimonials({ data }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-3xl font-serif font-bold text-gray-900 mb-16">{title}</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 ${isCarousel ? 'overflow-x-auto snap-x snap-mandatory flex md:grid' : ''}`}>
           {displayReviews.map((testimonial) => (
-            <div key={testimonial.id} className="flex flex-col items-center">
+            <div key={testimonial.id} className={`flex flex-col items-center ${isCarousel ? 'snap-center shrink-0 w-80 md:w-auto' : ''}`}>
               <span className="text-4xl text-gray-300 font-serif mb-6 leading-none">"</span>
               <p className="text-lg text-gray-700 italic mb-8 flex-grow leading-relaxed">
                 {testimonial.quote}

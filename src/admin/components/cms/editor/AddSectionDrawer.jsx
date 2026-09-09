@@ -261,17 +261,8 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd, currentPageSe
                     {secs.map((sec, idx) => {
                       // Generic data priority resolution — no type-specific if/else needed.
                       // Works for every current and future section type automatically.
-                      let resolvedSection = resolveSectionPreview(sec, sectionPreviewMap);
+                      let resolvedSection = resolveSectionPreview(sec, sectionPreviewMap, libraryConfigurations);
                       
-                      // IMPORTANT: For custom reusable sections, the admin's saved data lives in libraryConfigurations.
-                      // We must merge this data so the placed section actually uses it!
-                      if (libraryConfigurations[sec.type]) {
-                        resolvedSection = {
-                          ...resolvedSection,
-                          content: { ...(resolvedSection.content || {}), ...(libraryConfigurations[sec.type].content || {}) },
-                          settings: { ...(resolvedSection.settings || {}), ...(libraryConfigurations[sec.type].settings || {}) }
-                        };
-                      }
                       const fromMongo = resolvedSection._previewSource === 'mongodb';
                       
                       // Match SectionCard's static image preview logic for identical visuals

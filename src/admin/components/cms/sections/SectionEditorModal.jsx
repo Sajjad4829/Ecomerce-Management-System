@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiSave, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiX, FiSave, FiChevronDown, FiChevronUp, FiMonitor, FiTablet, FiSmartphone } from 'react-icons/fi';
 import { useCMS } from '../../../context/cms/CMSContext';
 import { getSectionSchema, FIELD_TYPES } from '../editor/sectionEditorSchemas';
 import { cn } from '../../../../utils/cn';
@@ -117,6 +117,7 @@ export default function SectionEditorModal({ sectionType, onClose }) {
   const [content, setContent] = useState({});
   const [settings, setSettings] = useState({});
   const [isSaving, setIsSaving] = useState(false);
+  const [activeDevice, setActiveDevice] = useState('desktop');
 
   // Find registry entry
   const registryEntry = sections.find(s => s.type === sectionType);
@@ -175,13 +176,55 @@ export default function SectionEditorModal({ sectionType, onClose }) {
             ))}
           </div>
 
-          {schema.settings?.length > 0 && (
+          {(schema.settings?.length > 0 || schema.responsive?.length > 0) && (
             <div className="space-y-4 pt-4 border-t border-black/5">
-              <h3 className="font-bold text-sm text-text-primary">Settings</h3>
-              {schema.settings.map(field => (
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-sm text-text-primary">Settings</h3>
+                <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => setActiveDevice('desktop')}
+                    className={cn(
+                      "p-1.5 rounded-md transition-colors",
+                      activeDevice === 'desktop' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                    )}
+                    title="Desktop"
+                  >
+                    <FiMonitor size={14} />
+                  </button>
+                  <button
+                    onClick={() => setActiveDevice('tablet')}
+                    className={cn(
+                      "p-1.5 rounded-md transition-colors",
+                      activeDevice === 'tablet' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                    )}
+                    title="Tablet"
+                  >
+                    <FiTablet size={14} />
+                  </button>
+                  <button
+                    onClick={() => setActiveDevice('mobile')}
+                    className={cn(
+                      "p-1.5 rounded-md transition-colors",
+                      activeDevice === 'mobile' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                    )}
+                    title="Mobile"
+                  >
+                    <FiSmartphone size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {activeDevice === 'desktop' && schema.settings?.map(field => (
                 <div key={field.name} className="space-y-1">
                   <label className="block text-xs font-medium text-text-muted">{field.label}</label>
                   <DynamicField field={field} value={settings[field.name]} onChange={(k, v) => setSettings(prev => ({ ...prev, [k]: v }))} />
+                </div>
+              ))}
+
+              {activeDevice !== 'desktop' && schema.responsive?.map(field => (
+                <div key={field.name} className="space-y-1">
+                  <label className="block text-xs font-medium text-text-muted">{field.label} ({activeDevice})</label>
+                  <DynamicField field={field} value={settings[`${field.name}_${activeDevice}`]} onChange={(k, v) => setSettings(prev => ({ ...prev, [`${k}_${activeDevice}`]: v }))} />
                 </div>
               ))}
             </div>

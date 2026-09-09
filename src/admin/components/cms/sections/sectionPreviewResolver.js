@@ -37,41 +37,31 @@
  *   - Always preserves registry metadata (name, category, icon, description, type)
  *   - Adds _previewSource: 'mongodb' | 'default' for debugging / UI badges
  */
-export function resolveSectionPreview(registryEntry, sectionPreviewMap = {}) {
+export function resolveSectionPreview(registryEntry, sectionPreviewMap = {}, libraryConfigurations = {}) {
   if (!registryEntry) return null;
 
-  const savedInstance = sectionPreviewMap[registryEntry.type];
-
-  // ── Priority 1: Real saved MongoDB data ──────────────────────────────────
-  if (savedInstance) {
-    const hasRealContent =
-      savedInstance.content && Object.keys(savedInstance.content).length > 0;
-    const hasRealSettings =
-      savedInstance.settings && Object.keys(savedInstance.settings).length > 0;
-
-    if (hasRealContent || hasRealSettings) {
-      return {
-        // Preserve registry metadata for the card UI
-        ...registryEntry,
-        // Override with real saved data, merged with defaults for missing fields
-        content: { ...(registryEntry.defaultContent || {}), ...(savedInstance.content || {}) },
-        settings: { ...(registryEntry.defaultSettings || {}), ...(savedInstance.settings || {}) },
-        responsive: savedInstance.responsive || {},
-        // Debug/UI indicator
-        _previewSource: 'mongodb',
-      };
-    }
-  }
-
-  // ── Priority 2: Registry defaultContent (fallback) ────────────────────────
-  // Used ONLY when no saved MongoDB data exists for this section type.
-  return {
+  // Start with the base registry entry and its default content
+  let resolved = {
     ...registryEntry,
-    content: registryEntry.defaultContent || {},
-    settings: registryEntry.defaultSettings || {},
+    content: registryEntry.defaultContent || registryEntry.content || {},
+    settings: registryEntry.defaultSettings || registryEntry.settings || {},
     responsive: {},
     _previewSource: 'default',
   };
+
+  // If the admin has saved a custom configuration for this template in the Section Library, merge it.
+  // This ensures custom templates use their configured mock data, while remaining isolated from real page instances.
+  if (libraryConfigurations && libraryConfigurations[registryEntry.type]) {
+    const libConfig = libraryConfigurations[registryEntry.type];
+    resolved = {
+      ...resolved,
+      content: { ...resolved.content, ...(libConfig.content || {}) },
+      settings: { ...resolved.settings, ...(libConfig.settings || {}) },
+      _previewSource: 'library',
+    };
+  }
+
+  return resolved;
 }
 
 /**

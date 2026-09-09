@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FiEye, FiSave, FiMoreVertical, FiPlus, FiTrash2,
-  FiImage, FiChevronDown, FiX, FiEdit2, FiSettings
+  FiEye, FiSave, FiMoreVertical, FiPlus, FiMinus, FiTrash2,
+  FiImage, FiChevronDown, FiX, FiEdit2, FiSettings, FiMonitor, FiTablet, FiSmartphone
 } from 'react-icons/fi';
 import { GripVertical } from 'lucide-react';
 import { cn } from '../../../../utils/cn';
@@ -12,6 +12,10 @@ import { useToast } from '../../../../components/ui/Toast/ToastContext';
 export default function CategoryGridEditor({ section, pageName, onUpdate, onClose, onSave }) {
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState('Content');
+  const [activeDevice, setActiveDevice] = useState('desktop');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const getPropName = (baseProp) => activeDevice === 'desktop' ? baseProp : `${baseProp}_${activeDevice}`;
 
   const [content, setContent] = useState({
     title: '',
@@ -66,18 +70,26 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
     setContent({ ...content, categories: newCategories });
   };
 
-  const handleSave = () => {
-    if (onSave) {
-      onSave({
-        ...section,
-        content,
-        settings
-      });
-    } else if (onUpdate) {
-      onUpdate(section.id, { content, settings });
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      if (onSave) {
+        await onSave({
+          ...section,
+          content,
+          settings
+        });
+      } else if (onUpdate) {
+        await onUpdate(section.id, { content, settings });
+      }
+      addToast({ type: 'success', message: 'Category Grid saved successfully!' });
+      if (onClose) onClose();
+    } catch (error) {
+      console.error('Error saving Category Grid:', error);
+      addToast({ type: 'error', message: error.message || 'Failed to save Category Grid' });
+    } finally {
+      setIsSaving(false);
     }
-    addToast({ type: 'success', message: 'Category Grid saved successfully!' });
-    if (onClose) onClose();
   };
 
   const currentPreviewData = {
@@ -103,9 +115,10 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
           </button>
           <button
             onClick={handleSave}
-            className="px-5 py-2 text-sm font-semibold text-white bg-[#4F46E5] rounded-lg hover:bg-[#4338CA] transition-colors shadow-sm flex items-center gap-2"
+            disabled={isSaving}
+            className={`px-5 py-2 text-sm font-semibold text-white bg-[#4F46E5] rounded-lg transition-colors shadow-sm flex items-center gap-2 ${isSaving ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#4338CA]'}`}
           >
-            Save Changes
+            {isSaving ? 'Saving...' : 'Save Changes'}
           </button>
           <button className="text-gray-400 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
             <FiMoreVertical size={18} />
@@ -188,13 +201,13 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
               <div className="flex flex-col h-full">
                 <div className="p-6 space-y-6 flex-1">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-800">Section Title</label>
+                    <label className="text-sm font-semibold text-gray-800">Title Name</label>
                     <input
                       type="text"
                       className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all outline-none"
                       value={content.title}
                       onChange={(e) => setContent({ ...content, title: e.target.value })}
-                      placeholder="e.g. Living Room"
+                      placeholder="Title Name"
                     />
                   </div>
 
@@ -222,14 +235,14 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
                               className="w-full border border-gray-200 rounded-md px-2.5 py-1 text-xs font-semibold text-gray-900 outline-none placeholder-gray-400 focus:border-[#5946ff]"
                               value={cat.name}
                               onChange={(e) => handleUpdateCategory(index, { name: e.target.value })}
-                              placeholder="Sofa Set"
+                              placeholder="Category Name"
                             />
                             <input
                               type="text"
                               className="w-full border border-gray-200 rounded-md px-2.5 py-1 text-[11px] text-gray-500 outline-none placeholder-gray-300 font-mono focus:border-[#5946ff]"
-                              value={cat.link}
+                              value={cat.link || ''}
                               onChange={(e) => handleUpdateCategory(index, { link: e.target.value })}
-                              placeholder="/living-room/sofa-set"
+                              placeholder="Category Link"
                             />
                           </div>
 
@@ -284,13 +297,51 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
 
             {activeTab === 'Settings' && (
               <div className="p-6 space-y-6">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                  <span className="text-sm font-bold text-gray-900">Responsive Settings</span>
+                  <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => setActiveDevice('desktop')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'desktop' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Desktop"
+                    >
+                      <FiMonitor size={14} />
+                    </button>
+                    <button
+                      onClick={() => setActiveDevice('tablet')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'tablet' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Tablet"
+                    >
+                      <FiTablet size={14} />
+                    </button>
+                    <button
+                      onClick={() => setActiveDevice('mobile')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'mobile' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Mobile"
+                    >
+                      <FiSmartphone size={14} />
+                    </button>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-800">Grid Columns</label>
                   <select
                     className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none"
-                    value={settings.columns}
-                    onChange={(e) => setSettings({ ...settings, columns: e.target.value })}
+                    value={settings[getPropName('columns')] || settings.columns || '5'}
+                    onChange={(e) => setSettings({ ...settings, [getPropName('columns')]: e.target.value })}
                   >
+                    <option value="1">1 Column</option>
+                    <option value="2">2 Columns</option>
                     <option value="3">3 Columns</option>
                     <option value="4">4 Columns</option>
                     <option value="5">5 Columns</option>
@@ -302,8 +353,8 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
                   <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Image Ratio</label>
                   <select
                     className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none"
-                    value={settings.imageRatio}
-                    onChange={(e) => setSettings({ ...settings, imageRatio: e.target.value })}
+                    value={settings[getPropName('imageRatio')] || settings.imageRatio || 'square'}
+                    onChange={(e) => setSettings({ ...settings, [getPropName('imageRatio')]: e.target.value })}
                   >
                     <option value="square">Square (1:1)</option>
                     <option value="portrait">Portrait (3:4)</option>
@@ -312,16 +363,60 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Grid Gap</label>
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Title Font</label>
                   <select
                     className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none"
-                    value={settings.gap || 'medium'}
-                    onChange={(e) => setSettings({ ...settings, gap: e.target.value })}
+                    value={settings[getPropName('titleFont')] || settings.titleFont || 'sans-serif'}
+                    onChange={(e) => setSettings({ ...settings, [getPropName('titleFont')]: e.target.value })}
                   >
-                    <option value="small">Small (16px)</option>
-                    <option value="medium">Medium (24px)</option>
-                    <option value="large">Large (32px)</option>
+                    <option value="sans-serif">Default Sans-Serif (Present)</option>
+                    <option value="serif">Default Serif</option>
+                    <option value="monospace">Default Monospace</option>
+                    <option value="Arial, sans-serif">Arial</option>
+                    <option value="Helvetica, sans-serif">Helvetica</option>
+                    <option value='"Times New Roman", Times, serif'>Times New Roman</option>
+                    <option value="Georgia, serif">Georgia</option>
+                    <option value="Verdana, sans-serif">Verdana</option>
+                    <option value='"Courier New", Courier, monospace'>Courier New</option>
+                    <option value='"Trebuchet MS", Helvetica, sans-serif'>Trebuchet MS</option>
+                    <option value="Impact, sans-serif">Impact</option>
                   </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Card Gap</label>
+                  <div className="flex items-center gap-3">
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const currentGapVal = settings[getPropName('gap')] || settings.gap;
+                        const currentGap = currentGapVal === undefined || currentGapVal === '' ? 0 : currentGapVal === 'small' ? 16 : currentGapVal === 'medium' ? 24 : currentGapVal === 'large' ? 32 : isNaN(Number(currentGapVal)) ? 0 : Number(currentGapVal);
+                        setSettings({ ...settings, [getPropName('gap')]: Math.max(0, currentGap - 1).toString() });
+                      }}
+                      className="w-8 h-8 flex items-center justify-center bg-white border border-gray-200 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors shadow-sm"
+                    >
+                      <FiMinus size={14} />
+                    </button>
+                    <input 
+                      type="number" 
+                      min="0"
+                      value={settings[getPropName('gap')] || settings.gap === undefined || settings.gap === '' ? 0 : settings.gap === 'small' ? 16 : settings.gap === 'medium' ? 24 : settings.gap === 'large' ? 32 : isNaN(Number(settings.gap)) ? 0 : Number(settings.gap)}
+                      onChange={(e) => setSettings({ ...settings, [getPropName('gap')]: e.target.value })}
+                      className="w-full border border-gray-200 rounded-lg p-1.5 text-sm outline-none text-center font-bold"
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const currentGapVal = settings[getPropName('gap')] || settings.gap;
+                        const currentGap = currentGapVal === undefined || currentGapVal === '' ? 0 : currentGapVal === 'small' ? 16 : currentGapVal === 'medium' ? 24 : currentGapVal === 'large' ? 32 : isNaN(Number(currentGapVal)) ? 0 : Number(currentGapVal);
+                        setSettings({ ...settings, [getPropName('gap')]: Math.min(100, currentGap + 1).toString() });
+                      }}
+                      className="w-8 h-8 flex items-center justify-center bg-white border border-gray-200 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors shadow-sm"
+                    >
+                      <FiPlus size={14} />
+                    </button>
+                    <span className="text-xs text-gray-500 font-mono pr-1">px</span>
+                  </div>
                 </div>
               </div>
             )}

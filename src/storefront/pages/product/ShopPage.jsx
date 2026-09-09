@@ -47,10 +47,7 @@ export default function ShopPage() {
   const [sortOption, setSortOption] = useState('featured');
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
+    setIsLoading(false);
   }, []);
 
   const handleFilterChange = (filterId, optionValue) => {

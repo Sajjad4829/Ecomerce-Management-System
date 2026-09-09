@@ -1,20 +1,40 @@
 import React, { createContext, useContext, useState } from 'react';
+import { INITIAL_ASSETS } from '../../pages/cms/MediaLibrary';
 
 const MediaContext = createContext();
 
 export function MediaProvider({ children }) {
-  const [assets, setAssets] = useState([]);
-  const [loadingAssets, setLoadingAssets] = useState(true);
+  const [assets, setAssets] = useState(() => {
+    try {
+      const stored = localStorage.getItem('cms_custom_assets');
+      const localAssets = stored ? JSON.parse(stored) : [];
+      // Remove duplicates from INITIAL_ASSETS if any
+      const newLocalAssets = localAssets.filter(la => !INITIAL_ASSETS.find(a => a.id === la.id));
+      return [...newLocalAssets, ...INITIAL_ASSETS];
+    } catch (e) {
+      return INITIAL_ASSETS;
+    }
+  });
+  const [loadingAssets, setLoadingAssets] = useState(false);
 
   React.useEffect(() => {
     fetch('/api/media')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('API unavailable');
+        return res.json();
+      })
       .then(data => {
-        setAssets(data);
+        if (Array.isArray(data) && data.length > 0) {
+          // If API returns data, merge it with localStorage to ensure uploads are not lost
+          setAssets(prev => {
+            const apiIds = new Set(data.map(d => d.id));
+            const prevLocal = prev.filter(p => !apiIds.has(p.id) && p.id.startsWith('upload_'));
+            return [...prevLocal, ...data];
+          });
+        }
         setLoadingAssets(false);
       })
-      .catch(err => {
-        console.error("Failed to load assets", err);
+      .catch(() => {
         setLoadingAssets(false);
       });
   }, []);
@@ -41,11 +61,12 @@ export function MediaProvider({ children }) {
   const addAsset = (asset) => setAssets([...assets, asset]); // Already fully constructed from backend
   const updateAsset = (id, data) => setAssets(assets.map(a => a.id === id ? { ...a, ...data, updatedAt: new Date().toISOString() } : a));
   const deleteAsset = async (id) => {
+    // Always remove from local state first for instant UI feedback
+    setAssets(prev => prev.filter(a => a.id !== id));
     try {
       await fetch(`/api/media/${id}`, { method: 'DELETE' });
-      setAssets(assets.filter(a => a.id !== id));
-    } catch (err) {
-      console.error("Failed to delete asset", err);
+    } catch {
+      // Backend not available — local state already updated
     }
   };
   const archiveAsset = (id) => updateAsset(id, { status: 'Archived' });
