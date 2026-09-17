@@ -1,9 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiImage, FiArrowRight, FiGrid, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { BsLayoutSidebarInset, BsLayoutSplit } from 'react-icons/bs';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
+import { useStorefrontTheme } from '../../../../storefront/context/StorefrontThemeContext';
 
 const ProductGalleryLayout = ({ onBack }) => {
-  const [selectedLayout, setSelectedLayout] = useState('vertical');
+  const { productGalleryLayout, setProductGalleryLayout } = useStorefrontTheme();
+  const [selectedLayout, setSelectedLayout] = useState(productGalleryLayout || 'vertical');
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    if (productGalleryLayout) {
+      setSelectedLayout(productGalleryLayout);
+    }
+  }, [productGalleryLayout]);
+
+  const handleSave = () => {
+    setProductGalleryLayout(selectedLayout);
+    addToast({ message: 'Gallery layout updated successfully.', type: 'success' });
+  };
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#f6f8fd] overflow-y-auto relative">
@@ -179,7 +194,10 @@ const ProductGalleryLayout = ({ onBack }) => {
 
         {/* Floating Save Button */}
         <div className="flex justify-end mt-12">
-          <button className="px-6 py-3 bg-[#6b46c1] hover:bg-[#5a32fa] text-white font-medium rounded-full shadow-lg shadow-purple-500/30 transition-all flex items-center gap-3">
+          <button 
+            onClick={handleSave}
+            className="px-6 py-3 bg-[#6b46c1] hover:bg-[#5a32fa] text-white font-medium rounded-full shadow-lg shadow-purple-500/30 transition-all flex items-center gap-3"
+          >
             Save Changes <FiArrowRight size={18} />
           </button>
         </div>

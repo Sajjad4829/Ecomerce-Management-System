@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiStar } from 'react-icons/fi';
 
-export default function ProductInfo({ product, ratingData, selectedVariants, activePrice, activeComparePrice }) {
+export default function ProductInfo({ product, ratingData, selectedVariants, activePrice, activeComparePrice, hideDescription = false, hideTitleOnMobile = false }) {
   if (!product) return null;
 
   const isSale = activeComparePrice > activePrice;
@@ -13,7 +13,7 @@ export default function ProductInfo({ product, ratingData, selectedVariants, act
     <div className="flex flex-col pb-4 mb-2">
       
       {/* Name, SKU, and Price combined block */}
-      <div className="mb-6">
+      <div className={`mb-6 ${hideTitleOnMobile ? 'hidden md:block' : 'block'}`}>
         <h1 className="text-[26px] sm:text-[28px] font-sans font-semibold text-gray-800 tracking-tight leading-tight mb-1">
           {product.name}
         </h1>
@@ -38,9 +38,11 @@ export default function ProductInfo({ product, ratingData, selectedVariants, act
       </div>
 
       {/* Short Description */}
-      <p className="text-base text-gray-600 leading-relaxed">
-        {product.description ? product.description.substring(0, 150) + '...' : ''}
-      </p>
+      {!hideDescription && (
+        <p className="text-base text-gray-600 leading-relaxed">
+          {product.description ? product.description.substring(0, 150) + '...' : ''}
+        </p>
+      )}
     </div>
   );
 }

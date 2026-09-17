@@ -179,8 +179,12 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="w-full bg-white min-h-screen pb-24 border-t border-gray-200 pt-8">
+    <div className="w-full bg-white min-h-screen pb-24 border-t border-gray-200">
       
+      {category && (category.bannerImage || category.image) && (
+        <CategoryHero category={category} />
+      )}
+
       <CategoryHeader 
         category={category} 
         parentCategory={parentCategory}

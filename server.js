@@ -23,10 +23,18 @@ import MediaAsset from './lib/models/MediaAsset.js';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
+import compression from 'compression';
+import path from 'path';
+import fs from 'fs';
+import * as cmsCache from './server/cache/cmsCache.js';
 
 const app = express();
+app.use(compression());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Serve uploaded images statically
+app.use('/assets/images', express.static(path.join(process.cwd(), 'assets', 'images')));
 
 // CORS for local dev (Vite proxy handles this in prod)
 app.use((req, res, next) => {
@@ -62,17 +70,25 @@ app.get('/api/health', (_req, res) => {
 app.get('/api/categories', async (req, res) => {
   try {
     const { status, hasChildren, parentId } = req.query;
-    const filter = {};
-    if (status) filter.status = status;
-    if (parentId !== undefined) filter.parentId = parentId === 'null' ? null : parentId;
+    
+    // Create a dynamic cache key based on query params
+    const cacheKey = `categories_${status || 'all'}_${hasChildren || 'all'}_${parentId || 'all'}`;
+    
+    const categories = await cmsCache.getOrSetCache(cacheKey, async () => {
+      const filter = {};
+      if (status) filter.status = status;
+      if (parentId !== undefined) filter.parentId = parentId === 'null' ? null : parentId;
 
-    let categories = await Category.find(filter).lean();
+      let result = await Category.find(filter).lean();
 
-    if (hasChildren === 'true') {
-      const allCategories = await Category.find({}).lean();
-      const parentIds = new Set(allCategories.filter(c => c.parentId).map(c => c.parentId));
-      categories = categories.filter(c => parentIds.has(c.id));
-    }
+      if (hasChildren === 'true') {
+        const allCategories = await Category.find({}).lean();
+        const parentIds = new Set(allCategories.filter(c => c.parentId).map(c => c.parentId));
+        result = result.filter(c => parentIds.has(c.id));
+      }
+      return result;
+    });
+
     res.json(categories);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -81,13 +97,19 @@ app.get('/api/categories', async (req, res) => {
 
 app.get('/api/categories/:id/breadcrumb', async (req, res) => {
   try {
-    const allCategories = await Category.find({}).lean();
-    let currentId = req.params.id;
-    const hierarchy = [];
-    while (currentId) {
-      const cat = allCategories.find(c => c.id === currentId);
-      if (cat) { hierarchy.unshift(cat); currentId = cat.parentId; } else break;
-    }
+    const cacheKey = `category_breadcrumb_${req.params.id}`;
+    
+    const hierarchy = await cmsCache.getOrSetCache(cacheKey, async () => {
+      const allCategories = await Category.find({}).lean();
+      let currentId = req.params.id;
+      const result = [];
+      while (currentId) {
+        const cat = allCategories.find(c => c.id === currentId);
+        if (cat) { result.unshift(cat); currentId = cat.parentId; } else break;
+      }
+      return result;
+    });
+    
     res.json(hierarchy);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -98,6 +120,11 @@ app.post('/api/categories', async (req, res) => {
   try {
     const newCategory = new Category({ ...req.body, id: req.body.id || `cat-${Date.now()}` });
     await newCategory.save();
+    
+    cmsCache.invalidatePrefix('categories_');
+    cmsCache.invalidatePrefix('category_breadcrumb_');
+    cmsCache.invalidate('menus');
+
     res.status(201).json(newCategory.toJSON());
   } catch (error) {
     if (error.name === 'ValidationError') return res.status(400).json({ error: Object.values(error.errors).map(e => e.message).join('; ') });
@@ -110,6 +137,11 @@ app.put('/api/categories/:id', async (req, res) => {
   try {
     const updated = await Category.findOneAndUpdate({ id: req.params.id }, { $set: req.body }, { returnDocument: 'after', runValidators: true }).lean();
     if (!updated) return res.status(404).json({ error: 'Category not found' });
+    
+    cmsCache.invalidatePrefix('categories_');
+    cmsCache.invalidatePrefix('category_breadcrumb_');
+    cmsCache.invalidate('menus');
+
     res.json(updated);
   } catch (error) {
     if (error.name === 'ValidationError') return res.status(400).json({ error: Object.values(error.errors).map(e => e.message).join('; ') });
@@ -141,6 +173,11 @@ app.delete('/api/categories/:id', async (req, res) => {
 
     const deleted = await Category.findOneAndDelete({ id });
     if (!deleted) return res.status(404).json({ error: 'Category not found' });
+    
+    cmsCache.invalidatePrefix('categories_');
+    cmsCache.invalidatePrefix('category_breadcrumb_');
+    cmsCache.invalidate('menus');
+
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -153,20 +190,24 @@ app.delete('/api/categories/:id', async (req, res) => {
 
 app.get('/api/navbar', async (req, res) => {
   try {
-    const navbar = await Navbar.findOne({ storeId: 'default' }).lean();
-    if (!navbar) {
-      const newNavbar = await Navbar.create({ storeId: 'default', navItems: [] });
-      return res.json(newNavbar.toJSON());
-    }
-    const allCategories = await Category.find({}).lean();
-    const categoryMap = new Map(allCategories.map(c => [c.id, c]));
-    const hydratedNavItems = (navbar.navItems || []).map(item => {
-      if (item.megaMenu?.columns) {
-        return { ...item, megaMenu: { ...item.megaMenu, columns: item.megaMenu.columns.map(col => ({ ...col, groups: (col.groups || []).map(group => ({ ...group, _resolvedCategory: categoryMap.get(group.referenceId) || null, items: (group.items || []).map(menuItem => ({ ...menuItem, _resolvedCategory: categoryMap.get(menuItem.referenceId) || null })) })) })) } };
+    const navbarData = await cmsCache.getOrSetCache('menus', async () => {
+      const navbar = await Navbar.findOne({ storeId: 'default' }).lean();
+      if (!navbar) {
+        const newNavbar = await Navbar.create({ storeId: 'default', navItems: [] });
+        return newNavbar.toJSON();
       }
-      return item;
+      const allCategories = await Category.find({}).lean();
+      const categoryMap = new Map(allCategories.map(c => [c.id, c]));
+      const hydratedNavItems = (navbar.navItems || []).map(item => {
+        if (item.megaMenu?.columns) {
+          return { ...item, megaMenu: { ...item.megaMenu, columns: item.megaMenu.columns.map(col => ({ ...col, groups: (col.groups || []).map(group => ({ ...group, _resolvedCategory: categoryMap.get(group.referenceId) || null, items: (group.items || []).map(menuItem => ({ ...menuItem, _resolvedCategory: categoryMap.get(menuItem.referenceId) || null })) })) })) } };
+        }
+        return item;
+      });
+      return { ...navbar, navItems: hydratedNavItems };
     });
-    res.json({ ...navbar, navItems: hydratedNavItems });
+    
+    res.json(navbarData);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -199,6 +240,9 @@ app.put('/api/navbar', async (req, res) => {
       return item;
     });
     await Navbar.findOneAndUpdate({ storeId: 'default' }, { $set: { navItems: cleanNavItems, settings: navbarData.settings || {} } }, { upsert: true, returnDocument: 'after' });
+    
+    cmsCache.invalidate('menus');
+
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -465,37 +509,40 @@ app.put('/api/collections/bulk-status', async (req, res) => {
  */
 app.get('/api/cms/sections/preview-map', async (req, res) => {
   try {
-    // Fetch all pages sorted newest-first; only retrieve section arrays (lean)
-    const pages = await CMSPage.find(
-      {},
-      { sectionsDraft: 1, sectionsPublished: 1, updatedAt: 1 }
-    )
-      .sort({ updatedAt: -1 })
-      .lean();
+    const previewMap = await cmsCache.getOrSetCache('previewMap', async () => {
+      // Fetch all pages sorted newest-first; only retrieve section arrays (lean)
+      const pages = await CMSPage.find(
+        {},
+        { sectionsDraft: 1, sectionsPublished: 1, updatedAt: 1 }
+      )
+        .sort({ updatedAt: -1 })
+        .lean();
 
-    const previewMap = {};
+      const map = {};
 
-    for (const page of pages) {
-      // Prefer draft; fall back to published if draft is empty
-      const sections =
-        page.sectionsDraft && page.sectionsDraft.length > 0
-          ? page.sectionsDraft
-          : page.sectionsPublished || [];
+      for (const page of pages) {
+        // Prefer draft; fall back to published if draft is empty
+        const sections =
+          page.sectionsDraft && page.sectionsDraft.length > 0
+            ? page.sectionsDraft
+            : page.sectionsPublished || [];
 
-      for (const sec of sections) {
-        if (!sec || !sec.type) continue;
-        // Only record the first (newest-page) instance for each type
-        if (!previewMap[sec.type]) {
-          previewMap[sec.type] = {
-            type: sec.type,
-            content: sec.content || {},
-            settings: sec.settings || {},
-            responsive: sec.responsive || {},
-            name: sec.name,
-          };
+        for (const sec of sections) {
+          if (!sec || !sec.type) continue;
+          // Only record the first (newest-page) instance for each type
+          if (!map[sec.type]) {
+            map[sec.type] = {
+              type: sec.type,
+              content: sec.content || {},
+              settings: sec.settings || {},
+              responsive: sec.responsive || {},
+              name: sec.name,
+            };
+          }
         }
       }
-    }
+      return map;
+    });
 
     res.json(previewMap);
   } catch (error) {
@@ -510,7 +557,9 @@ app.get('/api/cms/sections/preview-map', async (req, res) => {
 
 app.get('/api/cms/library/configurations', async (req, res) => {
   try {
-    const configs = await SectionConfiguration.find({}).lean();
+    const configs = await cmsCache.getOrSetCache('sectionLibrary', async () => {
+      return await SectionConfiguration.find({}).lean();
+    });
     res.json(configs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -558,6 +607,11 @@ app.put('/api/cms/library/configurations/:sectionType', async (req, res) => {
       await page.save();
     }
     
+    cmsCache.invalidate('sectionLibrary');
+    cmsCache.invalidate('previewMap');
+    cmsCache.invalidatePrefix('page_');
+    cmsCache.invalidatePrefix('pages_');
+
     res.json(config);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -571,11 +625,16 @@ app.put('/api/cms/library/configurations/:sectionType', async (req, res) => {
 app.get('/api/cms/pages', async (req, res) => {
   try {
     const { status, type } = req.query;
-    const filter = {};
-    if (status) filter.status = status;
-    if (type) filter.type = type;
-    // Return pages without heavy sections content for list view
-    const pages = await CMSPage.find(filter, { sectionsDraft: 0, sectionsPublished: 0 }).sort({ createdAt: -1 }).lean();
+    const cacheKey = `pages_${status || 'all'}_${type || 'all'}`;
+    
+    const pages = await cmsCache.getOrSetCache(cacheKey, async () => {
+      const filter = {};
+      if (status) filter.status = status;
+      if (type) filter.type = type;
+      // Return pages without heavy sections content for list view
+      return await CMSPage.find(filter, { sectionsDraft: 0, sectionsPublished: 0 }).sort({ createdAt: -1 }).lean();
+    });
+    
     res.json(pages);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -584,7 +643,9 @@ app.get('/api/cms/pages', async (req, res) => {
 
 app.get('/api/cms/pages/:id', async (req, res) => {
   try {
-    const page = await CMSPage.findOne({ id: req.params.id }).lean();
+    const page = await cmsCache.getOrSetCache(`page_${req.params.id}`, async () => {
+      return await CMSPage.findOne({ id: req.params.id }).lean();
+    });
     if (!page) return res.status(404).json({ error: 'Page not found' });
     res.json(page);
   } catch (error) {
@@ -596,6 +657,9 @@ app.post('/api/cms/pages', async (req, res) => {
   try {
     const newPage = new CMSPage({ ...req.body, id: req.body.id || `page-${Date.now()}` });
     await newPage.save();
+    
+    cmsCache.invalidatePrefix('pages_');
+
     res.status(201).json(newPage.toJSON());
   } catch (error) {
     if (error.name === 'ValidationError') return res.status(400).json({ error: Object.values(error.errors).map(e => e.message).join('; ') });
@@ -609,6 +673,10 @@ app.put('/api/cms/pages/:id', async (req, res) => {
     const { sectionsDraft, sectionsPublished, ...metadata } = req.body;
     const updated = await CMSPage.findOneAndUpdate({ id: req.params.id }, { $set: { ...metadata, updatedAt: new Date() } }, { returnDocument: 'after', runValidators: true }).lean();
     if (!updated) return res.status(404).json({ error: 'Page not found' });
+    
+    cmsCache.invalidatePrefix('pages_');
+    cmsCache.invalidate(`page_${req.params.id}`);
+
     res.json(updated);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -619,6 +687,10 @@ app.delete('/api/cms/pages/:id', async (req, res) => {
   try {
     const deleted = await CMSPage.findOneAndDelete({ id: req.params.id });
     if (!deleted) return res.status(404).json({ error: 'Page not found' });
+    
+    cmsCache.invalidatePrefix('pages_');
+    cmsCache.invalidate(`page_${req.params.id}`);
+
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -674,6 +746,11 @@ app.put('/api/cms/pages/:id/sections/draft', async (req, res) => {
       }
     }
     
+    cmsCache.invalidatePrefix('pages_');
+    cmsCache.invalidate(`page_${req.params.id}`);
+    cmsCache.invalidate('previewMap');
+    cmsCache.invalidate('sectionLibrary');
+
     res.json({ success: true, page: updated });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -733,6 +810,11 @@ app.put('/api/cms/pages/:id/sections/publish', async (req, res) => {
       }
     }
     
+    cmsCache.invalidatePrefix('pages_');
+    cmsCache.invalidate(`page_${req.params.id}`);
+    cmsCache.invalidate('previewMap');
+    cmsCache.invalidate('sectionLibrary');
+
     res.json({ success: true, page: updated });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -748,6 +830,9 @@ app.post('/api/cms/pages/:id/duplicate', async (req, res) => {
     const newId = `page-${Date.now()}`;
     const duplicate = new CMSPage({ ...rest, id: newId, title: `${rest.title} Copy`, slug: `${rest.slug}-copy-${Date.now()}`, status: 'draft' });
     await duplicate.save();
+    
+    cmsCache.invalidatePrefix('pages_');
+
     res.status(201).json(duplicate.toJSON());
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -760,10 +845,13 @@ app.post('/api/cms/pages/:id/duplicate', async (req, res) => {
 
 app.get('/api/cms/config', async (req, res) => {
   try {
-    let config = await CMSConfig.findOne({ storeId: 'default' }).lean();
-    if (!config) {
-      config = await CMSConfig.create({ storeId: 'default' });
-    }
+    const config = await cmsCache.getOrSetCache('themeSettings', async () => {
+      let doc = await CMSConfig.findOne({ storeId: 'default' }).lean();
+      if (!doc) {
+        doc = await CMSConfig.create({ storeId: 'default' });
+      }
+      return doc;
+    });
     res.json(config);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -777,6 +865,9 @@ app.put('/api/cms/config', async (req, res) => {
       { $set: { ...req.body, updatedAt: new Date() } },
       { upsert: true, returnDocument: 'after', runValidators: true }
     ).lean();
+    
+    cmsCache.invalidate('themeSettings');
+
     res.json({ success: true, config });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -791,6 +882,9 @@ app.put('/api/cms/config/header', async (req, res) => {
       { $set: { headerConfig: req.body, updatedAt: new Date() } },
       { upsert: true, returnDocument: 'after' }
     ).lean();
+    
+    cmsCache.invalidate('themeSettings');
+
     res.json({ success: true, headerConfig: config.headerConfig });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -831,32 +925,41 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     if (mimetype.startsWith('image/')) type = 'Image';
     else if (mimetype.startsWith('video/')) type = 'Video';
 
-    const fallbackToBase64 = () => {
-      const b64Url = `data:${mimetype};base64,${req.file.buffer.toString('base64')}`;
-      const newAsset = new MediaAsset({
-        id: `ast-${Date.now()}`,
-        filename: originalname,
-        title: originalname.split('.')[0],
-        altText: '',
-        type,
-        mimeType: mimetype,
-        size: size,
-        width: null,
-        height: null,
-        url: b64Url,
-        publicId: `local-${Date.now()}`,
-        folderId: 'all'
-      });
-      newAsset.save().then(() => {
-        res.status(201).json(newAsset.toJSON());
-      }).catch(dbError => {
-        console.error("DB Save Error:", dbError);
-        res.status(500).json({ error: 'Failed to save asset record in DB' });
+    const saveToLocalFolder = () => {
+      const fileName = `${Date.now()}-${originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+      const filePath = path.join(process.cwd(), 'assets', 'images', fileName);
+      
+      fs.writeFile(filePath, req.file.buffer, (err) => {
+        if (err) {
+          console.error("File save error:", err);
+          return res.status(500).json({ error: 'Failed to save image to disk' });
+        }
+        const fileUrl = `/assets/images/${fileName}`;
+        const newAsset = new MediaAsset({
+          id: `ast-${Date.now()}`,
+          filename: originalname,
+          title: originalname.split('.')[0],
+          altText: '',
+          type,
+          mimeType: mimetype,
+          size: size,
+          width: null,
+          height: null,
+          url: fileUrl,
+          publicId: `local-${Date.now()}`,
+          folderId: 'all'
+        });
+        newAsset.save().then(() => {
+          res.status(201).json(newAsset.toJSON());
+        }).catch(dbError => {
+          console.error("DB Save Error:", dbError);
+          res.status(500).json({ error: 'Failed to save asset record in DB' });
+        });
       });
     };
 
     if (!process.env.CLOUDINARY_URL || process.env.CLOUDINARY_URL.includes('<your_api_key>')) {
-      return fallbackToBase64();
+      return saveToLocalFolder();
     }
 
     try {
@@ -870,7 +973,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
           if (error) {
             console.error("Cloudinary Upload Error:", error);
             // Fallback on error
-            return fallbackToBase64();
+            return saveToLocalFolder();
           }
 
           try {
@@ -903,7 +1006,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
       uploadStream.end(req.file.buffer);
     } catch (cloudinaryError) {
       console.error("Cloudinary synchronous initialization error:", cloudinaryError.message);
-      return fallbackToBase64();
+      return saveToLocalFolder();
     }
 
   } catch (error) {
@@ -913,7 +1016,8 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
 app.get('/api/media', async (req, res) => {
   try {
-    const assets = await MediaAsset.find({}).sort({ createdAt: -1 }).lean();
+    // Limit to 50 to prevent massive base64 payloads from crashing MongoDB queries
+    const assets = await MediaAsset.find({}).sort({ createdAt: -1 }).limit(50).lean();
     res.json(assets);
   } catch (error) {
     res.status(500).json({ error: error.message });

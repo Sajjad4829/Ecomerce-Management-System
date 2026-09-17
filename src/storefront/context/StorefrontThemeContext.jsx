@@ -106,6 +106,10 @@ export function StorefrontThemeProvider({ children }) {
   // "Preview must allow the admin to inspect a storefront theme WITHOUT permanently activating it."
   // So we can support a URL param ?previewTheme=... which overrides the active theme.
   const [previewThemeId, setPreviewThemeId] = useState(null);
+  const [productPageLayout, setProductPageLayout] = useState('left');
+  const [productGalleryLayout, setProductGalleryLayout] = useState('vertical');
+  const [productGridLayout, setProductGridLayout] = useState('style-2');
+  const [productGridColumns, setProductGridColumns] = useState({ desktop: '4', tablet: '3', mobile: '2' });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -113,7 +117,51 @@ export function StorefrontThemeProvider({ children }) {
     if (preview && storefrontThemes.find(t => t.id === preview)) {
       setPreviewThemeId(preview);
     }
+    
+    const savedLayout = localStorage.getItem('storefront_product_layout');
+    if (savedLayout) {
+      setProductPageLayout(savedLayout);
+    }
+
+    const savedGallery = localStorage.getItem('storefront_product_gallery');
+    if (savedGallery) {
+      setProductGalleryLayout(savedGallery);
+    }
+
+    const savedGrid = localStorage.getItem('storefront_product_grid');
+    if (savedGrid) {
+      setProductGridLayout(savedGrid);
+    }
+    
+    const savedCols = localStorage.getItem('storefront_product_grid_cols');
+    if (savedCols) {
+      try {
+        setProductGridColumns(JSON.parse(savedCols));
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }, []);
+
+  const updateProductPageLayout = (layoutId) => {
+    setProductPageLayout(layoutId);
+    localStorage.setItem('storefront_product_layout', layoutId);
+  };
+
+  const updateProductGalleryLayout = (layoutId) => {
+    setProductGalleryLayout(layoutId);
+    localStorage.setItem('storefront_product_gallery', layoutId);
+  };
+
+  const updateProductGridLayout = (layoutId) => {
+    setProductGridLayout(layoutId);
+    localStorage.setItem('storefront_product_grid', layoutId);
+  };
+
+  const updateProductGridColumns = (cols) => {
+    setProductGridColumns(cols);
+    localStorage.setItem('storefront_product_grid_cols', JSON.stringify(cols));
+  };
 
   const currentThemeId = previewThemeId || activeThemeId;
   const activeTheme = storefrontThemes.find(t => t.id === currentThemeId) || storefrontThemes[0];
@@ -123,7 +171,15 @@ export function StorefrontThemeProvider({ children }) {
       themes: storefrontThemes, 
       activeThemeId, 
       activeTheme, 
-      setTheme 
+      setTheme,
+      productPageLayout,
+      setProductPageLayout: updateProductPageLayout,
+      productGalleryLayout,
+      setProductGalleryLayout: updateProductGalleryLayout,
+      productGridLayout,
+      setProductGridLayout: updateProductGridLayout,
+      productGridColumns,
+      setProductGridColumns: updateProductGridColumns
     }}>
       {children}
     </StorefrontThemeContext.Provider>

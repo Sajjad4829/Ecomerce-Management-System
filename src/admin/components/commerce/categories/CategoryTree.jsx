@@ -12,10 +12,11 @@ const CategoryNode = ({
   onSelectOne, 
   onEdit, 
   onPreview,
-  onDelete
+  onDelete,
+  activeMenu,
+  setActiveMenu
 }) => {
   const [isExpanded, setIsExpanded] = useState(depth < 2);
-  const [activeMenu, setActiveMenu] = useState(null);
 
   const hasChildren = node.children && node.children.length > 0;
   const isMatch = node.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -145,6 +146,8 @@ const CategoryNode = ({
                 onEdit={onEdit}
                 onPreview={onPreview}
                 onDelete={onDelete}
+                activeMenu={activeMenu}
+                setActiveMenu={setActiveMenu}
               />
             ))}
           </motion.div>
@@ -165,9 +168,11 @@ export default function CategoryTree({
   onPreview,
   onDelete
 }) {
+  const [activeMenu, setActiveMenu] = useState(null);
+
   return (
-    <div className="bg-surface rounded-xl border border-border shadow-sm">
-      <div className="flex items-center justify-between p-4 bg-background border-b border-border rounded-t-xl">
+    <div className="bg-surface rounded-xl border border-border shadow-sm" onClick={() => setActiveMenu(null)}>
+      <div className="flex items-center justify-between p-4 bg-background border-b border-border rounded-t-xl" onClick={e => e.stopPropagation()}>
         <div className="flex items-center gap-3 pl-7">
           <input 
             type="checkbox"
@@ -194,6 +199,8 @@ export default function CategoryTree({
             onEdit={onEdit}
             onPreview={onPreview}
             onDelete={onDelete}
+            activeMenu={activeMenu}
+            setActiveMenu={setActiveMenu}
           />
         ))}
         {categories.length === 0 && (

@@ -25,7 +25,6 @@ export default function StorefrontLayout() {
   
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // The PageLoader will now stay visible as long as any of these are true.
@@ -38,9 +37,30 @@ export default function StorefrontLayout() {
     setShowLoader(false);
   };
 
+  const getDevice = () => {
+    if (window.innerWidth < 768) return 'mobile';
+    if (window.innerWidth < 1024) return 'tablet';
+    return 'desktop';
+  };
+  const [device, setDevice] = useState(getDevice());
+  const isMobile = device === 'mobile';
+
+  useEffect(() => {
+    const handleResize = () => setDevice(getDevice());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const getProp = (key) => {
+    const config = headerConfig || {};
+    if (device === 'desktop') return config[key];
+    if (device === 'tablet') return config[`${key}_tablet`] !== undefined ? config[`${key}_tablet`] : config[key];
+    if (device === 'mobile') return config[`${key}_mobile`] !== undefined ? config[`${key}_mobile`] : (config[`${key}_tablet`] !== undefined ? config[`${key}_tablet`] : config[key]);
+  };
+
   const isHomePage = location.pathname === '/';
-  const isTransparentOnTop = (headerConfig?.navbarStyle === 'transparent' && isHomePage) || headerConfig?.transparentOnTop;
-  const navHeight = headerConfig?.height || 72;
+  const isTransparentOnTop = !isMobile && ((getProp('navbarStyle') === 'transparent' && isHomePage) || getProp('transparentOnTop'));
+  const navHeight = getProp('height') || 72;
 
   return (
     <>
@@ -48,10 +68,20 @@ export default function StorefrontLayout() {
       <div className={`min-h-screen flex flex-col font-sans ${activeTheme.tokens.background} ${activeTheme.tokens.text.primary}`}>
         <Navbar />
         <main
-          className="flex-1 flex flex-col w-full"
+          className="flex-1 flex flex-col w-full relative"
           style={{ paddingTop: isTransparentOnTop ? 0 : `${navHeight}px` }}
         >
-          <Outlet />
+          {getProp('enableSearch') !== false && (
+            <div 
+              className={`md:hidden w-full px-3 pb-3 shrink-0 z-20 ${isTransparentOnTop ? 'absolute bg-transparent inset-x-0' : 'relative bg-white'}`}
+              style={{ paddingTop: isTransparentOnTop ? `${navHeight + 8}px` : '8px' }}
+            >
+              <GlobalSearch />
+            </div>
+          )}
+          <div className={isTransparentOnTop ? 'w-full flex-1 relative z-0' : 'w-full flex-1'}>
+            <Outlet />
+          </div>
         </main>
         <CartDrawer />
       </div>

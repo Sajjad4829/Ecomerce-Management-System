@@ -58,22 +58,22 @@ export function CategoryProvider({ children }) {
     categories.filter(c => c.parentId === categoryId), [categories]);
 
   const getCategoryById = useCallback((id) =>
-    categories.find(c => c.id === id) || null, [categories]);
+    categories.find(c => c.id === id || c._id === id) || null, [categories]);
 
   const getCategoryBySlug = useCallback((slug) =>
     categories.find(c => c.slug === slug) || null, [categories]);
 
   const getParentCategory = useCallback((categoryId) => {
-    const category = categories.find(c => c.id === categoryId);
+    const category = categories.find(c => c.id === categoryId || c._id === categoryId);
     if (!category || !category.parentId) return null;
-    return categories.find(c => c.id === category.parentId) || null;
+    return categories.find(c => c.id === category.parentId || c._id === category.parentId) || null;
   }, [categories]);
 
   const getCategoryHierarchy = useCallback((categoryId) => {
     const hierarchy = [];
     let currentId = categoryId;
     while (currentId) {
-      const cat = categories.find(c => c.id === currentId);
+      const cat = categories.find(c => c.id === currentId || c._id === currentId);
       if (cat) { hierarchy.unshift(cat); currentId = cat.parentId; } else break;
     }
     return hierarchy;

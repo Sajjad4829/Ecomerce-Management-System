@@ -52,7 +52,7 @@ export default function AddSectionDrawer({ isOpen, onClose, onAdd, currentPageSe
 
   const currentList = activeTab === 'sections'
     ? sections.filter(s => {
-        const isRealSection = s.id?.startsWith('lib-custom-') || s.id === 'lib-header-banner' || !!libraryConfigurations[s.type];
+        const isRealSection = s.id?.startsWith('lib-custom-') || s.id === 'lib-header-banner' || s.id === 'lib-cat-grid' || s.id === 'lib-cat-car' || !!libraryConfigurations[s.type];
         const keep = s.status === 'Active' && isRealSection;
         return keep;
       })

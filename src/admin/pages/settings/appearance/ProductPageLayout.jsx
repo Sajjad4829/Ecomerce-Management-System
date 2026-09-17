@@ -1,8 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiArrowLeft, FiCheckCircle, FiShoppingCart, FiHeart } from 'react-icons/fi';
+import { useStorefrontTheme } from '../../../../storefront/context/StorefrontThemeContext';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
 
 export default function ProductPageLayout({ onBack }) {
-  const [selectedLayout, setSelectedLayout] = useState('left');
+  const { productPageLayout, setProductPageLayout } = useStorefrontTheme();
+  const [selectedLayout, setSelectedLayout] = useState(productPageLayout || 'left');
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    if (productPageLayout) {
+      setSelectedLayout(productPageLayout);
+    }
+  }, [productPageLayout]);
+
+  const handleSave = () => {
+    if (selectedLayout === productPageLayout) {
+      addToast({ message: 'No changes to save.', type: 'info' });
+      return;
+    }
+    setProductPageLayout(selectedLayout);
+    addToast({ message: 'Product layout updated successfully.', type: 'success' });
+  };
 
   const layouts = [
     { id: 'left', title: 'Image Left, Info Right', desc: 'Product image on the left side and information on the right side.', preview: 'left' },
@@ -27,7 +46,7 @@ export default function ProductPageLayout({ onBack }) {
             <p className="text-sm text-stone-500 mt-1">Choose how product image and information are arranged on the product page.</p>
           </div>
         </div>
-        <button className="flex items-center gap-2 px-6 py-2.5 bg-[#6b46c1] hover:bg-[#553c9a] text-white font-medium rounded-lg shadow-sm transition-colors">
+        <button onClick={handleSave} className="flex items-center gap-2 px-6 py-2.5 bg-[#6b46c1] hover:bg-[#553c9a] text-white font-medium rounded-lg shadow-sm transition-colors">
           <FiCheckCircle size={18} /> Save Changes
         </button>
       </div>
@@ -47,13 +66,13 @@ export default function ProductPageLayout({ onBack }) {
               >
                 {/* Visual Representation */}
                 {(layout.id === 'left' || layout.id === 'right') ? (
-                  <div className="mb-6 flex gap-3 sm:gap-4 h-auto min-h-[160px] bg-white rounded-lg p-0 items-stretch">
+                  <div className={`mb-6 flex h-auto min-h-[160px] bg-white ${layout.id === 'right' ? 'rounded-l-lg rounded-r-none' : 'rounded-r-lg rounded-l-none'} p-0 items-stretch overflow-hidden`}>
                     {layout.id === 'left' && (
-                      <div className="w-1/2 rounded-lg overflow-hidden shrink-0">
+                      <div className="w-1/2 rounded-none overflow-hidden shrink-0">
                         <img src="/white-sofa.png" alt="Sofa" className="w-full h-full object-cover" />
                       </div>
                     )}
-                    <div className="w-1/2 flex flex-col justify-center py-2">
+                    <div className={`w-1/2 flex flex-col justify-center py-4 ${layout.id === 'right' ? 'pr-[15px] pl-0' : 'pl-[15px] pr-0'}`}>
                       <h4 className="font-bold text-[14px] sm:text-[16px] text-stone-900 leading-tight">Veteran-336</h4>
                       <div className="flex flex-wrap items-center text-yellow-500 text-[10px] mt-1 sm:mt-1.5 gap-0.5">
                         <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
@@ -74,7 +93,7 @@ export default function ProductPageLayout({ onBack }) {
                       </div>
                     </div>
                     {layout.id === 'right' && (
-                      <div className="w-1/2 rounded-lg overflow-hidden shrink-0">
+                      <div className="w-1/2 rounded-none overflow-hidden shrink-0">
                         <img src="/white-sofa.png" alt="Sofa" className="w-full h-full object-cover" />
                       </div>
                     )}
@@ -120,11 +139,11 @@ export default function ProductPageLayout({ onBack }) {
                       </div>
                     )}
                     {layout.id === 'left-thumbs-bottom' && (
-                      <div className="-mx-5 -mt-5 mb-5 flex gap-3 sm:gap-4 h-auto bg-white p-5 border-b border-stone-100">
-                        <div className="w-[35%] sm:w-[40%] rounded-[12px] overflow-hidden shrink-0">
+                      <div className="-mx-5 -mt-5 mb-5 flex gap-[15px] h-auto bg-white p-0 border-b border-stone-100 overflow-hidden rounded-r-[10px] rounded-l-none">
+                        <div className="w-[40%] sm:w-[45%] rounded-none overflow-hidden shrink-0">
                           <img src="/white-sofa.png" alt="Sofa" className="w-full h-[140px] sm:h-[160px] object-cover" />
                         </div>
-                        <div className="w-[65%] sm:w-[60%] flex flex-col justify-center">
+                        <div className="w-[60%] sm:w-[55%] flex flex-col justify-center py-4 pr-0">
                           <h4 className="font-bold text-[16px] sm:text-[20px] text-[#0f172a] leading-tight mb-2">Veteran-336</h4>
                           <div className="flex items-center gap-1 sm:gap-1.5 w-full">
                              <span className="text-stone-500 text-[10px] sm:text-[11px] whitespace-nowrap">Starts from</span>

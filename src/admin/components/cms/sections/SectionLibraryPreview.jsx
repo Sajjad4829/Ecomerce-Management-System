@@ -26,6 +26,7 @@ import ProductGridPreview from '../editor/preview/ProductGridPreview';
 import BannerPreview from '../editor/preview/BannerPreview';
 import FeaturesPreview from '../editor/preview/FeaturesPreview';
 import CategoryGridPreview from '../editor/preview/CategoryGridPreview';
+import CategoryCarouselPreview from '../editor/preview/CategoryCarouselPreview';
 import TestimonialsPreview from '../editor/preview/TestimonialsPreview';
 import FAQPreview from '../editor/preview/FAQPreview';
 import FooterPreview from '../editor/preview/FooterPreview';
@@ -77,6 +78,10 @@ function routePreviewComponent(section, device = 'desktop') {
     typeStr === 'FEATURED_PRODUCTS'
   )
     return <ProductGridPreview section={section} device={device} />;
+    
+  if (typeStr.includes('CATEGORY_CAROUSEL'))
+    return <CategoryCarouselPreview section={section} device={device} />;
+    
   if (
     typeStr.includes('CATEGORY') ||
     typeStr === 'FEATURED_CATEGORIES'

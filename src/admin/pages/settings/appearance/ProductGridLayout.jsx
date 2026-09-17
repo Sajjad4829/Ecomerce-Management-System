@@ -68,8 +68,29 @@ const PhoneMockup = () => (
   </div>
 );
 
-const ProductGridLayout = () => {
-  const [selectedStyle, setSelectedStyle] = useState('style-1');
+import { useStorefrontTheme } from '../../../../storefront/context/StorefrontThemeContext';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
+import { FiArrowLeft, FiCheckCircle } from 'react-icons/fi';
+
+const ProductGridLayout = ({ onBack }) => {
+  const { productGridLayout, setProductGridLayout } = useStorefrontTheme();
+  const [selectedStyle, setSelectedStyle] = React.useState(productGridLayout || 'style-2');
+  const { addToast } = useToast();
+
+  React.useEffect(() => {
+    if (productGridLayout) {
+      setSelectedStyle(productGridLayout);
+    }
+  }, [productGridLayout]);
+
+  const handleSave = () => {
+    if (selectedStyle === productGridLayout) {
+      addToast({ message: 'No changes to save.', type: 'info' });
+      return;
+    }
+    setProductGridLayout(selectedStyle);
+    addToast({ message: 'Product grid layout updated successfully.', type: 'success' });
+  };
 
   const styles = [
     {
@@ -123,35 +144,52 @@ const ProductGridLayout = () => {
   ];
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-white">
+    <div className="flex-1 flex flex-col h-full bg-stone-50 overflow-y-auto w-full">
       {/* Header */}
-      <div className="px-8 py-8 flex items-start gap-4 border-b border-stone-100 shrink-0">
-        <div className="w-12 h-12 bg-[#2563eb] rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
-          <FiGrid size={22} />
+      <div className="h-24 px-8 flex items-center justify-between shrink-0 sticky top-0 bg-stone-50/90 backdrop-blur-sm z-10">
+        <div className="flex items-center gap-4">
+          <button onClick={onBack} className="p-2 rounded-full hover:bg-stone-200 text-stone-500 transition-colors">
+            <FiArrowLeft size={20} />
+          </button>
+          <div>
+            <h2 className="text-2xl font-bold text-stone-900">Product Grid Layout</h2>
+            <p className="text-sm text-stone-500 mt-1">Choose a layout style to display your products in a beautiful and professional grid.</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-[26px] font-bold text-[#0f172a] tracking-tight mb-1.5 leading-none">Product Grid</h2>
-          <p className="text-[15px] text-[#64748b] max-w-[500px] leading-relaxed">
-            Choose a layout style to display your products in a beautiful and professional grid on your website.
-          </p>
-        </div>
+        <button onClick={handleSave} className="flex items-center gap-2 px-6 py-2.5 bg-[#6b46c1] hover:bg-[#553c9a] text-white font-medium rounded-lg shadow-sm transition-colors">
+          <FiCheckCircle size={18} /> Save Changes
+        </button>
       </div>
 
       {/* Content */}
       <div className="px-8 py-8 flex flex-col gap-6 overflow-y-auto">
+
         {styles.map((style) => (
           <div 
             key={style.id}
             onClick={() => setSelectedStyle(style.id)}
-            className={`flex flex-col xl:flex-row rounded-[12px] overflow-hidden cursor-pointer bg-white border h-auto shrink-0 shadow-sm transition-all ${
+            className={`flex flex-col xl:flex-row rounded-[12px] overflow-hidden cursor-pointer bg-white border h-auto shrink-0 transition-all ${
               selectedStyle === style.id 
-                ? 'border-[#cbd5e1]' 
-                : 'border-[#f1f5f9] hover:border-[#cbd5e1]'
+                ? 'border-blue-600 ring-1 ring-blue-600 shadow-md' 
+                : 'border-[#f1f5f9] hover:border-[#cbd5e1] shadow-sm'
             }`}
           >
             {/* Left Info Pane */}
-            <div className={`p-8 xl:w-[28%] shrink-0 border-r border-[#f1f5f9] ${style.bgLeft} flex flex-col justify-start`}>
-              <div className="flex items-center gap-3 mb-6">
+            <div className={`p-8 xl:w-[28%] shrink-0 border-r border-[#f1f5f9] ${style.bgLeft} flex flex-col justify-start relative`}>
+              {/* Selection Indicator */}
+              <div className="absolute top-6 right-6">
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                  selectedStyle === style.id ? 'border-blue-600 bg-blue-600' : 'border-black/20 bg-white'
+                }`}>
+                  {selectedStyle === style.id && (
+                    <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 mb-6 pr-8">
                 <div className={`w-10 h-10 rounded-full ${style.iconBg} ${style.iconColor} flex items-center justify-center shrink-0 shadow-sm`}>
                   <style.icon size={18} />
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingBag, User, Menu, ChevronDown, ArrowRight } from 'lucide-react';
+import { Search, ShoppingBag, ShoppingCart, User, Menu, ChevronDown, ArrowRight, X } from 'lucide-react';
 import { useCommerce } from '../../context/CommerceContext';
 import { useAuth } from '../../../auth/context/AuthContext';
 import CartBadge from '../cart/CartBadge';
@@ -10,7 +10,7 @@ import { useCategories } from '../../../admin/context/commerce/CategoryContext';
 import { useProducts } from '../../../admin/context/commerce/ProductContext';
 import { useCollections } from '../../../admin/context/commerce/CollectionContext';
 import { useBrands } from '../../../admin/context/commerce/BrandContext';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import GlobalSearch from '../search/GlobalSearch';
 import MobileMenu from '../layout/MobileMenu';
 import StorefrontMegaMenu from './StorefrontMegaMenu';
@@ -49,13 +49,34 @@ export default function Navbar({ data }) {
 
   const headerTokens = activeTheme.tokens.header;
   
-  const primaryMenuId = headerConfig?.primaryMenuId || 'MNU-001';
+  const getDevice = () => {
+    if (window.innerWidth < 768) return 'mobile';
+    if (window.innerWidth < 1024) return 'tablet';
+    return 'desktop';
+  };
+  const [device, setDevice] = useState(getDevice());
+  const isMobile = device === 'mobile';
+
+  useEffect(() => {
+    const handleResize = () => setDevice(getDevice());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const getProp = (key) => {
+    const config = headerConfig || {};
+    if (device === 'desktop') return config[key];
+    if (device === 'tablet') return config[`${key}_tablet`] !== undefined ? config[`${key}_tablet`] : config[key];
+    if (device === 'mobile') return config[`${key}_mobile`] !== undefined ? config[`${key}_mobile`] : (config[`${key}_tablet`] !== undefined ? config[`${key}_tablet`] : config[key]);
+  };
+
+  const primaryMenuId = getProp('primaryMenuId') || 'MNU-001';
   const headerMenu = menus.find(m => m.id === primaryMenuId)?.items?.filter(i => i.visibility) || [];
 
   // Read settings from the global header config (which the Navbar Builder saves to)
-  const isConfigTransparent = headerConfig?.navbarStyle === 'transparent';
+  const isConfigTransparent = getProp('navbarStyle') === 'transparent';
   const isHomePage = location.pathname === '/';
-  const isTransparentStyle = isConfigTransparent && isHomePage;
+  const isTransparentStyle = !isMobile && (isConfigTransparent && isHomePage);
   
   // Navbar is solid if we are scrolled, NOT marked as transparent, or if hovering over it
   const isSolid = isScrolled || !isTransparentStyle || isHovered || hoveredCategoryId !== null;
@@ -73,12 +94,12 @@ export default function Navbar({ data }) {
     currentIconColor = '#111111';
     currentAccentColor = '#111111';
   } else {
-    currentBgColor = isSolid ? (headerConfig?.backgroundColor || '#ffffff') : 'transparent';
-    if (isScrolled && headerConfig?.scrolledBackgroundColor) {
-      currentBgColor = headerConfig.scrolledBackgroundColor;
+    currentBgColor = isSolid ? (getProp('backgroundColor') || '#ffffff') : 'transparent';
+    if (isScrolled && getProp('scrolledBackgroundColor')) {
+      currentBgColor = getProp('scrolledBackgroundColor');
     }
-    if (isHovered && headerConfig?.navbarHoverBgColor) {
-      currentBgColor = headerConfig.navbarHoverBgColor;
+    if (isHovered && getProp('navbarHoverBgColor')) {
+      currentBgColor = getProp('navbarHoverBgColor');
     }
     
     // Helper to determine text color based on background brightness
@@ -94,13 +115,13 @@ export default function Navbar({ data }) {
       return luma < 128 ? '#ffffff' : '#111111';
     };
 
-    currentTextColor = headerConfig?.textColor;
-    if (isScrolled && headerConfig?.scrolledTextColor) {
-      currentTextColor = headerConfig.scrolledTextColor;
+    currentTextColor = getProp('textColor');
+    if (isScrolled && getProp('scrolledTextColor')) {
+      currentTextColor = getProp('scrolledTextColor');
     }
     
-    if (isHovered && headerConfig?.navbarHoverTextColor) {
-      currentTextColor = headerConfig.navbarHoverTextColor;
+    if (isHovered && getProp('navbarHoverTextColor')) {
+      currentTextColor = getProp('navbarHoverTextColor');
     } else if (!currentTextColor) {
       if (isTransparentStyle && !isSolid) {
         currentTextColor = '#ffffff';
@@ -109,17 +130,17 @@ export default function Navbar({ data }) {
       }
     }
 
-    currentIconColor = headerConfig?.iconColor || currentTextColor;
+    currentIconColor = getProp('iconColor') || currentTextColor;
     currentAccentColor = currentTextColor;
 
-    if (isScrolled && headerConfig?.scrolledAccentColor) {
-      currentIconColor = headerConfig.scrolledAccentColor;
-      currentAccentColor = headerConfig.scrolledAccentColor;
+    if (isScrolled && getProp('scrolledAccentColor')) {
+      currentIconColor = getProp('scrolledAccentColor');
+      currentAccentColor = getProp('scrolledAccentColor');
     }
 
-    if (isHovered && headerConfig?.iconHoverColor) {
-      currentIconColor = headerConfig.iconHoverColor;
-    } else if (!headerConfig?.scrolledAccentColor && ((isTransparentStyle && isSolid) || (isHovered && headerConfig?.navbarHoverTextColor))) {
+    if (isHovered && getProp('iconHoverColor')) {
+      currentIconColor = getProp('iconHoverColor');
+    } else if (!getProp('scrolledAccentColor') && ((isTransparentStyle && isSolid) || (isHovered && getProp('navbarHoverTextColor')))) {
       // When a transparent navbar becomes solid, or when the navbar is hovered,
       // force icons to match the text color so they don't disappear on the changing background.
       currentIconColor = currentTextColor;
@@ -172,7 +193,7 @@ export default function Navbar({ data }) {
     return { title: resolvedTitle || 'Unknown', link: resolvedLink || '#' };
   };
 
-  const navAlignment = headerConfig?.navAlignment || 'space-between';
+  const navAlignment = getProp('navAlignment') || 'space-between';
   
   let containerClasses = 'w-full mx-auto flex items-center h-full justify-between';
   let logoClasses = 'flex items-center h-full shrink-0 group';
@@ -181,7 +202,7 @@ export default function Navbar({ data }) {
     isSolid ? headerTokens.linkSolid : headerTokens.linkTransparent
   }`;
 
-  let menuJustify = headerConfig?.contentAlignment || 'center';
+  let menuJustify = getProp('contentAlignment') || 'center';
 
   if (navAlignment === 'space-between') {
     containerClasses += ' xl:grid xl:grid-cols-3';
@@ -196,14 +217,14 @@ export default function Navbar({ data }) {
 
   // ── Skeleton: on very first visit (no localStorage cache) show a solid
   // placeholder bar so the layout space is reserved and nothing pops in.
-  const hasCache = !configLoading || headerConfig?.logoText || headerConfig?.logoImage;
+  const hasCache = !configLoading || getProp('logoText') || getProp('logoImage');
   if (!navReady && configLoading && !hasCache) {
     return (
       <header
         className="fixed top-0 left-0 w-full z-[100]"
         style={{
-          height: `${headerConfig?.height || 72}px`,
-          backgroundColor: headerConfig?.backgroundColor || '#ffffff',
+          height: `${getProp('height') || 72}px`,
+          backgroundColor: getProp('backgroundColor') || '#ffffff',
         }}
       />
     );
@@ -219,21 +240,21 @@ export default function Navbar({ data }) {
       style={{ 
         backgroundColor: currentBgColor,
         borderBottom: 'none',
-        height: `${headerConfig?.height || 72}px`,
-        paddingTop: `${headerConfig?.paddingTop || 16}px`,
-        paddingBottom: `${headerConfig?.paddingBottom || 16}px`,
-        paddingLeft: `${headerConfig?.paddingLeft || 24}px`,
-        paddingRight: `${headerConfig?.paddingRight || 24}px`,
-        fontFamily: headerConfig?.fontFamily || 'Inter',
+        height: `${getProp('height') || 72}px`,
+        paddingTop: `${getProp('paddingTop') || 16}px`,
+        paddingBottom: `${getProp('paddingBottom') || 16}px`,
+        paddingLeft: `${getProp('paddingLeft') || 24}px`,
+        paddingRight: `${getProp('paddingRight') || 24}px`,
+        fontFamily: getProp('fontFamily') || 'Inter',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Inject dynamic hover styles */}
-      {headerConfig?.textHoverColor && (
+      {getProp('textHoverColor') && (
         <style>{`
           .nav-link-dynamic:hover {
-            color: ${headerConfig.textHoverColor} !important;
+            color: ${getProp('textHoverColor')} !important;
           }
         `}</style>
       )}
@@ -241,10 +262,10 @@ export default function Navbar({ data }) {
         {/* Left Section: Brand Logo */}
         <div className={logoClasses}>
           <Link to="/" className="flex items-center gap-2 group">
-            {headerConfig?.logoType === 'image' && (headerConfig?.logoImage || headerConfig?.logoImageInverse) ? (
+            {getProp('logoType') === 'image' && (getProp('logoImage') || getProp('logoImageInverse')) ? (
               <img 
-                src={(currentTextColor === '#ffffff' || currentTextColor === '#fff' || currentTextColor?.toLowerCase() === 'white') && headerConfig?.logoImageInverse ? headerConfig.logoImageInverse : (headerConfig?.logoImage || headerConfig?.logoImageInverse)} 
-                alt={typeof headerConfig?.logoText === 'string' ? headerConfig.logoText : 'Logo'} 
+                src={(currentTextColor === '#ffffff' || currentTextColor === '#fff' || currentTextColor?.toLowerCase() === 'white') && getProp('logoImageInverse') ? getProp('logoImageInverse') : (getProp('logoImage') || getProp('logoImageInverse'))} 
+                alt={typeof getProp('logoText') === 'string' ? getProp('logoText') : 'Logo'} 
                 className="h-8 md:h-10 object-contain transition-opacity duration-300" 
               />
             ) : (
@@ -252,7 +273,7 @@ export default function Navbar({ data }) {
                 className="text-3xl md:text-[40px] font-black tracking-tighter uppercase text-center leading-none"
                 style={currentTextColor ? { color: currentTextColor } : {}}
               >
-                {headerConfig?.logoText || ''}
+                {getProp('logoText') || ''}
               </span>
             )}
           </Link>
@@ -262,7 +283,7 @@ export default function Navbar({ data }) {
         <nav 
           className={menuClasses} 
           style={{ 
-            gap: `${headerConfig?.spaceBetweenItems || 28}px`,
+            gap: `${getProp('spaceBetweenItems') || 28}px`,
             justifyContent: menuJustify 
           }}
         >
@@ -320,15 +341,15 @@ export default function Navbar({ data }) {
                   }`}
                   style={{
                     color: currentTextColor,
-                    fontSize: `${headerConfig?.fontSize || 15}px`,
-                    fontWeight: headerConfig?.fontWeight || '500',
-                    textTransform: headerConfig?.uppercase ? 'uppercase' : (headerConfig?.textTransform || 'none'),
-                    letterSpacing: `${headerConfig?.letterSpacing || 0}px`
+                    fontSize: `${getProp('fontSize') || 15}px`,
+                    fontWeight: getProp('fontWeight') || '500',
+                    textTransform: getProp('uppercase') ? 'uppercase' : (getProp('textTransform') || 'none'),
+                    letterSpacing: `${getProp('letterSpacing') || 0}px`
                   }}
                 >
                   <span className="relative py-1">
                     {title}
-                    {headerConfig?.enableHoverAnimation !== false && (
+                    {getProp('enableHoverAnimation') !== false && (
                       <span 
                         className="absolute bottom-0 left-1/2 w-4/5 -translate-x-1/2 h-[1.5px] bg-current scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" 
                         style={currentAccentColor ? { backgroundColor: currentAccentColor } : (currentTextColor ? { backgroundColor: currentTextColor } : {})}
@@ -349,51 +370,45 @@ export default function Navbar({ data }) {
           className={iconsClasses}
           style={currentIconColor ? { color: currentIconColor } : {}}
         >
-          {headerConfig?.enableSearch !== false && (
-            <button 
-              onClick={() => setIsSearchOpen(true)}
-              className="p-1 transition-colors hover:opacity-70 nav-icon-dynamic"
-              aria-label="Search"
-            >
-              <Search size={20} />
-            </button>
+          {getProp('enableSearch') !== false && (
+            <div className="hidden md:flex order-1 mr-2 lg:mr-4 relative items-center justify-end z-50">
+              <GlobalSearch isExpandable={true} />
+            </div>
           )}
           
-          {headerConfig?.enableUser !== false && (
+          {getProp('enableCart') !== false && (
+            <button 
+              onClick={openCartDrawer}
+              className="p-1 transition-colors relative hover:opacity-70 nav-icon-dynamic flex order-1 md:order-3"
+              aria-label="Cart"
+            >
+              <ShoppingCart size={20} />
+              <CartBadge />
+            </button>
+          )}
+
+          {getProp('enableUser') !== false && (
             <Link 
               to={isAuthenticated ? "/account" : "/account/login"} 
-              className="p-1 transition-colors hidden sm:flex items-center hover:opacity-70 nav-icon-dynamic"
+              className="p-1 transition-colors flex items-center hover:opacity-70 nav-icon-dynamic order-2 md:order-2"
               aria-label="Account"
             >
               <User size={20} />
               {isAuthenticated && <ChevronDown size={14} className="ml-0.5 mt-0.5" />}
             </Link>
           )}
-          
-          {headerConfig?.enableCart !== false && (
-            <button 
-              onClick={openCartDrawer}
-              className="p-1 transition-colors relative hover:opacity-70 nav-icon-dynamic"
-              aria-label="Cart"
-            >
-              <ShoppingBag size={20} />
-              <CartBadge />
-            </button>
-          )}
 
           {/* Mobile Menu Toggle */}
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
-            className="p-1 transition-colors lg:hidden ml-2 hover:opacity-70 nav-icon-dynamic"
+            className="p-1 transition-colors lg:hidden ml-2 hover:opacity-70 nav-icon-dynamic order-3 md:order-4"
             aria-label="Menu"
           >
             <Menu size={24} />
           </button>
         </div>
       </div>
-      <AnimatePresence>
-        {isSearchOpen && <GlobalSearch onClose={() => setIsSearchOpen(false)} />}
-      </AnimatePresence>
+
       <AnimatePresence>
         <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
       </AnimatePresence>

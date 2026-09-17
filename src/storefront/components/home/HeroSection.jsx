@@ -3,13 +3,17 @@ import { Link } from 'react-router-dom';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
 import { FiChevronLeft, FiChevronRight, FiPhoneCall } from 'react-icons/fi';
 
-export default function HeroSection({ data }) {
+export default function HeroSection({ data, viewport: propViewport }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [viewport, setViewport] = useState('desktop');
+  const [viewport, setViewport] = useState(propViewport || 'desktop');
   const { activeTheme } = useStorefrontTheme();
   const heroTokens = activeTheme.tokens.hero;
 
   useEffect(() => {
+    if (propViewport) {
+      setViewport(propViewport);
+      return;
+    }
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 768) {
@@ -23,7 +27,7 @@ export default function HeroSection({ data }) {
     handleResize(); // Init
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [propViewport]);
 
   const content = data?.content || {};
   const settings = {
@@ -71,19 +75,20 @@ export default function HeroSection({ data }) {
 
   const getProp = (propName) => {
     // Try data.responsive first
-    if (data?.responsive && data.responsive[viewport] && data.responsive[viewport][propName] !== undefined) {
+    if (data?.responsive && data.responsive[viewport] && data.responsive[viewport][propName] != null && data.responsive[viewport][propName] !== '') {
       return data.responsive[viewport][propName];
     }
     
     // Legacy support for _viewport suffixed settings
     if (viewport !== 'desktop') {
       const deviceProp = `${propName}_${viewport}`;
-      if (activeSlide[deviceProp] !== undefined) return activeSlide[deviceProp];
-      if (settings[deviceProp] !== undefined) return settings[deviceProp];
+      if (settings[deviceProp] != null && settings[deviceProp] !== '') return settings[deviceProp];
+      if (activeSlide[deviceProp] != null && activeSlide[deviceProp] !== '') return activeSlide[deviceProp];
     }
 
     // Fallbacks
-    return activeSlide[propName] !== undefined ? activeSlide[propName] : settings[propName];
+    if (settings[propName] != null && settings[propName] !== '') return settings[propName];
+    return activeSlide[propName];
   };
 
   const getLineWidth = (text, type = 'title') => {
@@ -100,7 +105,17 @@ export default function HeroSection({ data }) {
   };
 
   return (
-    <section className="relative w-full h-screen min-h-[600px] flex items-center bg-[#F7F7F7] overflow-hidden group">
+    <section 
+      className={`relative w-full bg-white md:bg-[#F7F7F7] ${propViewport ? 'p-0' : 'p-3 md:p-0'} ${viewport === 'mobile' ? 'h-[300px]' : (propViewport ? 'h-full min-h-0' : 'h-[65vh] md:h-screen min-h-[400px] md:min-h-[600px]')}`}
+      style={propViewport ? { 
+        height: getProp('heroHeight') ? formatUnit(getProp('heroHeight')) : (viewport === 'mobile' ? '300px' : '100%'),
+        width: getProp('heroWidth') ? formatUnit(getProp('heroWidth')) : undefined
+      } : {
+        height: getProp('heroHeight') ? formatUnit(getProp('heroHeight')) : (viewport === 'mobile' ? '300px' : undefined),
+        width: getProp('heroWidth') ? formatUnit(getProp('heroWidth')) : undefined
+      }}
+    >
+      <div className="w-full h-full relative rounded-[20px] md:rounded-none overflow-hidden group mx-auto" style={{ maxWidth: getProp('heroWidth') ? '100%' : undefined }}>
 
       {/* Slider Images Background */}
       {slides.length > 0 ? (
@@ -150,82 +165,92 @@ export default function HeroSection({ data }) {
 
       {/* Overlay */}
       {settings.overlay !== false && (
-        <div
-          className="absolute inset-0 z-0 bg-black transition-opacity duration-300"
-          style={{ opacity: settings.overlayOpacity || '0.2' }}
-        ></div>
+        <div 
+          className="absolute inset-0 z-0 bg-black transition-opacity duration-300" 
+          style={{ opacity: settings.overlayOpacity !== undefined ? settings.overlayOpacity : 0.4 }}
+        />
       )}
 
-      {/* Text Content Overlay */}
-      <div
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-16 lg:mt-24"
-        key={`content-${currentSlide}`}
-        style={{
-          paddingTop: formatUnit(getProp('textPaddingTop')),
-          paddingBottom: formatUnit(getProp('textPaddingBottom')),
-          paddingLeft: formatUnit(getProp('textPaddingLeft')),
-          paddingRight: formatUnit(getProp('textPaddingRight')),
-          marginTop: formatUnit(getProp('textMarginTop')),
-          marginBottom: formatUnit(getProp('textMarginBottom')),
-          marginLeft: formatUnit(getProp('textMarginLeft')),
-          marginRight: formatUnit(getProp('textMarginRight')),
-        }}
-      >
-        {/* Title */}
-        <div className="mb-4 md:mb-6 w-full text-white max-w-7xl">
-          <div className="flex items-center gap-4 md:gap-6 w-full">
-            <h1 
-              className={`${heroTokens.titleSize} ${activeSlide.titleFontFamily || settings.titleFontFamily || heroTokens.fontFamily} ${activeSlide.titleFontWeight || settings.titleFontWeight || 'font-bold'} leading-[1.05] drop-shadow-lg shrink-0`}
-              style={{
-                fontSize: getProp('titleFontSize') ? formatUnit(getProp('titleFontSize')) : undefined,
-                color: getProp('titleColor') || undefined,
-                paddingTop: formatUnit(getProp('titlePaddingTop')),
-                paddingBottom: formatUnit(getProp('titlePaddingBottom')),
-                paddingLeft: formatUnit(getProp('titlePaddingLeft')),
-                paddingRight: formatUnit(getProp('titlePaddingRight')),
-                marginTop: formatUnit(getProp('titleMarginTop')),
-                marginBottom: formatUnit(getProp('titleMarginBottom')),
-                marginLeft: formatUnit(getProp('titleMarginLeft')),
-                marginRight: formatUnit(getProp('titleMarginRight')),
-              }}
-            >
-              {title}
-            </h1>
-            {data?.type?.toLowerCase().includes('hero') && (
-              <div 
-                className={`${getLineWidth(title, 'title')} h-[1px] shadow-sm shrink-0 opacity-70 transition-all duration-300`} 
-                style={{ backgroundColor: getProp('titleColor') || '#ffffff' }}
-              />
-            )}
+      {/* Text Content — absolute positioned so padding/margin settings work exactly as typed */}
+      <div className="absolute inset-0 z-10 overflow-hidden flex flex-col" key={`content-${currentSlide}`}>
+        <div
+          className="flex flex-col w-full h-full justify-center"
+          style={{
+            paddingTop:    formatUnit(getProp('textPaddingTop'))    || (viewport === 'mobile' ? '1rem' : '8rem'),
+            paddingBottom: formatUnit(getProp('textPaddingBottom')),
+            paddingLeft:   formatUnit(getProp('textPaddingLeft'))   || (viewport === 'mobile' ? '1rem' : '2rem'),
+            paddingRight:  formatUnit(getProp('textPaddingRight'))  || (viewport === 'mobile' ? '1rem' : '2rem'),
+            marginTop:     formatUnit(getProp('textMarginTop')),
+            marginBottom:  formatUnit(getProp('textMarginBottom')),
+            marginLeft:    formatUnit(getProp('textMarginLeft')),
+            marginRight:   formatUnit(getProp('textMarginRight')),
+            maxWidth:      '80rem',
+          }}
+        >
+          {/* Title block — margin on wrapper div moves the whole title row */}
+          <div
+            className="w-full text-white"
+            style={{
+              marginTop:    formatUnit(getProp('titleMarginTop')),
+              marginBottom: formatUnit(getProp('titleMarginBottom')) || '0.5rem',
+              marginLeft:   formatUnit(getProp('titleMarginLeft')),
+              marginRight:  formatUnit(getProp('titleMarginRight')),
+            }}
+          >
+            <div className="flex flex-row items-center gap-2 md:gap-6 w-full shrink-0">
+              <h1 
+                className={`text-3xl sm:text-5xl md:text-6xl lg:text-[72px] leading-[1.1] tracking-tight ${getProp('titleFontFamily') || "font-['Montserrat']"} ${getProp('titleFontWeight') || 'font-medium'}`}
+                style={{ 
+                  fontSize: getProp('titleFontSize') ? formatUnit(getProp('titleFontSize')) : undefined,
+                  color: getProp('titleColor') || undefined,
+                }}
+              >
+                {title}
+              </h1>
+              {getProp('showTitleLine') !== false && (
+                <div 
+                  className={`${getLineWidth(title, 'title')} shadow-sm shrink-0 opacity-70 transition-all duration-300`} 
+                  style={{ 
+                    backgroundColor: getProp('titleLineColor') || '#ffffff',
+                    width: getProp('titleLineWidth') ? formatUnit(getProp('titleLineWidth')) : undefined,
+                    height: formatUnit(getProp('titleLineStroke')) || '1px'
+                  }}
+                />
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Subtitle */}
-        <div className="mb-10 md:mb-12 w-full text-white max-w-7xl">
-          <div className="flex items-center gap-4 md:gap-6 w-full">
-            {data?.type?.toLowerCase().includes('hero') && (
-              <div 
-                className={`${getLineWidth(subtitle, 'subtitle')} h-[1px] shadow-sm shrink-0 opacity-70 transition-all duration-300`} 
-                style={{ backgroundColor: getProp('subtitleColor') || '#ffffff' }}
-              />
-            )}
-            <p 
-              className={`text-xl md:text-[36px] opacity-90 ${activeSlide.subtitleFontWeight || settings.subtitleFontWeight || 'font-light'} text-white leading-relaxed drop-shadow-md ${activeSlide.subtitleFontFamily || settings.subtitleFontFamily || ''} shrink-0`}
-              style={{
-                fontSize: getProp('subtitleFontSize') ? formatUnit(getProp('subtitleFontSize')) : undefined,
-                color: getProp('subtitleColor') || undefined,
-                paddingTop: formatUnit(getProp('subtitlePaddingTop')),
-                paddingBottom: formatUnit(getProp('subtitlePaddingBottom')),
-                paddingLeft: formatUnit(getProp('subtitlePaddingLeft')),
-                paddingRight: formatUnit(getProp('subtitlePaddingRight')),
-                marginTop: formatUnit(getProp('subtitleMarginTop')),
-                marginBottom: formatUnit(getProp('subtitleMarginBottom')),
-                marginLeft: formatUnit(getProp('subtitleMarginLeft')),
-                marginRight: formatUnit(getProp('subtitleMarginRight')),
-              }}
-            >
-              {subtitle}
-            </p>
+          {/* Subtitle block — margin on wrapper div moves the whole subtitle row */}
+          <div
+            className="w-full text-white"
+            style={{
+              marginTop:    formatUnit(getProp('subtitleMarginTop')),
+              marginBottom: formatUnit(getProp('subtitleMarginBottom')) || '1rem',
+              marginLeft:   formatUnit(getProp('subtitleMarginLeft')),
+              marginRight:  formatUnit(getProp('subtitleMarginRight')),
+            }}
+          >
+            <div className="flex flex-row items-center gap-2 md:gap-6 w-full shrink-0">
+              {getProp('showSubtitleLine') !== false && (
+                <div 
+                  className={`${getLineWidth(subtitle, 'subtitle')} shadow-sm shrink-0 opacity-70 transition-all duration-300`} 
+                  style={{ 
+                    backgroundColor: getProp('subtitleLineColor') || '#5946ff',
+                    width: getProp('subtitleLineWidth') ? formatUnit(getProp('subtitleLineWidth')) : undefined,
+                    height: formatUnit(getProp('subtitleLineStroke')) || '1px'
+                  }}
+                />
+              )}
+              <p 
+                className={`text-base md:text-[36px] opacity-90 ${getProp('subtitleFontWeight') || 'font-light'} text-white leading-relaxed drop-shadow-md ${getProp('subtitleFontFamily') || ''} shrink-0`}
+                style={{
+                  fontSize: getProp('subtitleFontSize') ? formatUnit(getProp('subtitleFontSize')) : undefined,
+                  color: getProp('subtitleColor') || undefined,
+                }}
+              >
+                {subtitle}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -272,8 +297,7 @@ export default function HeroSection({ data }) {
           <span className="text-xs md:text-sm font-bold tracking-wider drop-shadow-md">{phoneNumber}</span>
         </a>
       )}
-
-
+      </div>
     </section>
   );
 }

@@ -13,6 +13,64 @@ import { useCMS } from '../../../context/cms/CMSContext';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
 import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
 
+const defaultCategories = [
+  { id: 1, name: 'Living Room', status: 'published', count: 120, hasChildren: true },
+  { id: 2, name: 'Sofa Set', status: 'published', count: 45, parent: 'Living Room' },
+  { id: 3, name: 'TV Cabinet', status: 'published', count: 28, parent: 'Living Room' },
+  { id: 4, name: 'Bedroom', status: 'draft', count: 0, hasChildren: false },
+];
+
+const formatDimension = (val, fallback) => {
+  if (!val) return fallback;
+  const cleaned = val.toString().trim().replace(/\s+px$/i, 'px');
+  if (/^\d+$/.test(cleaned)) return `${cleaned}px`;
+  return cleaned;
+};
+
+const DimensionInput = ({ label, value, onChange, placeholder }) => {
+  const numValue = value ? value.toString().replace(/[^0-9.]/g, '') : '';
+  const unit = value && value.toString().includes('%') ? '%' : (value && value.toString().includes('vh') ? 'vh' : 'px');
+  
+  const handleNumChange = (e) => {
+    const v = e.target.value;
+    if (!v) onChange('');
+    else onChange(`${v}${unit}`);
+  };
+
+  const handleUnitChange = (e) => {
+    const u = e.target.value;
+    if (numValue) onChange(`${numValue}${u}`);
+    // If no numValue yet, we can't really set a valid dimension string, but let's just do it so the unit sticks if they type later.
+    // Wait, if we just store the unit, we'd need to store it as "u" which is invalid. So just do nothing or set it.
+    // Actually, setting "px" or "%" as the whole string is fine, the numeric extraction will yield '' and we can handle it.
+    else onChange(`0${u}`); 
+  };
+
+  return (
+    <div>
+      <label className="block text-xs font-bold text-text-primary mb-1.5">{label}</label>
+      <div className="flex rounded-xl overflow-hidden border border-border focus-within:border-primary focus-within:ring-1 focus-within:ring-primary bg-surface">
+        <input 
+          type="number"
+          placeholder={placeholder || 'e.g. 500'}
+          value={numValue}
+          onChange={handleNumChange}
+          className="w-full px-4 py-2.5 bg-transparent focus:outline-none text-sm text-text-primary appearance-none"
+        />
+        <select 
+          value={unit}
+          onChange={handleUnitChange}
+          className="px-3 py-2.5 bg-gray-50 border-l border-border text-sm text-gray-600 focus:outline-none appearance-none"
+        >
+          <option value="px">px</option>
+          <option value="%">%</option>
+          <option value="vh">vh</option>
+        </select>
+      </div>
+    </div>
+  );
+};
+
 const STEPS = [
   { id: 'basic', label: 'Basic Info', number: '1', icon: FiInfo },
   { id: 'media', label: 'Media & Banner', number: '2', icon: FiImage },
@@ -29,6 +87,8 @@ export default function CategoryEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [previewMode, setPreviewMode] = useState('desktop');
+  const [isUploadingBanner, setIsUploadingBanner] = useState(false);
+  const [isUploadingIcon, setIsUploadingIcon] = useState(false);
   const { addToast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -48,7 +108,21 @@ export default function CategoryEditor() {
     seoDescription: '',
     metaKeywords: '',
     canonicalUrl: '',
-    robots: 'index,follow'
+    robots: 'index,follow',
+    showBanner: false,
+    bannerHeight: '',
+    bannerWidth: '',
+    imageWidth: '',
+    imageHeight: '',
+    titleWidth: '',
+    descriptionWidth: '',
+    bannerAlignment: 'center',
+    heroTitle: '',
+    titleFontFamily: '',
+    titleFontSize: '',
+    descriptionFontFamily: '',
+    descriptionFontSize: '',
+    textAlignment: 'text-left'
   });
 
   const { menus, headerConfig } = useCMS();
@@ -73,12 +147,27 @@ export default function CategoryEditor() {
           parentId: cat.parentId || '',
           navMenuId: cat.navMenuId || '',
           image: cat.image || '',
+          bannerImage: cat.bannerImage || '',
           icon: cat.icon || '',
           seoTitle: cat.seo?.metaTitle || '',
           seoDescription: cat.seo?.metaDescription || '',
           metaKeywords: cat.seo?.metaKeywords || '',
           canonicalUrl: cat.seo?.canonicalUrl || '',
-          robots: cat.seo?.robots || 'index,follow'
+          robots: cat.seo?.robots || 'index,follow',
+          showBanner: cat.showBanner !== undefined ? cat.showBanner : false,
+          bannerHeight: cat.bannerHeight || '',
+          bannerWidth: cat.bannerWidth || '',
+          imageWidth: cat.imageWidth || '',
+          imageHeight: cat.imageHeight || '',
+          titleWidth: cat.titleWidth || '',
+          descriptionWidth: cat.descriptionWidth || '',
+          bannerAlignment: cat.bannerAlignment || 'center',
+          heroTitle: cat.heroTitle || '',
+          titleFontFamily: cat.titleFontFamily || '',
+          titleFontSize: cat.titleFontSize || '',
+          descriptionFontFamily: cat.descriptionFontFamily || '',
+          descriptionFontSize: cat.descriptionFontSize || '',
+          textAlignment: cat.textAlignment || 'text-left'
         });
       }
     }
@@ -106,9 +195,17 @@ export default function CategoryEditor() {
   };
 
   const handleSaveDraft = async () => {
+    if (!isNew && !hasUnsavedChanges) {
+      addToast({ type: 'info', message: 'No changes detected' });
+      return;
+    }
+    
     try {
       await handleSave('draft');
-      addToast({ type: 'success', message: 'Category saved as draft' });
+      addToast({ 
+        type: 'success', 
+        message: isNew ? 'Category saved as draft' : 'Category updated successfully' 
+      });
     } catch (error) {
       addToast({ type: 'error', message: error.message || 'Failed to save draft' });
     }
@@ -120,10 +217,22 @@ export default function CategoryEditor() {
       return;
     }
     
+    if (!isNew && !hasUnsavedChanges) {
+      addToast({ type: 'info', message: 'No changes detected' });
+      return;
+    }
+    
     try {
-      await handleSave('published');
-      addToast({ type: 'success', message: 'Category published successfully' });
-      navigate('/admin/catalog/categories');
+      const savedCat = await handleSave('published');
+      addToast({ 
+        type: 'success', 
+        message: isNew ? 'Category published successfully' : 'Category updated successfully' 
+      });
+      
+      // If it was a new category, redirect to the edit page of the newly created category
+      if (isNew && savedCat && savedCat.id) {
+        navigate(`/admin/catalog/categories/${savedCat.id}`);
+      }
     } catch (error) {
       addToast({ type: 'error', message: error.message || 'Failed to publish category' });
     }
@@ -151,17 +260,33 @@ export default function CategoryEditor() {
           metaKeywords: formData.metaKeywords,
           canonicalUrl: formData.canonicalUrl,
           robots: formData.robots
-        }
+        },
+        showBanner: formData.showBanner,
+        bannerHeight: formData.bannerHeight,
+        bannerWidth: formData.bannerWidth,
+        imageWidth: formData.imageWidth,
+        imageHeight: formData.imageHeight,
+        titleWidth: formData.titleWidth,
+        descriptionWidth: formData.descriptionWidth,
+        bannerAlignment: formData.bannerAlignment,
+        heroTitle: formData.heroTitle,
+        titleFontFamily: formData.titleFontFamily,
+        titleFontSize: formData.titleFontSize,
+        descriptionFontFamily: formData.descriptionFontFamily,
+        descriptionFontSize: formData.descriptionFontSize,
+        textAlignment: formData.textAlignment
       };
 
+      let result;
       if (isNew) {
-        await addCategory(payload);
+        result = await addCategory(payload);
       } else {
-        await updateCategory(id, payload);
+        result = await updateCategory(id, payload);
       }
       
       setFormData(prev => ({ ...prev, status: typeof forceStatus === 'string' ? forceStatus : prev.status }));
       setHasUnsavedChanges(false);
+      return result;
     } finally {
       setIsSaving(false);
     }
@@ -215,7 +340,7 @@ export default function CategoryEditor() {
             className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#4F46FF] to-[#6D63FF] text-white font-semibold text-sm rounded-xl hover:opacity-90 transition-opacity shadow-[0_4px_14px_rgba(79,70,255,0.3)] disabled:opacity-50"
           >
             <Rocket size={18} />
-            Publish Category
+            {isNew ? 'Publish Category' : 'Update Category'}
           </button>
         </div>
       </header>
@@ -248,10 +373,13 @@ export default function CategoryEditor() {
       </div>
 
       {/* Main Content Two-Column */}
-      <div className="flex-1 overflow-hidden flex">
+      <div className="flex-1 overflow-hidden flex bg-gradient-to-br from-[#4F46FF]/10 via-[#4F46FF]/5 to-white">
         
         {/* LEFT COLUMN: Form Cards (55%) */}
-        <div className="w-[55%] h-full overflow-y-auto px-8 py-6 pb-32 custom-scrollbar">
+        <div className="w-[55%] h-full overflow-y-auto px-8 py-6 pb-32 hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <style>{`
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+          `}</style>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -330,14 +458,112 @@ export default function CategoryEditor() {
 
 
                     <div>
+                      <div className="mb-6">
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Hero Title (Optional)</label>
+                        <input 
+                          type="text" 
+                          value={formData.heroTitle}
+                          onChange={(e) => handleChange('heroTitle', e.target.value)}
+                          placeholder="Leave blank to use Category Name"
+                          className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
+                        />
+                      </div>
+
                       <label className="block text-xs font-bold text-text-primary mb-1.5">Description</label>
                       <textarea 
                         rows={4}
                         value={formData.description}
                         onChange={(e) => handleChange('description', e.target.value)}
                         placeholder="Write a description for this category..."
-                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F] resize-none"
+                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F] resize-none mb-4"
                       />
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                        <div>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Title Font Family</label>
+                          <select 
+                            value={formData.titleFontFamily}
+                            onChange={(e) => handleChange('titleFontFamily', e.target.value)}
+                            className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary appearance-none"
+                          >
+                            <option value="">Default (Sans)</option>
+                            <option value="font-sans">Sans Serif</option>
+                            <option value="font-serif">Serif</option>
+                            <option value="font-mono">Monospace</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Title Font Size</label>
+                          <input 
+                            type="text"
+                            value={formData.titleFontSize}
+                            onChange={(e) => handleChange('titleFontSize', e.target.value)}
+                            placeholder="e.g. 24px, 2rem"
+                            className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                        <div>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Description Font Family</label>
+                          <select 
+                            value={formData.descriptionFontFamily}
+                            onChange={(e) => handleChange('descriptionFontFamily', e.target.value)}
+                            className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary appearance-none"
+                          >
+                            <option value="">Default (Sans)</option>
+                            <option value="font-sans">Sans Serif</option>
+                            <option value="font-serif">Serif</option>
+                            <option value="font-mono">Monospace</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Description Font Size</label>
+                          <input 
+                            type="text"
+                            value={formData.descriptionFontSize}
+                            onChange={(e) => handleChange('descriptionFontSize', e.target.value)}
+                            placeholder="e.g. 16px, 1rem"
+                            className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                          <label className="block text-xs font-bold text-text-primary mb-1.5">Text Alignment</label>
+                          <select 
+                            value={formData.textAlignment}
+                            onChange={(e) => handleChange('textAlignment', e.target.value)}
+                            className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary appearance-none"
+                          >
+                            <option value="text-left">Left</option>
+                            <option value="text-center">Center</option>
+                            <option value="text-right">Right</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Text Container Dimensions */}
+                      <div className="pt-6 mt-6 border-t border-border/50">
+                        <h3 className="text-sm font-bold text-text-primary mb-4">Text Elements Width</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <DimensionInput 
+                            label="Title Width"
+                            placeholder="e.g. 100"
+                            value={formData.titleWidth}
+                            onChange={(val) => handleChange('titleWidth', val)}
+                          />
+                          <DimensionInput 
+                            label="Description Width"
+                            placeholder="e.g. 100"
+                            value={formData.descriptionWidth}
+                            onChange={(val) => handleChange('descriptionWidth', val)}
+                          />
+                        </div>
+                      </div>
+
                     </div>
 
                   </div>
@@ -354,22 +580,197 @@ export default function CategoryEditor() {
 
                   <div className="space-y-6">
                     <div>
-                      <label className="block text-xs font-bold text-text-primary mb-1.5">Category Banner (Hero)</label>
-                      <div className="border-2 border-dashed border-border rounded-xl bg-background p-12 flex flex-col items-center justify-center text-center hover:bg-primary-soft transition-all cursor-pointer aspect-[21/9]">
-                        <FiImage size={32} className="text-text-muted mb-4" />
-                        <h3 className="text-sm font-bold text-text-primary">Upload Banner Image</h3>
-                        <p className="text-xs text-text-muted mt-1">Recommended: 2400x1000px</p>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-bold text-text-primary">Category Banner (Hero)</label>
+                        {formData.bannerImage && (
+                          <button 
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); handleChange('bannerImage', ''); }}
+                            className="text-xs text-[#FF4D4F] hover:text-[#FF4D4F]/80 font-semibold transition-colors"
+                          >
+                            Remove Banner
+                          </button>
+                        )}
                       </div>
+                      <label className="border-2 border-dashed border-border rounded-xl bg-background flex flex-col items-center justify-center text-center hover:bg-primary-soft transition-all cursor-pointer min-h-[200px] overflow-hidden relative group">
+                        {isUploadingBanner ? (
+                          <div className="p-12 flex flex-col items-center justify-center w-full h-full">
+                            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                            <h3 className="text-sm font-bold text-text-primary">Uploading...</h3>
+                          </div>
+                        ) : formData.bannerImage ? (
+                          <>
+                            <img src={formData.bannerImage} alt="Banner" className="w-full h-auto object-cover" />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <span className="text-white font-semibold text-sm flex items-center gap-2"><FiImage /> Change Banner</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="p-12 flex flex-col items-center justify-center w-full h-full">
+                            <FiImage size={32} className="text-text-muted mb-4" />
+                            <h3 className="text-sm font-bold text-text-primary">Upload Banner Image</h3>
+                            <p className="text-xs text-text-muted mt-1">Recommended: 2400x1000px</p>
+                          </div>
+                        )}
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          onChange={async (e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              setIsUploadingBanner(true);
+                              const uploadData = new FormData();
+                              uploadData.append('file', file);
+                              try {
+                                const response = await fetch('/api/upload', {
+                                  method: 'POST',
+                                  body: uploadData,
+                                });
+                                if (response.ok) {
+                                  const data = await response.json();
+                                  handleChange('bannerImage', data.url);
+                                } else {
+                                  addToast({ type: 'error', message: 'Failed to upload image' });
+                                }
+                              } catch (error) {
+                                console.error("Upload error:", error);
+                                addToast({ type: 'error', message: 'Failed to upload image' });
+                              } finally {
+                                setIsUploadingBanner(false);
+                                e.target.value = ''; // Reset input so same file can be selected again
+                              }
+                            }
+                          }}
+                        />
+                      </label>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-text-primary mb-1.5">Thumbnail (Grid)</label>
-                      <div className="border-2 border-dashed border-border rounded-xl bg-background p-8 flex flex-col items-center justify-center text-center hover:bg-primary-soft transition-all cursor-pointer w-64 aspect-square">
-                        <FiImage size={24} className="text-text-muted mb-2" />
-                        <h3 className="text-sm font-bold text-text-primary">Upload Thumbnail</h3>
+                      <div className="flex items-center justify-between mb-1.5 w-64">
+                        <label className="block text-xs font-bold text-text-primary">Category Icon Image</label>
+                        {formData.image && (
+                          <button 
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); handleChange('image', ''); }}
+                            className="text-xs text-[#FF4D4F] hover:text-[#FF4D4F]/80 font-semibold transition-colors"
+                          >
+                            Remove Icon
+                          </button>
+                        )}
                       </div>
+                      <label className="border-2 border-dashed border-border rounded-xl bg-background flex flex-col items-center justify-center text-center hover:bg-primary-soft transition-all cursor-pointer w-64 aspect-square overflow-hidden relative group">
+                        {isUploadingIcon ? (
+                          <div className="p-8 flex flex-col items-center justify-center w-full h-full">
+                            <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
+                            <h3 className="text-xs font-bold text-text-primary">Uploading...</h3>
+                          </div>
+                        ) : formData.image ? (
+                          <>
+                            <img src={formData.image} alt="Category Icon" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <span className="text-white font-semibold text-sm flex items-center gap-2"><FiImage /> Change</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="p-8 flex flex-col items-center justify-center w-full h-full">
+                            <FiImage size={24} className="text-text-muted mb-2" />
+                            <h3 className="text-sm font-bold text-text-primary">Upload Icon Image</h3>
+                          </div>
+                        )}
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          onChange={async (e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              setIsUploadingIcon(true);
+                              const uploadData = new FormData();
+                              uploadData.append('file', file);
+                              try {
+                                const response = await fetch('/api/upload', {
+                                  method: 'POST',
+                                  body: uploadData,
+                                });
+                                if (response.ok) {
+                                  const data = await response.json();
+                                  handleChange('image', data.url);
+                                } else {
+                                  addToast({ type: 'error', message: 'Failed to upload thumbnail' });
+                                }
+                              } catch (error) {
+                                console.error("Upload error:", error);
+                                addToast({ type: 'error', message: 'Failed to upload thumbnail' });
+                              } finally {
+                                setIsUploadingIcon(false);
+                                e.target.value = '';
+                              }
+                            }
+                          }}
+                        />
+                      </label>
                     </div>
                   </div>
+
+                  {/* Hero Banner Layout Settings */}
+                  <div className="pt-6 mt-6 border-t border-border/50">
+                    <h3 className="text-sm font-bold text-text-primary mb-4">Hero Banner Settings</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="col-span-1 md:col-span-2 flex items-center justify-between p-4 bg-surface border border-border rounded-xl">
+                        <div>
+                          <label className="block text-sm font-bold text-text-primary mb-1">Show Banner on Frontend</label>
+                          <p className="text-xs text-text-muted">If disabled, the hero banner will not be displayed on the category page.</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer"
+                            checked={formData.showBanner || false}
+                            onChange={(e) => handleChange('showBanner', e.target.checked)}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                      </div>
+                      <DimensionInput 
+                        label="Banner Height"
+                        placeholder="e.g. 400"
+                        value={formData.bannerHeight}
+                        onChange={(val) => handleChange('bannerHeight', val)}
+                      />
+                      <DimensionInput 
+                        label="Banner Width"
+                        placeholder="e.g. 100"
+                        value={formData.bannerWidth}
+                        onChange={(val) => handleChange('bannerWidth', val)}
+                      />
+                      <div>
+                        <label className="block text-xs font-bold text-text-primary mb-1.5">Banner Alignment</label>
+                        <select
+                          value={formData.bannerAlignment}
+                          onChange={(e) => handleChange('bannerAlignment', e.target.value)}
+                          className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary"
+                        >
+                          <option value="left">Left</option>
+                          <option value="center">Center</option>
+                          <option value="right">Right</option>
+                        </select>
+                      </div>
+                      <DimensionInput 
+                        label="Image Width"
+                        placeholder="e.g. 55"
+                        value={formData.imageWidth}
+                        onChange={(val) => handleChange('imageWidth', val)}
+                      />
+                      <DimensionInput 
+                        label="Image Height"
+                        placeholder="e.g. 100"
+                        value={formData.imageHeight}
+                        onChange={(val) => handleChange('imageHeight', val)}
+                      />
+                    </div>
+                  </div>
+
                 </div>
               )}
 
@@ -487,72 +888,142 @@ export default function CategoryEditor() {
         </div>
 
         {/* RIGHT COLUMN: Live Preview (45%) */}
-        <div className="w-[45%] h-full flex flex-col relative pr-8 pb-6">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#4F46FF]/5 to-[#6D63FF]/5 rounded-[24px] pointer-events-none blur-3xl opacity-50" />
+        {/* RIGHT COLUMN: Live Preview (45%) */}
+        <div className="w-[45%] h-full flex flex-col relative bg-transparent border-l border-border/50">
           
-          <div className="relative flex-1 bg-surface rounded-[24px] shadow-[0_8px_32px_rgba(17,26,74,0.06)] border border-border flex flex-col overflow-hidden">
-            
-            <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-surface shrink-0 z-20">
-               <div className="flex items-center gap-2.5 px-3 py-1.5 bg-success-soft rounded-full">
-                 <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                 <span className="text-[11px] font-bold text-text-primary uppercase tracking-wide">Live Preview</span>
+          {/* Top Toolbar */}
+          <div className="bg-white/70 backdrop-blur-xl border-b border-gray-200/50 px-6 py-4 flex items-center justify-between shrink-0 z-20">
+             <div className="flex items-center gap-4">
+               <div className="flex items-center gap-2.5 px-4 py-2 bg-white/80 shadow-sm rounded-full">
+                 <div className="w-2 h-2 rounded-full bg-[#00a859]" />
+                 <span className="text-[11px] font-bold text-[#00a859] uppercase tracking-wider">Live Preview</span>
                </div>
-               
-               <div className="flex items-center gap-1 bg-background p-1 rounded-lg">
-                 <button onClick={() => setPreviewMode('desktop')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'desktop' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Desktop View"><FiMonitor size={14} /></button>
-                 <button onClick={() => setPreviewMode('tablet')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'tablet' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Tablet View"><FiTablet size={14} /></button>
-                 <button onClick={() => setPreviewMode('mobile')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'mobile' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Mobile View"><FiSmartphone size={14} /></button>
+               <div className="w-px h-6 bg-gray-200/50"></div>
+             </div>
+             
+             <div className="flex items-center gap-4">
+               <div className="flex items-center gap-2 text-[#111A4A]">
+                 {previewMode === 'desktop' && <><FiMonitor size={16} /><span className="text-sm font-semibold">Desktop <span className="text-gray-500 font-normal">(1920px)</span></span></>}
+                 {previewMode === 'tablet' && <><FiTablet size={16} /><span className="text-sm font-semibold">Tablet <span className="text-gray-500 font-normal">(768px)</span></span></>}
+                 {previewMode === 'mobile' && <><FiSmartphone size={16} /><span className="text-sm font-semibold">Mobile <span className="text-gray-500 font-normal">(375px)</span></span></>}
                </div>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto bg-stone-100 flex justify-center no-scrollbar items-start pt-4 pb-12">
-              <div className={`bg-surface shadow-[0_8px_40px_rgba(0,0,0,0.08)] transition-all duration-300 ease-in-out border border-border overflow-hidden relative ${
-                previewMode === 'mobile' ? 'w-[375px] rounded-[32px] min-h-[812px]' : 
-                previewMode === 'tablet' ? 'w-[768px] rounded-2xl min-h-[1024px]' : 
-                'w-full h-full border-t-0 border-b-0 border-r-0'
-              }`}>
-                {/* Storefront Mock Header */}
-                <div className="h-16 bg-surface border-b border-gray-100 flex items-center justify-between px-6">
-                  <div className="font-serif font-bold text-lg tracking-widest">AURELIA</div>
-                  <div className="flex gap-4">
-                     <div className="w-16 h-2 bg-gray-100 rounded-full"></div>
-                     <div className="w-16 h-2 bg-gray-100 rounded-full"></div>
-                  </div>
-                </div>
-                
-                {/* Category Hero Preview */}
-                <div className="bg-[#111A4A] text-white py-16 px-8 text-center relative overflow-hidden">
-                   <div className="absolute inset-0 bg-black/20 z-10" />
-                   <div className="relative z-20">
-                     <p className="text-[10px] uppercase tracking-[0.2em] mb-4 text-white/70">Shop Category</p>
-                     <h1 className="font-serif text-4xl mb-4">{formData.name || 'Category Name'}</h1>
-                     <p className="max-w-xl mx-auto text-sm text-white/80">{formData.description || 'Category description will appear here on the storefront.'}</p>
-                   </div>
-                </div>
+               <div className="flex items-center gap-1 bg-white/50 p-1.5 rounded-2xl border border-gray-200/50">
+                 <button onClick={() => setPreviewMode('desktop')} className={`p-2 rounded-xl transition-colors ${previewMode === 'desktop' ? 'bg-white shadow-sm text-[#4F46FF]' : 'text-gray-500 hover:text-[#4F46FF]'}`}><FiMonitor size={18} /></button>
+                 <button onClick={() => setPreviewMode('tablet')} className={`p-2 rounded-xl transition-colors ${previewMode === 'tablet' ? 'bg-white shadow-sm text-[#4F46FF]' : 'text-gray-500 hover:text-[#4F46FF]'}`}><FiTablet size={18} /></button>
+                 <button onClick={() => setPreviewMode('mobile')} className={`p-2 rounded-xl transition-colors ${previewMode === 'mobile' ? 'bg-white shadow-sm text-[#4F46FF]' : 'text-gray-500 hover:text-[#4F46FF]'}`}><FiSmartphone size={18} /></button>
+               </div>
+             </div>
+          </div>
+          
+          {/* Preview Container */}
+          <div className="flex-1 bg-white/95 backdrop-blur-2xl flex flex-col overflow-y-auto relative hide-scrollbar">
+            <style>{`
+              .hide-scrollbar::-webkit-scrollbar { display: none; }
+            `}</style>
 
-                {/* Mock Product Grid */}
-                <div className="p-8">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="w-32 h-4 bg-gray-100 rounded"></div>
-                    <div className="w-24 h-8 bg-gray-100 rounded-full"></div>
-                  </div>
-                  <div 
-                    className="grid grid-cols-2 md:grid-cols-3"
-                    style={{ gap: `${Number(formData.cardGap || 0)}px` }}
-                  >
-                    {[1, 2, 3, 4, 5, 6].map(i => (
-                      <div key={i} className="flex flex-col gap-3">
-                        <div className="aspect-[4/5] bg-gray-100 rounded-lg"></div>
-                        <div className="w-3/4 h-3 bg-gray-100 rounded"></div>
-                        <div className="w-1/2 h-3 bg-gray-100 rounded"></div>
+            {previewMode === 'desktop' && (
+              <div className="flex flex-col min-h-full fade-in py-8">
+                <div className="px-8 flex flex-col flex-1">
+                  
+                  {formData.name && (
+                    <div className={`flex flex-col pb-4 w-full ${formData.bannerAlignment === 'left' ? 'mr-auto' : formData.bannerAlignment === 'right' ? 'ml-auto' : 'mx-auto'}`} style={{ maxWidth: formatDimension(formData.bannerWidth, '100%') }}>
+                      <div className="font-serif font-bold text-2xl tracking-widest uppercase text-[#111A4A]">
+                        {formData.name}
                       </div>
-                    ))}
+                    </div>
+                  )}
+
+                  <div 
+                    className={`w-full bg-white flex flex-row ${formData.bannerAlignment === 'left' ? 'mr-auto' : formData.bannerAlignment === 'right' ? 'ml-auto' : 'mx-auto'}`}
+                    style={{
+                      minHeight: formatDimension(formData.bannerHeight, '350px'),
+                      maxWidth: formatDimension(formData.bannerWidth, '100%')
+                    }}
+                  >
+                    <div className="relative shrink-0 bg-gray-50 overflow-hidden w-full">
+                      {formData.bannerImage ? (
+                        <img src={formData.bannerImage} alt="Banner Preview" className={`absolute inset-0 w-full h-full object-cover block z-0 ${formData.bannerAlignment === 'left' ? 'object-left' : formData.bannerAlignment === 'right' ? 'object-right' : 'object-center'}`} style={{ height: formData.imageHeight || '100%' }} />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                          <FiImage size={48} className="opacity-50" />
+                        </div>
+                      )}
+                    </div>
+
+
+                  </div>
+
+                </div>
+              </div>
+            )}
+
+            {previewMode === 'tablet' && (
+              <div className="flex flex-col min-h-full fade-in py-8">
+                <div className="px-8 flex-1 flex justify-center">
+                  <div className="w-[768px] max-w-full flex flex-col h-full">
+                    {formData.name && (
+                      <div 
+                        className={`flex flex-col pb-3 shrink-0 ${formData.textAlignment || 'text-left'}`}
+                        style={{ 
+                          height: formatDimension(formData.textHeight, undefined)
+                        }}
+                      >
+                        <div className="font-serif font-bold text-lg tracking-widest uppercase text-[#111A4A] whitespace-nowrap">
+                          {formData.name}
+                        </div>
+                      </div>
+                    )}
+                    <div 
+                      className="w-full bg-gray-50 overflow-hidden flex flex-col justify-center relative mx-auto shrink-0 transition-all duration-300"
+                      style={{ 
+                        maxWidth: formatDimension(formData.bannerWidth, '100%'),
+                        height: formatDimension(formData.bannerHeight, '300px')
+                      }}
+                    >
+                       {formData.bannerImage ? (
+                         <img src={formData.bannerImage} alt="Banner Preview" className={`absolute inset-0 w-full h-full object-cover block z-0 ${formData.bannerAlignment === 'left' ? 'object-left' : formData.bannerAlignment === 'right' ? 'object-right' : 'object-center'}`} style={{ height: formData.imageHeight || '100%' }} />
+                       ) : (
+                         <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                            <FiImage size={32} className="opacity-50" />
+                         </div>
+                       )}
+                    </div>
                   </div>
                 </div>
-
               </div>
-            </div>
+            )}
 
+            {previewMode === 'mobile' && (
+              <div className="flex flex-col min-h-full fade-in py-8">
+                <div className="px-8 flex-1 flex justify-center">
+                  <div className="w-[375px] max-w-full border-x border-gray-100 px-4 flex flex-col h-full">
+                    {formData.name && (
+                      <div className={`flex flex-col pb-3 shrink-0 ${formData.textAlignment || 'text-left'}`}>
+                        <div className="font-serif font-bold text-base tracking-widest uppercase text-[#111A4A] whitespace-nowrap">
+                          {formData.name}
+                        </div>
+                      </div>
+                    )}
+                    <div 
+                      className="w-full bg-gray-50 overflow-hidden flex flex-col justify-center relative mx-auto shrink-0 transition-all duration-300"
+                      style={{ 
+                        maxWidth: formatDimension(formData.bannerWidth, '100%'),
+                        height: formatDimension(formData.bannerHeight, '200px')
+                      }}
+                    >
+                       {formData.bannerImage ? (
+                         <img src={formData.bannerImage} alt="Banner Preview" className={`absolute inset-0 w-full h-full object-cover block z-0 ${formData.bannerAlignment === 'left' ? 'object-left' : formData.bannerAlignment === 'right' ? 'object-right' : 'object-center'}`} style={{ height: formData.imageHeight || '100%' }} />
+                       ) : (
+                         <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                            <FiImage size={24} className="opacity-50" />
+                         </div>
+                       )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
           </div>
         </div>
       </div>

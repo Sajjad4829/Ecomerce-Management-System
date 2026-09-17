@@ -134,7 +134,7 @@ export default function ThemeCustomizer() {
       ) : activeTab === 'product-fabric' ? (
         <FabricLayout onBack={() => setActiveTab('main')} />
       ) : activeTab === 'product-grid' ? (
-        <ProductGridLayout />
+        <ProductGridLayout onBack={() => setActiveTab('main')} />
       ) : (
         <div className="flex-1 flex flex-col h-full bg-stone-50 overflow-y-auto">
 

@@ -15,6 +15,8 @@ import CreateSectionModal from '../../components/cms/sections/CreateSectionModal
 import FeaturedShowcaseEditorModal from '../../components/cms/editor/FeaturedShowcaseEditorModal';
 import HeaderBannerEditor from '../../components/cms/editor/HeaderBannerEditor';
 import CategoryGridEditor from '../../components/cms/editor/CategoryGridEditor';
+import CategoryCarouselEditor from '../../components/cms/editor/CategoryCarouselEditor';
+import SectionBuilderEditor from '../../components/cms/editor/SectionBuilderEditor';
 
 export default function SectionLibrary() {
   // sectionPreviewMap: { [sectionType] → real saved section instance from MongoDB }
@@ -47,7 +49,7 @@ export default function SectionLibrary() {
 
   // Derive categories dynamically from the loaded sections
   const dynamicCategories = useMemo(() => {
-    const realSections = sections.filter(section => section.id?.startsWith('lib-custom-') || section.id === 'lib-header-banner' || section.id === 'lib-cat-grid' || libraryConfigurations[section.type]);
+    const realSections = sections.filter(section => section.id?.startsWith('lib-custom-') || section.id === 'lib-header-banner' || section.id === 'lib-cat-grid' || section.id === 'lib-cat-car' || section.id === 'lib-section-builder' || libraryConfigurations[section.type]);
 
     const counts = { 'All Sections': realSections.length };
     realSections.forEach(s => {
@@ -79,7 +81,7 @@ export default function SectionLibrary() {
         section.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (section.tags && section.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
 
-      const isRealSection = section.id?.startsWith('lib-custom-') || section.id === 'lib-header-banner' || section.id === 'lib-cat-grid' || libraryConfigurations[section.type];
+      const isRealSection = section.id?.startsWith('lib-custom-') || section.id === 'lib-header-banner' || section.id === 'lib-cat-grid' || section.id === 'lib-cat-car' || section.id === 'lib-section-builder' || libraryConfigurations[section.type];
 
       return matchesCategory && matchesSearch && isRealSection;
     });
@@ -231,6 +233,39 @@ export default function SectionLibrary() {
                 content: updatedSection.content,
                 settings: updatedSection.settings || {}
               });
+              setEditSection(null);
+            }}
+            onClose={() => setEditSection(null)}
+          />
+        ) : editSection.type === 'CATEGORY_CAROUSEL' ? (
+          <CategoryCarouselEditor
+            section={resolveSectionPreview(editSection, sectionPreviewMap, libraryConfigurations) || editSection}
+            pageName="Section Library"
+            onSave={async (updatedSection) => {
+              await saveLibraryConfiguration(editSection.type, {
+                content: updatedSection.content,
+                settings: updatedSection.settings || {}
+              });
+              setEditSection(null);
+            }}
+            onClose={() => setEditSection(null)}
+          />
+        ) : editSection.type === 'SECTION_BUILDER' ? (
+          <SectionBuilderEditor
+            section={resolveSectionPreview(editSection, sectionPreviewMap, libraryConfigurations) || editSection}
+            pageName="Section Library"
+            isLoading={sectionPreviewLoading}
+            onSave={async (updatedSection, hasChanged = true) => {
+              if (!hasChanged) {
+                addToast({ message: 'No changes made', type: 'info' });
+                setEditSection(null);
+                return;
+              }
+              await saveLibraryConfiguration(editSection.type, {
+                content: updatedSection.content,
+                settings: updatedSection.settings || {}
+              });
+              addToast({ message: 'Section template published successfully', type: 'success' });
               setEditSection(null);
             }}
             onClose={() => setEditSection(null)}

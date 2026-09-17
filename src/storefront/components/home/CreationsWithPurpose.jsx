@@ -9,12 +9,12 @@ export default function CreationsWithPurpose({ data, activeTheme, ...settings })
   const ctaText = content.ctaText !== undefined ? content.ctaText : "Explore Now";
   const ctaUrl = content.ctaUrl !== undefined ? content.ctaUrl : "/shop";
   const items = content.items !== undefined ? content.items : [
-    { id: "1", imageUrl: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=800", title: "Bedroom", link: "/category/bedroom" },
-    { id: "2", imageUrl: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&q=80&w=800", title: "Office", link: "/category/office" },
-    { id: "3", imageUrl: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=80&w=800", title: "Living Room", link: "/category/living-room" },
-    { id: "4", imageUrl: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&q=80&w=800", title: "Dining", link: "/category/dining" },
-    { id: "5", imageUrl: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800", title: "Sofa", link: "/category/sofa" },
-    { id: "6", imageUrl: "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?auto=format&fit=crop&q=80&w=800", title: "Kitchen", link: "/category/kitchen" }
+    { id: "1", imageUrl: "", title: "Bedroom", link: "/category/bedroom" },
+    { id: "2", imageUrl: "", title: "Office", link: "/category/office" },
+    { id: "3", imageUrl: "", title: "Living Room", link: "/category/living-room" },
+    { id: "4", imageUrl: "", title: "Dining", link: "/category/dining" },
+    { id: "5", imageUrl: "", title: "Sofa", link: "/category/sofa" },
+    { id: "6", imageUrl: "", title: "Kitchen", link: "/category/kitchen" }
   ];
   
   const resolveSetting = (key, defaultVal) => {
@@ -84,7 +84,9 @@ export default function CreationsWithPurpose({ data, activeTheme, ...settings })
           <div className={getGridClasses("w-full grid gap-4 sm:gap-6")}>
             {items.map((img) => (
               <Link to={img.link} key={img.id} className={`relative overflow-hidden group cursor-pointer bg-neutral-200 block shadow-sm hover:shadow-xl rounded-xl ${getAspectRatioClass()}`}>
-                <img src={img.imageUrl} alt={img.title} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" />
+                {img.imageUrl ? (
+                  <img src={img.imageUrl} alt={img.title} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" />
+                ) : null}
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-8">
                   <span className="text-white text-xl font-serif tracking-wide translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                     {img.title}
@@ -124,16 +126,18 @@ export default function CreationsWithPurpose({ data, activeTheme, ...settings })
           <div className="w-full lg:w-[70%] order-2">
             <div className={getGridClasses("grid gap-2 sm:gap-4")}>
               {items.map((img) => (
-                <Link to={img.link} key={img.id} className={`relative overflow-hidden rounded-none group cursor-pointer bg-gray-100 block ${getAspectRatioClass()}`}>
-                  <img 
-                    src={img.imageUrl} 
-                    alt={img.title} 
-                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-                  />
+                <Link to={img.link} key={img.id} className={`relative overflow-hidden rounded-none group cursor-pointer bg-gray-200 block ${getAspectRatioClass()}`}>
+                  {img.imageUrl ? (
+                    <img 
+                      src={img.imageUrl} 
+                      alt={img.title} 
+                      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : null}
                   {/* Hover Overlay with Category Name */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-8 sm:p-10">
-                    <div className="w-full h-full border border-white flex flex-col items-center justify-center scale-95 group-hover:scale-100 transition-transform duration-500">
-                      <span className="text-white text-3xl md:text-4xl font-bold text-center leading-tight">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 lg:p-8">
+                    <div className="w-full h-full border border-white/90 flex flex-col items-center justify-center scale-95 group-hover:scale-100 transition-transform duration-500 px-2 text-center">
+                      <span className="text-white text-base lg:text-xl font-bold leading-tight drop-shadow-sm">
                         {img.title}<br/>space
                       </span>
                     </div>

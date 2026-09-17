@@ -5,6 +5,7 @@ import {
   FiImage, FiChevronDown, FiX, FiEdit2, FiSettings, FiMonitor, FiTablet, FiSmartphone
 } from 'react-icons/fi';
 import { GripVertical } from 'lucide-react';
+import CategoryImage from './CategoryImage';
 import { cn } from '../../../../utils/cn';
 import CategoryGridSection from '../../../../storefront/components/home/CategoryGridSection';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
@@ -222,11 +223,12 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
                           </div>
 
                           <div className="w-10 h-10 bg-gray-50 rounded border border-gray-100 flex items-center justify-center overflow-hidden shrink-0">
-                            {cat.image ? (
-                              <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <FiImage size={14} className="text-gray-300" />
-                            )}
+                            <CategoryImage 
+                              src={cat.image}
+                              categoryName={cat.name}
+                              alt={cat.name}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
 
                           <div className="flex-1 min-w-0 flex flex-col gap-1.5 justify-center">
@@ -383,7 +385,7 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
                   </select>
                 </div>
 
-                <div className="space-y-2">
+                  <div className="space-y-2">
                   <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Card Gap</label>
                   <div className="flex items-center gap-3">
                     <button 
@@ -416,6 +418,54 @@ export default function CategoryGridEditor({ section, pageName, onUpdate, onClos
                       <FiPlus size={14} />
                     </button>
                     <span className="text-xs text-gray-500 font-mono pr-1">px</span>
+                  </div>
+                </div>
+
+                {/* Block Padding */}
+                <div className="pt-4 border-t border-gray-100 mt-4">
+                  <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Block Padding <span className="text-gray-400">(px)</span></span>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {[
+                      { label: 'Top', key: 'textPaddingTop' },
+                      { label: 'Right', key: 'textPaddingRight' },
+                      { label: 'Bottom', key: 'textPaddingBottom' },
+                      { label: 'Left', key: 'textPaddingLeft' },
+                    ].map(({ label, key }) => (
+                      <div key={key}>
+                        <span className="text-[9px] text-gray-400 block text-center mb-0.5">{label}</span>
+                        <input
+                          type="number"
+                          placeholder="0"
+                          value={settings[getPropName(key)] || ''}
+                          onChange={(e) => setSettings({ ...settings, [getPropName(key)]: e.target.value })}
+                          className="w-full border border-gray-300 rounded px-1.5 py-1.5 text-xs text-center focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Block Margin */}
+                <div className="pt-2 mt-2">
+                  <span className="text-[10px] text-gray-500 font-medium block mb-1.5">Block Margin <span className="text-gray-400">(px)</span></span>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {[
+                      { label: 'Top', key: 'textMarginTop' },
+                      { label: 'Right', key: 'textMarginRight' },
+                      { label: 'Bottom', key: 'textMarginBottom' },
+                      { label: 'Left', key: 'textMarginLeft' },
+                    ].map(({ label, key }) => (
+                      <div key={key}>
+                        <span className="text-[9px] text-gray-400 block text-center mb-0.5">{label}</span>
+                        <input
+                          type="number"
+                          placeholder="0"
+                          value={settings[getPropName(key)] || ''}
+                          onChange={(e) => setSettings({ ...settings, [getPropName(key)]: e.target.value })}
+                          className="w-full border border-gray-300 rounded px-1.5 py-1.5 text-xs text-center focus:outline-none focus:ring-1 focus:ring-[#5946ff]"
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

@@ -42,6 +42,19 @@ export default function NavbarEditor() {
 
   const updateConfig = (key, value) => setConfig(prev => ({ ...prev, [key]: value }));
 
+  
+  const getProp = (key) => {
+    if (device === 'desktop') return config[key];
+    if (device === 'tablet') return config[`${key}_tablet`] !== undefined ? config[`${key}_tablet`] : config[key];
+    if (device === 'mobile') return config[`${key}_mobile`] !== undefined ? config[`${key}_mobile`] : (config[`${key}_tablet`] !== undefined ? config[`${key}_tablet`] : config[key]);
+  };
+
+  const updateProp = (key, value) => {
+    if (device === 'desktop') updateConfig(key, value);
+    else updateConfig(`${key}_${device}`, value);
+  };
+
+
   useEffect(() => {
     const primaryMenuId = headerConfig?.primaryMenuId || 'MNU-001';
     const globalMenu = menus?.find(m => m.id === primaryMenuId);
@@ -71,7 +84,7 @@ export default function NavbarEditor() {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => updateConfig('logoImage', reader.result);
+      reader.onloadend = () => updateProp('logoImage', reader.result);
       reader.readAsDataURL(file);
     }
   };
@@ -80,7 +93,7 @@ export default function NavbarEditor() {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => updateConfig('logoImageInverse', reader.result);
+      reader.onloadend = () => updateProp('logoImageInverse', reader.result);
       reader.readAsDataURL(file);
     }
   };
@@ -135,10 +148,10 @@ export default function NavbarEditor() {
       <div className="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0 z-20">
         <div className="flex items-center gap-4">
           <div className="flex items-center text-xl font-black shrink-0">
-            {config.logoType === 'text' ? (
-                    <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || ''}</span>
+            {getProp('logoType') === 'text' ? (
+                    <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{getProp('logoText') || ''}</span>
             ) : (
-              config.logoImage ? <img src={config.logoImage} alt="Logo" className="h-8 object-contain" /> : <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">LOGO</span>
+              getProp('logoImage') ? <img src={getProp('logoImage')} alt="Logo" className="h-8 object-contain" /> : <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">LOGO</span>
             )}
           </div>
           <div>
@@ -185,7 +198,7 @@ export default function NavbarEditor() {
 
         {/* Middle Settings Column */}
         <div className="w-80 shrink-0 bg-white border-r border-gray-200 h-full overflow-y-auto p-6">
-          <SettingsPanel activeTab={activeTab} config={config} updateConfig={updateConfig} links={links}
+          <SettingsPanel activeTab={activeTab} getProp={getProp} updateProp={updateProp} links={links}
            setLinks={setLinks} activeLinkId={activeLinkId} setActiveLinkId={setActiveLinkId}
            handleImageUpload={handleImageUpload} handleInverseImageUpload={handleInverseImageUpload} />
         </div>
@@ -216,12 +229,12 @@ export default function NavbarEditor() {
               
               {/* Dynamic Navbar Render */}
               {(() => {
-                const navAlignment = config.navAlignment || 'space-between';
+                const navAlignment = getProp('navAlignment') || 'space-between';
                 let containerClasses = 'w-full min-w-max flex items-center justify-between';
                 let logoClasses = 'flex items-center text-xl font-black shrink-0';
                 let menuClasses = 'flex items-center flex-1 flex-nowrap';
                 let actionsClasses = 'flex items-center gap-5 shrink-0 ml-4';
-                let menuJustify = config.contentAlignment || 'center';
+                let menuJustify = getProp('contentAlignment') || 'center';
 
                 if (device === 'desktop') {
                   if (navAlignment === 'space-between') {
@@ -239,51 +252,51 @@ export default function NavbarEditor() {
                 return (
               <div 
                 style={{
-                  backgroundColor: config.backgroundColor,
-                  color: config.textColor,
+                  backgroundColor: getProp('backgroundColor'),
+                  color: getProp('textColor'),
                   borderBottom: 'none',
-                  height: `${config.height || 72}px`,
-                  paddingTop: `${config.paddingTop || 0}px`,
-                  paddingBottom: `${config.paddingBottom || 0}px`,
-                  paddingLeft: `${config.paddingLeft || 24}px`,
-                  paddingRight: `${config.paddingRight || 24}px`,
-                  fontFamily: config.fontFamily || 'Inter',
+                  height: `${getProp('height') || 72}px`,
+                  paddingTop: `${getProp('paddingTop') || 0}px`,
+                  paddingBottom: `${getProp('paddingBottom') || 0}px`,
+                  paddingLeft: `${getProp('paddingLeft') || 24}px`,
+                  paddingRight: `${getProp('paddingRight') || 24}px`,
+                  fontFamily: getProp('fontFamily') || 'Inter',
                 }}
-                className={`${containerClasses} custom-scrollbar ${config.navbarStyle === 'transparent' ? 'absolute top-0 left-0 z-10 !bg-transparent !border-none text-white' : ''} ${config.navbarStyle === 'dark' ? '!bg-gray-900 !text-white' : ''}`}
+                className={`${containerClasses} custom-scrollbar ${getProp('navbarStyle') === 'transparent' ? 'absolute top-0 left-0 z-10 !bg-transparent !border-none text-white' : ''} ${getProp('navbarStyle') === 'dark' ? '!bg-gray-900 !text-white' : ''}`}
               >
                 {/* Inject hover styles for preview */}
-                {config.textHoverColor && (
+                {getProp('textHoverColor') && (
                   <style>{`
                     .preview-nav-link:hover {
-                      color: ${config.textHoverColor} !important;
+                      color: ${getProp('textHoverColor')} !important;
                     }
                   `}</style>
                 )}
                 {/* Logo */}
                 <div className={logoClasses}>
-                  {config.logoType === 'text' ? (
-                    <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || ''}</span>
+                  {getProp('logoType') === 'text' ? (
+                    <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{getProp('logoText') || ''}</span>
                   ) : (
-                    config.logoImage ? <img src={config.logoImage} alt="Logo" className="h-8 object-contain" /> : 'LOGO'
+                    getProp('logoImage') ? <img src={getProp('logoImage')} alt="Logo" className="h-8 object-contain" /> : 'LOGO'
                   )}
                 </div>
                 
                 {/* Links */}
                 {device === 'desktop' && (
-                  <div className={menuClasses} style={{ gap: `${config.spaceBetweenItems ?? 16}px`, justifyContent: menuJustify }}>
+                  <div className={menuClasses} style={{ gap: `${getProp('spaceBetweenItems') ?? 16}px`, justifyContent: menuJustify }}>
                     {links.map(link => (
                       <span 
                         key={link.id} 
                         className="preview-nav-link cursor-pointer transition-colors relative group flex items-center gap-1 whitespace-nowrap"
                         style={{
-                          fontSize: `${config.fontSize || 15}px`,
-                          fontWeight: config.fontWeight || '500',
-                          textTransform: config.uppercase ? 'uppercase' : config.textTransform || 'none',
-                          letterSpacing: `${config.letterSpacing || 0}px`
+                          fontSize: `${getProp('fontSize') || 15}px`,
+                          fontWeight: getProp('fontWeight') || '500',
+                          textTransform: getProp('uppercase') ? 'uppercase' : getProp('textTransform') || 'none',
+                          letterSpacing: `${getProp('letterSpacing') || 0}px`
                         }}
                       >
                         {link.text}
-                        {config.underlineOnHover && <div className="absolute left-0 bottom-[-4px] w-0 h-px bg-current group-hover:w-full transition-all duration-300" />}
+                        {getProp('underlineOnHover') && <div className="absolute left-0 bottom-[-4px] w-0 h-px bg-current group-hover:w-full transition-all duration-300" />}
                       </span>
                     ))}
                   </div>
@@ -292,19 +305,19 @@ export default function NavbarEditor() {
                 {/* Actions */}
                 <div 
                   className={actionsClasses}
-                  style={config.iconColor ? { color: config.iconColor } : {}}
+                  style={getProp('iconColor') ? { color: getProp('iconColor') } : {}}
                 >
-                  {config.enableSearch && (
+                  {getProp('enableSearch') && (
                     <button className="preview-nav-icon transition-colors hover:opacity-70 p-1">
                       <Search size={20} />
                     </button>
                   )}
-                  {config.enableUser && (
+                  {getProp('enableUser') && (
                     <div className="flex items-center gap-1 preview-nav-icon transition-colors hover:opacity-70 p-1 cursor-pointer">
                       <User size={20} /><FiChevronDown size={14} className="text-gray-600" />
                     </div>
                   )}
-                  {config.enableCart && (
+                  {getProp('enableCart') && (
                     <div className="relative preview-nav-icon transition-colors hover:opacity-70 p-1 cursor-pointer">
                       <ShoppingBag size={20} />
                       <span className="absolute -top-2 -right-2 bg-[#e60000] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
@@ -326,10 +339,10 @@ export default function NavbarEditor() {
                   <div className="w-[80%] max-w-sm bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-left duration-300 relative z-50">
                     <div className="flex items-center justify-between p-4 border-b border-gray-100 shrink-0">
                       <div className="flex items-center text-xl font-black shrink-0">
-                        {config.logoType === 'text' ? (
-                          <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{config.logoText || ''}</span>
+                        {getProp('logoType') === 'text' ? (
+                          <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">{getProp('logoText') || ''}</span>
                         ) : (
-                          config.logoImage ? <img src={config.logoImage} alt="Logo" className="h-8 object-contain" /> : <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">LOGO</span>
+                          getProp('logoImage') ? <img src={getProp('logoImage')} alt="Logo" className="h-8 object-contain" /> : <span className="bg-red-600 text-white px-3 py-1 rounded-sm text-lg tracking-wider">LOGO</span>
                         )}
                       </div>
                       <button onClick={() => setIsMobileMenuOpen(false)} className="text-gray-500 hover:bg-gray-100 p-1 rounded-full">
@@ -363,9 +376,9 @@ export default function NavbarEditor() {
                   return isNaN(r) ? 1 : (0.299 * r + 0.587 * g + 0.114 * b) / 255;
                 };
                 
-                const isTransparent = config.navbarStyle === 'transparent';
+                const isTransparent = getProp('navbarStyle') === 'transparent';
                 // If text is dark (luminance < 0.5), we need a light background for the transparent preview
-                const needsLightBackground = isTransparent && config.textColor && getLuminance(config.textColor) < 0.5;
+                const needsLightBackground = isTransparent && getProp('textColor') && getLuminance(getProp('textColor')) < 0.5;
                 
                 const bgClass = isTransparent 
                   ? (needsLightBackground ? 'bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200' : 'bg-gradient-to-br from-slate-900 via-[#1e1b4b] to-black')
@@ -401,7 +414,7 @@ export default function NavbarEditor() {
   );
 }
 
-function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activeLinkId, setActiveLinkId, handleImageUpload, handleInverseImageUpload }) {
+function SettingsPanel({ activeTab, getProp, updateProp, links, setLinks, activeLinkId, setActiveLinkId, handleImageUpload, handleInverseImageUpload }) {
   if (activeTab === 'style') {
     return (
       <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-300">
@@ -412,11 +425,11 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
              {['default', 'transparent', 'sticky', 'dark'].map((style) => (
                 <div key={style} className="relative w-full">
-                  {config.navbarStyle === style ? (
+                  {getProp('navbarStyle') === style ? (
                     <>
                       <div className="absolute inset-0 bg-white border border-[#574fef]/30 rounded-full translate-x-1 translate-y-1"></div>
                       <button
-                        onClick={() => updateConfig('navbarStyle', style)}
+                        onClick={() => updateProp('navbarStyle', style)}
                         className="relative z-10 w-full py-2.5 px-2 bg-gradient-to-r from-[#827af7] to-[#574fef] text-white text-[11px] font-bold uppercase tracking-widest rounded-full flex items-center justify-center gap-1 transition-transform active:translate-x-1 active:translate-y-1"
                       >
                         {style} <ChevronRight size={14} strokeWidth={3} />
@@ -424,7 +437,7 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
                     </>
                   ) : (
                     <button
-                      onClick={() => updateConfig('navbarStyle', style)}
+                      onClick={() => updateProp('navbarStyle', style)}
                       className="w-full py-2.5 px-2 bg-white text-gray-500 border border-gray-200 text-[11px] font-bold uppercase tracking-widest rounded-full hover:bg-gray-50 hover:text-gray-800 transition-colors"
                     >
                       {style}
@@ -438,9 +451,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
         <div className="space-y-3">
           <label className="text-sm font-semibold text-gray-700">Background Color</label>
           <div className="flex gap-2 items-center">
-             <input type="color" value={config.backgroundColor || '#ffffff'} onChange={(e) => updateConfig('backgroundColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-             <input type="text" value={config.backgroundColor || ''} onChange={(e) => updateConfig('backgroundColor', e.target.value)} placeholder="Transparent" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-             <button onClick={() => updateConfig('backgroundColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+             <input type="color" value={getProp('backgroundColor') || '#ffffff'} onChange={(e) => updateProp('backgroundColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+             <input type="text" value={getProp('backgroundColor') || ''} onChange={(e) => updateProp('backgroundColor', e.target.value)} placeholder="Transparent" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+             <button onClick={() => updateProp('backgroundColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                <FiX size={16} />
              </button>
           </div>
@@ -449,9 +462,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
         <div className="space-y-3">
           <label className="text-sm font-semibold text-gray-700">Hover Background Color</label>
           <div className="flex gap-2 items-center">
-             <input type="color" value={config.navbarHoverBgColor || '#f9fafb'} onChange={(e) => updateConfig('navbarHoverBgColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-             <input type="text" value={config.navbarHoverBgColor || ''} onChange={(e) => updateConfig('navbarHoverBgColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-             <button onClick={() => updateConfig('navbarHoverBgColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+             <input type="color" value={getProp('navbarHoverBgColor') || '#f9fafb'} onChange={(e) => updateProp('navbarHoverBgColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+             <input type="text" value={getProp('navbarHoverBgColor') || ''} onChange={(e) => updateProp('navbarHoverBgColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+             <button onClick={() => updateProp('navbarHoverBgColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                <FiX size={16} />
              </button>
           </div>
@@ -460,9 +473,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
         <div className="space-y-3">
           <label className="text-sm font-semibold text-gray-700">Hover Text Color</label>
           <div className="flex gap-2 items-center">
-             <input type="color" value={config.navbarHoverTextColor || '#111111'} onChange={(e) => updateConfig('navbarHoverTextColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-             <input type="text" value={config.navbarHoverTextColor || ''} onChange={(e) => updateConfig('navbarHoverTextColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-             <button onClick={() => updateConfig('navbarHoverTextColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+             <input type="color" value={getProp('navbarHoverTextColor') || '#111111'} onChange={(e) => updateProp('navbarHoverTextColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+             <input type="text" value={getProp('navbarHoverTextColor') || ''} onChange={(e) => updateProp('navbarHoverTextColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+             <button onClick={() => updateProp('navbarHoverTextColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                <FiX size={16} />
              </button>
           </div>
@@ -480,14 +493,14 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          
          <div className="space-y-3">
             <label className="text-sm font-semibold text-gray-700">Height (px)</label>
-            <input type="number" value={config.height || 72} onChange={(e) => updateConfig('height', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
+            <input type="number" value={getProp('height') || 72} onChange={(e) => updateProp('height', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
          </div>
 
          <div className="space-y-3">
             <label className="text-sm font-semibold text-gray-700">Content Alignment</label>
             <div className="flex bg-gray-100 p-1 rounded-lg">
               {['space-between', 'left', 'center', 'right'].map(align => (
-                <button key={align} onClick={() => updateConfig('navAlignment', align)} className={`flex-1 py-1.5 text-[10px] capitalize font-medium rounded-md ${config.navAlignment === align || (!config.navAlignment && align === 'space-between') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}>{align.replace('-', ' ')}</button>
+                <button key={align} onClick={() => updateProp('navAlignment', align)} className={`flex-1 py-1.5 text-[10px] capitalize font-medium rounded-md ${getProp('navAlignment') === align || (!getProp('navAlignment') && align === 'space-between') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}>{align.replace('-', ' ')}</button>
               ))}
             </div>
          </div>
@@ -496,14 +509,14 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
             <label className="text-sm font-semibold text-gray-700">Menus Alignment</label>
             <div className="flex bg-gray-100 p-1 rounded-lg">
               {['left', 'center', 'right'].map(align => (
-                <button key={align} onClick={() => updateConfig('contentAlignment', align)} className={`flex-1 py-1.5 text-xs capitalize font-medium rounded-md ${config.contentAlignment === align || (!config.contentAlignment && align === 'center') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}>{align}</button>
+                <button key={align} onClick={() => updateProp('contentAlignment', align)} className={`flex-1 py-1.5 text-xs capitalize font-medium rounded-md ${getProp('contentAlignment') === align || (!getProp('contentAlignment') && align === 'center') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}>{align}</button>
               ))}
             </div>
          </div>
 
          <div className="space-y-3">
             <label className="text-sm font-semibold text-gray-700">Menu Item Gap (px)</label>
-            <input type="number" value={config.spaceBetweenItems ?? 16} onChange={(e) => updateConfig('spaceBetweenItems', Number(e.target.value))} className="w-full p-2 border rounded-lg text-sm" />
+            <input type="number" value={getProp('spaceBetweenItems') ?? 16} onChange={(e) => updateProp('spaceBetweenItems', Number(e.target.value))} className="w-full p-2 border rounded-lg text-sm" />
          </div>
 
          <div className="space-y-3">
@@ -511,19 +524,19 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <span className="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">Top</span>
-                <input type="number" value={config.paddingTop || 0} onChange={(e) => updateConfig('paddingTop', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
+                <input type="number" value={getProp('paddingTop') || 0} onChange={(e) => updateProp('paddingTop', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
               </div>
               <div>
                 <span className="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">Bottom</span>
-                <input type="number" value={config.paddingBottom || 0} onChange={(e) => updateConfig('paddingBottom', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
+                <input type="number" value={getProp('paddingBottom') || 0} onChange={(e) => updateProp('paddingBottom', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
               </div>
               <div>
                 <span className="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">Left</span>
-                <input type="number" value={config.paddingLeft || 0} onChange={(e) => updateConfig('paddingLeft', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
+                <input type="number" value={getProp('paddingLeft') || 0} onChange={(e) => updateProp('paddingLeft', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
               </div>
               <div>
                 <span className="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">Right</span>
-                <input type="number" value={config.paddingRight || 0} onChange={(e) => updateConfig('paddingRight', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
+                <input type="number" value={getProp('paddingRight') || 0} onChange={(e) => updateProp('paddingRight', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
               </div>
             </div>
          </div>
@@ -538,9 +551,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="space-y-3">
              <label className="text-sm font-semibold text-gray-700">Text Color</label>
              <div className="flex gap-2 items-center">
-               <input type="color" value={config.textColor || '#000000'} onChange={(e) => updateConfig('textColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-               <input type="text" value={config.textColor || ''} onChange={(e) => updateConfig('textColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-               <button onClick={() => updateConfig('textColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+               <input type="color" value={getProp('textColor') || '#000000'} onChange={(e) => updateProp('textColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+               <input type="text" value={getProp('textColor') || ''} onChange={(e) => updateProp('textColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+               <button onClick={() => updateProp('textColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                  <FiX size={16} />
                </button>
              </div>
@@ -548,9 +561,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="space-y-3">
              <label className="text-sm font-semibold text-gray-700">Hover Text Color</label>
              <div className="flex gap-2 items-center">
-                <input type="color" value={config.textHoverColor || '#000000'} onChange={(e) => updateConfig('textHoverColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-                <input type="text" value={config.textHoverColor || ''} onChange={(e) => updateConfig('textHoverColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-                <button onClick={() => updateConfig('textHoverColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                <input type="color" value={getProp('textHoverColor') || '#000000'} onChange={(e) => updateProp('textHoverColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                <input type="text" value={getProp('textHoverColor') || ''} onChange={(e) => updateProp('textHoverColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                <button onClick={() => updateProp('textHoverColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                   <FiX size={16} />
                 </button>
              </div>
@@ -563,9 +576,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="space-y-3">
              <label className="text-sm font-semibold text-gray-700">Scrolled Background Color</label>
              <div className="flex gap-2 items-center">
-                <input type="color" value={config.scrolledBackgroundColor || '#ffffff'} onChange={(e) => updateConfig('scrolledBackgroundColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-                <input type="text" value={config.scrolledBackgroundColor || ''} onChange={(e) => updateConfig('scrolledBackgroundColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-                <button onClick={() => updateConfig('scrolledBackgroundColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                <input type="color" value={getProp('scrolledBackgroundColor') || '#ffffff'} onChange={(e) => updateProp('scrolledBackgroundColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                <input type="text" value={getProp('scrolledBackgroundColor') || ''} onChange={(e) => updateProp('scrolledBackgroundColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                <button onClick={() => updateProp('scrolledBackgroundColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                   <FiX size={16} />
                 </button>
              </div>
@@ -573,9 +586,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="space-y-3">
              <label className="text-sm font-semibold text-gray-700">Scrolled Text Color</label>
              <div className="flex gap-2 items-center">
-                <input type="color" value={config.scrolledTextColor || '#000000'} onChange={(e) => updateConfig('scrolledTextColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-                <input type="text" value={config.scrolledTextColor || ''} onChange={(e) => updateConfig('scrolledTextColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-                <button onClick={() => updateConfig('scrolledTextColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                <input type="color" value={getProp('scrolledTextColor') || '#000000'} onChange={(e) => updateProp('scrolledTextColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                <input type="text" value={getProp('scrolledTextColor') || ''} onChange={(e) => updateProp('scrolledTextColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                <button onClick={() => updateProp('scrolledTextColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                   <FiX size={16} />
                 </button>
              </div>
@@ -583,9 +596,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="space-y-3">
              <label className="text-sm font-semibold text-gray-700">Scrolled Accent Color</label>
              <div className="flex gap-2 items-center">
-                <input type="color" value={config.scrolledAccentColor || '#000000'} onChange={(e) => updateConfig('scrolledAccentColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-                <input type="text" value={config.scrolledAccentColor || ''} onChange={(e) => updateConfig('scrolledAccentColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-                <button onClick={() => updateConfig('scrolledAccentColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                <input type="color" value={getProp('scrolledAccentColor') || '#000000'} onChange={(e) => updateProp('scrolledAccentColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                <input type="text" value={getProp('scrolledAccentColor') || ''} onChange={(e) => updateProp('scrolledAccentColor', e.target.value)} placeholder="Default" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                <button onClick={() => updateProp('scrolledAccentColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                   <FiX size={16} />
                 </button>
              </div>
@@ -600,7 +613,7 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <h2 className="font-bold text-gray-900 text-lg mb-6">Typography</h2>
          <div className="space-y-3">
             <label className="text-sm font-semibold text-gray-700">Font Family</label>
-            <select value={config.fontFamily || 'Inter'} onChange={(e) => updateConfig('fontFamily', e.target.value)} className="w-full p-2 border rounded-lg text-sm">
+            <select value={getProp('fontFamily') || 'Inter'} onChange={(e) => updateProp('fontFamily', e.target.value)} className="w-full p-2 border rounded-lg text-sm">
               <optgroup label="Sans-Serif (Clean & Modern)">
                 <option value="Inter">Inter (Hatil Nav Default)</option>
                 <option value="Montserrat">Montserrat</option>
@@ -619,11 +632,11 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="grid grid-cols-2 gap-4">
            <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">Size (px)</label>
-              <input type="number" value={config.fontSize || 15} onChange={(e) => updateConfig('fontSize', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
+              <input type="number" value={getProp('fontSize') || 15} onChange={(e) => updateProp('fontSize', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
            </div>
            <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">Weight</label>
-              <select value={config.fontWeight || '500'} onChange={(e) => updateConfig('fontWeight', e.target.value)} className="w-full p-2 border rounded-lg text-sm">
+              <select value={getProp('fontWeight') || '500'} onChange={(e) => updateProp('fontWeight', e.target.value)} className="w-full p-2 border rounded-lg text-sm">
                 <option value="400">Regular (400)</option>
                 <option value="500">Medium (500)</option>
                 <option value="600">SemiBold (600)</option>
@@ -634,13 +647,13 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="grid grid-cols-2 gap-4">
            <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">Letter Spacing (px)</label>
-              <input type="number" step="0.1" value={config.letterSpacing || 0} onChange={(e) => updateConfig('letterSpacing', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
+              <input type="number" step="0.1" value={getProp('letterSpacing') || 0} onChange={(e) => updateProp('letterSpacing', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
            </div>
          </div>
          <div className="space-y-3 mt-4">
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <span className="text-sm font-medium">Uppercase Text</span>
-               <input type="checkbox" checked={config.uppercase || false} onChange={(e) => updateConfig('uppercase', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('uppercase') || false} onChange={(e) => updateProp('uppercase', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
          </div>
       </div>
@@ -654,13 +667,13 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          
          <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-700">Space Between (px)</label>
-            <input type="number" value={config.spaceBetweenItems || 28} onChange={(e) => updateConfig('spaceBetweenItems', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
+            <input type="number" value={getProp('spaceBetweenItems') || 28} onChange={(e) => updateProp('spaceBetweenItems', e.target.value)} className="w-full p-2 border rounded-lg text-sm" />
          </div>
          
          <div className="space-y-3 mt-4">
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <span className="text-sm font-medium">Underline on Hover</span>
-               <input type="checkbox" checked={config.underlineOnHover ?? false} onChange={(e) => updateConfig('underlineOnHover', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('underlineOnHover') ?? false} onChange={(e) => updateProp('underlineOnHover', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
          </div>
          
@@ -712,23 +725,23 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
          <div className="space-y-4">
             <label className="text-sm font-semibold text-gray-700">Logo Type</label>
             <div className="flex bg-gray-100 p-1 rounded-lg mb-4">
-               <button onClick={() => updateConfig('logoType', 'text')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${config.logoType === 'text' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Text</button>
-               <button onClick={() => updateConfig('logoType', 'image')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${config.logoType === 'image' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Image</button>
+               <button onClick={() => updateProp('logoType', 'text')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${getProp('logoType') === 'text' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Text</button>
+               <button onClick={() => updateProp('logoType', 'image')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${getProp('logoType') === 'image' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Image</button>
             </div>
-            {config.logoType === 'text' ? (
+            {getProp('logoType') === 'text' ? (
                <div className="space-y-2">
                  <label className="text-[10px] text-gray-500 uppercase tracking-wider block">Logo Text</label>
-                 <input type="text" value={typeof config.logoText === 'string' ? config.logoText : ''} onChange={(e) => updateConfig('logoText', e.target.value)} className="w-full p-2 border rounded-lg text-sm font-medium" placeholder="PREMIUM" />
+                 <input type="text" value={typeof getProp('logoText') === 'string' ? getProp('logoText') : ''} onChange={(e) => updateProp('logoText', e.target.value)} className="w-full p-2 border rounded-lg text-sm font-medium" placeholder="PREMIUM" />
                </div>
             ) : (
                <div className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-[10px] text-gray-500 uppercase tracking-wider block flex justify-between items-center">
                       <span>Default Logo</span>
-                      {config.logoImage && <button onClick={() => updateConfig('logoImage', '')} className="text-red-500 hover:text-red-700 capitalize text-[9px]">Remove</button>}
+                      {getProp('logoImage') && <button onClick={() => updateProp('logoImage', '')} className="text-red-500 hover:text-red-700 capitalize text-[9px]">Remove</button>}
                     </label>
-                    {config.logoImage && (
-                      <img src={config.logoImage} alt="Logo preview" className="h-10 object-contain border rounded-lg p-1 bg-gray-50" />
+                    {getProp('logoImage') && (
+                      <img src={getProp('logoImage')} alt="Logo preview" className="h-10 object-contain border rounded-lg p-1 bg-gray-50" />
                     )}
                     <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full text-sm border p-2 rounded-lg bg-gray-50" />
                     <p className="text-[9px] text-gray-400">Saved in MongoDB. Used for solid or light backgrounds.</p>
@@ -736,10 +749,10 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
                   <div className="space-y-2">
                     <label className="text-[10px] text-gray-500 uppercase tracking-wider block flex justify-between items-center">
                       <span>Inverse Logo (Optional)</span>
-                      {config.logoImageInverse && <button onClick={() => updateConfig('logoImageInverse', '')} className="text-red-500 hover:text-red-700 capitalize text-[9px]">Remove</button>}
+                      {getProp('logoImageInverse') && <button onClick={() => updateProp('logoImageInverse', '')} className="text-red-500 hover:text-red-700 capitalize text-[9px]">Remove</button>}
                     </label>
-                    {config.logoImageInverse && (
-                      <img src={config.logoImageInverse} alt="Inverse logo preview" className="h-10 object-contain border rounded-lg p-1 bg-gray-800" />
+                    {getProp('logoImageInverse') && (
+                      <img src={getProp('logoImageInverse')} alt="Inverse logo preview" className="h-10 object-contain border rounded-lg p-1 bg-gray-800" />
                     )}
                     <input type="file" accept="image/*" onChange={handleInverseImageUpload} className="w-full text-sm border p-2 rounded-lg bg-gray-50" />
                     <p className="text-[9px] text-gray-400">Saved in MongoDB. Used for transparent or dark backgrounds.</p>
@@ -754,22 +767,22 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
             <h3 className="font-bold text-sm text-gray-900 mb-4">Utility Icons</h3>
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <span className="text-sm font-medium">Search Icon</span>
-               <input type="checkbox" checked={config.enableSearch ?? true} onChange={(e) => updateConfig('enableSearch', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('enableSearch') ?? true} onChange={(e) => updateProp('enableSearch', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <span className="text-sm font-medium">User Account</span>
-               <input type="checkbox" checked={config.enableUser ?? true} onChange={(e) => updateConfig('enableUser', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('enableUser') ?? true} onChange={(e) => updateProp('enableUser', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <span className="text-sm font-medium">Shopping Cart</span>
-               <input type="checkbox" checked={config.enableCart ?? true} onChange={(e) => updateConfig('enableCart', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('enableCart') ?? true} onChange={(e) => updateProp('enableCart', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
             <div className="mt-4 pt-4 border-t border-gray-100 space-y-3">
                <label className="text-sm font-semibold text-gray-700">Icon Color</label>
                <div className="flex gap-2 items-center">
-                  <input type="color" value={config.iconColor || '#000000'} onChange={(e) => updateConfig('iconColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-                  <input type="text" value={config.iconColor || ''} onChange={(e) => updateConfig('iconColor', e.target.value)} placeholder="Default (Matches Text)" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-                  <button onClick={() => updateConfig('iconColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
+                  <input type="color" value={getProp('iconColor') || '#000000'} onChange={(e) => updateProp('iconColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                  <input type="text" value={getProp('iconColor') || ''} onChange={(e) => updateProp('iconColor', e.target.value)} placeholder="Default (Matches Text)" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                  <button onClick={() => updateProp('iconColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Color">
                     <FiX size={16} />
                   </button>
                </div>
@@ -778,9 +791,9 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
             <div className="mt-2 space-y-3">
                <label className="text-sm font-semibold text-gray-700">Icon Hover Color</label>
                <div className="flex gap-2 items-center">
-                  <input type="color" value={config.iconHoverColor || '#000000'} onChange={(e) => updateConfig('iconHoverColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
-                  <input type="text" value={config.iconHoverColor || ''} onChange={(e) => updateConfig('iconHoverColor', e.target.value)} placeholder="Hover Color" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
-                  <button onClick={() => updateConfig('iconHoverColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Hover Color">
+                  <input type="color" value={getProp('iconHoverColor') || '#000000'} onChange={(e) => updateProp('iconHoverColor', e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-200" />
+                  <input type="text" value={getProp('iconHoverColor') || ''} onChange={(e) => updateProp('iconHoverColor', e.target.value)} placeholder="Hover Color" className="flex-1 p-2 border rounded-lg text-sm font-medium uppercase" />
+                  <button onClick={() => updateProp('iconHoverColor', '')} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors" title="Clear Hover Color">
                     <FiX size={16} />
                   </button>
                </div>
@@ -801,35 +814,35 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
                  <span className="text-sm font-medium">Sticky Navbar</span>
                  <span className="text-[10px] text-gray-500">Stays at top while scrolling</span>
                </div>
-               <input type="checkbox" checked={config.stickyOnScroll ?? true} onChange={(e) => updateConfig('stickyOnScroll', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('stickyOnScroll') ?? true} onChange={(e) => updateProp('stickyOnScroll', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <div className="flex flex-col">
                  <span className="text-sm font-medium">Hide on Scroll Down</span>
                  <span className="text-[10px] text-gray-500">Only shows when scrolling up</span>
                </div>
-               <input type="checkbox" checked={config.hideOnScrollDown ?? false} onChange={(e) => updateConfig('hideOnScrollDown', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('hideOnScrollDown') ?? false} onChange={(e) => updateProp('hideOnScrollDown', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <div className="flex flex-col">
                  <span className="text-sm font-medium">Transparent on Top</span>
                  <span className="text-[10px] text-gray-500">Merges with hero sections</span>
                </div>
-               <input type="checkbox" checked={config.transparentOnTop ?? false} onChange={(e) => updateConfig('transparentOnTop', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('transparentOnTop') ?? false} onChange={(e) => updateProp('transparentOnTop', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
              <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <div className="flex flex-col">
                  <span className="text-sm font-medium">Blur Effect</span>
                  <span className="text-[10px] text-gray-500">Glassmorphism backdrop filter</span>
                </div>
-               <input type="checkbox" checked={config.blurEffect ?? false} onChange={(e) => updateConfig('blurEffect', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('blurEffect') ?? false} onChange={(e) => updateProp('blurEffect', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
             <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                <div className="flex flex-col">
                  <span className="text-sm font-medium">Hover Animations</span>
                  <span className="text-[10px] text-gray-500">Show underlines when hovering links</span>
                </div>
-               <input type="checkbox" checked={config.enableHoverAnimation ?? true} onChange={(e) => updateConfig('enableHoverAnimation', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+               <input type="checkbox" checked={getProp('enableHoverAnimation') ?? true} onChange={(e) => updateProp('enableHoverAnimation', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
             </label>
          </div>
       </div>
@@ -847,15 +860,15 @@ function SettingsPanel({ activeTab, config, updateConfig, links, setLinks, activ
            <div className="space-y-4 mt-8">
               <label className="flex items-center justify-between cursor-pointer p-3 border border-gray-100 rounded-lg bg-gray-50">
                  <span className="text-sm font-medium">Enable Mega Menu Features globally</span>
-                 <input type="checkbox" checked={config.megaMenuEnabled ?? true} onChange={(e) => updateConfig('megaMenuEnabled', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
+                 <input type="checkbox" checked={getProp('megaMenuEnabled') ?? true} onChange={(e) => updateProp('megaMenuEnabled', e.target.checked)} className="rounded text-[#635BFF] focus:ring-[#635BFF]" />
               </label>
 
               <div className="pt-4 border-t border-gray-100">
                 <label className="text-sm font-semibold text-gray-700 block mb-3">Mega Menu Items Alignment</label>
                 <div className="flex bg-gray-100 p-1 rounded-lg">
-                   <button onClick={() => updateConfig('megaMenuAlignment', 'left')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${(!config.megaMenuAlignment || config.megaMenuAlignment === 'left') ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Left</button>
-                   <button onClick={() => updateConfig('megaMenuAlignment', 'center')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${config.megaMenuAlignment === 'center' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Center</button>
-                   <button onClick={() => updateConfig('megaMenuAlignment', 'right')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${config.megaMenuAlignment === 'right' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Right</button>
+                   <button onClick={() => updateProp('megaMenuAlignment', 'left')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${(!getProp('megaMenuAlignment') || getProp('megaMenuAlignment') === 'left') ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Left</button>
+                   <button onClick={() => updateProp('megaMenuAlignment', 'center')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${getProp('megaMenuAlignment') === 'center' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Center</button>
+                   <button onClick={() => updateProp('megaMenuAlignment', 'right')} className={`flex-1 py-1.5 text-xs font-semibold rounded-md ${getProp('megaMenuAlignment') === 'right' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Right</button>
                 </div>
               </div>
            </div>

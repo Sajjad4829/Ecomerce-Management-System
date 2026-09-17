@@ -8,6 +8,7 @@ import CreationsWithPurpose from '../home/CreationsWithPurpose';
 import ProductGridSection from '../home/ProductGridSection';
 import CategoryShowcase from '../home/CategoryShowcase';
 import CategoryGridSection from '../home/CategoryGridSection';
+import CategoryCarouselSection from '../home/CategoryCarouselSection';
 import Testimonials from '../home/Testimonials';
 import BenefitsSection from '../home/BenefitsSection';
 import PromoBanner from '../home/PromoBanner';
@@ -18,6 +19,7 @@ import NewsletterSection from '../home/NewsletterSection';
 import Navbar from '../navigation/Navbar';
 import Footer from '../navigation/Footer';
 import HeaderBannerSection from '../home/HeaderBannerSection';
+import SectionBuilderSection from '../home/SectionBuilderSection';
 
 // Central Registry Map
 const SECTION_COMPONENTS = {
@@ -42,7 +44,7 @@ const SECTION_COMPONENTS = {
   
   CATEGORY_GRID: CategoryGridSection,
   FEATURED_CATEGORIES: CategoryShowcase,
-  CATEGORY_CAROUSEL: CategoryShowcase,
+  CATEGORY_CAROUSEL: CategoryCarouselSection,
   
   COLLECTION_FEATURE: CollectionFeature,
 
@@ -79,6 +81,9 @@ const SECTION_COMPONENTS = {
   NEWSLETTER: NewsletterSection,
   FAQ: EditorialSection,
   CONTACT_CTA: PromoBanner,
+  
+  // Custom Forms
+  SECTION_BUILDER: SectionBuilderSection,
 };
 
 // Fallback component for unmapped sections
@@ -116,6 +121,7 @@ export default function SectionRenderer({ sections = [] }) {
     if (t.includes('HEADERBANNER') || t.includes('HEADER_BANNER')) return SECTION_COMPONENTS.HEADERBANNER;
     if (t.includes('HERO')) return SECTION_COMPONENTS.HERO_BANNER;
     if (t.includes('PRODUCT') || t === 'GRID') return SECTION_COMPONENTS.PRODUCT_GRID;
+    if (t === 'CATEGORY_CAROUSEL') return SECTION_COMPONENTS.CATEGORY_CAROUSEL;
     if (t.includes('CATEGORY')) return SECTION_COMPONENTS.CATEGORY_GRID;
     if (t.includes('PROMO') || t.includes('BANNER')) return SECTION_COMPONENTS.PROMO_BANNER;
     if (t.includes('TESTIMONIAL') || t.includes('REVIEW')) return SECTION_COMPONENTS.TESTIMONIALS;

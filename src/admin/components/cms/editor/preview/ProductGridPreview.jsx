@@ -5,13 +5,17 @@ export default function ProductGridPreview({ section = {} }) {
   const settings = section.settings || {};
   const columns = settings.columns || '4';
 
-  const products = [
-    { name: 'Wireless Headphones', price: '$159.00', originalPrice: '$199.00', badge: 'Sale', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400' },
-    { name: 'Smart Watch Series 8', price: '$249.00', image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400' },
-    { name: 'Leather Backpack', price: '$129.00', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400' },
-    { name: 'Running Shoes', price: '$99.00', originalPrice: '$129.00', badge: 'Sale', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400' },
-    { name: 'Ceramic Mug', price: '$24.00', image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&q=80&w=400' }
+  const mockProducts = [
+    { name: 'Product 1', price: '$0.00', image: '' },
+    { name: 'Product 2', price: '$0.00', image: '' },
+    { name: 'Product 3', price: '$0.00', image: '' },
+    { name: 'Product 4', price: '$0.00', image: '' },
+    { name: 'Product 5', price: '$0.00', image: '' }
   ].slice(0, parseInt(columns, 10));
+
+  const products = content.products && content.products.length > 0
+    ? content.products
+    : mockProducts;
 
   const gridColsClass = {
     '2': 'grid-cols-2',
@@ -39,7 +43,9 @@ export default function ProductGridPreview({ section = {} }) {
                   {product.badge}
                 </div>
               )}
-              <img src={product.image} alt={product.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" />
+              {product.image ? (
+                <img src={product.image} alt={product.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" />
+              ) : null}
             </div>
             <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">{product.name}</h3>
             <div className="flex items-center gap-2">

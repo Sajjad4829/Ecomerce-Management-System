@@ -16,6 +16,8 @@ import HeroEditorModal from '../../../components/cms/editor/HeroEditorModal';
 import FeaturedShowcaseEditorModal from '../../../components/cms/editor/FeaturedShowcaseEditorModal';
 import HeaderBannerEditor from '../../../components/cms/editor/HeaderBannerEditor';
 import CategoryGridEditor from '../../../components/cms/editor/CategoryGridEditor';
+import CategoryCarouselEditor from '../../../components/cms/editor/CategoryCarouselEditor';
+import SectionBuilderEditor from '../../../components/cms/editor/SectionBuilderEditor';
 import SectionRenderer from '../../../../storefront/components/sections/SectionRenderer';
 import Navbar from '../../../../storefront/components/navigation/Navbar';
 import Footer from '../../../../storefront/components/navigation/Footer';
@@ -37,6 +39,8 @@ export default function VisualEditor() {
   const [isFeaturedEditorOpen, setIsFeaturedEditorOpen] = useState(false);
   const [isHeaderBannerEditorOpen, setIsHeaderBannerEditorOpen] = useState(false);
   const [isCategoryGridEditorOpen, setIsCategoryGridEditorOpen] = useState(false);
+  const [isCategoryCarouselEditorOpen, setIsCategoryCarouselEditorOpen] = useState(false);
+  const [isSectionBuilderEditorOpen, setIsSectionBuilderEditorOpen] = useState(false);
   const [isLivePreviewOpen, setIsLivePreviewOpen] = useState(false);
   const [sections, setSections] = useState(() => getDraftSections(pageId));
   const [isLoading, setIsLoading] = useState(true);
@@ -295,6 +299,8 @@ export default function VisualEditor() {
           onOpenFeaturedEditor={() => setIsFeaturedEditorOpen(true)}
           onOpenHeaderBannerEditor={() => setIsHeaderBannerEditorOpen(true)}
           onOpenCategoryGridEditor={() => setIsCategoryGridEditorOpen(true)}
+          onOpenCategoryCarouselEditor={() => setIsCategoryCarouselEditorOpen(true)}
+          onOpenSectionBuilderEditor={() => setIsSectionBuilderEditorOpen(true)}
         />
       </div>
 
@@ -354,6 +360,47 @@ export default function VisualEditor() {
             setIsCategoryGridEditorOpen(false);
           }}
           onClose={() => setIsCategoryGridEditorOpen(false)}
+        />
+      )}
+
+      {isCategoryCarouselEditorOpen && (
+        <CategoryCarouselEditor
+          section={sections.find(s => s.id === activeSectionId)}
+          pageName={page.title}
+          onSave={(updatedSection) => {
+            handleUpdateSection(activeSectionId, updatedSection);
+            setIsCategoryCarouselEditorOpen(false);
+          }}
+          onClose={() => setIsCategoryCarouselEditorOpen(false)}
+        />
+      )}
+
+      {isSectionBuilderEditorOpen && (
+        <SectionBuilderEditor
+          section={sections.find(s => s.id === activeSectionId)}
+          pageName={page.title}
+          onSave={(updatedSection, hasChanged = true) => {
+            if (!hasChanged) {
+              addToast({ message: 'No changes made', type: 'info' });
+              setIsSectionBuilderEditorOpen(false);
+              return;
+            }
+            
+            handleUpdateSection(activeSectionId, updatedSection);
+            
+            // Compute the new sections array to immediately publish
+            const newSections = sections.map(s => 
+              s.id === activeSectionId ? { ...s, ...updatedSection } : s
+            );
+            
+            // Publish directly so it shows on frontend
+            publishPageSections(pageId, newSections);
+            setPublishedSections(newSections);
+            addToast({ type: 'success', message: 'Section saved and published to live site!' });
+            
+            setIsSectionBuilderEditorOpen(false);
+          }}
+          onClose={() => setIsSectionBuilderEditorOpen(false)}
         />
       )}
 

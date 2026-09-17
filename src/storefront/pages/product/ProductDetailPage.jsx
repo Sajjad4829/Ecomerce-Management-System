@@ -25,7 +25,7 @@ export default function ProductDetailPage() {
   const [ratingData, setRatingData] = useState(null);
   const [selectedVariants, setSelectedVariants] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const { activeTheme } = useStorefrontTheme();
+  const { activeTheme, productPageLayout = 'left', productGalleryLayout = 'vertical' } = useStorefrontTheme();
 
   useEffect(() => {
     // Scroll to top when slug changes
@@ -144,47 +144,74 @@ export default function ProductDetailPage() {
       }))
     : [];
 
+  const renderGallery = () => (
+    <div className={`w-full ${productPageLayout === 'full' || productPageLayout === 'top' || productPageLayout === 'bottom' ? 'lg:w-full max-w-4xl mx-auto' : 'lg:w-[60%]'}`}>
+      <div className="sticky top-28">
+        <ProductGallery 
+          images={galleryImages} 
+          selectedVariants={selectedVariants} 
+          note={product?.furnitureDetails?.note} 
+          layout={productGalleryLayout}
+        />
+      </div>
+    </div>
+  );
+
+  const renderInfo = () => (
+    <div className={`w-full ${productPageLayout === 'full' || productPageLayout === 'top' || productPageLayout === 'bottom' ? 'lg:w-full max-w-4xl mx-auto' : 'lg:w-[40%]'} flex flex-col bg-[#f4f5f6] p-6 lg:p-8 rounded-xl`}>
+      <ProductInfo 
+        product={product} 
+        ratingData={ratingData} 
+        selectedVariants={selectedVariants}
+        activePrice={activePrice}
+        activeComparePrice={activeComparePrice}
+        hideTitleOnMobile={true}
+      />
+      
+      <ProductVariants 
+        variants={attributeGroups} 
+        selectedVariants={selectedVariants} 
+        onVariantChange={handleVariantChange} 
+      />
+      
+      <ProductActions 
+        product={product} 
+        selectedVariants={selectedVariants}
+        activePrice={activePrice}
+      />
+    </div>
+  );
+
   return (
     <div className={`${activeTheme.tokens.background} min-h-screen`}>
       <ProductBreadcrumb product={product} category={category} />
 
-      <main className="w-full max-w-[1600px] mx-auto py-8 sm:py-12 px-4 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 w-full">
+      <main className="w-full max-w-[1600px] mx-auto pb-8 pt-0 sm:pb-12 sm:pt-0 px-4 lg:px-8">
+        {/* MOBILE-ONLY TITLE & PRICE */}
+        <div className="block md:hidden w-full mb-4 mt-2">
+          <ProductInfo 
+            product={product} 
+            ratingData={ratingData} 
+            selectedVariants={selectedVariants}
+            activePrice={activePrice}
+            activeComparePrice={activeComparePrice}
+            hideDescription={true}
+          />
+        </div>
+
+        <div className={`flex flex-col ${productPageLayout === 'right' ? 'md:flex-row-reverse' : (productPageLayout === 'top' || productPageLayout === 'full' || productPageLayout === 'bottom' ? 'flex-col' : 'md:flex-row')} gap-8 md:gap-10 w-full`}>
           
-          {/* Left Column: Gallery */}
-          <div className="w-full lg:w-[60%]">
-            <div className="sticky top-28">
-              <ProductGallery 
-                images={galleryImages} 
-                selectedVariants={selectedVariants} 
-                note={product?.furnitureDetails?.note} 
-              />
-            </div>
-          </div>
-
-          {/* Right Column: Product Details */}
-          <div className="w-full lg:w-[40%] flex flex-col bg-[#f4f5f6] p-6 lg:p-8 rounded-xl">
-            <ProductInfo 
-              product={product} 
-              ratingData={ratingData} 
-              selectedVariants={selectedVariants}
-              activePrice={activePrice}
-              activeComparePrice={activeComparePrice}
-            />
-            
-            <ProductVariants 
-              variants={attributeGroups} 
-              selectedVariants={selectedVariants} 
-              onVariantChange={handleVariantChange} 
-            />
-            
-            <ProductActions 
-              product={product} 
-              selectedVariants={selectedVariants}
-              activePrice={activePrice}
-            />
-
-          </div>
+          {productPageLayout === 'bottom' ? (
+            <>
+              {renderInfo()}
+              {renderGallery()}
+            </>
+          ) : (
+            <>
+              {renderGallery()}
+              {renderInfo()}
+            </>
+          )}
 
         </div>
         

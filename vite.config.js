@@ -19,7 +19,8 @@ export default defineConfig(() => {
         ignored: ['**/navbar.json', '**/categories.json']
       },
       proxy: {
-        '/api': 'http://localhost:5000'
+        '/api': 'http://localhost:5000',
+        '/assets/images': 'http://localhost:5000'
       }
     },
     build: {

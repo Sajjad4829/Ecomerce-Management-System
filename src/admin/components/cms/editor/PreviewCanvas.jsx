@@ -9,6 +9,7 @@ import ProductGridPreview from './preview/ProductGridPreview';
 import BannerPreview from './preview/BannerPreview';
 import FeaturesPreview from './preview/FeaturesPreview';
 import CategoryGridPreview from './preview/CategoryGridPreview';
+import CategoryCarouselPreview from './preview/CategoryCarouselPreview';
 import TestimonialsPreview from './preview/TestimonialsPreview';
 import FAQPreview from './preview/FAQPreview';
 import FooterPreview from './preview/FooterPreview';
@@ -78,6 +79,7 @@ export default function PreviewCanvas({
     else if (typeStr.includes('HEADERBANNER') || typeStr.includes('HEADER_BANNER')) content = <HeaderBannerSection data={section} />;
     else if (typeStr.includes('HERO')) content = <HeroSection data={section} />;
     else if (typeStr.includes('PRODUCT') || typeStr === 'GRID') content = <ProductGridPreview section={section} device={device} />;
+    else if (typeStr.includes('CATEGORY_CAROUSEL')) content = <CategoryCarouselPreview section={section} device={device} />;
     else if (typeStr.includes('CATEGORY')) content = <CategoryGridPreview section={section} device={device} />;
     else if (typeStr.includes('PROMO') || typeStr.includes('BANNER')) content = <BannerPreview section={section} device={device} />;
     else if (typeStr.includes('TESTIMONIAL') || typeStr.includes('REVIEW')) content = <TestimonialsPreview section={section} device={device} />;

@@ -1,10 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function CategoryGridSection({ data }) {
   if (!data || !data.content) return null;
 
   const s = data.settings || {};
+  
+  const [viewport, setViewport] = useState('desktop');
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 768) setViewport('mobile');
+      else if (width < 1024) setViewport('tablet');
+      else setViewport('desktop');
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const formatUnit = (val) => {
+    if (val === undefined || val === null || val === '') return undefined;
+    if (!isNaN(val)) return `${val}px`;
+    return val;
+  };
+
+  const getProp = (propName) => {
+    if (viewport !== 'desktop') {
+      const deviceProp = `${propName}_${viewport}`;
+      if (s[deviceProp] != null && s[deviceProp] !== '') return s[deviceProp];
+    }
+    return s[propName];
+  };
   const resolveSetting = (key, defaultVal) => {
     return {
       desktop: s[key] || defaultVal,
@@ -87,8 +115,20 @@ export default function CategoryGridSection({ data }) {
   };
 
   return (
-    <section className="w-full bg-white py-8 md:py-10">
-      <div className="w-full mx-auto px-2 sm:px-4 lg:px-6">
+    <section 
+      className="w-full bg-white"
+      style={{
+        paddingTop:    formatUnit(getProp('textPaddingTop')),
+        paddingBottom: formatUnit(getProp('textPaddingBottom')),
+        paddingLeft:   formatUnit(getProp('textPaddingLeft')),
+        paddingRight:  formatUnit(getProp('textPaddingRight')),
+        marginTop:     formatUnit(getProp('textMarginTop')),
+        marginBottom:  formatUnit(getProp('textMarginBottom')),
+        marginLeft:    formatUnit(getProp('textMarginLeft')),
+        marginRight:   formatUnit(getProp('textMarginRight')),
+      }}
+    >
+      <div className="w-full">
 
         {title && (
           <div className="text-center mb-8 md:mb-10 flex flex-col items-center">
