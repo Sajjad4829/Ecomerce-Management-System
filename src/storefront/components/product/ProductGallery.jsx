@@ -79,16 +79,16 @@ export default function ProductGallery({ images, selectedVariants, note, layout 
         
         {/* Thumbnails (Vertical or Horizontal) */}
         {!isGrid && (
-          <div className={`hidden md:flex ${isHorizontal ? 'flex-row overflow-x-auto w-full order-last' : 'flex-col w-32'} gap-4 flex-shrink-0 bg-[#f4f5f6] p-3 rounded-xl`}>
+          <div className={`hidden md:flex ${isHorizontal ? 'flex-row overflow-x-auto w-full order-last mt-4' : 'flex-col w-24 lg:w-[100px] bg-[#FAFAFA] p-2 rounded-xl h-fit max-h-[80vh] overflow-y-auto scrollbar-hide'} gap-3 flex-shrink-0`}>
             {images.map((img, idx) => (
               <button
                 key={idx}
                 onClick={() => handleThumbnailClick(idx)}
-                className={`relative ${isHorizontal ? 'h-24 w-24 shrink-0' : 'w-full aspect-square'} bg-white p-1 overflow-hidden rounded-lg transition-all ${
-                  activeIndex === idx ? 'border-2 border-[#6b46c1] shadow-sm' : 'border border-gray-200 shadow-sm opacity-80 hover:opacity-100'
+                className={`relative ${isHorizontal ? 'h-20 w-20 shrink-0' : 'w-full aspect-square'} bg-white overflow-hidden rounded transition-all ${
+                  activeIndex === idx ? 'border-2 border-[#D3161D] shadow-sm' : 'border border-gray-200 opacity-80 hover:opacity-100 hover:border-gray-300'
                 }`}
               >
-                <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover rounded-md" />
+                <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>

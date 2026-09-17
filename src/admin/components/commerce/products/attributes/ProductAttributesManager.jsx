@@ -42,18 +42,11 @@ export default function ProductAttributesManager({ formData, handleChange }) {
   
   // Combine DEFAULT_ATTRIBUTES with any custom attributes already in variants
   const activeVariants = DEFAULT_ATTRIBUTES.map(attrName => {
-    return variants.find(v => v.type === attrName) || { type: attrName, options: [] };
+    return variants.find(v => v.type.toLowerCase() === attrName.toLowerCase()) || { type: attrName, options: [] };
   });
 
   variants.forEach(v => {
-    if (!DEFAULT_ATTRIBUTES.includes(v.type)) {
-      activeVariants.push(v);
-    }
-  });
-
-
-  variants.forEach(v => {
-    if (!DEFAULT_ATTRIBUTES.includes(v.type)) {
+    if (!DEFAULT_ATTRIBUTES.find(attr => attr.toLowerCase() === v.type.toLowerCase())) {
       activeVariants.push(v);
     }
   });
@@ -115,10 +108,10 @@ export default function ProductAttributesManager({ formData, handleChange }) {
         const isOpen = openGroup === variantGroup.type;
 
         return (
-          <div key={variantGroup.type} className="border border-border rounded-xl overflow-hidden bg-surface">
+          <div key={variantGroup.type} className="border border-border rounded-xl bg-surface">
             <button 
               onClick={() => setOpenGroup(isOpen ? null : variantGroup.type)}
-              className="w-full flex items-center justify-between p-4 bg-surface hover:bg-stone-50 transition-colors text-left"
+              className={`w-full flex items-center justify-between p-4 bg-surface hover:bg-stone-50 transition-colors text-left ${isOpen ? 'rounded-t-xl' : 'rounded-xl'}`}
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 flex items-center justify-center bg-stone-50 rounded-lg border border-border shrink-0">
@@ -144,10 +137,10 @@ export default function ProductAttributesManager({ formData, handleChange }) {
             <AnimatePresence>
               {isOpen && (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden border-t border-border bg-stone-50/50"
+                  initial={{ height: 0, opacity: 0, overflow: 'hidden' }}
+                  animate={{ height: 'auto', opacity: 1, transitionEnd: { overflow: 'visible' } }}
+                  exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
+                  className="border-t border-border bg-stone-50/50 rounded-b-xl"
                 >
                   <div className="p-5 space-y-4">
                     {variantGroup.options.map((option, idx) => (

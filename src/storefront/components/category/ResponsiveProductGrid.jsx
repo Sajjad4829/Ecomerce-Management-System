@@ -29,13 +29,17 @@ export default function ResponsiveProductGrid({ products, onOpenMobileFilters, i
   
   // Use fewer columns for horizontal layouts to give them more room
   const gridClasses = isHorizontal 
-    ? "grid grid-cols-1 lg:grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-6 sm:gap-y-8"
-    : `grid ${gridColsClass} gap-x-4 sm:gap-x-8 gap-y-10 sm:gap-y-12`;
+    ? "grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-x-4 sm:gap-x-8 gap-y-6 sm:gap-y-8"
+    : `grid gap-x-4 sm:gap-x-8 gap-y-10 sm:gap-y-12`;
+
+  const gridStyle = isHorizontal ? {} : {
+    gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${maxCols === 3 ? '300px' : maxCols === 4 ? '240px' : '200px'}), 1fr))`
+  };
 
   if (isLoading) {
     return (
       <div className="flex-1 w-full">
-        <div className={gridClasses}>
+        <div className={gridClasses} style={gridStyle}>
           {[1, 2, 3, 4, 5, 6].map(i => (
             <div key={i} className="animate-pulse flex flex-col h-full">
               <div className="w-full aspect-[4/5] bg-gray-200 mb-4"></div>
@@ -53,7 +57,7 @@ export default function ResponsiveProductGrid({ products, onOpenMobileFilters, i
       {products.length === 0 ? (
         <EmptyState onClearFilters={() => window.location.reload()} />
       ) : (
-        <div className={gridClasses}>
+        <div className={gridClasses} style={gridStyle}>
           {products.map(product => (
             <ProductCard key={product.id} product={product} />
           ))}

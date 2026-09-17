@@ -25,7 +25,8 @@ export default function ProductDetailPage() {
   const [ratingData, setRatingData] = useState(null);
   const [selectedVariants, setSelectedVariants] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const { activeTheme, productPageLayout = 'left', productGalleryLayout = 'vertical' } = useStorefrontTheme();
+  const { activeTheme, productPageLayout: _ignored, productGalleryLayout = 'vertical' } = useStorefrontTheme();
+  const productPageLayout = 'left'; // User explicitly requested this layout to ALWAYS be the 1st option (Image Left)
 
   useEffect(() => {
     // Scroll to top when slug changes
@@ -126,21 +127,25 @@ export default function ProductDetailPage() {
     ? product.images.map(img => img.url)
     : (product?.gallery && product.gallery.length > 0 ? [...product.gallery] : (product?.image ? [product.image] : []));
 
-  if (selectedVariants) {
-    Object.values(selectedVariants).forEach(option => {
-      const variantImages = option?.images || (option?.image ? [option.image] : []);
-      variantImages.forEach(img => {
-        if (img && !galleryImages.includes(img)) {
-          galleryImages = [img, ...galleryImages];
-        }
-      });
+  if (product && product.attributes) {
+    Object.values(product.attributes).forEach(optionsArray => {
+      if (Array.isArray(optionsArray)) {
+        optionsArray.forEach(option => {
+          const variantImages = option?.images || (option?.image ? [option.image] : []);
+          variantImages.forEach(img => {
+            if (img && !galleryImages.includes(img)) {
+              galleryImages = [...galleryImages, img];
+            }
+          });
+        });
+      }
     });
   }
 
   const attributeGroups = product?.attributes && Object.keys(product.attributes).length > 0
     ? Object.keys(product.attributes).map(type => ({
         type,
-        options: product.attributes[type]
+        options: product.attributes[type].map(opt => typeof opt === 'string' ? { id: opt, label: opt } : opt)
       }))
     : [];
 
@@ -158,7 +163,7 @@ export default function ProductDetailPage() {
   );
 
   const renderInfo = () => (
-    <div className={`w-full ${productPageLayout === 'full' || productPageLayout === 'top' || productPageLayout === 'bottom' ? 'lg:w-full max-w-4xl mx-auto' : 'lg:w-[40%]'} flex flex-col bg-[#f4f5f6] p-6 lg:p-8 rounded-xl`}>
+    <div className={`w-full flex flex-col pt-2 ${productPageLayout === 'full' || productPageLayout === 'top' || productPageLayout === 'bottom' ? 'lg:w-full max-w-4xl mx-auto' : 'lg:w-[40%] bg-[#FAFAFA] p-6 lg:p-8 rounded-xl'}`}>
       <ProductInfo 
         product={product} 
         ratingData={ratingData} 
@@ -166,6 +171,7 @@ export default function ProductDetailPage() {
         activePrice={activePrice}
         activeComparePrice={activeComparePrice}
         hideTitleOnMobile={true}
+        hideDescription={productPageLayout === 'left' || productPageLayout === 'right'}
       />
       
       <ProductVariants 
@@ -199,7 +205,7 @@ export default function ProductDetailPage() {
           />
         </div>
 
-        <div className={`flex flex-col ${productPageLayout === 'right' ? 'md:flex-row-reverse' : (productPageLayout === 'top' || productPageLayout === 'full' || productPageLayout === 'bottom' ? 'flex-col' : 'md:flex-row')} gap-8 md:gap-10 w-full`}>
+        <div className={`flex flex-col ${productPageLayout === 'right' ? 'md:flex-row-reverse' : (productPageLayout === 'top' || productPageLayout === 'full' || productPageLayout === 'bottom' ? 'flex-col' : 'md:flex-row')} gap-8 lg:gap-12 w-full`}>
           
           {productPageLayout === 'bottom' ? (
             <>

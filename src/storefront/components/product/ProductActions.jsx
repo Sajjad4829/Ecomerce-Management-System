@@ -52,33 +52,25 @@ export default function ProductActions({ product, selectedVariants, activePrice 
 
   return (
     <>
-      <div className="flex flex-col gap-4 mt-2">
+      <div className="flex flex-col gap-4 mt-4">
         {/* Quantity Selector */}
-        <div className="flex items-center justify-between h-[60px] border-b border-gray-200 pb-4">
-          <span className="text-[17px] font-normal text-slate-700 tracking-wide">Quantity</span>
-          <div className="flex items-center justify-between border border-gray-100 h-[60px] w-[220px] rounded-xl bg-white">
+        <div className="flex items-center gap-6 mb-2">
+          <span className="text-[15px] text-gray-700 font-medium">Quantity</span>
+          <div className="flex items-center border border-gray-200 h-10 w-32 bg-white">
             <button 
               onClick={() => handleQuantityChange(-1)}
               disabled={quantity <= 1 || isOutOfStock}
-              className="text-gray-500 hover:text-gray-900 disabled:opacity-30 transition-colors w-[60px] h-full flex justify-center items-center"
-              aria-label="Decrease quantity"
+              className="text-gray-400 hover:text-gray-700 disabled:opacity-30 transition-colors w-10 h-full flex justify-center items-center"
             >
-              <svg className="w-[14px] h-[2px]" fill="currentColor" viewBox="0 0 14 2">
-                <rect width="14" height="2" />
-              </svg>
+              <FiMinus size={14} />
             </button>
-            <div className="w-[1px] h-8 bg-gray-200"></div>
-            <span className="flex-1 text-[17px] font-normal text-slate-700 text-center">{quantity}</span>
-            <div className="w-[1px] h-8 bg-gray-200"></div>
+            <span className="flex-1 text-[14px] font-medium text-gray-800 text-center">{quantity}</span>
             <button 
               onClick={() => handleQuantityChange(1)}
               disabled={quantity >= product.stock || isOutOfStock}
-              className="text-gray-500 hover:text-gray-900 disabled:opacity-30 transition-colors w-[60px] h-full flex justify-center items-center"
-              aria-label="Increase quantity"
+              className="text-gray-400 hover:text-gray-700 disabled:opacity-30 transition-colors w-10 h-full flex justify-center items-center"
             >
-              <svg className="w-[14px] h-[14px]" fill="currentColor" viewBox="0 0 14 14">
-                <polygon points="14,6 8,6 8,0 6,0 6,6 0,6 0,8 6,8 6,14 8,14 8,8 14,8" />
-              </svg>
+              <FiPlus size={14} />
             </button>
           </div>
         </div>
@@ -87,56 +79,55 @@ export default function ProductActions({ product, selectedVariants, activePrice 
         <button 
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className="w-full flex h-[60px] bg-[#EE2737] rounded-[24px] overflow-hidden hover:bg-[#D6222E] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+          className="w-full flex h-[56px] rounded-lg overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {/* Left Side: Price */}
-          <div className="flex-1 flex flex-col items-center justify-center text-white p-2">
-            <span className="text-[18px] font-bold leading-tight tracking-wide">{formattedPrice}</span>
-            <span className="text-[12px] font-normal opacity-90 tracking-wide">{formattedPrice}x{quantity}</span>
+          {/* Left Side: Price (Darker Red) */}
+          <div className="w-[45%] flex flex-col items-center justify-center bg-[#D3161D] text-white p-2 border-r border-[#E61B23]">
+            <span className="text-[16px] font-bold leading-tight">{formattedPrice}</span>
+            <span className="text-[11px] font-normal opacity-80">{formattedPrice.replace(' BDT', '')} BDT x {quantity}</span>
           </div>
-          <div className="w-[1.5px] h-10 bg-white/90 my-auto rounded-full"></div>
-          {/* Right Side: Action */}
-          <div className="flex-1 flex items-center justify-center gap-2 text-white p-2">
-            <FiShoppingCart size={20} strokeWidth={2.5} />
-            <span className="text-[16px] font-medium tracking-wide">{isOutOfStock ? 'Out of Stock' : 'Add to Cart'}</span>
+          {/* Right Side: Action (Brighter Red) */}
+          <div className="w-[55%] flex items-center justify-center gap-2 bg-[#ED1C24] hover:bg-[#D3161D] text-white p-2 transition-colors">
+            <FiShoppingCart size={18} />
+            <span className="text-[15px] font-medium">{isOutOfStock ? 'Out of Stock' : 'Add to Cart'}</span>
           </div>
         </button>
 
         {/* EMI Button */}
-        <button className="w-full h-[52px] bg-[#FCE8E8] text-[#EE2737] font-bold text-[16px] rounded-[24px] hover:bg-[#F9D6D6] transition-colors tracking-wide shadow-sm">
-          EMI 1,188 BDT
+        <button className="w-full h-[50px] bg-[#FDEAEB] text-[#ED1C24] font-bold text-[15px] rounded-lg hover:bg-[#F9D6D6] transition-colors">
+          EMI {Math.round(activePrice / 12).toLocaleString('en-US')} BDT
         </button>
 
         {/* Small Accordions */}
-        <div className="flex flex-col bg-white rounded-[16px] shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100 mb-2">
-          <button className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center gap-4 text-gray-400">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="flex flex-col border border-gray-100 mt-4">
+          <button className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition-colors border-b border-gray-100">
+            <div className="flex items-center gap-3 text-gray-400">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
               </svg>
-              <span className="text-[15px] font-normal text-gray-400 tracking-wide">Packaging Information</span>
+              <span className="text-[14px] font-normal text-gray-500">Packaging Information</span>
             </div>
             <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <button className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center gap-4 text-gray-400">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition-colors border-b border-gray-100">
+            <div className="flex items-center gap-3 text-gray-400">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
-              <span className="text-[15px] font-normal text-gray-400 tracking-wide">Need Help?</span>
+              <span className="text-[14px] font-normal text-gray-500">Need Help?</span>
             </div>
             <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <button className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center gap-4 text-gray-400">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition-colors">
+            <div className="flex items-center gap-3 text-gray-400">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span className="text-[15px] font-normal text-gray-400 tracking-wide">12 Months warranty</span>
+              <span className="text-[14px] font-normal text-gray-500">12 Months warranty</span>
             </div>
             <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />

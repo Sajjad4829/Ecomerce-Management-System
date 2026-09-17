@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { HexColorPicker } from 'react-colorful';
 import { FiCopy, FiCheck } from 'react-icons/fi';
-import { Pipette } from 'lucide-react'; // For the eyedropper icon
+import { Pipette } from 'lucide-react';
 
 const PRESET_COLORS = [
   '#EF4444', '#F97316', '#F59E0B', 
@@ -12,17 +13,34 @@ const PRESET_COLORS = [
 export default function CustomColorPicker({ color, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const buttonRef = useRef(null);
   const popoverRef = useRef(null);
+
+  const openPopover = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + 8,
+        left: rect.left,
+      });
+    }
+    setIsOpen(true);
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+      if (
+        isOpen && 
+        popoverRef.current && !popoverRef.current.contains(event.target) &&
+        buttonRef.current && !buttonRef.current.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [isOpen]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(color);
@@ -31,11 +49,12 @@ export default function CustomColorPicker({ color, onChange }) {
   };
 
   return (
-    <div className="relative" ref={popoverRef}>
-      {/* Trigger Button - Looks like the pill shape from the screenshot */}
+    <>
+      {/* Trigger Button */}
       <button
+        ref={buttonRef}
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => isOpen ? setIsOpen(false) : openPopover()}
         className="relative w-full h-10 rounded-full overflow-hidden border border-gray-200 shadow-sm flex items-center justify-center transition-all hover:ring-2 hover:ring-blue-500 hover:ring-offset-1 group"
         style={{ backgroundColor: color || '#000000' }}
       >
@@ -44,10 +63,13 @@ export default function CustomColorPicker({ color, onChange }) {
         </div>
       </button>
 
-      {/* Popover */}
-      {isOpen && (
-        <div className="absolute z-50 top-full left-0 mt-3 bg-white rounded-3xl p-5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 w-[260px] animate-in fade-in zoom-in-95 duration-200">
-          
+      {/* Popover rendered via Portal */}
+      {isOpen && createPortal(
+        <div 
+          ref={popoverRef}
+          className="fixed z-[9999] bg-white rounded-3xl p-5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 w-[260px] animate-in fade-in zoom-in-95 duration-200"
+          style={{ top: coords.top, left: coords.left }}
+        >
           {/* Header */}
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
             <div className="flex items-center gap-2">
@@ -116,8 +138,9 @@ export default function CustomColorPicker({ color, onChange }) {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 }
