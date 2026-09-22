@@ -211,6 +211,10 @@ const RecursiveFieldRenderer = ({
                 isDescription ? "rounded-lg p-0 flex-col gap-3" : "rounded-lg px-3 py-2 flex-col gap-3",
                 (!isContainer && !isGrid && !isFlex && !isImage && !isDescription && !isEmptySpace && field.bottomUnderline) ? "border-b-2 border-gray-200" : ""
             )}
+            style={isContainer ? {
+                width: (!isNaN(field.width) && field.width ? `${field.width}px` : field.width),
+                height: (!isNaN(field.height) && field.height ? `${field.height}px` : field.height),
+            } : {}}
             onClick={(e) => { e.stopPropagation(); setActiveFieldPath(path); }}
         >
             {/* Grab icon */}
@@ -267,7 +271,7 @@ const RecursiveFieldRenderer = ({
                             justifyContent,
                             alignItems,
                             gap: `${gap}px`,
-                            minHeight: `${minHeight}px`
+                            minHeight: (!isNaN(minHeight) && minHeight ? `${minHeight}px` : minHeight)
                         }}
                     >
                         {field.fields && field.fields.map((subField, idx) => (
@@ -1590,6 +1594,71 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
                                         </div>
                                     )}
 
+                                    {getFieldAtPath(layout, activeFieldPath)?.type === 'Container' && (
+                                        <div className="pt-6 border-t border-gray-100 space-y-5">
+                                            <h4 className="text-sm font-bold text-gray-900">Container Layout</h4>
+                                            
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Width</label>
+                                                    <div className="flex w-full bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-600 transition-all">
+                                                        <input 
+                                                            type="number" 
+                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[^0-9.]/g, '')}
+                                                            onChange={(e) => {
+                                                                const unit = String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[0-9.]/g, '') || 'px';
+                                                                updateActiveField({ width: e.target.value + unit });
+                                                            }}
+                                                            placeholder="100"
+                                                            className="w-full px-3 py-2.5 text-sm outline-none bg-transparent"
+                                                        />
+                                                        <select
+                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[0-9.]/g, '') || 'px'}
+                                                            onChange={(e) => {
+                                                                const num = String(getFieldAtPath(layout, activeFieldPath)?.width || '100').replace(/[^0-9.]/g, '');
+                                                                updateActiveField({ width: num + e.target.value });
+                                                            }}
+                                                            className="px-2 py-2.5 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 outline-none cursor-pointer"
+                                                        >
+                                                            <option value="px">px</option>
+                                                            <option value="%">%</option>
+                                                            <option value="vh">vh</option>
+                                                            <option value="vw">vw</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Height</label>
+                                                    <div className="flex w-full bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-600 transition-all">
+                                                        <input 
+                                                            type="number" 
+                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.height || 'auto').replace(/[^0-9.]/g, '')}
+                                                            onChange={(e) => {
+                                                                const unit = String(getFieldAtPath(layout, activeFieldPath)?.height || 'auto').replace(/[0-9.]/g, '') || 'px';
+                                                                updateActiveField({ height: e.target.value + unit });
+                                                            }}
+                                                            placeholder="auto"
+                                                            className="w-full px-3 py-2.5 text-sm outline-none bg-transparent"
+                                                        />
+                                                        <select
+                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.height || 'auto').replace(/[0-9.]/g, '') || 'px'}
+                                                            onChange={(e) => {
+                                                                const num = String(getFieldAtPath(layout, activeFieldPath)?.height || '').replace(/[^0-9.]/g, '');
+                                                                updateActiveField({ height: num + e.target.value });
+                                                            }}
+                                                            className="px-2 py-2.5 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 outline-none cursor-pointer"
+                                                        >
+                                                            <option value="px">px</option>
+                                                            <option value="%">%</option>
+                                                            <option value="vh">vh</option>
+                                                            <option value="vw">vw</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {getFieldAtPath(layout, activeFieldPath)?.type === 'Flex' && (
                                         <div className="pt-6 border-t border-gray-100 space-y-5">
                                             <h4 className="text-sm font-bold text-gray-900">Flex Layout</h4>
@@ -1619,22 +1688,60 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
 
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Width (px)</label>
-                                                    <input 
-                                                        type="number" 
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.width || 1000}
-                                                        onChange={(e) => updateActiveField({ width: parseInt(e.target.value) || 1000 })}
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                    />
+                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Width</label>
+                                                    <div className="flex w-full bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-600 transition-all">
+                                                        <input 
+                                                            type="number" 
+                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[^0-9.]/g, '')}
+                                                            onChange={(e) => {
+                                                                const unit = String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[0-9.]/g, '') || 'px';
+                                                                updateActiveField({ width: e.target.value + unit });
+                                                            }}
+                                                            placeholder="100"
+                                                            className="w-full px-3 py-2.5 text-sm outline-none bg-transparent"
+                                                        />
+                                                        <select
+                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[0-9.]/g, '') || 'px'}
+                                                            onChange={(e) => {
+                                                                const num = String(getFieldAtPath(layout, activeFieldPath)?.width || '100').replace(/[^0-9.]/g, '');
+                                                                updateActiveField({ width: num + e.target.value });
+                                                            }}
+                                                            className="px-2 py-2.5 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 outline-none cursor-pointer"
+                                                        >
+                                                            <option value="px">px</option>
+                                                            <option value="%">%</option>
+                                                            <option value="vh">vh</option>
+                                                            <option value="vw">vw</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Min Height (px)</label>
-                                                    <input 
-                                                        type="number" 
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.minHeight || 300}
-                                                        onChange={(e) => updateActiveField({ minHeight: parseInt(e.target.value) || 300 })}
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                    />
+                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Min Height</label>
+                                                    <div className="flex w-full bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-600 transition-all">
+                                                        <input 
+                                                            type="number" 
+                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.minHeight || '300px').replace(/[^0-9.]/g, '')}
+                                                            onChange={(e) => {
+                                                                const unit = String(getFieldAtPath(layout, activeFieldPath)?.minHeight || '300px').replace(/[0-9.]/g, '') || 'px';
+                                                                updateActiveField({ minHeight: e.target.value + unit });
+                                                            }}
+                                                            placeholder="300"
+                                                            className="w-full px-3 py-2.5 text-sm outline-none bg-transparent"
+                                                        />
+                                                        <select
+                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.minHeight || '300px').replace(/[0-9.]/g, '') || 'px'}
+                                                            onChange={(e) => {
+                                                                const num = String(getFieldAtPath(layout, activeFieldPath)?.minHeight || '300').replace(/[^0-9.]/g, '');
+                                                                updateActiveField({ minHeight: num + e.target.value });
+                                                            }}
+                                                            className="px-2 py-2.5 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 outline-none cursor-pointer"
+                                                        >
+                                                            <option value="px">px</option>
+                                                            <option value="%">%</option>
+                                                            <option value="vh">vh</option>
+                                                            <option value="vw">vw</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
 

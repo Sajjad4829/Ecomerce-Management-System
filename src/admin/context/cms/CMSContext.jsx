@@ -129,8 +129,54 @@ const DEFAULT_HEADER_CONFIG = {
   transparentOnTop: false, hoverTransparent: false, hideOnScrollDown: false, blurEffect: false,
 };
 
+const DEFAULT_FOOTER_CONFIG = {
+  logoImage: '', 
+  contact: {
+    address: '',
+    phone1: '',
+    phone2: '',
+    email: ''
+  },
+  columns: [
+    {
+      title: 'NEED HELP?',
+      links: [
+        { label: 'Contact Us', url: '/contact' },
+        { label: 'FAQ', url: '/faq' },
+        { label: 'Showroom Locator', url: '/showroom' },
+        { label: 'Delivery Tracker', url: '/tracker' },
+        { label: 'Billing Terms & Conditions', url: '/billing' },
+      ]
+    },
+    {
+      title: 'MORE INFORMATION',
+      links: [
+        { label: 'Company Profile', url: '/profile' },
+        { label: 'Be Our Franchisee', url: '/franchisee' },
+        { label: 'HATIL Project Solution', url: '/project' },
+        { label: 'Catalogues', url: '/catalogues' },
+        { label: 'HATIL in News', url: '/news' },
+        { label: 'Our Team', url: '/team' },
+      ]
+    }
+  ],
+  appLinks: {
+    appStore: '',
+    googlePlay: ''
+  },
+  social: {
+    facebook: '',
+    instagram: '',
+    youtube: '',
+    pinterest: '',
+    linkedin: '',
+    wikipedia: ''
+  }
+};
+
 // ── localStorage cache helpers (navbar instant-load) ──────────────────────────
 const CACHE_KEY_HEADER = 'cms_headerConfig_cache';
+const CACHE_KEY_FOOTER = 'cms_footerConfig_cache';
 const CACHE_KEY_MENUS = 'cms_menus_cache';
 
 function readCache(key, fallback) {
@@ -161,6 +207,9 @@ export const CMSProvider = ({ children }) => {
   // without waiting for the API call to complete.
   const [headerConfig, setHeaderConfigState] = useState(
     () => readCache(CACHE_KEY_HEADER, DEFAULT_HEADER_CONFIG)
+  );
+  const [footerConfig, setFooterConfigState] = useState(
+    () => readCache(CACHE_KEY_FOOTER, DEFAULT_FOOTER_CONFIG)
   );
   const [pageTypes, setPageTypes] = useState([]);
   const [configLoading, setConfigLoading] = useState(true);
@@ -295,6 +344,10 @@ export const CMSProvider = ({ children }) => {
         if (data.headerConfig) {
           setHeaderConfigState(data.headerConfig);
           writeCache(CACHE_KEY_HEADER, data.headerConfig);
+        }
+        if (data.footerConfig) {
+          setFooterConfigState(data.footerConfig);
+          writeCache(CACHE_KEY_FOOTER, data.footerConfig);
         }
         if (data.pageTypes && Array.isArray(data.pageTypes)) setPageTypes(data.pageTypes);
         if (data.menus && Array.isArray(data.menus)) {
@@ -460,6 +513,27 @@ export const CMSProvider = ({ children }) => {
     }
   }, [headerConfig]);
 
+  const setFooterConfig = useCallback(async (configOrUpdater) => {
+    const newConfig = typeof configOrUpdater === 'function'
+      ? configOrUpdater(footerConfig)
+      : configOrUpdater;
+
+    // Optimistic local update + cache so next reload is instant
+    setFooterConfigState(newConfig);
+    writeCache(CACHE_KEY_FOOTER, newConfig);
+
+    // Persist to MongoDB
+    try {
+      await fetch('/api/cms/config/footer', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newConfig),
+      });
+    } catch (err) {
+      console.error('CMSContext: setFooterConfig save failed', err);
+    }
+  }, [footerConfig]);
+
   const setMenus = useCallback(async (menusOrUpdater) => {
     const newMenus = typeof menusOrUpdater === 'function'
       ? menusOrUpdater(menus)
@@ -524,16 +598,18 @@ export const CMSProvider = ({ children }) => {
     // Global virtual sections (navbar, footer, etc.)
     navbarGlobalSection,
     // Config
-    headerConfig, setHeaderConfig, configLoading,
+    headerConfig, setHeaderConfig, 
+    footerConfig, setFooterConfig,
+    configLoading,
   }), [
     pageTypes, pages, pagesLoading,
     pageSectionsDraft, pageSectionsPublished,
     sectionsState, blocks, menus, banners, seo, redirects, versions,
     libraryConfigurations, sectionPreviewMap, sectionPreviewLoading,
-    headerConfig, configLoading,
+    headerConfig, footerConfig, configLoading,
     getPage, getPageSections, getDraftSections,
     saveDraftSections, publishPageSections,
-    createPage, updatePage, deletePage, loadPageSections, setHeaderConfig, setMenus,
+    createPage, updatePage, deletePage, loadPageSections, setHeaderConfig, setFooterConfig, setMenus,
     navbarGlobalSection,
   ]);
 

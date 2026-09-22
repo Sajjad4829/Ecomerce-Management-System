@@ -10,6 +10,7 @@ import { AnimatePresence } from 'framer-motion';
 import GlobalSearch from '../components/search/GlobalSearch';
 import MobileMenu from '../components/layout/MobileMenu';
 import Navbar from '../components/navigation/Navbar';
+import Footer from '../components/navigation/Footer';
 import { useStorefrontTheme } from '../context/StorefrontThemeContext';
 import { useCMS } from '../../admin/context/cms/CMSContext';
 import { useProducts } from '../../admin/context/commerce/ProductContext';
@@ -83,6 +84,7 @@ export default function StorefrontLayout() {
             <Outlet />
           </div>
         </main>
+        <Footer />
         <CartDrawer />
       </div>
     </>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { FiMaximize, FiBox, FiHeart, FiX } from 'react-icons/fi';
 import { Sparkles } from 'lucide-react';
 import Product360Viewer from './Product360Viewer';
@@ -169,11 +170,11 @@ export default function ProductGallery({ product, activeVariant, previewMode = '
       </div>
       
       {/* Fullscreen Modal */}
-      {isFullscreen && (
-        <div className="fixed inset-0 z-[100] bg-white flex items-center justify-center">
+      {isFullscreen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-white flex items-center justify-center">
           <button 
             onClick={() => setIsFullscreen(false)}
-            className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white p-3 transition-colors"
+            className="absolute top-0 right-0 bg-[#EE2737] hover:bg-red-700 text-white p-2.5 transition-colors z-[100000]"
           >
             <FiX size={24} />
           </button>
@@ -182,7 +183,8 @@ export default function ProductGallery({ product, activeVariant, previewMode = '
             alt="Fullscreen Preview" 
             className="max-w-[90vw] max-h-[90vh] object-contain" 
           />
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

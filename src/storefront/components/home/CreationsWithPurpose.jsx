@@ -60,20 +60,77 @@ export default function CreationsWithPurpose({ data, activeTheme, ...settings })
 
   const bgCol = settings.backgroundColor || null;
   
-  const paddingSetting = resolveSetting('sectionPadding', 'Large');
-  const getPaddingClass = () => {
-     const getCls = (val) => val === 'None' ? 'py-0' : (val === 'Small' ? 'py-8' : (val === 'Medium' ? 'py-16' : 'py-24'));
-     return `${getCls(paddingSetting.mobile)} sm:${getCls(paddingSetting.tablet)} md:${getCls(paddingSetting.desktop)}`;
+  const marginSetting = resolveSetting('sectionMargin', '');
+  const paddingSetting = resolveSetting('sectionPadding', '');
+  
+  const titleFontFamilySetting = resolveSetting('titleFontFamily', 'Inter');
+  const titleFontSizeSetting = resolveSetting('titleFontSize', '');
+  const subtitleFontFamilySetting = resolveSetting('subtitleFontFamily', 'Inter');
+  const subtitleFontSizeSetting = resolveSetting('subtitleFontSize', '');
+
+  const layoutDirectionSetting = resolveSetting('layoutDirection', 'left');
+  
+  const getDesktopPos = () => {
+    let p = layoutDirectionSetting.desktop || 'left';
+    if (p === 'row') return 'left';
+    if (p === 'column') return 'top';
+    return p;
+  };
+  const dPos = getDesktopPos();
+
+  const contentAlignmentSetting = resolveSetting('contentAlignment', '');
+  const getContentAlign = () => {
+    let align = contentAlignmentSetting.desktop;
+    if (align) return align;
+    if (dPos === 'top' || dPos === 'bottom') return 'center';
+    return 'left';
+  };
+  const cAlign = getContentAlign();
+
+  const formatFontSize = (val) => {
+    if (!val) return undefined;
+    if (!isNaN(val)) return `${val}px`;
+    return val;
+  };
+
+  const parseSpacing = (val) => {
+    if (!val || ['Small', 'Medium', 'Large', 'None'].includes(val)) return '';
+    return val;
+  };
+  
+  // Use inline style for dynamic margin and padding 
+  // (In a real production app with styled-components or CSS variables we'd map responsive breakpoints perfectly, 
+  // but for inline styles we will apply the desktop setting globally for now to respect the CMS string inputs)
+  const sectionStyle = {
+    backgroundColor: bgCol || undefined,
+    margin: parseSpacing(marginSetting.desktop),
+    padding: parseSpacing(paddingSetting.desktop)
   };
   
   // Theme 2: Editorial Center Layout
   if (activeTheme?.id === 'modern-luxury') {
     return (
-      <section className={`w-full overflow-hidden ${bgCol ? '' : 'bg-neutral-50'} ${getPaddingClass()}`} style={{ backgroundColor: bgCol }}>
+      <section className={`w-full overflow-hidden ${bgCol ? '' : 'bg-neutral-50'}`} style={sectionStyle}>
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
           <div className="text-center max-w-2xl mb-16">
-            <h2 className="text-4xl lg:text-5xl font-serif text-neutral-900 mb-6">{title}</h2>
-            <p className="text-lg text-neutral-600 mb-8">{subtitle}</p>
+            <h2 
+              className="text-4xl lg:text-5xl font-serif text-neutral-900 mb-6"
+              style={{
+                fontFamily: titleFontFamilySetting.desktop || undefined,
+                fontSize: formatFontSize(titleFontSizeSetting.desktop)
+              }}
+            >
+              {title}
+            </h2>
+            <p 
+              className="text-lg text-neutral-600 mb-8"
+              style={{
+                fontFamily: subtitleFontFamilySetting.desktop || undefined,
+                fontSize: formatFontSize(subtitleFontSizeSetting.desktop)
+              }}
+            >
+              {subtitle}
+            </p>
             <Link 
               to={ctaUrl} 
               className="inline-flex items-center justify-center px-8 py-3 border border-neutral-900 text-base font-medium text-neutral-900 hover:bg-neutral-900 hover:text-white transition-colors duration-300"
@@ -102,16 +159,28 @@ export default function CreationsWithPurpose({ data, activeTheme, ...settings })
 
   // Theme 1: Classic Furniture Layout
   return (
-    <section className={`w-full overflow-hidden ${bgCol ? '' : 'bg-white'} ${getPaddingClass()}`} style={{ backgroundColor: bgCol }}>
+    <section className={`w-full overflow-hidden ${bgCol ? '' : 'bg-white'}`} style={sectionStyle}>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-8 items-center">
+        <div className={`flex flex-col gap-12 lg:gap-8 items-center ${dPos === 'left' ? 'lg:flex-row' : dPos === 'right' ? 'lg:flex-row-reverse' : dPos === 'bottom' ? 'lg:flex-col-reverse' : 'lg:flex-col'}`}>
           
-          {/* Left Section: Typography Block (~30%) */}
-          <div className="w-full lg:w-[30%] flex flex-col items-center lg:items-end text-center lg:text-right px-4 lg:px-12 order-1">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+          {/* Text Section */}
+          <div className={`w-full ${dPos === 'top' || dPos === 'bottom' ? 'lg:w-full' : 'lg:w-[30%]'} flex flex-col px-4 lg:px-12 ${cAlign === 'center' ? 'text-center items-center' : cAlign === 'right' ? 'text-right items-end' : 'text-left items-start'}`}>
+            <h2 
+              className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
+              style={{
+                fontFamily: titleFontFamilySetting.desktop || undefined,
+                fontSize: formatFontSize(titleFontSizeSetting.desktop)
+              }}
+            >
               {title}
             </h2>
-            <p className="text-xl text-gray-500 mt-4">
+            <p 
+              className="text-xl text-gray-500 mt-4"
+              style={{
+                fontFamily: subtitleFontFamilySetting.desktop || undefined,
+                fontSize: formatFontSize(subtitleFontSizeSetting.desktop)
+              }}
+            >
               {subtitle}
             </p>
             <Link 
@@ -122,8 +191,8 @@ export default function CreationsWithPurpose({ data, activeTheme, ...settings })
             </Link>
           </div>
 
-          {/* Right Section: Image Grid (~70%) */}
-          <div className="w-full lg:w-[70%] order-2">
+          {/* Image Grid */}
+          <div className={`w-full ${dPos === 'top' || dPos === 'bottom' ? 'lg:w-full' : 'lg:w-[70%]'}`}>
             <div className={getGridClasses("grid gap-2 sm:gap-4")}>
               {items.map((img) => (
                 <Link to={img.link} key={img.id} className={`relative overflow-hidden rounded-none group cursor-pointer bg-gray-200 block ${getAspectRatioClass()}`}>

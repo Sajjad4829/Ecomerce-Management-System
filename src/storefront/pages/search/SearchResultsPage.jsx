@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import { FiFilter, FiChevronDown, FiX } from 'react-icons/fi';
+import { FiFilter, FiChevronDown, FiX, FiSearch } from 'react-icons/fi';
 import { useSearch } from '../../../admin/context/SearchContext';
 import ProductCard from '../../components/product/ProductCard';
 

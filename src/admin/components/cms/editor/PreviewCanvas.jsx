@@ -15,6 +15,7 @@ import FAQPreview from './preview/FAQPreview';
 import FooterPreview from './preview/FooterPreview';
 import CreationsShowcasePreview from './preview/CreationsShowcasePreview';
 import EmptyCanvas from './EmptyCanvas';
+import SectionBuilderSection from '../../../../storefront/components/home/SectionBuilderSection';
 
 const GenericPreview = ({ section }) => {
   const IconComponent = Icons[section.icon] || Icons.FiLayout;
@@ -86,6 +87,7 @@ export default function PreviewCanvas({
     else if (typeStr.includes('SHOWCASE') || typeStr.includes('CREATION') || typeStr.includes('PURPOSE')) content = <CreationsShowcasePreview section={section} device={device} />;
     else if (typeStr.includes('FEATURE')) content = <FeaturesPreview section={section} device={device} />;
     else if (typeStr.includes('FAQ')) content = <FAQPreview section={section} device={device} />;
+    else if (typeStr.includes('SECTION_BUILDER')) content = <SectionBuilderSection data={section} section={section} />;
     else content = <GenericPreview section={section} device={device} />;
 
     return (

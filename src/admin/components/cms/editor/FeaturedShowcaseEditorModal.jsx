@@ -13,6 +13,39 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
   const [activeDevice, setActiveDevice] = useState('desktop');
   
   const getPropName = (baseProp) => activeDevice === 'desktop' ? baseProp : `${baseProp}_${activeDevice}`;
+
+  const parseSpacing = (val) => {
+    if (!val || ['Small', 'Medium', 'Large', 'None'].includes(val)) return { t: '', r: '', b: '', l: '' };
+    
+    const parts = val.split(' ').filter(Boolean);
+    if (parts.length === 1) return { t: parts[0], r: parts[0], b: parts[0], l: parts[0] };
+    if (parts.length === 2) return { t: parts[0], r: parts[1], b: parts[0], l: parts[1] };
+    if (parts.length === 3) return { t: parts[0], r: parts[1], b: parts[2], l: parts[1] };
+    if (parts.length >= 4) return { t: parts[0], r: parts[1], b: parts[2], l: parts[3] };
+    return { t: '', r: '', b: '', l: '' };
+  };
+  
+  const getTextPosition = () => {
+    let pos = settings[getPropName('layoutDirection')];
+    if (!pos) pos = activeDevice === 'mobile' ? 'top' : 'left';
+    if (pos === 'row') return 'left';
+    if (pos === 'column') return 'top';
+    return pos;
+  };
+
+  const getContentAlignment = () => {
+    let align = settings[getPropName('contentAlignment')];
+    if (align) return align;
+    // Fallback based on text position
+    if (getTextPosition() === 'top' || getTextPosition() === 'bottom') return 'center';
+    return 'left';
+  };
+  
+  const formatFontSize = (val) => {
+    if (!val) return undefined;
+    if (!isNaN(val)) return `${val}px`;
+    return val;
+  };
   
   const [content, setContent] = useState({
     title: '',
@@ -28,7 +61,24 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
     gridColsMobile: '1',
     imageRatio: 'Square (1:1)',
     backgroundColor: '#ffffff',
-    sectionPadding: 'Large'
+    sectionPadding: '',
+    sectionPadding_tablet: '',
+    sectionPadding_mobile: '',
+    sectionMargin: '',
+    sectionMargin_tablet: '',
+    sectionMargin_mobile: '',
+    titleFontFamily: 'Inter',
+    titleFontFamily_tablet: 'Inter',
+    titleFontFamily_mobile: 'Inter',
+    titleFontSize: '',
+    titleFontSize_tablet: '',
+    titleFontSize_mobile: '',
+    subtitleFontFamily: 'Inter',
+    subtitleFontFamily_tablet: 'Inter',
+    subtitleFontFamily_mobile: 'Inter',
+    subtitleFontSize: '',
+    subtitleFontSize_tablet: '',
+    subtitleFontSize_mobile: '',
   });
   
   useEffect(() => {
@@ -53,7 +103,24 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
         gridColsMobile: section.settings.gridColsMobile || '1',
         imageRatio: section.settings.imageRatio || 'Square (1:1)',
         backgroundColor: section.settings.backgroundColor || '#ffffff',
-        sectionPadding: section.settings.sectionPadding || 'Large'
+        sectionPadding: section.settings.sectionPadding || '',
+        sectionPadding_tablet: section.settings.sectionPadding_tablet || '',
+        sectionPadding_mobile: section.settings.sectionPadding_mobile || '',
+        sectionMargin: section.settings.sectionMargin || '',
+        sectionMargin_tablet: section.settings.sectionMargin_tablet || '',
+        sectionMargin_mobile: section.settings.sectionMargin_mobile || '',
+        titleFontFamily: section.settings.titleFontFamily || 'Inter',
+        titleFontFamily_tablet: section.settings.titleFontFamily_tablet || section.settings.titleFontFamily || 'Inter',
+        titleFontFamily_mobile: section.settings.titleFontFamily_mobile || section.settings.titleFontFamily || 'Inter',
+        titleFontSize: section.settings.titleFontSize || '',
+        titleFontSize_tablet: section.settings.titleFontSize_tablet || '',
+        titleFontSize_mobile: section.settings.titleFontSize_mobile || '',
+        subtitleFontFamily: section.settings.subtitleFontFamily || 'Inter',
+        subtitleFontFamily_tablet: section.settings.subtitleFontFamily_tablet || section.settings.subtitleFontFamily || 'Inter',
+        subtitleFontFamily_mobile: section.settings.subtitleFontFamily_mobile || section.settings.subtitleFontFamily || 'Inter',
+        subtitleFontSize: section.settings.subtitleFontSize || '',
+        subtitleFontSize_tablet: section.settings.subtitleFontSize_tablet || '',
+        subtitleFontSize_mobile: section.settings.subtitleFontSize_mobile || '',
       });
     }
   }, [section]);
@@ -121,11 +188,15 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
   };
 
   const handleSave = () => {
+    const sortedItems = [...items]
+      .map((item, idx) => ({ ...item, order: item.order !== undefined ? item.order : idx + 1 }))
+      .sort((a, b) => a.order - b.order);
+
     onUpdate(section.id, {
       content: {
         ...(section.content || {}),
         ...content,
-        items: items
+        items: sortedItems
       },
       settings: {
         ...(section.settings || {}),
@@ -137,23 +208,12 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
 
   // Preview Render Logic
   const getGridColsClass = () => {
-    const d = settings.gridColsDesktop;
-    const t = settings.gridColsTablet;
-    const m = settings.gridColsMobile;
-    let cls = 'grid gap-2 ';
+    let cols = '1';
+    if (activeDevice === 'desktop') cols = settings[getPropName('gridCols')] || settings.gridColsDesktop || '3';
+    else if (activeDevice === 'tablet') cols = settings[getPropName('gridCols')] || settings.gridColsTablet || '2';
+    else if (activeDevice === 'mobile') cols = settings[getPropName('gridCols')] || settings.gridColsMobile || '1';
     
-    if (m === '1') cls += 'grid-cols-1 ';
-    else if (m === '2') cls += 'grid-cols-2 ';
-    
-    if (t === '1') cls += 'md:grid-cols-1 ';
-    else if (t === '2') cls += 'md:grid-cols-2 ';
-    else if (t === '3') cls += 'md:grid-cols-3 ';
-
-    if (d === '2') cls += 'lg:grid-cols-2 ';
-    else if (d === '3') cls += 'lg:grid-cols-3 ';
-    else if (d === '4') cls += 'lg:grid-cols-4 ';
-
-    return cls;
+    return `grid gap-2 grid-cols-${cols}`;
   };
 
   const getAspectRatioClass = () => {
@@ -292,26 +352,66 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
               </div>
               <div className="flex-1 p-8 flex items-center justify-center bg-gray-50/50" style={{ backgroundColor: settings.backgroundColor }}>
                 {/* Live Preview Canvas */}
-                <div className="w-full max-w-2xl bg-white p-8 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                <div className={cn(
+                  "bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 transition-all duration-300",
+                  activeDevice === 'mobile' ? 'w-full max-w-[375px] p-6' : 
+                  activeDevice === 'tablet' ? 'w-full max-w-[768px] p-8' : 
+                  'w-full max-w-5xl p-10'
+                )}>
+                  <div className={cn(
+                    (getTextPosition() === 'top' || getTextPosition() === 'bottom') 
+                      ? "flex flex-col gap-6" 
+                      : "grid grid-cols-12 gap-8 items-center"
+                  )}>
                     {/* Left Text Side */}
-                    <div className="md:col-span-5 text-left space-y-4">
-                      <h3 className="text-3xl font-bold text-gray-900 leading-tight">
+                    <div className={cn(
+                      (getTextPosition() === 'top' || getTextPosition() === 'bottom') ? "w-full space-y-3" : "col-span-5 space-y-4",
+                      getTextPosition() === 'left' ? "order-1" : "",
+                      getTextPosition() === 'right' ? "order-2" : "",
+                      getTextPosition() === 'top' ? "order-1" : "",
+                      getTextPosition() === 'bottom' ? "order-2" : "",
+                      "flex flex-col",
+                      getContentAlignment() === 'center' ? "text-center items-center" :
+                      getContentAlignment() === 'right' ? "text-right items-end" :
+                      "text-left items-start"
+                    )}>
+                      <h3 
+                        className={cn(
+                          "font-bold text-gray-900 leading-tight",
+                          activeDevice === 'mobile' ? "text-2xl" : "text-3xl"
+                        )}
+                        style={{
+                          fontFamily: settings[getPropName('titleFontFamily')] || 'Inter',
+                          fontSize: formatFontSize(settings[getPropName('titleFontSize')])
+                        }}
+                      >
                         {content.title || 'Creations with purpose'}
                       </h3>
-                      <p className="text-gray-500 text-sm leading-relaxed">
+                      <p 
+                        className="text-gray-500 text-sm leading-relaxed"
+                        style={{
+                          fontFamily: settings[getPropName('subtitleFontFamily')] || 'Inter',
+                          fontSize: formatFontSize(settings[getPropName('subtitleFontSize')])
+                        }}
+                      >
                         {content.subtitle || 'Many choices based on your space'}
                       </p>
-                      <button className="text-sm font-bold text-gray-900 flex items-center gap-2 hover:opacity-70 transition-opacity pt-2">
+                      <button className={cn(
+                        "text-sm font-bold text-gray-900 flex items-center gap-2 hover:opacity-70 transition-opacity pt-2",
+                        (getTextPosition() === 'top' || getTextPosition() === 'bottom') && getContentAlignment() === 'center' ? "justify-center w-full" : ""
+                      )}>
                         {content.ctaText || 'Explore Now'} <span className="text-lg">→</span>
                       </button>
                     </div>
 
                     {/* Right Images Side */}
-                    <div className="md:col-span-7">
+                    <div className={cn(
+                      (getTextPosition() === 'top' || getTextPosition() === 'bottom') ? "w-full" : "col-span-7",
+                      (getTextPosition() === 'right' || getTextPosition() === 'bottom') ? "order-1" : "order-2"
+                    )}>
                       <div className={getGridColsClass()}>
-                        {items.filter(i => i.active).slice(0, 6).map((item, idx) => (
-                          <div key={item.id || idx} className={cn("bg-gray-100 rounded-lg overflow-hidden group relative", getAspectRatioClass())}>
+                        {[...items].map((item, idx) => ({ ...item, order: item.order !== undefined ? item.order : idx + 1 })).sort((a, b) => a.order - b.order).filter(i => i.active).slice(0, activeDevice === 'mobile' ? 4 : 6).map((item, idx) => (
+                          <div key={item.id || idx} className={cn("bg-gray-100 overflow-hidden group relative", getAspectRatioClass())}>
                             {item.imageUrl ? (
                               <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                             ) : (
@@ -368,6 +468,81 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
                 </div>
                 <div className="p-5 space-y-4">
                   <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Text Position</label>
+                    <div className="grid grid-cols-4 gap-2">
+                      <button
+                        onClick={() => setSettings({...settings, [getPropName('layoutDirection')]: 'left'})}
+                        className={cn(
+                          "py-2 text-xs border rounded-lg transition-colors font-medium text-center",
+                          getTextPosition() === 'left' ? "border-[#5946ff] bg-[#5946ff]/5 text-[#5946ff]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        )}
+                      >
+                        Left
+                      </button>
+                      <button
+                        onClick={() => setSettings({...settings, [getPropName('layoutDirection')]: 'right'})}
+                        className={cn(
+                          "py-2 text-xs border rounded-lg transition-colors font-medium text-center",
+                          getTextPosition() === 'right' ? "border-[#5946ff] bg-[#5946ff]/5 text-[#5946ff]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        )}
+                      >
+                        Right
+                      </button>
+                      <button
+                        onClick={() => setSettings({...settings, [getPropName('layoutDirection')]: 'top'})}
+                        className={cn(
+                          "py-2 text-xs border rounded-lg transition-colors font-medium text-center",
+                          getTextPosition() === 'top' ? "border-[#5946ff] bg-[#5946ff]/5 text-[#5946ff]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        )}
+                      >
+                        Top
+                      </button>
+                      <button
+                        onClick={() => setSettings({...settings, [getPropName('layoutDirection')]: 'bottom'})}
+                        className={cn(
+                          "py-2 text-xs border rounded-lg transition-colors font-medium text-center",
+                          getTextPosition() === 'bottom' ? "border-[#5946ff] bg-[#5946ff]/5 text-[#5946ff]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        )}
+                      >
+                        Bottom
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Content Alignment</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        onClick={() => setSettings({...settings, [getPropName('contentAlignment')]: 'left'})}
+                        className={cn(
+                          "py-2 text-xs border rounded-lg transition-colors font-medium text-center",
+                          getContentAlignment() === 'left' ? "border-[#5946ff] bg-[#5946ff]/5 text-[#5946ff]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        )}
+                      >
+                        Left
+                      </button>
+                      <button
+                        onClick={() => setSettings({...settings, [getPropName('contentAlignment')]: 'center'})}
+                        className={cn(
+                          "py-2 text-xs border rounded-lg transition-colors font-medium text-center",
+                          getContentAlignment() === 'center' ? "border-[#5946ff] bg-[#5946ff]/5 text-[#5946ff]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        )}
+                      >
+                        Center
+                      </button>
+                      <button
+                        onClick={() => setSettings({...settings, [getPropName('contentAlignment')]: 'right'})}
+                        className={cn(
+                          "py-2 text-xs border rounded-lg transition-colors font-medium text-center",
+                          getContentAlignment() === 'right' ? "border-[#5946ff] bg-[#5946ff]/5 text-[#5946ff]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        )}
+                      >
+                        Right
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
                     <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Grid Columns</label>
                     <input 
                       type="number"
@@ -406,40 +581,191 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
               </div>
 
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-gray-100">
-                  <h2 className="font-semibold text-gray-900 text-sm">Background Settings</h2>
+                <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                  <h2 className="font-semibold text-gray-900 text-sm">Style Settings</h2>
+                  <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => setActiveDevice('desktop')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'desktop' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Desktop"
+                    >
+                      <FiMonitor size={14} />
+                    </button>
+                    <button
+                      onClick={() => setActiveDevice('tablet')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'tablet' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Tablet"
+                    >
+                      <FiTablet size={14} />
+                    </button>
+                    <button
+                      onClick={() => setActiveDevice('mobile')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        activeDevice === 'mobile' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      )}
+                      title="Mobile"
+                    >
+                      <FiSmartphone size={14} />
+                    </button>
+                  </div>
                 </div>
-                <div className="p-5 space-y-4">
+                <div className="p-5 space-y-5">
                   <div className="space-y-1.5">
                     <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Background Color</label>
                     <div className="flex items-center gap-3">
-                      <div 
-                        className="w-8 h-8 rounded border border-gray-300 shadow-sm"
-                        style={{ backgroundColor: settings.backgroundColor }}
+                      <input 
+                        type="color"
+                        value={settings.backgroundColor}
+                        onChange={(e) => setSettings({...settings, backgroundColor: e.target.value})}
+                        className="w-9 h-9 p-0 border-0 rounded cursor-pointer shrink-0" 
                       />
                       <input 
                         type="text" 
                         value={settings.backgroundColor}
                         onChange={(e) => setSettings({...settings, backgroundColor: e.target.value})}
-                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all" 
+                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all uppercase" 
                       />
                     </div>
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Section Padding</label>
-                    <div className="relative">
-                      <select 
-                        value={settings[getPropName('sectionPadding')] || settings.sectionPadding}
-                        onChange={(e) => setSettings({...settings, [getPropName('sectionPadding')]: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-2.5 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white"
-                      >
-                        <option>Small</option>
-                        <option>Medium</option>
-                        <option>Large</option>
-                        <option>None</option>
-                      </select>
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                        <FiChevronDown size={16} />
+
+                  <div className="space-y-4">
+                    {/* Padding Inputs */}
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Padding</label>
+                      <div className="grid grid-cols-4 gap-2">
+                        {['t', 'r', 'b', 'l'].map((dir, idx) => {
+                          const parsed = parseSpacing(settings[getPropName('sectionPadding')] || '');
+                          return (
+                            <div key={`pad-${dir}`} className="flex flex-col gap-1">
+                              <input 
+                                type="text" 
+                                value={parsed[dir]} 
+                                onChange={(e) => {
+                                  const newVal = e.target.value;
+                                  const newParsed = { ...parsed, [dir]: newVal };
+                                  const str = `${newParsed.t || '0px'} ${newParsed.r || '0px'} ${newParsed.b || '0px'} ${newParsed.l || '0px'}`;
+                                  setSettings({...settings, [getPropName('sectionPadding')]: str});
+                                }}
+                                placeholder="0"
+                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white text-center"
+                              />
+                              <span className="text-[10px] font-medium text-gray-400 text-center uppercase">{dir}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    {/* Margin Inputs */}
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Margin</label>
+                      <div className="grid grid-cols-4 gap-2">
+                        {['t', 'r', 'b', 'l'].map((dir, idx) => {
+                          const parsed = parseSpacing(settings[getPropName('sectionMargin')] || '');
+                          return (
+                            <div key={`mar-${dir}`} className="flex flex-col gap-1">
+                              <input 
+                                type="text" 
+                                value={parsed[dir]} 
+                                onChange={(e) => {
+                                  const newVal = e.target.value;
+                                  const newParsed = { ...parsed, [dir]: newVal };
+                                  const str = `${newParsed.t || '0px'} ${newParsed.r || '0px'} ${newParsed.b || '0px'} ${newParsed.l || '0px'}`;
+                                  setSettings({...settings, [getPropName('sectionMargin')]: str});
+                                }}
+                                placeholder="0"
+                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white text-center"
+                              />
+                              <span className="text-[10px] font-medium text-gray-400 text-center uppercase">{dir}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Section Title Font Family</label>
+                      <div className="relative">
+                        <select 
+                          value={settings[getPropName('titleFontFamily')] || 'Inter'}
+                          onChange={(e) => setSettings({...settings, [getPropName('titleFontFamily')]: e.target.value})}
+                          className="w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white"
+                        >
+                          <option value="Inter">Inter</option>
+                          <option value="Roboto">Roboto</option>
+                          <option value="Outfit">Outfit</option>
+                          <option value="sans-serif">Sans Serif</option>
+                          <option value="serif">Serif</option>
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                          <FiChevronDown size={14} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Section Title Font Size</label>
+                      <div className="relative">
+                        <input 
+                          type="number"
+                          placeholder="e.g. 36"
+                          value={(settings[getPropName('titleFontSize')] || '').replace('px', '')}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setSettings({...settings, [getPropName('titleFontSize')]: val ? `${val}px` : ''});
+                          }}
+                          className="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white"
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-medium pointer-events-none">
+                          px
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-4 border-t border-gray-100">
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Section Subtitle Font Family</label>
+                      <div className="relative">
+                        <select 
+                          value={settings[getPropName('subtitleFontFamily')] || 'Inter'}
+                          onChange={(e) => setSettings({...settings, [getPropName('subtitleFontFamily')]: e.target.value})}
+                          className="w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white"
+                        >
+                          <option value="Inter">Inter</option>
+                          <option value="Roboto">Roboto</option>
+                          <option value="Outfit">Outfit</option>
+                          <option value="sans-serif">Sans Serif</option>
+                          <option value="serif">Serif</option>
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                          <FiChevronDown size={14} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Section Subtitle Font Size</label>
+                      <div className="relative">
+                        <input 
+                          type="number"
+                          placeholder="e.g. 16"
+                          value={(settings[getPropName('subtitleFontSize')] || '').replace('px', '')}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setSettings({...settings, [getPropName('subtitleFontSize')]: val ? `${val}px` : ''});
+                          }}
+                          className="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5946ff]/20 focus:border-[#5946ff] transition-all bg-white"
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-medium pointer-events-none">
+                          px
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -465,7 +791,7 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
               <table className="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="w-12 py-3 px-4 text-center"></th>
+                    <th className="py-3 px-4 text-[11px] font-semibold text-gray-600 uppercase tracking-wider w-20 text-center">Order</th>
                     <th className="py-3 px-4 text-[11px] font-semibold text-gray-600 uppercase tracking-wider w-24">Image</th>
                     <th className="py-3 px-4 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Title (Optional)</th>
                     <th className="py-3 px-4 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">Link (Optional)</th>
@@ -477,7 +803,12 @@ export default function FeaturedShowcaseEditorModal({ section, onUpdate, onClose
                   {items.map((item, index) => (
                     <tr key={item.id || index} className="hover:bg-gray-50/50 transition-colors">
                       <td className="py-4 px-4 text-center">
-                        <GripVertical size={16} className="text-gray-400 cursor-grab mx-auto hover:text-gray-600" />
+                        <input 
+                          type="number"
+                          value={item.order !== undefined ? item.order : index + 1}
+                          onChange={(e) => handleUpdateItem(index, { order: parseInt(e.target.value) || 0 })}
+                          className="w-16 border border-gray-200 rounded-lg px-2 py-2 text-center text-sm focus:outline-none focus:ring-1 focus:ring-[#5946ff] focus:border-[#5946ff] transition-all bg-white mx-auto"
+                        />
                       </td>
                       <td className="py-4 px-4">
                         <label className="w-14 h-14 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center cursor-pointer hover:border-[#5946ff] hover:shadow-sm transition-all group relative block">

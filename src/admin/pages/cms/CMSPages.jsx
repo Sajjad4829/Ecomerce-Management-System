@@ -7,9 +7,10 @@ import { useCategories } from '../../context/commerce/CategoryContext';
 import { useProducts } from '../../context/commerce/ProductContext';
 import { useCollections } from '../../context/commerce/CollectionContext';
 import { useBrands } from '../../context/commerce/BrandContext';
-import { FileText, Layers, Navigation, Search, ArrowLeft, MoveUp, MoveDown, Copy, Eye, EyeOff, Trash2, Edit2, Plus } from 'lucide-react';
+import { FileText, Layers, Navigation, Search, ArrowLeft, MoveUp, MoveDown, Copy, Eye, EyeOff, Trash2, Edit2, Plus, X, Image, MessageSquare, Maximize, Loader2, Check, AlertCircle, Save, GripVertical, Rocket } from 'lucide-react';
 import SectionRenderer from '../../../storefront/components/sections/SectionRenderer';
 import { useStorefrontTheme } from '../../../storefront/context/StorefrontThemeContext';
+import { useToast } from '../../../components/ui/Toast/ToastContext';
 
 const ReferenceItemSelector = ({ item, onChange, categories, products, collections, brands, small = false }) => {
   return (
@@ -1365,28 +1366,393 @@ export const HeaderManager = () => {
 };
 
 export const FooterManager = () => {
+  const { footerConfig, setFooterConfig } = useCMS();
+  const { addToast } = useToast();
+  const [config, setConfig] = React.useState(footerConfig);
+
+  React.useEffect(() => {
+    setConfig(footerConfig);
+  }, [footerConfig]);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => handleChange(null, 'logoImage', reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleNestedImageUpload = (section, field, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => handleChange(section, `${field}Image`, reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleChange = (section, field, value) => {
+    setConfig(prev => {
+      if (!section) return { ...prev, [field]: value };
+      return {
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [field]: value
+        }
+      };
+    });
+  };
+
+  const handleLinkChange = (colIndex, linkIndex, field, value) => {
+    const newColumns = [...config.columns];
+    newColumns[colIndex].links[linkIndex][field] = value;
+    setConfig({ ...config, columns: newColumns });
+  };
+
+  const addLink = (colIndex) => {
+    const newColumns = [...config.columns];
+    newColumns[colIndex].links.push({ label: 'New Link', url: '#' });
+    setConfig({ ...config, columns: newColumns });
+  };
+
+  const removeLink = (colIndex, linkIndex) => {
+    const newColumns = [...config.columns];
+    newColumns[colIndex].links.splice(linkIndex, 1);
+    setConfig({ ...config, columns: newColumns });
+  };
+
+  const handleColumnTitleChange = (colIndex, value) => {
+    const newColumns = [...config.columns];
+    newColumns[colIndex].title = value;
+    setConfig({ ...config, columns: newColumns });
+  };
+
+  const moveColumnUp = (index) => {
+    if (index === 0) return;
+    const newColumns = [...config.columns];
+    [newColumns[index - 1], newColumns[index]] = [newColumns[index], newColumns[index - 1]];
+    setConfig({ ...config, columns: newColumns });
+  };
+
+  const moveColumnDown = (index) => {
+    if (index === (config.columns?.length || 0) - 1) return;
+    const newColumns = [...config.columns];
+    [newColumns[index + 1], newColumns[index]] = [newColumns[index], newColumns[index + 1]];
+    setConfig({ ...config, columns: newColumns });
+  };
+
+  const addColumn = () => {
+    setConfig(prev => ({
+      ...prev,
+      columns: [...(prev.columns || []), { title: 'NEW COLUMN', links: [] }]
+    }));
+  };
+
+  const removeColumn = (colIndex) => {
+    const newColumns = [...config.columns];
+    newColumns.splice(colIndex, 1);
+    setConfig({ ...config, columns: newColumns });
+  };
+
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [saveStatus, setSaveStatus] = React.useState('idle');
+  const hasChanges = JSON.stringify(config) !== JSON.stringify(footerConfig);
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      await setFooterConfig(config);
+      setSaveStatus('published');
+      addToast({ type: 'success', message: 'Footer configuration saved successfully!' });
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } catch (err) {
+      console.error('Failed to save footer config:', err);
+      addToast({ type: 'error', message: 'Failed to save footer configuration' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (!config) return null;
+
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto pb-12">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-serif text-neutral-900">Footer Configuration</h1>
+        <div>
+          <h1 className="text-2xl font-semibold text-neutral-900">Footer Configuration</h1>
+          <p className="text-sm text-neutral-500 mt-1">Manage global footer content, links, and layout.</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          {saveStatus === 'published' ? (
+            <span className="flex items-center gap-2 text-green-600 bg-green-50/50 px-4 py-2 rounded-full font-medium text-sm">
+              <Check className="w-4 h-4" /> Published
+            </span>
+          ) : hasChanges ? (
+            <span className="flex items-center gap-2 text-amber-600 bg-amber-50/50 px-4 py-2 rounded-full font-medium text-sm">
+              <AlertCircle className="w-4 h-4" /> Unsaved Changes
+            </span>
+          ) : (
+            <span className="flex items-center gap-2 text-neutral-600 bg-neutral-50 px-4 py-2 rounded-full font-medium text-sm">
+              <Check className="w-4 h-4" /> Up to date
+            </span>
+          )}
+          <button 
+            onClick={handleSave}
+            disabled={!hasChanges || isSaving}
+            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#4F46FF] to-[#6D63FF] text-white font-semibold text-sm rounded-xl hover:opacity-90 transition-opacity shadow-[0_4px_14px_rgba(79,70,255,0.3)] disabled:opacity-50"
+          >
+            {isSaving ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+            ) : (
+              <><Rocket className="w-4 h-4" /> Publish Changes</>
+            )}
+          </button>
+        </div>
       </div>
-      <div className="bg-surface p-6 rounded-lg border border-neutral-200 shadow-sm space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Footer Description</label>
-          <textarea className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm" rows={3} defaultValue="Premium furniture and luxury resorts."></textarea>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column: Brand & Contact */}
+        <div className="space-y-6">
+          <div className="bg-surface p-6 rounded-xl border border-neutral-200 shadow-sm">
+            <h3 className="text-lg font-medium text-neutral-900 mb-4 flex items-center gap-2">
+              <Image className="text-neutral-500 w-5 h-5" /> Brand Logo
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Upload footer logo</label>
+                <div className="flex items-center gap-4">
+                  {config.logoImage && (
+                    <img src={config.logoImage} alt="Logo Preview" className="h-10 bg-neutral-100 border border-neutral-200 rounded object-contain p-1" />
+                  )}
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="flex-1 border-neutral-300 rounded-lg shadow-sm p-2 border text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200" 
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 mt-2">Leave empty to use default HATIL text logo.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-surface p-6 rounded-xl border border-neutral-200 shadow-sm">
+            <h3 className="text-lg font-medium text-neutral-900 mb-4 flex items-center gap-2">
+              <MessageSquare className="text-neutral-500 w-5 h-5" /> Contact Information
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Address</label>
+                <textarea 
+                  value={config.contact?.address || ''}
+                  onChange={(e) => handleChange('contact', 'address', e.target.value)}
+                  className="w-full border-neutral-300 rounded-lg shadow-sm p-2.5 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900" 
+                  rows={2}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Phone 1</label>
+                  <input 
+                    type="text" 
+                    value={config.contact?.phone1 || ''}
+                    onChange={(e) => handleChange('contact', 'phone1', e.target.value)}
+                    className="w-full border-neutral-300 rounded-lg shadow-sm p-2.5 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Phone 2</label>
+                  <input 
+                    type="text" 
+                    value={config.contact?.phone2 || ''}
+                    onChange={(e) => handleChange('contact', 'phone2', e.target.value)}
+                    className="w-full border-neutral-300 rounded-lg shadow-sm p-2.5 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900" 
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Email</label>
+                <input 
+                  type="email" 
+                  value={config.contact?.email || ''}
+                  onChange={(e) => handleChange('contact', 'email', e.target.value)}
+                  className="w-full border-neutral-300 rounded-lg shadow-sm p-2.5 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900" 
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-surface p-6 rounded-xl border border-neutral-200 shadow-sm">
+            <h3 className="text-lg font-medium text-neutral-900 mb-4 flex items-center gap-2">
+              <Maximize className="text-neutral-500 w-5 h-5" /> App & Social Links
+            </h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">App Store URL</label>
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="text" 
+                      value={config.appLinks?.appStore || ''}
+                      onChange={(e) => handleChange('appLinks', 'appStore', e.target.value)}
+                      className="w-full border-neutral-300 rounded-lg shadow-sm p-2 border text-sm" 
+                    />
+                    <label className="cursor-pointer p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded border border-transparent hover:border-neutral-200 transition-colors">
+                      <Image className="w-5 h-5" />
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => handleNestedImageUpload('appLinks', 'appStore', e)} />
+                    </label>
+                  </div>
+                  {config.appLinks?.appStoreImage && (
+                     <div className="mt-2 flex items-center gap-2 bg-neutral-50 p-2 border border-neutral-100 rounded w-fit">
+                       <img src={config.appLinks.appStoreImage} alt="App Store" className="h-8 object-contain" />
+                       <button onClick={() => handleChange('appLinks', 'appStoreImage', '')} className="text-red-500 hover:bg-red-50 p-1 rounded"><X className="w-3 h-3"/></button>
+                     </div>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Google Play URL</label>
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="text" 
+                      value={config.appLinks?.googlePlay || ''}
+                      onChange={(e) => handleChange('appLinks', 'googlePlay', e.target.value)}
+                      className="w-full border-neutral-300 rounded-lg shadow-sm p-2 border text-sm" 
+                    />
+                    <label className="cursor-pointer p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded border border-transparent hover:border-neutral-200 transition-colors">
+                      <Image className="w-5 h-5" />
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => handleNestedImageUpload('appLinks', 'googlePlay', e)} />
+                    </label>
+                  </div>
+                  {config.appLinks?.googlePlayImage && (
+                     <div className="mt-2 flex items-center gap-2 bg-neutral-50 p-2 border border-neutral-100 rounded w-fit">
+                       <img src={config.appLinks.googlePlayImage} alt="Google Play" className="h-8 object-contain" />
+                       <button onClick={() => handleChange('appLinks', 'googlePlayImage', '')} className="text-red-500 hover:bg-red-50 p-1 rounded"><X className="w-3 h-3"/></button>
+                     </div>
+                  )}
+                </div>
+              </div>
+              <div className="border-t border-neutral-100 pt-4 mt-2">
+                <label className="block text-sm font-medium text-neutral-700 mb-3">Social Media Links</label>
+                {['facebook', 'instagram', 'youtube', 'pinterest', 'linkedin', 'wikipedia'].map(network => (
+                  <div key={network} className="mb-3">
+                    <div className="flex items-center gap-3">
+                      <span className="w-24 text-xs font-medium text-neutral-500 capitalize">{network}</span>
+                      <input 
+                        type="text" 
+                        value={config.social?.[network] || ''}
+                        onChange={(e) => handleChange('social', network, e.target.value)}
+                        placeholder={`https://${network}.com/...`}
+                        className="flex-1 border-neutral-300 rounded-lg shadow-sm p-1.5 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900" 
+                      />
+                      <label className="cursor-pointer p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded border border-transparent hover:border-neutral-200 transition-colors" title={`Upload ${network} icon`}>
+                        <Image className="w-4 h-4" />
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleNestedImageUpload('social', network, e)} />
+                      </label>
+                    </div>
+                    {config.social?.[`${network}Image`] && (
+                       <div className="mt-1 ml-27 flex items-center gap-2 bg-neutral-50 p-1.5 border border-neutral-100 rounded w-fit">
+                         <img src={config.social[`${network}Image`]} alt={network} className="w-5 h-5 object-contain" />
+                         <button onClick={() => handleChange('social', `${network}Image`, '')} className="text-red-500 hover:bg-red-50 p-0.5 rounded"><X className="w-3 h-3"/></button>
+                       </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Footer Menu</label>
-          <select className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm">
-            <option>Footer Links</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">Copyright Text</label>
-          <input type="text" className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm" defaultValue="© 2024 Enterprise Furniture. All rights reserved." />
-        </div>
-        <div className="pt-4 flex justify-end">
-          <button className="px-4 py-2 bg-neutral-900 text-white rounded hover:bg-neutral-800">Save Configuration</button>
+
+        {/* Right Column: Footer Link Columns */}
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-neutral-900">Navigation Columns</h3>
+            <button onClick={addColumn} className="px-3 py-1.5 text-sm bg-neutral-100 text-neutral-700 hover:bg-neutral-200 rounded flex items-center gap-1 font-medium">
+              <Plus className="w-4 h-4" /> Add Column
+            </button>
+          </div>
+          {config.columns?.map((col, colIndex) => (
+            <div 
+              key={colIndex} 
+              className="bg-surface p-6 rounded-xl border border-neutral-200 shadow-sm relative group/col transition-colors duration-200"
+            >
+              <div className="absolute -right-2 -top-2 flex gap-1 opacity-0 group-hover/col:opacity-100 transition-all">
+                <button 
+                  onClick={() => moveColumnUp(colIndex)}
+                  disabled={colIndex === 0}
+                  className="bg-white border border-neutral-200 p-1 rounded-full text-neutral-400 hover:text-neutral-900 disabled:opacity-50 shadow-sm"
+                  title="Move Up"
+                >
+                  <MoveUp className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => moveColumnDown(colIndex)}
+                  disabled={colIndex === config.columns.length - 1}
+                  className="bg-white border border-neutral-200 p-1 rounded-full text-neutral-400 hover:text-neutral-900 disabled:opacity-50 shadow-sm"
+                  title="Move Down"
+                >
+                  <MoveDown className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => removeColumn(colIndex)}
+                  className="bg-white border border-neutral-200 p-1 rounded-full text-neutral-400 hover:text-red-500 shadow-sm"
+                  title="Remove Column"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 w-2/3">
+                  <input 
+                    type="text" 
+                    value={col.title}
+                    onChange={(e) => handleColumnTitleChange(colIndex, e.target.value)}
+                    className="font-medium text-neutral-900 border-none bg-transparent hover:bg-neutral-50 focus:ring-1 focus:ring-neutral-200 rounded px-2 py-1 w-full"
+                  />
+                </div>
+                <button 
+                  onClick={() => addLink(colIndex)}
+                  className="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                >
+                  <Plus className="w-4 h-4" /> Add Link
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                {col.links.map((link, linkIndex) => (
+                  <div key={linkIndex} className="flex items-center gap-2 group">
+                    <div className="flex-1 grid grid-cols-2 gap-2">
+                      <input 
+                        type="text" 
+                        value={link.label}
+                        onChange={(e) => handleLinkChange(colIndex, linkIndex, 'label', e.target.value)}
+                        placeholder="Label"
+                        className="w-full border-neutral-300 rounded shadow-sm p-1.5 border text-xs focus:ring-1 focus:ring-neutral-900" 
+                      />
+                      <input 
+                        type="text" 
+                        value={link.url}
+                        onChange={(e) => handleLinkChange(colIndex, linkIndex, 'url', e.target.value)}
+                        placeholder="URL"
+                        className="w-full border-neutral-300 rounded shadow-sm p-1.5 border text-xs focus:ring-1 focus:ring-neutral-900" 
+                      />
+                    </div>
+                    <button 
+                      onClick={() => removeLink(colIndex, linkIndex)}
+                      className="p-1.5 text-neutral-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                {col.links.length === 0 && (
+                  <p className="text-xs text-neutral-400 italic">No links in this column.</p>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

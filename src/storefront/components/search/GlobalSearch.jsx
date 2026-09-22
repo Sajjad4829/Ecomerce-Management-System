@@ -26,9 +26,9 @@ export default function GlobalSearch({ placeholder = "Search", className = "", i
     }
   };
 
-  const handleSuggestionClick = (term) => {
-    saveSearch(term);
-    window.location.href = `/search?q=${encodeURIComponent(term)}`;
+  const handleProductClick = (product) => {
+    saveSearch(product.name);
+    window.location.href = `/product/${product.slug}`;
   };
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export default function GlobalSearch({ placeholder = "Search", className = "", i
                         className="flex gap-4 p-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
                         onClick={(e) => {
                           e.preventDefault();
-                          handleSuggestionClick(product.name);
+                          handleProductClick(product);
                         }}
                       >
                         <div className="w-14 h-14 bg-gray-100 rounded overflow-hidden shrink-0">
@@ -222,7 +222,7 @@ export default function GlobalSearch({ placeholder = "Search", className = "", i
                       className="flex gap-4 p-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleSuggestionClick(product.name);
+                        handleProductClick(product);
                       }}
                     >
                       <div className="w-14 h-14 bg-gray-100 rounded overflow-hidden shrink-0">

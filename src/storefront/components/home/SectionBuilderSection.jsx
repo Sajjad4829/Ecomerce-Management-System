@@ -221,17 +221,45 @@ const FieldRenderer = ({ field }) => {
       );
     case 'Container':
       return (
-        <div className="flex flex-col gap-1.5 mb-5 w-full">
-          {field.label && <label className="text-sm font-semibold text-gray-700">{field.label}</label>}
-          <div className="w-full border border-dashed border-gray-300 bg-gray-50/50 min-h-[100px] flex flex-col p-6">
+        <div className="flex flex-col w-full mb-5" style={{ 
+            width: field.width ? (!isNaN(field.width) ? `${field.width}px` : field.width) : undefined, 
+            height: field.height ? (!isNaN(field.height) ? `${field.height}px` : field.height) : undefined 
+        }}>
+          <div className="w-full flex flex-col">
             {field.fields && field.fields.length > 0 ? (
                 field.fields.map((subField) => <FieldRenderer key={subField.id} field={subField} />)
-            ) : (
-                <div className="flex-1 flex items-center justify-center">
-                    <span className="text-gray-400 font-medium text-sm">Container Area ({field.placeholder || 'Empty Container'})</span>
-                </div>
-            )}
+            ) : null}
           </div>
+        </div>
+      );
+    case 'Flex':
+      return (
+        <div className="flex flex-col md:flex-row flex-wrap gap-4 w-full mb-5" style={{ 
+            width: field.width ? (!isNaN(field.width) ? `${field.width}px` : field.width) : undefined, 
+            minHeight: field.minHeight ? (!isNaN(field.minHeight) ? `${field.minHeight}px` : field.minHeight) : undefined 
+        }}>
+          {field.fields && field.fields.length > 0 ? (
+            field.fields.map((subField) => (
+              <div key={subField.id} className="flex-1 min-w-[250px]">
+                <FieldRenderer field={subField} />
+              </div>
+            ))
+          ) : null}
+        </div>
+      );
+    case 'Grid':
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mb-5" style={{ 
+            width: field.width ? (!isNaN(field.width) ? `${field.width}px` : field.width) : undefined, 
+            minHeight: field.minHeight ? (!isNaN(field.minHeight) ? `${field.minHeight}px` : field.minHeight) : undefined 
+        }}>
+          {field.fields && field.fields.length > 0 ? (
+            field.fields.map((subField) => (
+              <div key={subField.id} className="w-full">
+                <FieldRenderer field={subField} />
+              </div>
+            ))
+          ) : null}
         </div>
       );
     default:
@@ -246,8 +274,9 @@ const FieldRenderer = ({ field }) => {
   }
 };
 
-export default function SectionBuilderSection({ section }) {
-  const layout = section?.content?.layout || [];
+export default function SectionBuilderSection({ section, data }) {
+  const sectionData = data || section;
+  const layout = sectionData?.content?.layout || [];
 
   if (!layout || layout.length === 0) {
     return (
@@ -259,29 +288,20 @@ export default function SectionBuilderSection({ section }) {
   }
 
   return (
-    <section className="w-full py-12 bg-white">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-          {layout.map((sec, idx) => (
-            <div key={sec.id} className={cn("w-full p-8", idx !== layout.length - 1 && "border-b border-gray-200")}>
-              <h3 className="text-xl font-bold text-gray-900 mb-6">{sec.title}</h3>
-              
+    <section className="w-full">
+      <div className="w-full">
+        <div className="w-full flex flex-col gap-12">
+          {layout.map((sec) => (
+            <div key={sec.id} className="w-full">
               {sec.fields && sec.fields.length > 0 ? (
                 <div className="w-full">
                   {sec.fields.map((field) => (
                     <FieldRenderer key={field.id} field={field} />
                   ))}
                 </div>
-              ) : (
-                <p className="text-sm text-gray-500 italic">No fields in this section.</p>
-              )}
+              ) : null}
             </div>
           ))}
-          <div className="p-8 bg-gray-50 border-t border-gray-200 flex justify-end">
-             <button className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors">
-                Submit Form
-             </button>
-          </div>
         </div>
       </div>
     </section>

@@ -27,14 +27,11 @@ export default function ResponsiveProductGrid({ products, onOpenMobileFilters, i
     else if (maxCols === 5) gridColsClass = "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
   }
   
-  // Use fewer columns for horizontal layouts to give them more room
   const gridClasses = isHorizontal 
     ? "grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-x-4 sm:gap-x-8 gap-y-6 sm:gap-y-8"
-    : `grid gap-x-4 sm:gap-x-8 gap-y-10 sm:gap-y-12`;
+    : `grid ${gridColsClass} gap-x-4 sm:gap-x-8 gap-y-10 sm:gap-y-12`;
 
-  const gridStyle = isHorizontal ? {} : {
-    gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${maxCols === 3 ? '300px' : maxCols === 4 ? '240px' : '200px'}), 1fr))`
-  };
+  const gridStyle = {};
 
   if (isLoading) {
     return (

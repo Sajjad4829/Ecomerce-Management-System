@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiChevronLeft, FiChevronRight, FiMaximize2 } from 'react-icons/fi';
 
@@ -173,51 +174,53 @@ export default function ProductGallery({ images, selectedVariants, note, layout 
 
 
       {/* Fullscreen Lightbox */}
-      <AnimatePresence>
-        {isLightboxOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-white flex items-center justify-center"
-          >
-            {/* Close Button (Red Square) */}
-            <button 
-              onClick={() => setIsLightboxOpen(false)}
-              className="absolute top-6 right-6 bg-[#EE2737] hover:bg-red-700 text-white p-1.5 transition-colors z-50"
-              aria-label="Close Fullscreen"
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isLightboxOpen && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[99999] bg-white flex items-center justify-center"
             >
-              <FiX size={28} />
-            </button>
-            
-            <div className="relative flex items-center justify-center w-full h-full p-4 lg:p-12">
-              {images.length > 1 && (
-                <button 
-                  onClick={prevImage}
-                  className="absolute left-4 lg:left-8 p-3 bg-white/80 hover:bg-white rounded-full shadow-lg backdrop-blur transition-all z-10 text-gray-700"
-                >
-                  <FiChevronLeft size={24} />
-                </button>
-              )}
+              <button 
+                onClick={() => setIsLightboxOpen(false)}
+                className="absolute top-0 right-0 bg-[#EE2737] hover:bg-red-700 text-white p-2.5 transition-colors z-[100000]"
+                aria-label="Close Fullscreen"
+              >
+                <FiX size={24} />
+              </button>
               
-              <img 
-                src={images[activeIndex]} 
-                alt="Fullscreen view" 
-                className="max-w-full max-h-full object-contain"
-              />
+              <div className="relative flex items-center justify-center w-full h-full p-4 lg:p-12">
+                {images.length > 1 && (
+                  <button 
+                    onClick={prevImage}
+                    className="absolute left-4 lg:left-8 p-3 bg-white/80 hover:bg-white rounded-full shadow-lg backdrop-blur transition-all z-10 text-gray-700"
+                  >
+                    <FiChevronLeft size={24} />
+                  </button>
+                )}
+                
+                <img 
+                  src={images[activeIndex]} 
+                  alt="Fullscreen view" 
+                  className="max-w-full max-h-full object-contain"
+                />
 
-              {images.length > 1 && (
-                <button 
-                  onClick={nextImage}
-                  className="absolute right-4 lg:right-8 p-3 bg-white/80 hover:bg-white rounded-full shadow-lg backdrop-blur transition-all z-10 text-gray-700"
-                >
-                  <FiChevronRight size={24} />
-                </button>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                {images.length > 1 && (
+                  <button 
+                    onClick={nextImage}
+                    className="absolute right-4 lg:right-8 p-3 bg-white/80 hover:bg-white rounded-full shadow-lg backdrop-blur transition-all z-10 text-gray-700"
+                  >
+                    <FiChevronRight size={24} />
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }

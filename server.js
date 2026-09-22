@@ -891,6 +891,23 @@ app.put('/api/cms/config/header', async (req, res) => {
   }
 });
 
+// Convenience: update just the footer config
+app.put('/api/cms/config/footer', async (req, res) => {
+  try {
+    const config = await CMSConfig.findOneAndUpdate(
+      { storeId: 'default' },
+      { $set: { footerConfig: req.body, updatedAt: new Date() } },
+      { upsert: true, returnDocument: 'after' }
+    ).lean();
+    
+    cmsCache.invalidate('themeSettings');
+
+    res.json({ success: true, footerConfig: config.footerConfig });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Convenience: update just the menus
 app.put('/api/cms/config/menus', async (req, res) => {
   try {
