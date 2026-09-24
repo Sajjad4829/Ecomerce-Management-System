@@ -2,11 +2,32 @@ import { createContext, useState, useContext, useEffect, useMemo } from 'react';
 
 export const CommerceContext = createContext(null);
 
+const getMinimalProduct = (product) => ({
+  id: product.id,
+  name: product.name,
+  slug: product.slug,
+  price: product.price,
+  compareAtPrice: product.compareAtPrice,
+  image: product.image,
+  images: product.images,
+  gallery: product.gallery,
+  stock: product.stock,
+});
+
 export function CommerceProvider({ children }) {
   const [cartItems, setCartItems] = useState(() => {
     try {
       const stored = localStorage.getItem('aura_cart');
-      return stored ? JSON.parse(stored) : [];
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          return parsed.map(item => ({
+            ...item,
+            product: item.product ? getMinimalProduct(item.product) : {}
+          }));
+        }
+      }
+      return [];
     } catch (e) {
       return [];
     }
@@ -15,7 +36,16 @@ export function CommerceProvider({ children }) {
   const [wishlistItems, setWishlistItems] = useState(() => {
     try {
       const stored = localStorage.getItem('aura_wishlist');
-      return stored ? JSON.parse(stored) : [];
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          return parsed.map(item => ({
+            ...item,
+            product: item.product ? getMinimalProduct(item.product) : {}
+          }));
+        }
+      }
+      return [];
     } catch (e) {
       return [];
     }
@@ -83,7 +113,7 @@ export function CommerceProvider({ children }) {
         id: `cart_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         productId: product.id,
         variantId: generatedVariantId,
-        product,
+        product: getMinimalProduct(product),
         selectedVariants,
         variantImage,
         quantity: Math.min(quantity, maxStock),
@@ -127,7 +157,7 @@ export function CommerceProvider({ children }) {
           id: `wish_${Date.now()}`,
           productId: product.id,
           variantId: variant?.id || null,
-          product,
+          product: getMinimalProduct(product),
           variant,
           addedAt: new Date().toISOString()
         }];

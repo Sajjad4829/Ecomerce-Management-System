@@ -1411,6 +1411,35 @@ export const FooterManager = () => {
     setConfig({ ...config, columns: newColumns });
   };
 
+  const handleAppLinkChange = (index, field, value) => {
+    const newAppLinks = Array.isArray(config.appLinks) ? [...config.appLinks] : [];
+    if (newAppLinks[index]) {
+      newAppLinks[index][field] = value;
+      setConfig({ ...config, appLinks: newAppLinks });
+    }
+  };
+
+  const addAppLink = () => {
+    const newAppLinks = Array.isArray(config.appLinks) ? [...config.appLinks] : [];
+    newAppLinks.push({ id: `app-${Date.now()}`, platform: 'New App Link', url: '', image: '' });
+    setConfig({ ...config, appLinks: newAppLinks });
+  };
+
+  const removeAppLink = (index) => {
+    const newAppLinks = Array.isArray(config.appLinks) ? [...config.appLinks] : [];
+    newAppLinks.splice(index, 1);
+    setConfig({ ...config, appLinks: newAppLinks });
+  };
+
+  const handleAppLinkImageUpload = (index, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => handleAppLinkChange(index, 'image', reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const addLink = (colIndex) => {
     const newColumns = [...config.columns];
     newColumns[colIndex].links.push({ label: 'New Link', url: '#' });
@@ -1590,49 +1619,54 @@ export const FooterManager = () => {
               <Maximize className="text-neutral-500 w-5 h-5" /> App & Social Links
             </h3>
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">App Store URL</label>
-                  <div className="flex items-center gap-2">
-                    <input 
-                      type="text" 
-                      value={config.appLinks?.appStore || ''}
-                      onChange={(e) => handleChange('appLinks', 'appStore', e.target.value)}
-                      className="w-full border-neutral-300 rounded-lg shadow-sm p-2 border text-sm" 
-                    />
-                    <label className="cursor-pointer p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded border border-transparent hover:border-neutral-200 transition-colors">
-                      <Image className="w-5 h-5" />
-                      <input type="file" accept="image/*" className="hidden" onChange={(e) => handleNestedImageUpload('appLinks', 'appStore', e)} />
-                    </label>
-                  </div>
-                  {config.appLinks?.appStoreImage && (
-                     <div className="mt-2 flex items-center gap-2 bg-neutral-50 p-2 border border-neutral-100 rounded w-fit">
-                       <img src={config.appLinks.appStoreImage} alt="App Store" className="h-8 object-contain" />
-                       <button onClick={() => handleChange('appLinks', 'appStoreImage', '')} className="text-red-500 hover:bg-red-50 p-1 rounded"><X className="w-3 h-3"/></button>
-                     </div>
-                  )}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-neutral-700">App Links</label>
+                  <button onClick={addAppLink} className="text-xs flex items-center gap-1 text-primary hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded transition-colors">
+                    <Plus className="w-3 h-3" /> Add App Link
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">Google Play URL</label>
-                  <div className="flex items-center gap-2">
-                    <input 
-                      type="text" 
-                      value={config.appLinks?.googlePlay || ''}
-                      onChange={(e) => handleChange('appLinks', 'googlePlay', e.target.value)}
-                      className="w-full border-neutral-300 rounded-lg shadow-sm p-2 border text-sm" 
-                    />
-                    <label className="cursor-pointer p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded border border-transparent hover:border-neutral-200 transition-colors">
-                      <Image className="w-5 h-5" />
-                      <input type="file" accept="image/*" className="hidden" onChange={(e) => handleNestedImageUpload('appLinks', 'googlePlay', e)} />
-                    </label>
+                {Array.isArray(config.appLinks) && config.appLinks.map((appLink, idx) => (
+                  <div key={appLink.id || idx} className="bg-neutral-50 p-4 rounded-lg border border-neutral-200 relative group/applink">
+                    <button onClick={() => removeAppLink(idx)} className="absolute -right-2 -top-2 bg-white border border-neutral-200 p-1.5 rounded-full text-neutral-400 hover:text-red-500 shadow-sm opacity-0 group-hover/applink:opacity-100 transition-opacity">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-neutral-600 mb-1">Platform Name</label>
+                        <input
+                          type="text"
+                          value={appLink.platform || ''}
+                          onChange={(e) => handleAppLinkChange(idx, 'platform', e.target.value)}
+                          placeholder="e.g. App Store"
+                          className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-neutral-600 mb-1">URL</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={appLink.url || ''}
+                            onChange={(e) => handleAppLinkChange(idx, 'url', e.target.value)}
+                            placeholder="https://"
+                            className="w-full border-neutral-300 rounded-md shadow-sm p-2 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900"
+                          />
+                          <label className="cursor-pointer p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-200 bg-neutral-100 rounded border border-transparent hover:border-neutral-300 transition-colors" title="Upload Icon">
+                            <Image className="w-4 h-4" />
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleAppLinkImageUpload(idx, e)} />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    {appLink.image && (
+                       <div className="mt-3 flex items-center gap-2 bg-white p-2 border border-neutral-200 rounded w-fit shadow-sm">
+                         <img src={appLink.image} alt={appLink.platform} className="h-8 object-contain" />
+                         <button onClick={() => handleAppLinkChange(idx, 'image', '')} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors"><X className="w-3 h-3"/></button>
+                       </div>
+                    )}
                   </div>
-                  {config.appLinks?.googlePlayImage && (
-                     <div className="mt-2 flex items-center gap-2 bg-neutral-50 p-2 border border-neutral-100 rounded w-fit">
-                       <img src={config.appLinks.googlePlayImage} alt="Google Play" className="h-8 object-contain" />
-                       <button onClick={() => handleChange('appLinks', 'googlePlayImage', '')} className="text-red-500 hover:bg-red-50 p-1 rounded"><X className="w-3 h-3"/></button>
-                     </div>
-                  )}
-                </div>
+                ))}
               </div>
               <div className="border-t border-neutral-100 pt-4 mt-2">
                 <label className="block text-sm font-medium text-neutral-700 mb-3">Social Media Links</label>
@@ -1665,9 +1699,79 @@ export const FooterManager = () => {
           </div>
         </div>
 
-        {/* Right Column: Footer Link Columns */}
+        {/* Right Column: Styling & Footer Link Columns */}
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="bg-surface p-6 rounded-xl border border-neutral-200 shadow-sm">
+            <h3 className="text-lg font-medium text-neutral-900 mb-4 flex items-center gap-2">
+              <span className="w-5 h-5 flex items-center justify-center bg-neutral-100 rounded text-neutral-500 font-serif text-sm italic">T</span>
+              Typography & Styling
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Font Family</label>
+                <select 
+                  value={config.typography?.fontFamily || 'Inter, sans-serif'}
+                  onChange={(e) => handleChange('typography', 'fontFamily', e.target.value)}
+                  className="w-full border-neutral-300 rounded-lg shadow-sm p-2.5 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900"
+                >
+                  <option value="Inter, sans-serif">Inter</option>
+                  <option value="Roboto, sans-serif">Roboto</option>
+                  <option value="'Playfair Display', serif">Playfair Display</option>
+                  <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans</option>
+                  <option value="system-ui, sans-serif">System UI</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Font Size</label>
+                <select 
+                  value={config.typography?.fontSize || '14px'}
+                  onChange={(e) => handleChange('typography', 'fontSize', e.target.value)}
+                  className="w-full border-neutral-300 rounded-lg shadow-sm p-2.5 border text-sm focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900"
+                >
+                  <option value="12px">12px (Small)</option>
+                  <option value="14px">14px (Medium)</option>
+                  <option value="16px">16px (Large)</option>
+                  <option value="18px">18px (Extra Large)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Text Color</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="color" 
+                    value={config.typography?.textColor || '#52525b'}
+                    onChange={(e) => handleChange('typography', 'textColor', e.target.value)}
+                    className="w-10 h-10 border-0 p-0 rounded-lg shadow-sm cursor-pointer"
+                  />
+                  <input 
+                    type="text" 
+                    value={config.typography?.textColor || '#52525b'}
+                    onChange={(e) => handleChange('typography', 'textColor', e.target.value)}
+                    className="flex-1 border-neutral-300 rounded-lg shadow-sm p-2 border text-sm focus:ring-1 focus:ring-neutral-900" 
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Background Color</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="color" 
+                    value={config.typography?.backgroundColor || '#f4f5f6'}
+                    onChange={(e) => handleChange('typography', 'backgroundColor', e.target.value)}
+                    className="w-10 h-10 border-0 p-0 rounded-lg shadow-sm cursor-pointer"
+                  />
+                  <input 
+                    type="text" 
+                    value={config.typography?.backgroundColor || '#f4f5f6'}
+                    onChange={(e) => handleChange('typography', 'backgroundColor', e.target.value)}
+                    className="flex-1 border-neutral-300 rounded-lg shadow-sm p-2 border text-sm focus:ring-1 focus:ring-neutral-900" 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center mt-8">
             <h3 className="text-lg font-medium text-neutral-900">Navigation Columns</h3>
             <button onClick={addColumn} className="px-3 py-1.5 text-sm bg-neutral-100 text-neutral-700 hover:bg-neutral-200 rounded flex items-center gap-1 font-medium">
               <Plus className="w-4 h-4" /> Add Column

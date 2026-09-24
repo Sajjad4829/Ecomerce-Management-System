@@ -142,8 +142,16 @@ export default function VisualEditor() {
   };
 
   const handleAddSection = (sectionTemplate) => {
-    const rawContent = sectionTemplate.content || sectionTemplate.defaultContent || {};
-    const clearedContent = clearSectionContent(rawContent);
+    let newContent;
+    
+    // For Section Builder, we always want a fresh, empty layout to start with.
+    // clearSectionContent would ruin the layout structure by clearing the 'type' strings.
+    if (sectionTemplate.type === 'SECTION_BUILDER' || sectionTemplate.baseType === 'SECTION_BUILDER') {
+      newContent = { layout: [] };
+    } else {
+      const rawContent = sectionTemplate.content || sectionTemplate.defaultContent || {};
+      newContent = clearSectionContent(rawContent);
+    }
 
     const newSection = {
       id: `sec-${Date.now()}`,
@@ -152,7 +160,7 @@ export default function VisualEditor() {
       category: sectionTemplate.category,
       icon: sectionTemplate.icon,
       isHidden: false,
-      content: clearedContent,
+      content: newContent,
       settings: sectionTemplate.settings || sectionTemplate.defaultSettings || {}
     };
     setSections([...sections, newSection]);

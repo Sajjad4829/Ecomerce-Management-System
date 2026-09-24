@@ -1,49 +1,56 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    FiX, FiMonitor, FiTablet, FiSmartphone, FiPlus, FiChevronDown, FiChevronUp,
-    FiType, FiAlignLeft, FiDollarSign, FiTag, FiMap, FiMapPin, FiMail,
-    FiPhone, FiGlobe, FiImage, FiGrid, FiLayout, FiClock, FiCalendar,
+    FiX, FiMonitor, FiArrowLeft, FiEye, FiSave, FiLayers, FiFileText, FiTag, FiTablet, FiSmartphone, FiPlus, FiChevronDown, FiChevronUp,
+    FiType, FiAlignLeft, FiDollarSign, FiMap, FiMapPin, FiMail,
+    FiPhone, FiGlobe, FiImage, FiGrid, FiLayout, FiClock, FiCalendar, FiMessageSquare, FiHelpCircle,
     FiCheckSquare, FiCircle, FiUpload, FiMoreHorizontal, FiTrash2, FiSettings, FiPlay, FiCopy,
     FiBold, FiItalic, FiUnderline, FiLink, FiList, FiCode, FiLoader
 } from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
 
-const PRESET_FIELDS = [
-    { id: 'p_desc', type: 'Description', icon: FiAlignLeft, label: 'Description' },
-    { id: 'p_pricing', type: 'Pricing', icon: FiDollarSign, label: 'Pricing' },
-    { id: 'p_excerpt', type: 'Excerpt', icon: FiAlignLeft, label: 'Excerpt' },
-    { id: 'p_tags', type: 'Tags', icon: FiTag, label: 'Tags' },
-    { id: 'p_map', type: 'Map', icon: FiMap, label: 'Map' },
-    { id: 'p_location', type: 'Location', icon: FiMapPin, label: 'Location' },
-    { id: 'p_zip', type: 'ZipCode', icon: FiMapPin, label: 'Zip or post code' },
-    { id: 'p_address', type: 'Address', icon: FiMapPin, label: 'Address' },
-    { id: 'p_phone', type: 'Phone', icon: FiPhone, label: 'Phone' },
-    { id: 'p_website', type: 'Website', icon: FiGlobe, label: 'Website' },
-    { id: 'p_email', type: 'Email', icon: FiMail, label: 'Email' },
-    { id: 'p_image', type: 'Image', icon: FiImage, label: 'Image' },
-    { id: 'p_social', type: 'SocialInfo', icon: FiGlobe, label: 'Social info' },
-    { id: 'p_fax', type: 'Fax', icon: FiPhone, label: 'Fax' }
-];
-
-const LAYOUT_FIELDS = [
-    { id: 'l_grid', type: 'Grid', icon: FiGrid, label: 'Grid' },
-    { id: 'l_flex', type: 'Flex', icon: FiLayout, label: 'Flex' },
-    { id: 'l_container', type: 'Container', icon: FiLayout, label: 'Container' }
-];
-
-const CUSTOM_FIELDS = [
-    { id: 'c_text', type: 'Text', icon: FiType, label: 'Text' },
-    { id: 'c_textarea', type: 'Textarea', icon: FiAlignLeft, label: 'Textarea' },
-    { id: 'c_number', type: 'Number', icon: FiType, label: 'Number' },
-    { id: 'c_url', type: 'URL', icon: FiGlobe, label: 'URL' },
-    { id: 'c_date', type: 'Date', icon: FiCalendar, label: 'Date' },
-    { id: 'c_time', type: 'Time', icon: FiClock, label: 'Time' },
-    { id: 'c_color', type: 'ColorPicker', icon: FiImage, label: 'Color picker' },
-    { id: 'c_select', type: 'Select', icon: FiChevronDown, label: 'Select' },
-    { id: 'c_checkbox', type: 'Checkbox', icon: FiCheckSquare, label: 'Checkbox' },
-    { id: 'c_radio', type: 'Radio', icon: FiCircle, label: 'Radio' },
+const SIDEBAR_ELEMENTS = [
+    {
+        title: 'Layout Elements',
+        subtitle: 'Structure your section with layout components',
+        isOpen: true,
+        items: [
+            { id: 'l_grid', type: 'Grid', icon: { name: 'FiGrid' }, label: 'Grid Layout', description: 'Multi-column layout' },
+            { id: 'l_flex', type: 'Flex', icon: { name: 'FiLayout' }, label: 'Flex Layout', description: 'Flexible arrangement' },
+            { id: 'l_container', type: 'Container', icon: { name: 'FiLayout' }, label: 'Container', description: 'Content container' }
+        ]
+    },
+    {
+        title: 'Content Elements',
+        subtitle: 'Add text and interactive content',
+        isOpen: true,
+        items: [
+            { id: 'c_text', type: 'Text', icon: { name: 'FiType' }, label: 'Text Block', description: 'Add headings & text' },
+            { id: 'c_image', type: 'Image', icon: { name: 'FiImage' }, label: 'Image', description: 'Add images' },
+            { id: 'c_button', type: 'Button', icon: { name: 'FiCode' }, label: 'Button', description: 'Add action button' }
+        ]
+    },
+    {
+        title: 'Media Elements',
+        subtitle: 'Showcase your products and media',
+        isOpen: true,
+        items: [
+            { id: 'm_grid', type: 'ProductGrid', icon: { name: 'FiGrid' }, label: 'Product Grid', description: 'Display products' },
+            { id: 'm_slider', type: 'Slider', icon: { name: 'FiLayout' }, label: 'Slider', description: 'Image slider' },
+            { id: 'm_video', type: 'Video', icon: { name: 'FiPlay' }, label: 'Video', description: 'Embed video' }
+        ]
+    },
+    {
+        title: 'Advanced Elements',
+        subtitle: 'Extra features for better engagement',
+        isOpen: true,
+        items: [
+            { id: 'a_testimonial', type: 'Testimonial', icon: { name: 'FiMessageSquare' }, label: 'Testimonial', description: 'Customer feedback' },
+            { id: 'a_faq', type: 'FAQ', icon: { name: 'FiHelpCircle' }, label: 'FAQ', description: 'Question & answer' },
+            { id: 'a_countdown', type: 'Countdown', icon: { name: 'FiClock' }, label: 'Countdown', description: 'Limited offer' }
+        ]
+    }
 ];
 
 const DropZone = ({ onDrop, isContainerEnd = false, disabled = false }) => {
@@ -87,6 +94,221 @@ const GridDropZone = ({ onDrop, disabled = false }) => {
     );
 };
 
+// --- Container Properties Component ---
+const ContainerProperties = ({ field, onChange, device, setDevice }) => {
+    const respMode = device === 'tablet' ? 'Tablet' : device === 'mobile' ? 'Mobile' : '';
+
+    const getProp = (key) => field[key + respMode];
+    const setProp = (key, val) => onChange({ [key + respMode]: val });
+
+    // Helper to extract value and unit
+    const parseDimension = (val, fallbackUnit = 'px') => {
+        if (!val) return { number: '', unit: fallbackUnit };
+        const match = String(val).match(/^([\d.]+)(px|%|vh|vw|rem|em)?$/);
+        if (match) return { number: match[1], unit: match[2] || fallbackUnit };
+        return { number: val, unit: fallbackUnit }; // fallback
+    };
+
+    const widthData = parseDimension(getProp('width'), getProp('widthUnit') || 'px');
+    const heightData = parseDimension(getProp('height'), getProp('heightUnit') || 'px');
+
+    return (
+        <div className="space-y-6">
+            {/* Responsive Mode Switcher */}
+            <div className="flex bg-gray-100 p-1 rounded-lg">
+                <button 
+                    onClick={() => setDevice('desktop')} 
+                    className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === '' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                    Desktop
+                </button>
+                <button 
+                    onClick={() => setDevice('tablet')} 
+                    className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === 'Tablet' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                    Tablet
+                </button>
+                <button 
+                    onClick={() => setDevice('mobile')} 
+                    className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === 'Mobile' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                    Mobile
+                </button>
+            </div>
+
+            {/* Dimensions */}
+            <div className="space-y-4 pt-2">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Dimensions</h4>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Width</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] focus-within:bg-white transition-all">
+                            <input 
+                                type="number" 
+                                className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" 
+                                placeholder="Auto" 
+                                value={widthData.number} 
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setProp('width', val ? `${val}${widthData.unit}` : '');
+                                }} 
+                            />
+                            <select 
+                                className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] text-gray-600 outline-none cursor-pointer"
+                                value={widthData.unit}
+                                onChange={(e) => {
+                                    const unit = e.target.value;
+                                    setProp('widthUnit', unit);
+                                    setProp('width', widthData.number ? `${widthData.number}${unit}` : '');
+                                }}
+                            >
+                                <option value="px">px</option>
+                                <option value="%">%</option>
+                                <option value="vw">vw</option>
+                                <option value="vh">vh</option>
+                                <option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Height</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] focus-within:bg-white transition-all">
+                            <input 
+                                type="number" 
+                                className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" 
+                                placeholder="Auto" 
+                                value={heightData.number} 
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setProp('height', val ? `${val}${heightData.unit}` : '');
+                                }} 
+                            />
+                            <select 
+                                className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] text-gray-600 outline-none cursor-pointer"
+                                value={heightData.unit}
+                                onChange={(e) => {
+                                    const unit = e.target.value;
+                                    setProp('heightUnit', unit);
+                                    setProp('height', heightData.number ? `${heightData.number}${unit}` : '');
+                                }}
+                            >
+                                <option value="px">px</option>
+                                <option value="%">%</option>
+                                <option value="vh">vh</option>
+                                <option value="vw">vw</option>
+                                <option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex items-center justify-between">
+                    <label className="text-[13px] font-medium text-gray-700">Full Width</label>
+                    <input type="checkbox" className="w-4 h-4 text-[#5946ff] rounded border-gray-300" checked={getProp('fullWidth') || false} onChange={(e) => setProp('fullWidth', e.target.checked)} />
+                </div>
+                <div className="flex items-center justify-between">
+                    <label className="text-[13px] font-medium text-gray-700">Content Width</label>
+                    <input type="checkbox" className="w-4 h-4 text-[#5946ff] rounded border-gray-300" checked={getProp('contentWidth') || false} onChange={(e) => setProp('contentWidth', e.target.checked)} />
+                </div>
+            </div>
+
+            {/* Background & Overlay */}
+            <div className="space-y-4 pt-5 border-t border-gray-100">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Background</h4>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Background Color</label>
+                    <div className="flex items-center gap-2">
+                        <input type="color" className="w-8 h-8 rounded cursor-pointer border border-gray-200 p-0.5" value={getProp('backgroundColor') || '#ffffff'} onChange={(e) => setProp('backgroundColor', e.target.value)} />
+                        <input type="text" className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white" value={getProp('backgroundColor') || '#ffffff'} onChange={(e) => setProp('backgroundColor', e.target.value)} />
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Background Image URL</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white" placeholder="https://..." value={getProp('backgroundImage') || ''} onChange={(e) => setProp('backgroundImage', e.target.value)} />
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Background Size</label>
+                    <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff]" value={getProp('backgroundSize') || 'cover'} onChange={(e) => setProp('backgroundSize', e.target.value)}>
+                        <option value="cover">Cover</option>
+                        <option value="contain">Contain</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Image Overlay (Color / Gradient)</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white" placeholder="e.g. rgba(0,0,0,0.5)" value={getProp('imageOverlay') || ''} onChange={(e) => setProp('imageOverlay', e.target.value)} />
+                </div>
+            </div>
+
+            {/* Spacing (Padding & Margin) */}
+            <div className="space-y-4 pt-5 border-t border-gray-100">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Spacing</h4>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-2">Padding (T / R / B / L)</label>
+                    <div className="flex gap-2">
+                        <input type="text" className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-center" placeholder="Top" value={getProp('paddingTop') || ''} onChange={(e) => setProp('paddingTop', e.target.value)} />
+                        <input type="text" className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-center" placeholder="Right" value={getProp('paddingRight') || ''} onChange={(e) => setProp('paddingRight', e.target.value)} />
+                        <input type="text" className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-center" placeholder="Bottom" value={getProp('paddingBottom') || ''} onChange={(e) => setProp('paddingBottom', e.target.value)} />
+                        <input type="text" className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-center" placeholder="Left" value={getProp('paddingLeft') || ''} onChange={(e) => setProp('paddingLeft', e.target.value)} />
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-2">Margin (T / R / B / L)</label>
+                    <div className="flex gap-2">
+                        <input type="text" className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-center" placeholder="Top" value={getProp('marginTop') || ''} onChange={(e) => setProp('marginTop', e.target.value)} />
+                        <input type="text" className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-center" placeholder="Right" value={getProp('marginRight') || ''} onChange={(e) => setProp('marginRight', e.target.value)} />
+                        <input type="text" className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-center" placeholder="Bottom" value={getProp('marginBottom') || ''} onChange={(e) => setProp('marginBottom', e.target.value)} />
+                        <input type="text" className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-center" placeholder="Left" value={getProp('marginLeft') || ''} onChange={(e) => setProp('marginLeft', e.target.value)} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Borders & Shadows */}
+            <div className="space-y-4 pt-5 border-t border-gray-100">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Borders & Shadows</h4>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Border (CSS)</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white" placeholder="e.g. 1px solid #eee" value={getProp('border') || ''} onChange={(e) => setProp('border', e.target.value)} />
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Border Radius</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white" placeholder="e.g. 8px, 50%" value={getProp('borderRadius') || ''} onChange={(e) => setProp('borderRadius', e.target.value)} />
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Box Shadow</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white" placeholder="e.g. 0 4px 6px rgba(0,0,0,0.1)" value={getProp('boxShadow') || ''} onChange={(e) => setProp('boxShadow', e.target.value)} />
+                </div>
+            </div>
+
+            {/* Responsive & Visibility */}
+            <div className="space-y-4 pt-5 border-t border-gray-100">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Responsive Settings</h4>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-2">Visibility</label>
+                    <div className="flex gap-4">
+                        <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
+                            <input type="checkbox" className="rounded text-[#5946ff]" checked={field.visibleDesktop !== false} onChange={(e) => onChange({ visibleDesktop: e.target.checked })} /> Desktop
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
+                            <input type="checkbox" className="rounded text-[#5946ff]" checked={field.visibleTablet !== false} onChange={(e) => onChange({ visibleTablet: e.target.checked })} /> Tablet
+                        </label>
+                        <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
+                            <input type="checkbox" className="rounded text-[#5946ff]" checked={field.visibleMobile !== false} onChange={(e) => onChange({ visibleMobile: e.target.checked })} /> Mobile
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Custom CSS Class</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white" placeholder="e.g. my-custom-container" value={field.customClass || ''} onChange={(e) => onChange({ customClass: e.target.value })} />
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Custom ID</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white" placeholder="e.g. section-hero" value={field.customId || ''} onChange={(e) => onChange({ customId: e.target.value })} />
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // --- Recursive Utilities ---
 const getFieldAtPath = (layoutState, path) => {
     if (path.length === 0) return null;
@@ -111,12 +333,23 @@ const insertFieldAtPath = (layoutState, path, field) => {
     const parentPath = path.slice(0, -1);
     let parent = null;
     if (parentPath.length === 0) {
-        parent = layoutState[parentPath[0]];
+        parent = layoutState[path[0]];
     } else {
         parent = getFieldAtPath(layoutState, parentPath);
     }
     if (!parent.fields) parent.fields = [];
     
+    // Auto-wrap non-Container items dropped directly into Flex/Grid with a Container
+    if (parent && (parent.type === 'Flex' || parent.type === 'Grid') && field.type !== 'Container' && field.type !== 'EmptySpace') {
+        field = {
+            id: `c_${Date.now()}_wrapper_${Math.random().toString(36).substr(2, 5)}`,
+            type: 'Container',
+            label: 'Column Container',
+            icon: 'FiLayout',
+            fields: [field]
+        };
+    }
+
     const index = path[path.length - 1];
     
     // Pad with empty spaces if inserting beyond length (useful for specific Grid placement)
@@ -157,6 +390,585 @@ const adjustPathAfterRemoval = (targetPath, sourcePath) => {
     return newPath;
 };
 
+// --- Grid Properties Component ---
+const GridProperties = ({ field, onChange, device, setDevice }) => {
+    const respMode = device === 'tablet' ? 'Tablet' : device === 'mobile' ? 'Mobile' : '';
+    
+    const getProp = (key) => field[key + respMode];
+    const setProp = (key, val) => onChange({ [key + respMode]: val });
+
+    const parseDimension = (val, fallbackUnit = 'px') => {
+        if (!val) return { number: '', unit: fallbackUnit };
+        const match = String(val).match(/^([\d.]+)(px|%|vh|vw|rem|em)?$/);
+        if (match) return { number: match[1], unit: match[2] || fallbackUnit };
+        return { number: val, unit: fallbackUnit };
+    };
+
+    const itemWidthData = parseDimension(getProp('itemWidth'), getProp('itemWidthUnit') || 'px');
+    const itemHeightData = parseDimension(getProp('itemHeight'), getProp('itemHeightUnit') || 'px');
+
+    return (
+        <div className="space-y-6">
+            <div className="flex bg-gray-100 p-1 rounded-lg">
+                <button onClick={() => setDevice('desktop')} className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === '' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>Desktop</button>
+                <button onClick={() => setDevice('tablet')} className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === 'Tablet' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>Tablet</button>
+                <button onClick={() => setDevice('mobile')} className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === 'Mobile' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>Mobile</button>
+            </div>
+
+            <div className="space-y-4 pt-2">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Container Layout</h4>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Width</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] transition-all">
+                            <input type="number" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" placeholder="100" value={parseDimension(getProp('width'), getProp('widthUnit') || '%').number} onChange={(e) => {
+                                const unit = getProp('widthUnit') || '%';
+                                setProp('width', e.target.value ? e.target.value + unit : '');
+                            }} />
+                            <select className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] outline-none text-gray-600" value={parseDimension(getProp('width'), getProp('widthUnit') || '%').unit} onChange={(e) => {
+                                setProp('widthUnit', e.target.value);
+                                const num = parseDimension(getProp('width'), '%').number;
+                                if (num) setProp('width', num + e.target.value);
+                            }}>
+                                <option value="px">px</option><option value="%">%</option><option value="vw">vw</option><option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Min Height</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] transition-all">
+                            <input type="number" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" placeholder="Auto" value={parseDimension(getProp('minHeight'), getProp('minHeightUnit') || 'px').number} onChange={(e) => {
+                                const unit = getProp('minHeightUnit') || 'px';
+                                setProp('minHeight', e.target.value ? e.target.value + unit : '');
+                            }} />
+                            <select className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] outline-none text-gray-600" value={parseDimension(getProp('minHeight'), getProp('minHeightUnit') || 'px').unit} onChange={(e) => {
+                                setProp('minHeightUnit', e.target.value);
+                                const num = parseDimension(getProp('minHeight'), 'px').number;
+                                if (num) setProp('minHeight', num + e.target.value);
+                            }}>
+                                <option value="px">px</option><option value="%">%</option><option value="vh">vh</option><option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-gray-100">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Grid Settings</h4>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Columns</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('columns') || ''} onChange={(e) => setProp('columns', e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Rows</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('rows') || ''} onChange={(e) => setProp('rows', e.target.value)} />
+                    </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Gap (px)</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('gap') || ''} onChange={(e) => {
+                            setProp('gap', e.target.value);
+                            if (e.target.value) {
+                                setProp('rowGap', '');
+                                setProp('columnGap', '');
+                            }
+                        }} placeholder="20" />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Row Gap</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('rowGap') || ''} onChange={(e) => setProp('rowGap', e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Col Gap</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('columnGap') || ''} onChange={(e) => setProp('columnGap', e.target.value)} />
+                    </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Horiz. Align</label>
+                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('justifyItems') || 'stretch'} onChange={(e) => setProp('justifyItems', e.target.value)}>
+                            <option value="stretch">Stretch</option>
+                            <option value="start">Start</option>
+                            <option value="center">Center</option>
+                            <option value="end">End</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Vert. Align</label>
+                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('gridAlignItems') || 'stretch'} onChange={(e) => setProp('gridAlignItems', e.target.value)}>
+                            <option value="stretch">Stretch</option>
+                            <option value="start">Start</option>
+                            <option value="center">Center</option>
+                            <option value="end">End</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-gray-100">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Item Settings</h4>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Item Width</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] transition-all">
+                            <input type="number" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" placeholder="Auto" value={itemWidthData.number} onChange={(e) => {
+                                setProp('itemWidth', e.target.value ? e.target.value + itemWidthData.unit : '');
+                            }} />
+                            <select className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] outline-none text-gray-600" value={itemWidthData.unit} onChange={(e) => {
+                                setProp('itemWidthUnit', e.target.value);
+                                if (itemWidthData.number) setProp('itemWidth', itemWidthData.number + e.target.value);
+                            }}>
+                                <option value="px">px</option><option value="%">%</option><option value="vw">vw</option><option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Item Height</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] transition-all">
+                            <input type="number" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" placeholder="Auto" value={itemHeightData.number} onChange={(e) => {
+                                setProp('itemHeight', e.target.value ? e.target.value + itemHeightData.unit : '');
+                            }} />
+                            <select className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] outline-none text-gray-600" value={itemHeightData.unit} onChange={(e) => {
+                                setProp('itemHeightUnit', e.target.value);
+                                if (itemHeightData.number) setProp('itemHeight', itemHeightData.number + e.target.value);
+                            }}>
+                                <option value="px">px</option><option value="%">%</option><option value="vh">vh</option><option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Item Background</label>
+                    <div className="flex items-center gap-2">
+                        <input type="color" className="w-9 h-9 rounded cursor-pointer border border-gray-200 p-0.5" value={getProp('itemBackground') || '#ffffff'} onChange={(e) => setProp('itemBackground', e.target.value)} />
+                        <input type="text" className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none" placeholder="e.g. #ffffff or transparent" value={getProp('itemBackground') || ''} onChange={(e) => setProp('itemBackground', e.target.value)} />
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Item Border</label>
+                    <div className="flex gap-2">
+                         <input type="text" className="w-1/2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none" placeholder="e.g. 1px solid" value={getProp('itemBorder') || ''} onChange={(e) => setProp('itemBorder', e.target.value)} />
+                         <div className="flex-1 flex items-center gap-2 border border-gray-200 bg-gray-50 rounded-lg px-2">
+                             <input type="color" className="w-6 h-6 rounded cursor-pointer border border-gray-200 p-0.5" value={getProp('itemBorderColor') || '#000000'} onChange={(e) => setProp('itemBorderColor', e.target.value)} />
+                             <input type="text" className="w-full bg-transparent text-[12px] outline-none" placeholder="#000000" value={getProp('itemBorderColor') || ''} onChange={(e) => setProp('itemBorderColor', e.target.value)} />
+                         </div>
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Item Border Radius</label>
+                    <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" placeholder="e.g. 8" value={getProp('itemBorderRadius') || ''} onChange={(e) => setProp('itemBorderRadius', e.target.value)} />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- Flex Properties Component ---
+const FlexProperties = ({ field, onChange, device, setDevice }) => {
+    const respMode = device === 'tablet' ? 'Tablet' : device === 'mobile' ? 'Mobile' : '';
+    
+    const getProp = (key) => field[key + respMode];
+    const setProp = (key, val) => onChange({ [key + respMode]: val });
+
+    const parseDimension = (val, fallbackUnit = 'px') => {
+        if (!val) return { number: '', unit: fallbackUnit };
+        const match = String(val).match(/^([\d.-]+)(px|%|vh|vw|rem|em)?$/);
+        if (match) return { number: match[1], unit: match[2] || fallbackUnit };
+        return { number: val, unit: fallbackUnit };
+    };
+
+    const itemWidthData = parseDimension(getProp('itemWidth'), getProp('itemWidthUnit') || 'px');
+    const itemHeightData = parseDimension(getProp('itemHeight'), getProp('itemHeightUnit') || 'px');
+
+    return (
+        <div className="space-y-6">
+            <div className="flex bg-gray-100 p-1 rounded-lg">
+                <button onClick={() => setDevice('desktop')} className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === '' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>Desktop</button>
+                <button onClick={() => setDevice('tablet')} className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === 'Tablet' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>Tablet</button>
+                <button onClick={() => setDevice('mobile')} className={`flex-1 py-1.5 text-[12px] font-semibold rounded-md transition-colors ${respMode === 'Mobile' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>Mobile</button>
+            </div>
+
+            <div className="space-y-4 pt-2">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Container Layout</h4>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Width</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] transition-all">
+                            <input type="number" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" placeholder="100" value={parseDimension(getProp('width'), getProp('widthUnit') || '%').number} onChange={(e) => {
+                                const unit = getProp('widthUnit') || '%';
+                                setProp('width', e.target.value ? e.target.value + unit : '');
+                            }} />
+                            <select className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] outline-none text-gray-600" value={parseDimension(getProp('width'), getProp('widthUnit') || '%').unit} onChange={(e) => {
+                                setProp('widthUnit', e.target.value);
+                                const num = parseDimension(getProp('width'), '%').number;
+                                if (num) setProp('width', num + e.target.value);
+                            }}>
+                                <option value="px">px</option><option value="%">%</option><option value="vw">vw</option><option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Min Height</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] transition-all">
+                            <input type="number" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" placeholder="Auto" value={parseDimension(getProp('minHeight'), getProp('minHeightUnit') || 'px').number} onChange={(e) => {
+                                const unit = getProp('minHeightUnit') || 'px';
+                                setProp('minHeight', e.target.value ? e.target.value + unit : '');
+                            }} />
+                            <select className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] outline-none text-gray-600" value={parseDimension(getProp('minHeight'), getProp('minHeightUnit') || 'px').unit} onChange={(e) => {
+                                setProp('minHeightUnit', e.target.value);
+                                const num = parseDimension(getProp('minHeight'), 'px').number;
+                                if (num) setProp('minHeight', num + e.target.value);
+                            }}>
+                                <option value="px">px</option><option value="%">%</option><option value="vh">vh</option><option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-gray-100">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Flex Settings</h4>
+                <div className="mb-3">
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Number of Items</label>
+                    <input type="number" min="1" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('columns') || ''} onChange={(e) => setProp('columns', e.target.value)} placeholder="3" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Direction</label>
+                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('flexDirection') || 'row'} onChange={(e) => setProp('flexDirection', e.target.value)}>
+                            <option value="row">Row</option>
+                            <option value="column">Column</option>
+                            <option value="row-reverse">Row Reverse</option>
+                            <option value="column-reverse">Column Reverse</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Wrap</label>
+                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('flexWrap') || 'wrap'} onChange={(e) => setProp('flexWrap', e.target.value)}>
+                            <option value="nowrap">No Wrap</option>
+                            <option value="wrap">Wrap</option>
+                            <option value="wrap-reverse">Wrap Reverse</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Justify Content</label>
+                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('justifyContent') || 'flex-start'} onChange={(e) => setProp('justifyContent', e.target.value)}>
+                            <option value="flex-start">Start</option>
+                            <option value="center">Center</option>
+                            <option value="flex-end">End</option>
+                            <option value="space-between">Space Between</option>
+                            <option value="space-around">Space Around</option>
+                            <option value="space-evenly">Space Evenly</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Align Items</label>
+                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('alignItems') || 'stretch'} onChange={(e) => setProp('alignItems', e.target.value)}>
+                            <option value="flex-start">Start</option>
+                            <option value="center">Center</option>
+                            <option value="flex-end">End</option>
+                            <option value="stretch">Stretch</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Gap (px)</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('gap') || ''} onChange={(e) => { 
+                            setProp('gap', e.target.value);
+                            if (e.target.value) {
+                                setProp('rowGap', '');
+                                setProp('columnGap', '');
+                            }
+                        }} placeholder="20" />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Row Gap</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('rowGap') || ''} onChange={(e) => setProp('rowGap', e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Col Gap</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('columnGap') || ''} onChange={(e) => setProp('columnGap', e.target.value)} />
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-gray-100">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Item Flex Settings</h4>
+                <div className="grid grid-cols-3 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Grow</label>
+                        <input type="number" step="0.1" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('flexGrow') || ''} onChange={(e) => setProp('flexGrow', e.target.value)} placeholder="0" />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Shrink</label>
+                        <input type="number" step="0.1" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('flexShrink') || ''} onChange={(e) => setProp('flexShrink', e.target.value)} placeholder="1" />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Basis</label>
+                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={getProp('flexBasis') || ''} onChange={(e) => setProp('flexBasis', e.target.value)} placeholder="auto" />
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Item Width</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] transition-all">
+                            <input type="number" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" placeholder="Auto" value={itemWidthData.number} onChange={(e) => {
+                                setProp('itemWidth', e.target.value ? e.target.value + itemWidthData.unit : '');
+                            }} />
+                            <select className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] outline-none text-gray-600" value={itemWidthData.unit} onChange={(e) => {
+                                setProp('itemWidthUnit', e.target.value);
+                                if (itemWidthData.number) setProp('itemWidth', itemWidthData.number + e.target.value);
+                            }}>
+                                <option value="px">px</option><option value="%">%</option><option value="vw">vw</option><option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Item Height</label>
+                        <div className="flex bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#5946ff] transition-all">
+                            <input type="number" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none" placeholder="Auto" value={itemHeightData.number} onChange={(e) => {
+                                setProp('itemHeight', e.target.value ? e.target.value + itemHeightData.unit : '');
+                            }} />
+                            <select className="bg-gray-100 border-l border-gray-200 px-2 text-[12px] outline-none text-gray-600" value={itemHeightData.unit} onChange={(e) => {
+                                setProp('itemHeightUnit', e.target.value);
+                                if (itemHeightData.number) setProp('itemHeight', itemHeightData.number + e.target.value);
+                            }}>
+                                <option value="px">px</option><option value="%">%</option><option value="vh">vh</option><option value="rem">rem</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- Text Properties Component ---
+const TextProperties = ({ field, onChange }) => {
+    return (
+        <div className="space-y-6">
+            <div className="space-y-4 pt-2">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Text Settings</h4>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Content</label>
+                    <textarea 
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white transition-all"
+                        rows={5}
+                        placeholder="Enter your text here..."
+                        value={field.content || field.placeholder || ''}
+                        onChange={(e) => onChange({ content: e.target.value })}
+                    />
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Font Family</label>
+                    <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.fontFamily || 'inherit'} onChange={(e) => onChange({ fontFamily: e.target.value })}>
+                        <option value="inherit">Default Font</option>
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="'Helvetica Neue', Helvetica, sans-serif">Helvetica</option>
+                        <option value="'Times New Roman', Times, serif">Times New Roman</option>
+                        <option value="'Georgia', serif">Georgia</option>
+                        <option value="'Courier New', Courier, monospace">Courier New</option>
+                    </select>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Font Size (px)</label>
+                        <input type="number" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.fontSize || ''} onChange={(e) => onChange({ fontSize: e.target.value })} placeholder="16" />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Text Align</label>
+                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.textAlign || 'left'} onChange={(e) => onChange({ textAlign: e.target.value })}>
+                            <option value="left">Left</option>
+                            <option value="center">Center</option>
+                            <option value="right">Right</option>
+                            <option value="justify">Justify</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Style</label>
+                        <div className="flex items-center gap-1">
+                            <button 
+                                className={`flex-1 p-1.5 border rounded flex justify-center items-center ${field.isBold ? 'bg-[#5946ff] text-white border-[#5946ff]' : 'bg-gray-50 text-gray-600 border-gray-200'}`}
+                                onClick={(e) => { e.preventDefault(); onChange({ isBold: !field.isBold }) }}
+                                title="Bold"
+                            >
+                                <FiBold size={14} />
+                            </button>
+                            <button 
+                                className={`flex-1 p-1.5 border rounded flex justify-center items-center ${field.isItalic ? 'bg-[#5946ff] text-white border-[#5946ff]' : 'bg-gray-50 text-gray-600 border-gray-200'}`}
+                                onClick={(e) => { e.preventDefault(); onChange({ isItalic: !field.isItalic }) }}
+                                title="Italic"
+                            >
+                                <FiItalic size={14} />
+                            </button>
+                            <button 
+                                className={`flex-1 p-1.5 border rounded flex justify-center items-center ${field.isUnderline ? 'bg-[#5946ff] text-white border-[#5946ff]' : 'bg-gray-50 text-gray-600 border-gray-200'}`}
+                                onClick={(e) => { e.preventDefault(); onChange({ isUnderline: !field.isUnderline }) }}
+                                title="Underline"
+                            >
+                                <FiUnderline size={14} />
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Font Weight</label>
+                        <select className="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded text-[13px]" value={field.fontWeight || 'normal'} onChange={(e) => onChange({ fontWeight: e.target.value })}>
+                            <option value="normal">Normal</option>
+                            <option value="medium">Medium</option>
+                            <option value="600">Semi Bold</option>
+                            <option value="bold">Bold</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Text Color</label>
+                    <div className="flex items-center gap-2">
+                        <input type="color" className="w-10 h-10 rounded cursor-pointer border border-gray-200 p-0.5" value={field.textColor || '#000000'} onChange={(e) => onChange({ textColor: e.target.value })} />
+                        <input type="text" className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none uppercase" value={field.textColor || '#000000'} onChange={(e) => onChange({ textColor: e.target.value })} />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- Image Properties Component ---
+const ImageProperties = ({ field, onChange, handleImageUpload }) => {
+    return (
+        <div className="space-y-6">
+            <div className="space-y-4 pt-2">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Image Settings</h4>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Upload Image</label>
+                    <input type="file" accept="image/*" className="w-full text-[12px]" onChange={handleImageUpload} />
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Or Image URL</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.imageUrl || ''} onChange={(e) => onChange({ imageUrl: e.target.value })} placeholder="https://..." />
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Alt Text</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.altText || ''} onChange={(e) => onChange({ altText: e.target.value })} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Width</label>
+                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.imageWidth || ''} onChange={(e) => onChange({ imageWidth: e.target.value })} placeholder="100%" />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Height</label>
+                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.imageHeight || ''} onChange={(e) => onChange({ imageHeight: e.target.value })} placeholder="auto" />
+                    </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Object Fit</label>
+                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.objectFit || 'cover'} onChange={(e) => onChange({ objectFit: e.target.value })}>
+                            <option value="cover">Cover</option>
+                            <option value="contain">Contain</option>
+                            <option value="fill">Fill</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Border Radius</label>
+                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.borderRadius || ''} onChange={(e) => onChange({ borderRadius: e.target.value })} placeholder="0px or 50%" />
+                    </div>
+                </div>
+                <div className="pt-2 border-t border-gray-100 mt-2">
+                    <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer mb-3">
+                        <input type="checkbox" className="rounded text-[#5946ff] focus:ring-[#5946ff]" checked={field.enableOverlay || false} onChange={(e) => onChange({ enableOverlay: e.target.checked })} />
+                        Enable Overlay Text & Button
+                    </label>
+                    
+                    {field.enableOverlay && (
+                        <div className="space-y-3 pl-6 border-l-2 border-gray-100">
+                            <div>
+                                <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Overlay Text</label>
+                                <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.overlayText || ''} onChange={(e) => onChange({ overlayText: e.target.value })} placeholder="Enter text..." />
+                            </div>
+                            <div className="pt-2 border-t border-gray-100">
+                                <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer mb-3">
+                                    <input type="checkbox" className="rounded text-[#5946ff] focus:ring-[#5946ff]" checked={field.enableOverlayButton || false} onChange={(e) => onChange({ enableOverlayButton: e.target.checked })} />
+                                    Enable Overlay Button
+                                </label>
+                            </div>
+                            {field.enableOverlayButton && (
+                                <>
+                                    <div>
+                                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Button Text</label>
+                                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.overlayButtonText || ''} onChange={(e) => onChange({ overlayButtonText: e.target.value })} placeholder="Click Here" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Button Style</label>
+                                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.overlayButtonStyle || 'outline'} onChange={(e) => onChange({ overlayButtonStyle: e.target.value })}>
+                                            <option value="outline">Outline</option>
+                                            <option value="solid">Solid Background</option>
+                                        </select>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- Video Properties Component ---
+const VideoProperties = ({ field, onChange }) => {
+    return (
+        <div className="space-y-6">
+            <div className="space-y-4 pt-2">
+                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Video Settings</h4>
+                <div>
+                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Video URL (YouTube/MP4)</label>
+                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.videoUrl || ''} onChange={(e) => onChange({ videoUrl: e.target.value })} placeholder="https://..." />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Width</label>
+                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.videoWidth || ''} onChange={(e) => onChange({ videoWidth: e.target.value })} placeholder="100%" />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Height</label>
+                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.videoHeight || ''} onChange={(e) => onChange({ videoHeight: e.target.value })} placeholder="400px" />
+                    </div>
+                </div>
+                <div className="space-y-2 mt-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-600" checked={field.autoPlay || false} onChange={(e) => onChange({ autoPlay: e.target.checked })} />
+                        <span className="text-[13px] font-medium text-gray-700">Auto Play</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-600" checked={field.controls !== false} onChange={(e) => onChange({ controls: e.target.checked })} />
+                        <span className="text-[13px] font-medium text-gray-700">Show Controls</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-600" checked={field.loop || false} onChange={(e) => onChange({ loop: e.target.checked })} />
+                        <span className="text-[13px] font-medium text-gray-700">Loop Video</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-600" checked={field.muted || false} onChange={(e) => onChange({ muted: e.target.checked })} />
+                        <span className="text-[13px] font-medium text-gray-700">Muted</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // --- Recursive Renderer ---
 const RecursiveFieldRenderer = ({ 
     field, 
@@ -170,31 +982,69 @@ const RecursiveFieldRenderer = ({
     renderIcon,
     isMotherDrag,
     targetContainerPath,
-    setTargetContainerPath
+    setTargetContainerPath,
+    device
 }) => {
     const isContainer = field.type === 'Container';
     const isGrid = field.type === 'Grid';
     const isFlex = field.type === 'Flex';
     const isDescription = field.type === 'Description';
     const isImage = field.type === 'Image';
+    const isText = field.type === 'Text';
+    const isVideo = field.type === 'Video';
     const isEmptySpace = field.type === 'EmptySpace';
     const isActive = activeFieldPath && activeFieldPath.join(',') === path.join(',');
     
-    const gridCols = field.columns || 3;
-    const gridRows = field.rows || (isFlex ? 1 : 2); // Flex defaults to 1 row
+    const getGridProp = (key) => {
+        if (device === 'mobile') {
+            if (field[key + 'Mobile'] !== undefined && field[key + 'Mobile'] !== '') return field[key + 'Mobile'];
+            if (field[key + 'Tablet'] !== undefined && field[key + 'Tablet'] !== '') return field[key + 'Tablet'];
+            return field[key];
+        }
+        if (device === 'tablet') {
+            if (field[key + 'Tablet'] !== undefined && field[key + 'Tablet'] !== '') return field[key + 'Tablet'];
+            return field[key];
+        }
+        return field[key];
+    };
+
+    const gridCols = getGridProp('columns') || 3;
+    const gridRows = getGridProp('rows') || (isFlex ? 1 : 2); // Flex defaults to 1 row
 
     // Grid properties
-    const columnGap = field.columnGap !== undefined ? field.columnGap : 20;
-    const rowGap = field.rowGap !== undefined ? field.rowGap : 20;
-    const gridAlignItems = field.gridAlignItems || 'stretch';
-    const justifyItems = field.justifyItems || 'stretch';
+    const columnGap = (getGridProp('columnGap') !== undefined && getGridProp('columnGap') !== '') ? getGridProp('columnGap') : ((getGridProp('gap') !== undefined && getGridProp('gap') !== '') ? getGridProp('gap') : 20);
+    const rowGap = (getGridProp('rowGap') !== undefined && getGridProp('rowGap') !== '') ? getGridProp('rowGap') : ((getGridProp('gap') !== undefined && getGridProp('gap') !== '') ? getGridProp('gap') : 20);
+    const gridAlignItems = getGridProp('gridAlignItems') || 'stretch';
+    const justifyItems = getGridProp('justifyItems') || 'stretch';
+    
+    const itemStyles = (isGrid || isFlex) ? {
+        width: getGridProp('itemWidth'),
+        height: getGridProp('itemHeight'),
+        background: getGridProp('itemBackground'),
+        border: getGridProp('itemBorder') ? `${getGridProp('itemBorder')} ${getGridProp('itemBorderColor') || ''}`.trim() : (getGridProp('itemBorderColor') ? `1px solid ${getGridProp('itemBorderColor')}` : undefined),
+        borderRadius: getGridProp('itemBorderRadius') ? `${getGridProp('itemBorderRadius')}px` : undefined,
+    } : {};
+
+    if (isFlex) {
+        if ((getGridProp('flexGrow') !== undefined && getGridProp('flexGrow') !== '') || 
+            (getGridProp('flexShrink') !== undefined && getGridProp('flexShrink') !== '') || 
+            getGridProp('flexBasis')) {
+            itemStyles.flexGrow = getGridProp('flexGrow');
+            itemStyles.flexShrink = getGridProp('flexShrink');
+            itemStyles.flexBasis = getGridProp('flexBasis');
+        } else {
+            itemStyles.flex = `1 1 calc(${100 / gridCols}% - ${columnGap}px)`;
+            itemStyles.minWidth = `calc(${100 / gridCols}% - ${columnGap}px)`;
+        }
+    }
 
     // Flex properties
-    const flexWrap = field.flexWrap || 'wrap';
-    const flexDirection = field.flexDirection || 'row';
-    const justifyContent = field.justifyContent || 'flex-start';
-    const alignItems = field.alignItems || 'stretch';
-    const gap = field.gap !== undefined ? field.gap : 20;
+    const flexWrap = getGridProp('flexWrap') || 'wrap';
+    const flexDirection = getGridProp('flexDirection') || 'row';
+    const justifyContent = getGridProp('justifyContent') || 'flex-start';
+    const flexAlignItems = getGridProp('alignItems') || 'stretch';
+    const rowGapFlex = (getGridProp('rowGap') !== undefined && getGridProp('rowGap') !== '') ? getGridProp('rowGap') : ((getGridProp('gap') !== undefined && getGridProp('gap') !== '') ? getGridProp('gap') : 20);
+    const columnGapFlex = (getGridProp('columnGap') !== undefined && getGridProp('columnGap') !== '') ? getGridProp('columnGap') : ((getGridProp('gap') !== undefined && getGridProp('gap') !== '') ? getGridProp('gap') : 20);
     const minHeight = field.minHeight || (isFlex ? 300 : 160);
 
     return (
@@ -207,16 +1057,63 @@ const RecursiveFieldRenderer = ({
                 isContainer ? "min-h-[200px] border-2 border-[#6366F1] rounded-none p-4 flex-col gap-3" : 
                 (isGrid || isFlex) ? "p-0 border-0 shadow-none bg-transparent gap-3" :
                 isEmptySpace ? "min-h-[140px] border-dashed border-[#b6c6fa] bg-[#f8faff] rounded justify-center items-center shadow-none hover:bg-[#ebf0ff]" :
-                isImage ? "rounded-xl border-2 border-[#6366F1] flex-col overflow-hidden" :
-                isDescription ? "rounded-lg p-0 flex-col gap-3" : "rounded-lg px-3 py-2 flex-col gap-3",
-                (!isContainer && !isGrid && !isFlex && !isImage && !isDescription && !isEmptySpace && field.bottomUnderline) ? "border-b-2 border-gray-200" : ""
+                isImage ? "flex-col h-full overflow-hidden p-0" :
+                isDescription ? "rounded-lg p-0 flex-col gap-3 h-full" : 
+                isText ? "rounded-none p-3 flex-col h-full bg-transparent border-dashed" : 
+                isVideo ? "rounded-none p-0 flex-col overflow-hidden h-full" : 
+                "rounded-lg px-3 py-2 flex-col gap-3 h-full",
+                (!isContainer && !isGrid && !isFlex && !isImage && !isDescription && !isText && !isVideo && !isEmptySpace && field.bottomUnderline) ? "border-b-2 border-gray-200" : ""
             )}
-            style={isContainer ? {
-                width: (!isNaN(field.width) && field.width ? `${field.width}px` : field.width),
-                height: (!isNaN(field.height) && field.height ? `${field.height}px` : field.height),
-            } : {}}
+            id={isContainer ? `editor-container-${field.id}` : undefined}
+            style={isImage ? { borderRadius: field.borderRadius || '0' } : {}}
             onClick={(e) => { e.stopPropagation(); setActiveFieldPath(path); }}
         >
+            {isContainer && (() => {
+                const getProp = (key) => {
+                    if (device === 'mobile') {
+                        if (field[key + 'Mobile'] !== undefined && field[key + 'Mobile'] !== '') return field[key + 'Mobile'];
+                        if (field[key + 'Tablet'] !== undefined && field[key + 'Tablet'] !== '') return field[key + 'Tablet'];
+                        return field[key];
+                    }
+                    if (device === 'tablet') {
+                        if (field[key + 'Tablet'] !== undefined && field[key + 'Tablet'] !== '') return field[key + 'Tablet'];
+                        return field[key];
+                    }
+                    return field[key];
+                };
+                const val = (k) => {
+                    const v = getProp(k);
+                    return (!isNaN(v) && v ? `${v}px` : v);
+                };
+                
+                return (
+                    <style dangerouslySetInnerHTML={{__html: `
+                        #editor-container-${field.id} {
+                            width: ${val('width') || (field.fullWidth ? '100%' : '100%')};
+                            height: ${val('height') || 'auto'};
+                            background-color: ${getProp('backgroundColor') || 'transparent'};
+                            background-image: ${getProp('backgroundImage') ? `url(${getProp('backgroundImage')})` : 'none'};
+                            background-size: ${getProp('backgroundSize') || 'cover'};
+                            background-position: center;
+                            padding-top: ${val('paddingTop') || '0'};
+                            padding-right: ${val('paddingRight') || '0'};
+                            padding-bottom: ${val('paddingBottom') || '0'};
+                            padding-left: ${val('paddingLeft') || '0'};
+                            margin-top: ${val('marginTop') || '0'};
+                            margin-right: ${val('marginRight') || '0'};
+                            margin-bottom: ${val('marginBottom') || '0'};
+                            margin-left: ${val('marginLeft') || '0'};
+                            ${getProp('border') ? `border: ${getProp('border')};` : ''}
+                            border-radius: ${val('borderRadius') || '0'};
+                            box-shadow: ${getProp('boxShadow') || 'none'};
+                            display: ${(device === 'desktop' && field.visibleDesktop === false) || (device === 'tablet' && field.visibleTablet === false) || (device === 'mobile' && field.visibleMobile === false) ? 'none' : 'flex'};
+                        }
+                    `}} />
+                );
+            })()}
+            {field.imageOverlay && isContainer && (
+                <div className="absolute inset-0 z-0 pointer-events-none" style={{ background: field.imageOverlay, borderRadius: (!isNaN(field.borderRadius) && field.borderRadius ? `${field.borderRadius}px` : field.borderRadius) }}></div>
+            )}
             {/* Grab icon */}
             {(!isGrid && !isFlex && !isEmptySpace) && (
                 <div className="absolute left-[-20px] top-3 text-gray-300 cursor-grab hover:text-gray-500 opacity-0 group-hover/subfield:opacity-100 transition-opacity">
@@ -244,7 +1141,12 @@ const RecursiveFieldRenderer = ({
                     </button>
                 </div>
             ) : (isGrid || isFlex) ? (
-                <div className="w-full h-full flex flex-col relative rounded-lg border border-[#3b82f6] bg-white">
+                <div 
+                    className={cn("flex flex-col relative border border-[#3b82f6] bg-white", !getGridProp('width') && "w-full flex-1")}
+                    style={{
+                        width: getGridProp('width') ? (!isNaN(getGridProp('width')) ? `${getGridProp('width')}px` : getGridProp('width')) : undefined
+                    }}
+                >
                     {/* Header */}
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                         <div className="flex items-center gap-2 text-blue-500 font-bold text-[15px]">
@@ -258,37 +1160,39 @@ const RecursiveFieldRenderer = ({
                     </div>
                     {/* Body */}
                     <div 
-                        className={cn("p-5 bg-white rounded-b-lg", isGrid ? "grid min-h-[160px]" : "flex")}
+                        className={cn("p-5 bg-white", isGrid ? "grid" : "flex")}
                         style={isGrid ? { 
                             gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
                             columnGap: `${columnGap}px`,
                             rowGap: `${rowGap}px`,
                             alignItems: gridAlignItems,
-                            justifyItems: justifyItems
+                            justifyItems: justifyItems,
+                            minHeight: getGridProp('minHeight') ? (!isNaN(getGridProp('minHeight')) ? `${getGridProp('minHeight')}px` : getGridProp('minHeight')) : '160px'
                         } : {
                             flexDirection,
                             flexWrap,
                             justifyContent,
-                            alignItems,
-                            gap: `${gap}px`,
+                            alignItems: flexAlignItems,
+                            rowGap: `${rowGapFlex}px`,
+                            columnGap: `${columnGapFlex}px`,
                             minHeight: (!isNaN(minHeight) && minHeight ? `${minHeight}px` : minHeight)
                         }}
                     >
                         {field.fields && field.fields.map((subField, idx) => (
-                            <div key={subField.id} className="relative flex flex-col" style={isFlex ? { flex: `1 1 calc(${100 / gridCols}% - ${gap}px)`, minWidth: `calc(${100 / gridCols}% - ${gap}px)` } : {}}>
+                            <div key={subField.id} className="relative flex flex-col overflow-hidden" style={itemStyles}>
                                 <GridDropZone disabled={isMotherDrag} onDrop={(e) => handleDropField(e, [...path, idx])} />
                                 <RecursiveFieldRenderer 
                                     field={subField} 
                                     path={[...path, idx]} 
-                                    {...{activeFieldPath, setActiveFieldPath, handleDragStartCanvas, handleDropField, handleDragOver, removeField, renderIcon, isMotherDrag, targetContainerPath, setTargetContainerPath}} 
+                                    {...{activeFieldPath, setActiveFieldPath, handleDragStartCanvas, handleDropField, handleDragOver, removeField, renderIcon, isMotherDrag, targetContainerPath, setTargetContainerPath, device}} 
                                 />
                             </div>
                         ))}
                         {[...Array(Math.max(0, (gridCols * gridRows) - (field.fields?.length || 0)))].map((_, i) => (
                             <div 
                                 key={`placeholder-${i}`} 
-                                className="border border-dashed border-[#b6c6fa] rounded bg-[#f8faff] min-h-[140px] flex flex-col items-center justify-center cursor-pointer transition-colors hover:bg-[#ebf0ff]"
-                                style={isFlex ? { flex: `1 1 calc(${100 / gridCols}% - ${gap}px)`, minWidth: `calc(${100 / gridCols}% - ${gap}px)` } : {}}
+                                className="border border-dashed border-[#b6c6fa] rounded bg-[#f8faff] min-h-[140px] flex flex-col items-center justify-center cursor-pointer transition-colors hover:bg-[#ebf0ff] overflow-hidden"
+                                style={itemStyles}
                                 onDragOver={handleDragOver}
                                 onDrop={(e) => handleDropField(e, [...path, (field.fields?.length || 0) + i])}
                                 onClick={(e) => {
@@ -306,7 +1210,7 @@ const RecursiveFieldRenderer = ({
                     </div>
                 </div>
             ) : isContainer ? (
-                <div className="w-full h-full flex flex-col">
+                <div className="w-full flex-1 flex flex-col">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2 text-[#6366F1] font-semibold text-sm">
                             {renderIcon(field.icon)} <span>{field.label}</span>
@@ -332,7 +1236,7 @@ const RecursiveFieldRenderer = ({
                                     <RecursiveFieldRenderer 
                                         field={subField} 
                                         path={[...path, idx]} 
-                                        {...{activeFieldPath, setActiveFieldPath, handleDragStartCanvas, handleDropField, handleDragOver, removeField, renderIcon, isMotherDrag, targetContainerPath, setTargetContainerPath}} 
+                                        {...{activeFieldPath, setActiveFieldPath, handleDragStartCanvas, handleDropField, handleDragOver, removeField, renderIcon, isMotherDrag, targetContainerPath, setTargetContainerPath, device}} 
                                     />
                                 </div>
                             </React.Fragment>
@@ -521,31 +1425,71 @@ const RecursiveFieldRenderer = ({
                             )}
                         </div>
                     )}
+                </div>
+            ) : isText ? (
+                <div className="flex-1 flex flex-col w-full relative group/text min-h-[30px]">
+                    <div className="absolute top-1 right-1 flex items-center justify-end z-10 opacity-0 group-hover/text:opacity-100 transition-opacity">
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); removeField(path); }}
+                            className="bg-white rounded-full p-1.5 text-gray-400 hover:text-red-500 shadow-sm border border-gray-100 transition-colors"
+                        >
+                            <FiTrash2 size={12} />
+                        </button>
+                    </div>
+                    <div 
+                        className="w-full text-gray-800"
+                        style={{
+                            fontFamily: field.fontFamily && field.fontFamily !== 'inherit' ? field.fontFamily : undefined,
+                            fontSize: field.fontSize ? `${field.fontSize}px` : '16px',
+                            fontWeight: field.isBold ? 'bold' : (field.fontWeight || 'normal'),
+                            fontStyle: field.isItalic ? 'italic' : 'normal',
+                            textDecoration: field.isUnderline ? 'underline' : 'none',
+                            textAlign: field.textAlign || 'left',
+                            color: field.textColor || '#000000',
+                        }}
+                    >
+                        {field.content || field.placeholder || "Enter your text here..."}
+                    </div>
+                </div>
+            ) : isVideo ? (
+                <div className="flex-1 flex flex-col w-full relative group/video items-center bg-gray-100">
+                    <div className="absolute top-2 right-2 flex items-center justify-end z-20 opacity-0 group-hover/video:opacity-100 transition-opacity">
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); removeField(path); }}
+                            className="bg-white rounded-full p-2 text-gray-400 hover:text-red-500 shadow-sm border border-gray-100 transition-colors"
+                        >
+                            <FiTrash2 size={14} />
+                        </button>
+                    </div>
+                    {/* Label */}
+                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-[#6366F1] z-20 pointer-events-none">
+                        {field.label || 'Video'}
+                    </div>
                     
-                    {/* Big Icon Placeholder */}
-                    {!field.imageUrl && (
-                        <div className="w-full h-full flex items-center justify-center text-[#6366F1]">
-                            <FiImage size={72} strokeWidth={2} />
-                        </div>
-                    )}
-
-                    {/* Support nested fields, always visible to allow dropping into empty image */}
-                    <div className="w-full mt-auto bg-white/70 backdrop-blur-sm border-t border-gray-200 p-2 min-h-[40px]">
-                        {field.fields && field.fields.map((subField, idx) => (
-                            <React.Fragment key={subField.id}>
-                                <DropZone disabled={isMotherDrag} onDrop={(e) => handleDropField(e, [...path, idx])} />
-                                <div className="py-1" onDragOver={handleDragOver} onDrop={(e) => handleDropField(e, [...path, idx])}>
-                                    <RecursiveFieldRenderer 
-                                        field={subField} 
-                                        path={[...path, idx]} 
-                                        {...{activeFieldPath, setActiveFieldPath, handleDragStartCanvas, handleDropField, handleDragOver, removeField, renderIcon, isMotherDrag}} 
-                                    />
-                                </div>
-                            </React.Fragment>
-                        ))}
-                        <DropZone disabled={isMotherDrag} onDrop={(e) => handleDropField(e, [...path, field.fields ? field.fields.length : 0])} isContainerEnd={true} />
-                        {(!field.fields || field.fields.length === 0) && (
-                            <div className="w-full text-center text-xs text-gray-500 py-1 pointer-events-none">Drop nested fields here</div>
+                    <div 
+                        className="w-full max-w-full flex items-center justify-center shrink-0"
+                        style={{
+                            width: field.videoWidth ? (!isNaN(field.videoWidth) ? `${field.videoWidth}px` : field.videoWidth) : '100%',
+                            height: field.videoHeight ? (!isNaN(field.videoHeight) ? `${field.videoHeight}px` : field.videoHeight) : '400px',
+                        }}
+                    >
+                        {field.videoUrl ? (
+                            field.videoUrl.match(/\.(mp4|webm|ogg)$/i) ? (
+                                <video 
+                                    src={field.videoUrl} 
+                                    className="w-full h-full object-cover pointer-events-none"
+                                />
+                            ) : (
+                                <iframe 
+                                    src={field.videoUrl.includes('youtube') ? field.videoUrl.replace('watch?v=', 'embed/') : field.videoUrl} 
+                                    className="w-full h-full border-0 pointer-events-none"
+                                ></iframe>
+                            )
+                        ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
+                                <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                <span className="text-sm font-medium">Video Player</span>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -554,7 +1498,7 @@ const RecursiveFieldRenderer = ({
                     <div className="flex items-center justify-between py-1 w-full">
                         <div className="flex items-center gap-3">
                             <span className="text-gray-400">{renderIcon(field.icon)}</span>
-                            <span className="text-sm font-medium text-gray-700">{field.label}</span>
+                            <span className="text-sm font-medium text-gray-700">{field.label || field.type}</span>
                         </div>
                         <button 
                             onClick={(e) => { e.stopPropagation(); removeField(path); }}
@@ -563,22 +1507,6 @@ const RecursiveFieldRenderer = ({
                         >
                             <FiTrash2 size={14} />
                         </button>
-                    </div>
-                    {/* Render children inside generic fields too! */}
-                    <div className="w-full mt-2 border-l-2 border-dashed border-gray-200 pl-4 py-1 min-h-[30px]">
-                        {field.fields && field.fields.map((subField, idx) => (
-                            <React.Fragment key={subField.id}>
-                                <DropZone disabled={isMotherDrag} onDrop={(e) => handleDropField(e, [...path, idx])} />
-                                <div className="py-1" onDragOver={handleDragOver} onDrop={(e) => handleDropField(e, [...path, idx])}>
-                                    <RecursiveFieldRenderer 
-                                        field={subField} 
-                                        path={[...path, idx]} 
-                                        {...{activeFieldPath, setActiveFieldPath, handleDragStartCanvas, handleDropField, handleDragOver, removeField, renderIcon, isMotherDrag}} 
-                                    />
-                                </div>
-                            </React.Fragment>
-                        ))}
-                        <DropZone disabled={isMotherDrag} onDrop={(e) => handleDropField(e, [...path, field.fields ? field.fields.length : 0])} isContainerEnd={true} />
                     </div>
                 </div>
             )}
@@ -593,13 +1521,8 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
 
     const defaultLayout = [
         {
-            id: 's_general', title: 'General Section', isExpanded: true, fields: [
-                { id: 'f_1', type: 'Description', label: 'Description', icon: 'FiAlignLeft' },
-                { id: 'f_2', type: 'Location', label: 'Location', icon: 'FiMapPin' },
-                { id: 'f_3', type: 'Email', label: 'Email', icon: 'FiMail' }
-            ]
-        },
-        { id: 's_pricing', title: 'Pricing', isExpanded: false, fields: [] }
+            id: 's_general', title: 'General Section', isExpanded: true, fields: []
+        }
     ];
 
     // Layout structure: Array of objects { id, title, fields: [{ id, type, label, fields: [...] }] }
@@ -624,6 +1547,10 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
     const [targetContainerPath, setTargetContainerPath] = useState(null);
 
     const [initialLayoutString, setInitialLayoutString] = useState(JSON.stringify(layout));
+    const [activeMainTab, setActiveMainTab] = useState('Add Elements');
+    const [activeSidebarTab, setActiveSidebarTab] = useState('Elements');
+    const [sectionInfo, setSectionInfo] = useState({ name: section?.name || '', description: section?.description || '' });
+
 
     // Sync layout if section prop updates (e.g. after libraryConfigurations loads)
     React.useEffect(() => {
@@ -772,6 +1699,15 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
                 icon: draggedItem.icon.name || 'FiType',
                 fields: []
             };
+            if (fieldToDrop.type === 'Flex' || fieldToDrop.type === 'Grid') {
+                fieldToDrop.fields = [
+                    { id: `c_${Date.now()}_1`, type: 'Container', label: 'Column Container', icon: 'FiLayout', fields: [] },
+                    { id: `c_${Date.now()}_2`, type: 'Container', label: 'Column Container', icon: 'FiLayout', fields: [] }
+                ];
+                if (fieldToDrop.type === 'Grid') {
+                    fieldToDrop.columns = 2;
+                }
+            }
         } else if (dragType === 'canvas_field' && draggedItem) {
             const sourcePath = draggedItem.path;
             const sourceField = getFieldAtPath(newLayout, sourcePath);
@@ -827,12 +1763,23 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
     const handleSidebarItemClick = (field) => {
         if (layout.length === 0) return; // Need a section first
 
-        const newField = {
+        let newField = {
             id: `f_${Date.now()}`,
             type: field.type,
             label: field.label,
-            icon: field.icon.name || 'FiType'
+            icon: field.icon.name || 'FiType',
+            fields: []
         };
+        
+        if (newField.type === 'Flex' || newField.type === 'Grid') {
+            newField.fields = [
+                { id: `c_${Date.now()}_1`, type: 'Container', label: 'Column Container', icon: 'FiLayout', fields: [] },
+                { id: `c_${Date.now()}_2`, type: 'Container', label: 'Column Container', icon: 'FiLayout', fields: [] }
+            ];
+            if (newField.type === 'Grid') {
+                newField.columns = 2;
+            }
+        }
 
         const newLayout = [...layout];
         
@@ -842,6 +1789,18 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
                 target = target.fields[targetContainerPath[i]];
             }
             if (!target.fields) target.fields = [];
+            
+            // Auto-wrap if targeting Flex/Grid
+            if ((target.type === 'Flex' || target.type === 'Grid') && newField.type !== 'Container' && newField.type !== 'EmptySpace') {
+                newField = {
+                    id: `c_${Date.now()}_wrapper`,
+                    type: 'Container',
+                    label: 'Column Container',
+                    icon: 'FiLayout',
+                    fields: [newField]
+                };
+            }
+            
             target.fields.push(newField);
             
             setLayout(newLayout);
@@ -860,21 +1819,21 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
 
     const renderIcon = (iconName) => {
         switch (iconName) {
-            case 'FiAlignLeft': return <FiAlignLeft />;
-            case 'FiDollarSign': return <FiDollarSign />;
-            case 'FiTag': return <FiTag />;
-            case 'FiMap': return <FiMap />;
-            case 'FiMapPin': return <FiMapPin />;
-            case 'FiPhone': return <FiPhone />;
-            case 'FiGlobe': return <FiGlobe />;
-            case 'FiMail': return <FiMail />;
-            case 'FiImage': return <FiImage />;
             case 'FiGrid': return <FiGrid />;
             case 'FiLayout': return <FiLayout />;
             case 'FiType': return <FiType />;
-            case 'FiCalendar': return <FiCalendar />;
+            case 'FiImage': return <FiImage />;
+            case 'FiCode': return <FiCode />;
+            case 'FiPlay': return <FiPlay />;
+            case 'FiMessageSquare': return <FiMessageSquare />;
+            case 'FiHelpCircle': return <FiHelpCircle />;
             case 'FiClock': return <FiClock />;
-            case 'FiChevronDown': return <FiChevronDown />;
+            case 'FiAlignLeft': return <FiAlignLeft />;
+            case 'FiMapPin': return <FiMapPin />;
+            case 'FiMail': return <FiMail />;
+            case 'FiDollarSign': return <FiDollarSign />;
+            case 'FiTag': return <FiTag />;
+            case 'FiCalendar': return <FiCalendar />;
             case 'FiCheckSquare': return <FiCheckSquare />;
             case 'FiCircle': return <FiCircle />;
             case 'FiUpload': return <FiUpload />;
@@ -882,1079 +1841,304 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
         }
     };
 
+    
     return (
-        <div className="fixed inset-0 z-[100] flex bg-black/50 backdrop-blur-sm font-sans">
+        <div className="fixed inset-0 z-[100] flex flex-col bg-[#F9FAFB] font-sans h-screen overflow-hidden">
             {isLoading ? (
-                <div className="w-full h-full flex items-center justify-center bg-[#F5F7FA]">
+                <div className="w-full h-full flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-xl flex items-center gap-4">
-                        <FiLoader className="animate-spin text-indigo-600" size={24} />
+                        <FiLoader className="animate-spin text-[#5946ff]" size={24} />
                         <span className="text-gray-700 font-medium">Loading section data...</span>
                     </div>
                 </div>
             ) : (
-                <motion.div
-                    initial={{ y: "100%" }}
-                    animate={{ y: 0 }}
-                    exit={{ y: "100%" }}
-                    transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                    className="w-full h-full bg-[#F5F7FA] flex flex-col"
-                >
-                {/* Header */}
-                <div className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0 shadow-sm z-10">
-                    <div className="flex items-center gap-4">
-                        <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500">
-                            <FiX size={20} />
-                        </button>
-                        <div className="flex gap-4">
-                            <button className="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors bg-gray-50 rounded-lg flex items-center gap-2">
-                                <FiLayout size={14} /> All Directories
-                            </button>
-                            <div className="px-4 py-2 text-sm font-semibold text-gray-900 bg-gray-100 rounded-lg">
-                                Untitled directory
+                <>
+                    {/* Top Header Bar */}
+                    <div className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0 relative z-30">
+                        <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-3 pr-6 border-r border-gray-200">
+                                <div className="w-8 h-8 bg-[#5946ff] rounded flex items-center justify-center text-white">
+                                    <FiLayout size={16} />
+                                </div>
+                                <div>
+                                    <h2 className="text-sm font-bold text-gray-900 leading-none">Dory Furniture</h2>
+                                    <span className="text-[11px] text-gray-500">CMS Dashboard</span>
+                                </div>
                             </div>
+                            <div className="flex items-center gap-4">
+                                <button onClick={onClose} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                                    <FiArrowLeft size={18} />
+                                </button>
+                                <div>
+                                    <h1 className="text-lg font-bold text-gray-900 leading-tight">Section Builder</h1>
+                                    <p className="text-[13px] text-gray-500 leading-none">Create and customize your section with flexible layouts and elements.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            <button 
+                                onClick={() => {
+                                    if (window.confirm('Are you sure you want to clear the canvas? This will remove all elements.')) {
+                                        setLayout(defaultLayout);
+                                    }
+                                }} 
+                                className="px-5 py-2.5 bg-white border border-gray-200 text-red-600 hover:text-red-700 text-sm font-semibold rounded-lg flex items-center gap-2 hover:bg-red-50 hover:border-red-200 transition-all shadow-sm"
+                            >
+                                <FiTrash2 size={16} /> Clear Canvas
+                            </button>
+                            <button className="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-semibold rounded-lg flex items-center gap-2 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                                <FiEye size={16} /> Preview
+                            </button>
+                            <button onClick={handleSave} className="px-5 py-2.5 bg-[#5946ff] text-white text-sm font-semibold rounded-lg flex items-center gap-2 hover:bg-[#4a39e0] transition-all shadow-sm">
+                                <FiSave size={16} /> Save Section
+                            </button>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <button onClick={handleSave} className="px-6 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
-                            Update Section
-                        </button>
-                    </div>
-                </div>
-
-                {/* Top Navigation Bar */}
-                <div className="bg-white border-b border-gray-100 px-8 py-3 flex gap-8 justify-center items-center shadow-sm z-10">
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500 cursor-pointer hover:text-gray-900 transition-colors">
-                        <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center"><FiLayout size={12} /></div> General
-                    </div>
-                    <div className="flex items-center gap-2 text-sm font-bold text-indigo-600 border-b-2 border-indigo-600 pb-3 -mb-3 cursor-pointer">
-                        <div className="w-6 h-6 bg-blue-100 text-indigo-600 rounded flex items-center justify-center"><FiCheckSquare size={12} /></div> Add Listing Form
-                    </div>
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500 cursor-pointer hover:text-gray-900 transition-colors">
-                        <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center"><FiLayout size={12} /></div> Single Page Layout
-                    </div>
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500 cursor-pointer hover:text-gray-900 transition-colors">
-                        <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center"><FiGrid size={12} /></div> All Listings Layout
-                    </div>
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500 cursor-pointer hover:text-gray-900 transition-colors">
-                        <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center"><FiSettings size={12} /></div> Search Form
-                    </div>
-                </div>
-
-                {/* Title Bar */}
-                <div className="bg-white px-6 py-6 flex items-center justify-between shadow-sm z-0 relative">
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-2xl font-bold text-indigo-600">Add Listing Form</h1>
-                        <button className="px-3 py-1 bg-blue-50 text-indigo-600 text-xs font-bold rounded-full flex items-center gap-1">
-                            <FiPlay size={10} /> Watch Tutorial
-                        </button>
-                    </div>
-                    <button className="px-4 py-2 border border-gray-200 text-gray-700 text-sm font-semibold rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-colors">
-                        <FiMonitor size={14} /> Preview
-                    </button>
-                </div>
-
-                {/* Workspace */}
-                <div className="flex-1 flex overflow-hidden w-full bg-white">
-
-                    {/* Canvas (Left side now) */}
-                    <div
-                        className="flex-1 overflow-y-auto relative p-0 flex justify-center custom-scrollbar bg-white"
-                    >
-                        {/* The white paper */}
-                        <div className="w-full bg-white border-r border-gray-200 flex flex-col h-full">
-
-                            <div className="space-y-4 flex-1 pb-12">
-                                {layout.map((sec, secIdx) => (
-                                    <div
-                                        key={sec.id}
-                                        draggable
-                                        onDragStart={(e) => handleDragStartSection(e, secIdx)}
-                                        onDragOver={handleDragOver}
-                                        onDrop={(e) => handleDropSection(e, secIdx)}
-                                        className="w-full relative group/section"
+                    {/* Main Layout */}
+                    <div className="flex-1 flex overflow-hidden">
+                        
+                        {/* Left Workspace Panel */}
+                        <div className="flex-1 flex flex-col bg-[#F9FAFB] overflow-y-auto custom-scrollbar">
+                            
+                            {/* Navigation Tabs */}
+                            <div className="bg-white border-b border-gray-200 px-8 flex items-center gap-8 mb-6 shadow-sm sticky top-0 z-20">
+                                {['General', 'Add Elements', 'Single Page Layout', 'All Sections', 'Search'].map(tab => (
+                                    <button 
+                                        key={tab}
+                                        onClick={() => setActiveMainTab(tab)}
+                                        className={cn(
+                                            "py-4 text-[13px] font-bold flex items-center gap-2 relative transition-colors",
+                                            activeMainTab === tab ? "text-[#5946ff]" : "text-gray-500 hover:text-gray-900"
+                                        )}
                                     >
-                                        {/* Section Header */}
-                                        <div className="flex items-center gap-3">
-                                            <div className="text-gray-300 cursor-grab px-1 hover:text-gray-500">
-                                                <FiGrid size={14} />
-                                            </div>
-                                            <div
-                                                className="flex-1 bg-indigo-600 text-white rounded-lg flex items-center justify-between px-5 py-3 cursor-pointer hover:bg-indigo-700 transition-colors shadow-sm"
-                                                onClick={() => toggleSection(secIdx)}
-                                            >
-                                                <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-                                                    <input
-                                                        type="text"
-                                                        value={sec.title}
-                                                        onChange={(e) => {
-                                                            const newLayout = [...layout];
-                                                            newLayout[secIdx].title = e.target.value;
-                                                            setLayout(newLayout);
-                                                        }}
-                                                        className="font-bold text-[15px] bg-transparent outline-none border-b border-transparent focus:border-white w-48 text-white"
-                                                    />
-                                                    <span className="text-indigo-200 text-xs flex items-center gap-1 hover:text-white transition-colors cursor-pointer">
-                                                        <FiSettings size={10} /> Options
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center gap-3 text-indigo-200">
-                                                    {sec.isExpanded ? <FiChevronUp /> : <FiChevronDown />}
-                                                </div>
-                                            </div>
-                                            <div className="text-gray-400 hover:text-gray-600 cursor-pointer p-2 rounded relative group/menu">
-                                                <FiMoreHorizontal />
-                                                <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-1 w-32 hidden group-hover/menu:block z-20">
-                                                    <button onClick={() => removeSection(secIdx)} className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-red-50 flex items-center gap-2">
-                                                        <FiTrash2 size={12} /> Remove section
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Section Body (Droppable) */}
-                                        {sec.isExpanded && (
-                                            <div
-                                                className="px-2 mt-3 pb-2 min-h-[60px]"
-                                                onDragOver={handleDragOver}
-                                                onDrop={(e) => handleDropField(e, [secIdx, sec.fields.length])}
-                                            >
-                                                <div className="space-y-0">
-                                                    {sec.fields.map((field, fieldIdx) => (
-                                                        <React.Fragment key={field.id}>
-                                                            <DropZone disabled={dragType === 'canvas_field' && draggedItem && draggedItem.path[0] === secIdx && draggedItem.path.length === 2 && field.type === 'Container'} onDrop={(e) => handleDropField(e, [secIdx, fieldIdx])} />
-                                                            <div className="py-1" onDragOver={handleDragOver} onDrop={(e) => handleDropField(e, [secIdx, fieldIdx])}>
-                                                                <RecursiveFieldRenderer
-                                                                    field={field}
-                                                                    path={[secIdx, fieldIdx]}
-                                                                    {...{activeFieldPath, setActiveFieldPath, handleDragStartCanvas, handleDropField, handleDragOver, removeField, renderIcon, targetContainerPath, setTargetContainerPath}}
-                                                                    isMotherDrag={dragType === 'canvas_field' && draggedItem && draggedItem.path[0] === secIdx && draggedItem.path.length === 2 && field.type === 'Container'}
-                                                                />
-                                                            </div>
-                                                        </React.Fragment>
-                                                    ))}
-
-                                                    <DropZone disabled={dragType === 'canvas_field' && draggedItem && draggedItem.path.length === 2 && draggedItem.path[0] === secIdx} onDrop={(e) => handleDropField(e, [secIdx, sec.fields.length])} isContainerEnd={true} />
-
-                                                    {sec.fields.length === 0 && (
-                                                        <div 
-                                                            className="border-2 border-dashed border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center text-gray-400 text-sm font-medium bg-gray-50/50 hover:bg-white hover:border-indigo-200 transition-colors cursor-pointer group/add"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setActiveFieldPath(null);
-                                                                setTargetContainerPath([secIdx]);
-                                                            }}
-                                                        >
-                                                            <span>Drag element here</span>
-                                                            <div className="mt-2 w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-sm group-hover/add:bg-indigo-600 group-hover/add:text-white transition-colors">
-                                                                <FiPlus size={16} />
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                    {sec.fields.length > 0 && (
-                                                        <div 
-                                                            className="w-full mt-4 py-2 flex items-center justify-center text-xs font-medium text-indigo-500 cursor-pointer hover:bg-indigo-50 rounded transition-colors"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setActiveFieldPath(null);
-                                                                setTargetContainerPath([secIdx]);
-                                                            }}
-                                                        >
-                                                            + Add Element to Section
-                                                        </div>
-                                                    )}
-                                                </div>
+                                        {tab === 'Add Elements' && (
+                                            <div className={cn("w-5 h-5 rounded-full flex items-center justify-center text-[10px]", activeMainTab === tab ? "bg-[#5946ff] text-white" : "bg-gray-200 text-gray-500")}>
+                                                <FiPlus strokeWidth={3} />
                                             </div>
                                         )}
-                                    </div>
+                                        {tab}
+                                        {activeMainTab === tab && (
+                                            <motion.div layoutId="mainTabIndicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5946ff]" />
+                                        )}
+                                    </button>
                                 ))}
-
-                                {/* Add Section Button */}
-                                <div className="px-2 pt-4">
-                                    <button
-                                        onClick={handleAddSection}
-                                        className="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-lg flex items-center gap-2 hover:bg-gray-50 hover:border-gray-300 shadow-sm transition-all"
-                                    >
-                                        <FiPlus /> Add Section
-                                    </button>
-                                </div>
                             </div>
 
-                            {/* Bottom Footer Actions */}
-                            <div className="mt-12 border-t border-gray-100 pt-6 px-2 flex justify-between items-center">
-                                <div>
-                                    <div className="flex items-center gap-4 mb-1">
-                                        <span className="text-sm font-bold text-gray-800">Enable listing preview</span>
-                                        <button
-                                            onClick={() => setEnablePreview(!enablePreview)}
-                                            className={cn(
-                                                "w-10 h-5 rounded-full transition-colors relative flex items-center",
-                                                enablePreview ? "bg-indigo-600" : "bg-gray-200"
-                                            )}
-                                        >
-                                            <div className={cn(
-                                                "w-4 h-4 bg-white rounded-full absolute shadow-sm transition-transform",
-                                                enablePreview ? "translate-x-5" : "translate-x-1"
-                                            )}></div>
-                                        </button>
-                                    </div>
-                                    <p className="text-xs text-gray-500">Help text here.</p>
-                                </div>
-                            </div>
-
-                            <div className="mt-8">
-                                <button
-                                    onClick={handleSave}
-                                    className="w-full py-4 bg-[#2C3338] text-white font-bold rounded-xl shadow-lg hover:bg-[#1E2327] hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
-                                >
-                                    Save & Preview
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    {/* Right Sidebar - Fields & Properties */}
-                    <div className="w-[360px] bg-white border-l border-gray-200 flex flex-col shadow-sm shrink-0 relative z-10">
-                        {activeFieldPath && getFieldAtPath(layout, activeFieldPath) ? (
-                            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
-                                <div className="flex items-center gap-4 mb-8">
-                                    <button onClick={() => setActiveFieldPath(null)} className="w-10 h-10 flex items-center justify-center bg-gray-50 text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors">
-                                        <FiChevronDown className="rotate-90" size={20} />
-                                    </button>
-                                    <h3 className="text-xl font-bold text-gray-900">Field Settings</h3>
-                                </div>
-
-                                <div className="space-y-6">
-                                    <div>
-                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Field Label</label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all"
-                                            value={getFieldAtPath(layout, activeFieldPath)?.label || ''}
-                                            onChange={(e) => updateActiveField({ label: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Content / Placeholder Text</label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all"
-                                            value={getFieldAtPath(layout, activeFieldPath)?.placeholder || ''}
-                                            onChange={(e) => updateActiveField({ placeholder: e.target.value })}
-                                            placeholder="Enter placeholder text"
-                                        />
-                                    </div>
-
-                                    <div className="pt-6 border-t border-gray-100 space-y-5">
-                                        <h4 className="text-sm font-bold text-gray-900">Style Settings</h4>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-600 mb-2">Text Color</label>
-                                            <div className="flex items-center gap-3">
-                                                <input
-                                                    type="color"
-                                                    className="w-8 h-8 rounded cursor-pointer border-0 p-0"
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.textColor || '#000000'}
-                                                    onChange={(e) => updateActiveField({ textColor: e.target.value })}
-                                                />
-                                                <input
-                                                    type="text"
-                                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-indigo-600 uppercase"
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.textColor || '#000000'}
-                                                    onChange={(e) => updateActiveField({ textColor: e.target.value })}
-                                                />
+                            <div className="px-8 pb-12 max-w-5xl mx-auto w-full">
+                                {/* Combined Editor Workspace */}
+                                <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden">
+                                    
+                                    {/* Section Information Panel */}
+                                    <div className="p-6 border-b border-gray-100 bg-gray-50/30">
+                                        <div className="flex items-start gap-4 mb-6">
+                                            <div className="w-10 h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-500 shrink-0 shadow-sm">
+                                                <FiLayout size={18} />
                                             </div>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-600 mb-2">Font Family</label>
-                                            <select
-                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none bg-white"
-                                                value={getFieldAtPath(layout, activeFieldPath)?.fontFamily || 'sans-serif'}
-                                                onChange={(e) => updateActiveField({ fontFamily: e.target.value })}
-                                            >
-                                                <option value="sans-serif">System Sans</option>
-                                                <option value="serif">System Serif</option>
-                                                <option value="mono">Monospace</option>
-                                                <option value="Inter">Inter</option>
-                                                <option value="Roboto">Roboto</option>
-                                                <option value="Playfair Display">Playfair Display</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-6 border-t border-gray-100 flex flex-wrap gap-6">
-                                        <label className="flex items-center gap-3 text-sm font-semibold text-gray-700 cursor-pointer">
-                                            <div className="relative flex items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    className="peer sr-only"
-                                                    checked={getFieldAtPath(layout, activeFieldPath)?.required || false}
-                                                    onChange={(e) => updateActiveField({ required: e.target.checked })}
-                                                />
-                                                <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-                                            </div>
-                                            Required Field
-                                        </label>
-
-                                        <label className="flex items-center gap-3 text-sm font-semibold text-gray-700 cursor-pointer">
-                                            <div className="relative flex items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    className="peer sr-only"
-                                                    checked={getFieldAtPath(layout, activeFieldPath)?.bottomUnderline || false}
-                                                    onChange={(e) => updateActiveField({ bottomUnderline: e.target.checked })}
-                                                />
-                                                <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-                                            </div>
-                                            Bottom Underline
-                                        </label>
-                                    </div>
-
-                                    {getFieldAtPath(layout, activeFieldPath)?.type === 'Image' && (
-                                        <div className="pt-6 border-t border-gray-100 space-y-5">
-                                            <h4 className="text-sm font-bold text-gray-900">Image Settings</h4>
-                                            
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Upload Image</label>
-                                                <div className="flex flex-col gap-3">
-                                                    {getFieldAtPath(layout, activeFieldPath)?.imageUrl && (
-                                                        <div className="w-full h-32 rounded-lg border border-gray-200 overflow-hidden shrink-0 bg-gray-50 flex items-center justify-center">
-                                                            <img src={getFieldAtPath(layout, activeFieldPath)?.imageUrl} alt="Preview" className="max-w-full max-h-full object-contain" />
+                                                <h3 className="text-[15px] font-bold text-gray-900">Section Information</h3>
+                                                <p className="text-[13px] text-gray-500 mt-1">Give your section a name and description. <span className="font-semibold text-gray-700">This helps you identify it later in the section library.</span></p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 gap-6 max-w-xl">
+                                            <div>
+                                                <label className="block text-[13px] font-bold text-gray-700 mb-2">Section Name <span className="text-red-500">*</span></label>
+                                                <div className="relative">
+                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                                        <FiTag size={14} />
+                                                    </div>
+                                                    <input 
+                                                        type="text" 
+                                                        value={sectionInfo.name}
+                                                        onChange={e => setSectionInfo({...sectionInfo, name: e.target.value})}
+                                                        className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-[13px] font-medium text-gray-900 focus:border-[#5946ff] focus:ring-1 focus:ring-[#5946ff] outline-none transition-all placeholder:text-gray-400"
+                                                        placeholder="e.g. Hero Banner, Category Carousel..."
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Drag & Drop Canvas Zone */}
+                                    <div className="bg-gradient-to-b from-[#fbfcff] to-white min-h-[400px] flex flex-col">
+                                    
+                                    {/* The Canvas Content */}
+                                    <div className="w-full flex justify-center bg-gray-50 p-2 sm:p-4">
+                                        <div className={cn("flex-1 space-y-4 relative z-10 transition-all duration-300 bg-white min-h-[400px]", 
+                                            device === 'desktop' ? "w-full max-w-none" : 
+                                            device === 'tablet' ? "w-full max-w-[768px] shadow-2xl border border-gray-300 mx-auto" : 
+                                            "w-full max-w-[375px] shadow-2xl border border-gray-300 mx-auto"
+                                        )}>
+                                        {layout.map((sec, secIdx) => (
+                                            <div key={sec.id} className="w-full">
+                                                <div 
+                                                    className="w-full bg-white shadow-sm border border-gray-100 rounded-xl p-4 min-h-[120px]"
+                                                    onDragOver={handleDragOver}
+                                                    onDrop={(e) => handleDropField(e, [secIdx, sec.fields.length])}
+                                                >
+                                                    {sec.fields.length === 0 ? (
+                                                        <div className="w-full h-full flex flex-col items-center justify-center text-center p-8 pointer-events-none opacity-80 relative z-0">
+                                                            <div className="w-16 h-16 bg-[#f4f2ff] rounded-full flex items-center justify-center text-[#5946ff] mb-4">
+                                                                <FiLayers size={24} strokeWidth={2.5} />
+                                                            </div>
+                                                            <h3 className="text-[17px] font-bold text-gray-900 mb-2">Drag & Drop Your Elements</h3>
+                                                            <p className="text-[13px] text-gray-500 max-w-sm mb-6">Choose elements from the right sidebar and drop them here to build your section.</p>
+                                                            <div className="pointer-events-auto">
+                                                                <button className="px-5 py-2.5 bg-[#5946ff] text-white text-sm font-semibold rounded-full flex items-center gap-2 hover:bg-[#4a39e0] transition-colors shadow-sm">
+                                                                    <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center"><FiPlus size={14} /></div> Add Element
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="space-y-0 w-full relative z-10">
+                                                            {sec.fields.map((field, fieldIdx) => (
+                                                                <React.Fragment key={field.id}>
+                                                                    <DropZone disabled={dragType === 'canvas_field' && draggedItem && draggedItem.path[0] === secIdx && draggedItem.path.length === 2 && field.type === 'Container'} onDrop={(e) => handleDropField(e, [secIdx, fieldIdx])} />
+                                                                    <div className="py-1" onDragOver={handleDragOver} onDrop={(e) => handleDropField(e, [secIdx, fieldIdx])}>
+                                                                        <RecursiveFieldRenderer
+                                                                            field={field}
+                                                                            path={[secIdx, fieldIdx]}
+                                                                            {...{activeFieldPath, setActiveFieldPath, handleDragStartCanvas, handleDropField, handleDragOver, removeField, renderIcon, targetContainerPath, setTargetContainerPath, device}}
+                                                                            isMotherDrag={dragType === 'canvas_field' && draggedItem && draggedItem.path[0] === secIdx && draggedItem.path.length === 2 && field.type === 'Container'}
+                                                                        />
+                                                                    </div>
+                                                                </React.Fragment>
+                                                            ))}
+                                                            <DropZone disabled={dragType === 'canvas_field' && draggedItem && draggedItem.path.length === 2 && draggedItem.path[0] === secIdx} onDrop={(e) => handleDropField(e, [secIdx, sec.fields.length])} isContainerEnd={true} />
                                                         </div>
                                                     )}
-                                                    <input 
-                                                        type="file" 
-                                                        accept="image/*"
-                                                        onChange={handleImageUpload}
-                                                        className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                                                    />
                                                 </div>
                                             </div>
+                                        ))}
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Height</label>
-                                                    <input 
-                                                        type="text" 
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.imageHeight || ''}
-                                                        onChange={(e) => updateActiveField({ imageHeight: e.target.value })}
-                                                        placeholder="e.g. 200px or 100%"
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Width</label>
-                                                    <input 
-                                                        type="text" 
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.imageWidth || ''}
-                                                        onChange={(e) => updateActiveField({ imageWidth: e.target.value })}
-                                                        placeholder="e.g. 100%"
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                    />
-                                                </div>
+                        {/* Right Sidebar (Elements / Library) */}
+                        <div className="w-[380px] bg-white border-l border-gray-200 flex flex-col shadow-sm shrink-0 relative z-20">
+                            {/* Properties Overlay if a field is active */}
+                            {activeFieldPath && getFieldAtPath(layout, activeFieldPath) ? (
+                                (() => {
+                                    const field = getFieldAtPath(layout, activeFieldPath);
+                                    return (
+                                        <div className="absolute inset-0 bg-white z-30 flex flex-col">
+                                            <div className="flex items-center gap-4 px-6 py-5 border-b border-gray-100">
+                                                <button onClick={() => setActiveFieldPath(null)} className="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors">
+                                                    <FiArrowLeft size={16} />
+                                                </button>
+                                                <h3 className="text-[15px] font-bold text-gray-900">{field.type} Properties</h3>
                                             </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Object Fit</label>
-                                                <select
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.imageFit || 'cover'}
-                                                    onChange={(e) => updateActiveField({ imageFit: e.target.value })}
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white mb-4"
-                                                >
-                                                    <option value="cover">Cover (Fills area)</option>
-                                                    <option value="contain">Contain (Shows full image)</option>
-                                                </select>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Box Shadow</label>
-                                                <div className="flex items-center gap-3">
-                                                    <input
-                                                        type="color"
-                                                        className="w-8 h-8 rounded cursor-pointer border-0 p-0 shrink-0"
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.imageBoxShadowColor || '#000000'}
-                                                        onChange={(e) => updateActiveField({ imageBoxShadowColor: e.target.value })}
-                                                    />
-                                                    <input 
-                                                        type="text" 
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.imageBoxShadow || ''}
-                                                        onChange={(e) => updateActiveField({ imageBoxShadow: e.target.value })}
-                                                        placeholder="e.g. 0 4px 6px"
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="pt-4 border-t border-gray-100 space-y-4">
-                                                <h5 className="text-xs font-bold text-gray-700">Overlay Options</h5>
-                                                <div>
-                                                    <label className="flex items-center gap-3 text-sm font-medium text-gray-600 cursor-pointer">
-                                                        <div className="relative flex items-center">
+                                            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+                                                {field.type === 'Container' ? (
+                                                    <ContainerProperties field={field} onChange={updateActiveField} device={device} setDevice={setDevice} />
+                                                ) : field.type === 'Grid' ? (
+                                                    <GridProperties field={field} onChange={updateActiveField} device={device} setDevice={setDevice} />
+                                                ) : field.type === 'Flex' ? (
+                                                    <FlexProperties field={field} onChange={updateActiveField} device={device} setDevice={setDevice} />
+                                                ) : (field.type === 'Text' || field.type === 'Description') ? (
+                                                    <TextProperties field={field} onChange={updateActiveField} />
+                                                ) : field.type === 'Image' ? (
+                                                    <ImageProperties field={field} onChange={updateActiveField} handleImageUpload={handleImageUpload} />
+                                                ) : field.type === 'Video' ? (
+                                                    <VideoProperties field={field} onChange={updateActiveField} />
+                                                ) : (
+                                                    <div className="space-y-5">
+                                                        <div>
+                                                            <label className="block text-[13px] font-bold text-gray-700 mb-2">Label</label>
                                                             <input
-                                                                type="checkbox"
-                                                                className="peer sr-only"
-                                                                checked={getFieldAtPath(layout, activeFieldPath)?.enableOverlay || false}
-                                                                onChange={(e) => updateActiveField({ enableOverlay: e.target.checked })}
-                                                            />
-                                                            <div className="w-8 h-4 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-indigo-600"></div>
-                                                        </div>
-                                                        Enable Overlay Image / Color
-                                                    </label>
-                                                </div>
-                                                
-                                                {getFieldAtPath(layout, activeFieldPath)?.enableOverlay && (
-                                                    <div className="space-y-4">
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-gray-600 mb-2">Overlay Text</label>
-                                                            <input 
-                                                                type="text" 
-                                                                value={getFieldAtPath(layout, activeFieldPath)?.overlayText || ''}
-                                                                onChange={(e) => updateActiveField({ overlayText: e.target.value })}
-                                                                placeholder="Text to show on overlay"
-                                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
+                                                                type="text"
+                                                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-[13px] focus:border-[#5946ff] focus:bg-white outline-none transition-all"
+                                                                value={field.label || ''}
+                                                                onChange={(e) => updateActiveField({ label: e.target.value })}
                                                             />
                                                         </div>
-
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-gray-600 mb-2">Text Size (px)</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={getFieldAtPath(layout, activeFieldPath)?.overlayTextSize || 18}
-                                                                    onChange={(e) => updateActiveField({ overlayTextSize: e.target.value })}
-                                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-gray-600 mb-2">Font Family</label>
-                                                                <select
-                                                                    value={getFieldAtPath(layout, activeFieldPath)?.overlayTextFont || 'sans-serif'}
-                                                                    onChange={(e) => updateActiveField({ overlayTextFont: e.target.value })}
-                                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                                >
-                                                                    <option value="sans-serif">System Sans</option>
-                                                                    <option value="serif">System Serif</option>
-                                                                    <option value="mono">Monospace</option>
-                                                                    <option value="Inter">Inter</option>
-                                                                    <option value="Roboto">Roboto</option>
-                                                                    <option value="Playfair Display">Playfair Display</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-
                                                         <div>
-                                                            <label className="block text-sm font-medium text-gray-600 mb-2">Text Color</label>
-                                                            <div className="flex items-center gap-3">
-                                                                <input
-                                                                    type="color"
-                                                                    className="w-8 h-8 rounded cursor-pointer border-0 p-0 shrink-0"
-                                                                    value={getFieldAtPath(layout, activeFieldPath)?.overlayTextColor || '#ffffff'}
-                                                                    onChange={(e) => updateActiveField({ overlayTextColor: e.target.value })}
-                                                                />
-                                                                <input 
-                                                                    type="text" 
-                                                                    value={getFieldAtPath(layout, activeFieldPath)?.overlayTextColor || '#ffffff'}
-                                                                    onChange={(e) => updateActiveField({ overlayTextColor: e.target.value })}
-                                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white uppercase"
-                                                                />
-                                                            </div>
+                                                            <label className="block text-[13px] font-bold text-gray-700 mb-2">Content / Placeholder</label>
+                                                            <input
+                                                                type="text"
+                                                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-[13px] focus:border-[#5946ff] focus:bg-white outline-none transition-all"
+                                                                value={field.placeholder || ''}
+                                                                onChange={(e) => updateActiveField({ placeholder: e.target.value })}
+                                                            />
                                                         </div>
                                                         
-                                                        <div>
-                                                            <label className="flex items-center gap-3 text-sm font-medium text-gray-600 cursor-pointer">
-                                                                <div className="relative flex items-center">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        className="peer sr-only"
-                                                                        checked={getFieldAtPath(layout, activeFieldPath)?.enableOverlayButton || false}
-                                                                        onChange={(e) => updateActiveField({ enableOverlayButton: e.target.checked })}
-                                                                    />
-                                                                    <div className="w-8 h-4 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-indigo-600"></div>
-                                                                </div>
-                                                                Enable Overlay Button
-                                                            </label>
-                                                        </div>
-
-                                                        {getFieldAtPath(layout, activeFieldPath)?.enableOverlayButton && (
-                                                            <div className="space-y-4 pl-4 border-l-2 border-gray-100">
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Button Text</label>
-                                                                    <input 
-                                                                        type="text" 
-                                                                        value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonText || ''}
-                                                                        onChange={(e) => updateActiveField({ overlayButtonText: e.target.value })}
-                                                                        placeholder="Click Here"
-                                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                                    />
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Button Link</label>
-                                                                    <input 
-                                                                        type="text" 
-                                                                        value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonLink || ''}
-                                                                        onChange={(e) => updateActiveField({ overlayButtonLink: e.target.value })}
-                                                                        placeholder="https:// or /path"
-                                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                                    />
-                                                                </div>
-                                                                <div className="grid grid-cols-2 gap-4">
-                                                                    <div>
-                                                                        <label className="block text-sm font-medium text-gray-600 mb-2">Style</label>
-                                                                        <select
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonStyle || 'solid'}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonStyle: e.target.value })}
-                                                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                                        >
-                                                                            <option value="solid">Solid</option>
-                                                                            <option value="outline">Outline</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div>
-                                                                        <label className="block text-sm font-medium text-gray-600 mb-2">Text Color</label>
-                                                                        <div className="flex items-center gap-3 h-10">
-                                                                            <input
-                                                                                type="color"
-                                                                                className="w-8 h-8 rounded cursor-pointer border-0 p-0 shrink-0"
-                                                                                value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonTextColor || (getFieldAtPath(layout, activeFieldPath)?.overlayButtonStyle === 'outline' ? '#ffffff' : '#000000')}
-                                                                                onChange={(e) => updateActiveField({ overlayButtonTextColor: e.target.value })}
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Border Radius</label>
-                                                                    <select
-                                                                        value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonBorderRadius || 'rounded'}
-                                                                        onChange={(e) => updateActiveField({ overlayButtonBorderRadius: e.target.value })}
-                                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                                    >
-                                                                        <option value="none">None</option>
-                                                                        <option value="rounded">Rounded</option>
-                                                                        <option value="pill">Pill</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Border Width (px)</label>
-                                                                    <div className="grid grid-cols-4 gap-2">
-                                                                        <input 
-                                                                            type="number" 
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonBorderTop ?? ''}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonBorderTop: e.target.value })}
-                                                                            placeholder="T"
-                                                                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white text-center"
-                                                                            title="Top"
-                                                                        />
-                                                                        <input 
-                                                                            type="number" 
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonBorderRight ?? ''}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonBorderRight: e.target.value })}
-                                                                            placeholder="R"
-                                                                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white text-center"
-                                                                            title="Right"
-                                                                        />
-                                                                        <input 
-                                                                            type="number" 
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonBorderBottom ?? ''}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonBorderBottom: e.target.value })}
-                                                                            placeholder="B"
-                                                                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white text-center"
-                                                                            title="Bottom"
-                                                                        />
-                                                                        <input 
-                                                                            type="number" 
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonBorderLeft ?? ''}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonBorderLeft: e.target.value })}
-                                                                            placeholder="L"
-                                                                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white text-center"
-                                                                            title="Left"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Margin (px)</label>
-                                                                    <div className="grid grid-cols-4 gap-2">
-                                                                        <input 
-                                                                            type="number" 
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonMarginTop ?? ''}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonMarginTop: e.target.value })}
-                                                                            placeholder="T"
-                                                                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white text-center"
-                                                                            title="Top"
-                                                                        />
-                                                                        <input 
-                                                                            type="number" 
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonMarginRight ?? ''}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonMarginRight: e.target.value })}
-                                                                            placeholder="R"
-                                                                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white text-center"
-                                                                            title="Right"
-                                                                        />
-                                                                        <input 
-                                                                            type="number" 
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonMarginBottom ?? ''}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonMarginBottom: e.target.value })}
-                                                                            placeholder="B"
-                                                                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white text-center"
-                                                                            title="Bottom"
-                                                                        />
-                                                                        <input 
-                                                                            type="number" 
-                                                                            value={getFieldAtPath(layout, activeFieldPath)?.overlayButtonMarginLeft ?? ''}
-                                                                            onChange={(e) => updateActiveField({ overlayButtonMarginLeft: e.target.value })}
-                                                                            placeholder="L"
-                                                                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white text-center"
-                                                                            title="Left"
-                                                                        />
-                                                                    </div>
+                                                        {/* Style Settings for generic text */}
+                                                        <div className="pt-5 border-t border-gray-100 space-y-4">
+                                                            <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Style Settings</h4>
+                                                            <div>
+                                                                <label className="block text-[13px] font-medium text-gray-600 mb-2">Text Color</label>
+                                                                <div className="flex items-center gap-2">
+                                                                    <input type="color" className="w-9 h-9 rounded cursor-pointer border border-gray-200 p-0.5" value={field.textColor || '#000000'} onChange={(e) => updateActiveField({ textColor: e.target.value })} />
+                                                                    <input type="text" className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-[#5946ff] focus:bg-white uppercase" value={field.textColor || '#000000'} onChange={(e) => updateActiveField({ textColor: e.target.value })} />
                                                                 </div>
                                                             </div>
-                                                        )}
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
-                                    )}
+                                    );
+                                })()
+                            ) : null}
 
-                                    {getFieldAtPath(layout, activeFieldPath)?.type === 'Grid' && (
-                                        <div className="pt-6 border-t border-gray-100 space-y-5">
-                                            <h4 className="text-sm font-bold text-gray-900">Grid Layout</h4>
-                                            
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Columns</label>
-                                                <input 
-                                                    type="number" 
-                                                    min="1" 
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.columns || 3}
-                                                    onChange={(e) => updateActiveField({ columns: Math.max(1, parseInt(e.target.value) || 1) })}
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Rows</label>
-                                                <input 
-                                                    type="number" 
-                                                    min="1" 
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.rows || 2}
-                                                    onChange={(e) => updateActiveField({ rows: Math.max(1, parseInt(e.target.value) || 1) })}
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                />
-                                            </div>
-
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Column Gap (px)</label>
-                                                    <input 
-                                                        type="number" 
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.columnGap !== undefined ? getFieldAtPath(layout, activeFieldPath)?.columnGap : 20}
-                                                        onChange={(e) => updateActiveField({ columnGap: parseInt(e.target.value) || 0 })}
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Row Gap (px)</label>
-                                                    <input 
-                                                        type="number" 
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.rowGap !== undefined ? getFieldAtPath(layout, activeFieldPath)?.rowGap : 20}
-                                                        onChange={(e) => updateActiveField({ rowGap: parseInt(e.target.value) || 0 })}
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Align Items</label>
-                                                <select
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none bg-white"
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.gridAlignItems || 'stretch'}
-                                                    onChange={(e) => updateActiveField({ gridAlignItems: e.target.value })}
-                                                >
-                                                    <option value="start">Start</option>
-                                                    <option value="center">Center</option>
-                                                    <option value="end">End</option>
-                                                    <option value="stretch">Stretch</option>
-                                                </select>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Justify Items</label>
-                                                <select
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none bg-white"
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.justifyItems || 'stretch'}
-                                                    onChange={(e) => updateActiveField({ justifyItems: e.target.value })}
-                                                >
-                                                    <option value="start">Start</option>
-                                                    <option value="center">Center</option>
-                                                    <option value="end">End</option>
-                                                    <option value="stretch">Stretch</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {getFieldAtPath(layout, activeFieldPath)?.type === 'Container' && (
-                                        <div className="pt-6 border-t border-gray-100 space-y-5">
-                                            <h4 className="text-sm font-bold text-gray-900">Container Layout</h4>
-                                            
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Width</label>
-                                                    <div className="flex w-full bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-600 transition-all">
-                                                        <input 
-                                                            type="number" 
-                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[^0-9.]/g, '')}
-                                                            onChange={(e) => {
-                                                                const unit = String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[0-9.]/g, '') || 'px';
-                                                                updateActiveField({ width: e.target.value + unit });
-                                                            }}
-                                                            placeholder="100"
-                                                            className="w-full px-3 py-2.5 text-sm outline-none bg-transparent"
-                                                        />
-                                                        <select
-                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[0-9.]/g, '') || 'px'}
-                                                            onChange={(e) => {
-                                                                const num = String(getFieldAtPath(layout, activeFieldPath)?.width || '100').replace(/[^0-9.]/g, '');
-                                                                updateActiveField({ width: num + e.target.value });
-                                                            }}
-                                                            className="px-2 py-2.5 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 outline-none cursor-pointer"
-                                                        >
-                                                            <option value="px">px</option>
-                                                            <option value="%">%</option>
-                                                            <option value="vh">vh</option>
-                                                            <option value="vw">vw</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Height</label>
-                                                    <div className="flex w-full bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-600 transition-all">
-                                                        <input 
-                                                            type="number" 
-                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.height || 'auto').replace(/[^0-9.]/g, '')}
-                                                            onChange={(e) => {
-                                                                const unit = String(getFieldAtPath(layout, activeFieldPath)?.height || 'auto').replace(/[0-9.]/g, '') || 'px';
-                                                                updateActiveField({ height: e.target.value + unit });
-                                                            }}
-                                                            placeholder="auto"
-                                                            className="w-full px-3 py-2.5 text-sm outline-none bg-transparent"
-                                                        />
-                                                        <select
-                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.height || 'auto').replace(/[0-9.]/g, '') || 'px'}
-                                                            onChange={(e) => {
-                                                                const num = String(getFieldAtPath(layout, activeFieldPath)?.height || '').replace(/[^0-9.]/g, '');
-                                                                updateActiveField({ height: num + e.target.value });
-                                                            }}
-                                                            className="px-2 py-2.5 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 outline-none cursor-pointer"
-                                                        >
-                                                            <option value="px">px</option>
-                                                            <option value="%">%</option>
-                                                            <option value="vh">vh</option>
-                                                            <option value="vw">vw</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {getFieldAtPath(layout, activeFieldPath)?.type === 'Flex' && (
-                                        <div className="pt-6 border-t border-gray-100 space-y-5">
-                                            <h4 className="text-sm font-bold text-gray-900">Flex Layout</h4>
-                                            
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Number of Placeholders</label>
-                                                <input 
-                                                    type="number" 
-                                                    min="1" 
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.columns || 3}
-                                                    onChange={(e) => updateActiveField({ columns: Math.max(1, parseInt(e.target.value) || 1) })}
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Content Width</label>
-                                                <select
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none bg-white"
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.contentWidth || 'boxed'}
-                                                    onChange={(e) => updateActiveField({ contentWidth: e.target.value })}
-                                                >
-                                                    <option value="boxed">Boxed</option>
-                                                    <option value="full">Full Width</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Width</label>
-                                                    <div className="flex w-full bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-600 transition-all">
-                                                        <input 
-                                                            type="number" 
-                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[^0-9.]/g, '')}
-                                                            onChange={(e) => {
-                                                                const unit = String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[0-9.]/g, '') || 'px';
-                                                                updateActiveField({ width: e.target.value + unit });
-                                                            }}
-                                                            placeholder="100"
-                                                            className="w-full px-3 py-2.5 text-sm outline-none bg-transparent"
-                                                        />
-                                                        <select
-                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.width || '100%').replace(/[0-9.]/g, '') || 'px'}
-                                                            onChange={(e) => {
-                                                                const num = String(getFieldAtPath(layout, activeFieldPath)?.width || '100').replace(/[^0-9.]/g, '');
-                                                                updateActiveField({ width: num + e.target.value });
-                                                            }}
-                                                            className="px-2 py-2.5 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 outline-none cursor-pointer"
-                                                        >
-                                                            <option value="px">px</option>
-                                                            <option value="%">%</option>
-                                                            <option value="vh">vh</option>
-                                                            <option value="vw">vw</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Min Height</label>
-                                                    <div className="flex w-full bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-600 transition-all">
-                                                        <input 
-                                                            type="number" 
-                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.minHeight || '300px').replace(/[^0-9.]/g, '')}
-                                                            onChange={(e) => {
-                                                                const unit = String(getFieldAtPath(layout, activeFieldPath)?.minHeight || '300px').replace(/[0-9.]/g, '') || 'px';
-                                                                updateActiveField({ minHeight: e.target.value + unit });
-                                                            }}
-                                                            placeholder="300"
-                                                            className="w-full px-3 py-2.5 text-sm outline-none bg-transparent"
-                                                        />
-                                                        <select
-                                                            value={String(getFieldAtPath(layout, activeFieldPath)?.minHeight || '300px').replace(/[0-9.]/g, '') || 'px'}
-                                                            onChange={(e) => {
-                                                                const num = String(getFieldAtPath(layout, activeFieldPath)?.minHeight || '300').replace(/[^0-9.]/g, '');
-                                                                updateActiveField({ minHeight: num + e.target.value });
-                                                            }}
-                                                            className="px-2 py-2.5 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 outline-none cursor-pointer"
-                                                        >
-                                                            <option value="px">px</option>
-                                                            <option value="%">%</option>
-                                                            <option value="vh">vh</option>
-                                                            <option value="vw">vw</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Direction</label>
-                                                <select
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none bg-white"
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.flexDirection || 'row'}
-                                                    onChange={(e) => updateActiveField({ flexDirection: e.target.value })}
-                                                >
-                                                    <option value="row">Row (→)</option>
-                                                    <option value="column">Column (↓)</option>
-                                                    <option value="row-reverse">Row Reverse (←)</option>
-                                                    <option value="column-reverse">Column Reverse (↑)</option>
-                                                </select>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Justify Content</label>
-                                                <select
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none bg-white"
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.justifyContent || 'flex-start'}
-                                                    onChange={(e) => updateActiveField({ justifyContent: e.target.value })}
-                                                >
-                                                    <option value="flex-start">Start</option>
-                                                    <option value="center">Center</option>
-                                                    <option value="flex-end">End</option>
-                                                    <option value="space-between">Space Between</option>
-                                                    <option value="space-around">Space Around</option>
-                                                    <option value="space-evenly">Space Evenly</option>
-                                                </select>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-600 mb-2">Align Items</label>
-                                                <select
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none bg-white"
-                                                    value={getFieldAtPath(layout, activeFieldPath)?.alignItems || 'stretch'}
-                                                    onChange={(e) => updateActiveField({ alignItems: e.target.value })}
-                                                >
-                                                    <option value="flex-start">Start</option>
-                                                    <option value="center">Center</option>
-                                                    <option value="flex-end">End</option>
-                                                    <option value="stretch">Stretch</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Gap (px)</label>
-                                                    <input 
-                                                        type="number" 
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.gap !== undefined ? getFieldAtPath(layout, activeFieldPath)?.gap : 20}
-                                                        onChange={(e) => updateActiveField({ gap: parseInt(e.target.value) || 0 })}
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none transition-all bg-white"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-600 mb-2">Wrap</label>
-                                                    <select
-                                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none bg-white"
-                                                        value={getFieldAtPath(layout, activeFieldPath)?.flexWrap || 'wrap'}
-                                                        onChange={(e) => updateActiveField({ flexWrap: e.target.value })}
-                                                    >
-                                                        <option value="nowrap">No Wrap</option>
-                                                        <option value="wrap">Wrap</option>
-                                                        <option value="wrap-reverse">Wrap Reverse</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="pt-6 border-t border-gray-100">
-                                        <button
-                                            onClick={() => {
-                                                removeField(activeFieldPath);
-                                            }}
-                                            className="w-full py-3 bg-red-50 text-red-600 text-sm font-bold rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
-                                        >
-                                            <FiTrash2 size={18} /> Delete Field
-                                        </button>
-                                    </div>
-                                </div>
+                            {/* Sidebar Tabs */}
+                            <div className="flex bg-[#f8fafc] p-2 m-4 border border-gray-200/60 rounded-xl shadow-sm">
+                                {['Elements', 'Content Library'].map(tab => (
+                                    <button
+                                        key={tab}
+                                        onClick={() => setActiveSidebarTab(tab)}
+                                        className={cn(
+                                            "flex-1 py-2 rounded-lg text-[13px] font-bold transition-all flex items-center justify-center gap-2",
+                                            activeSidebarTab === tab ? "bg-white text-gray-900 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" : "text-gray-500 hover:text-gray-700 hover:bg-black/5"
+                                        )}
+                                    >
+                                        {tab === 'Elements' && <FiGrid size={14} className={activeSidebarTab === tab ? 'text-[#5946ff]' : ''} />}
+                                        {tab === 'Content Library' && <FiFileText size={14} className={activeSidebarTab === tab ? 'text-[#5946ff]' : ''} />}
+                                        {tab}
+                                    </button>
+                                ))}
                             </div>
-                        ) : (
-                            <div className="flex flex-col h-full">
-                                <div className="flex border-b border-gray-200">
-                                    <button className="flex-1 py-4 text-sm font-bold text-indigo-600 border-b-2 border-indigo-600">Elements</button>
-                                    <button className="flex-1 py-4 text-sm font-semibold text-gray-400 hover:text-gray-600 transition-colors">Content Library</button>
-                                </div>
 
-                                <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
-                                    {/* Layout Section */}
-                                    <div className="mb-8">
-                                        <button
-                                            onClick={() => setShowLayout(!showLayout)}
-                                            className="w-full flex justify-between items-center mb-5 text-[15px] font-bold text-gray-900"
-                                        >
-                                            Layout Section
-                                            {showLayout ? <FiChevronUp className="text-gray-400" /> : <FiChevronDown className="text-gray-400" />}
-                                        </button>
-
-                                        <AnimatePresence>
-                                            {showLayout && (
-                                                <motion.div
-                                                    initial={{ height: 0, opacity: 0 }}
-                                                    animate={{ height: 'auto', opacity: 1 }}
-                                                    exit={{ height: 0, opacity: 0 }}
-                                                    className="grid grid-cols-2 gap-3 overflow-hidden"
+                            {/* Sidebar Content */}
+                            <div className="flex-1 overflow-y-auto custom-scrollbar px-5 pb-6 space-y-6">
+                                {SIDEBAR_ELEMENTS.map((group, gIdx) => (
+                                    <div key={gIdx} className="space-y-4">
+                                        <div className="flex items-center justify-between cursor-pointer px-1">
+                                            <div>
+                                                <h4 className="text-[14px] font-bold text-gray-900">{group.title}</h4>
+                                                <p className="text-[12px] text-gray-500 mt-0.5">{group.subtitle}</p>
+                                            </div>
+                                            <FiChevronUp className="text-gray-400" size={18} />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {group.items.map(item => (
+                                                <div 
+                                                    key={item.id}
+                                                    draggable
+                                                    onDragStart={(e) => handleDragStartSidebar(e, item)}
+                                                    className="bg-white border border-gray-200 rounded-xl p-3.5 cursor-grab hover:border-[#5946ff] hover:shadow-[0_4px_12px_rgba(89,70,255,0.08)] transition-all flex flex-col items-center justify-center text-center gap-2.5 group/item"
                                                 >
-                                                    {LAYOUT_FIELDS.map(field => (
-                                                        <div
-                                                            key={field.id}
-                                                            draggable
-                                                            onClick={() => handleSidebarItemClick(field)}
-                                                            onDragStart={(e) => handleDragStartSidebar(e, field)}
-                                                            className="border border-gray-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-indigo-600 hover:shadow-md transition-all bg-white group"
-                                                        >
-                                                            <div className="text-[#4F46E5] group-hover:scale-110 transition-transform">
-                                                                <field.icon size={22} strokeWidth={1.5} />
-                                                            </div>
-                                                            <span className="text-[12px] font-bold text-gray-700 text-center">{field.label}</span>
-                                                        </div>
-                                                    ))}
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                                    <div className="w-10 h-10 rounded-xl bg-[#f8fafc] group-hover/item:bg-[#f4f2ff] text-gray-400 group-hover/item:text-[#5946ff] transition-colors flex items-center justify-center">
+                                                        {renderIcon(item.icon.name)}
+                                                    </div>
+                                                    <div>
+                                                        <h5 className="text-[12px] font-bold text-gray-900 leading-tight mb-1">{item.label}</h5>
+                                                        <p className="text-[10px] font-medium text-gray-500 leading-[1.2]">{item.description}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-
-                                    <div className="h-px bg-gray-100 my-8"></div>
-
-                                    {/* Content Fields */}
-                                    <div className="mb-8">
-                                        <button
-                                            onClick={() => setShowPresets(!showPresets)}
-                                            className="w-full flex justify-between items-center mb-5 text-[15px] font-bold text-gray-900"
-                                        >
-                                            Content Fields
-                                            {showPresets ? <FiChevronUp className="text-gray-400" /> : <FiChevronDown className="text-gray-400" />}
-                                        </button>
-
-                                        <AnimatePresence>
-                                            {showPresets && (
-                                                <motion.div
-                                                    initial={{ height: 0, opacity: 0 }}
-                                                    animate={{ height: 'auto', opacity: 1 }}
-                                                    exit={{ height: 0, opacity: 0 }}
-                                                    className="grid grid-cols-2 gap-3 overflow-hidden"
-                                                >
-                                                    {PRESET_FIELDS.map(field => (
-                                                        <div
-                                                            key={field.id}
-                                                            draggable
-                                                            onClick={() => handleSidebarItemClick(field)}
-                                                            onDragStart={(e) => handleDragStartSidebar(e, field)}
-                                                            className="border border-gray-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-indigo-600 hover:shadow-md transition-all bg-white group"
-                                                        >
-                                                            <div className="text-[#4F46E5] group-hover:scale-110 transition-transform">
-                                                                <field.icon size={22} strokeWidth={1.5} />
-                                                            </div>
-                                                            <span className="text-[12px] font-bold text-gray-700 text-center">{field.label}</span>
-                                                        </div>
-                                                    ))}
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
-                                    </div>
-
-                                    <div className="h-px bg-gray-100 my-8"></div>
-
-                                    {/* Dynamic Fields */}
-                                    <div className="mb-8">
-                                        <button
-                                            onClick={() => setShowCustom(!showCustom)}
-                                            className="w-full flex justify-between items-center mb-5 text-[15px] font-bold text-gray-900"
-                                        >
-                                            Dynamic Fields
-                                            {showCustom ? <FiChevronUp className="text-gray-400" /> : <FiChevronDown className="text-gray-400" />}
-                                        </button>
-
-                                        <AnimatePresence>
-                                            {showCustom && (
-                                                <motion.div
-                                                    initial={{ height: 0, opacity: 0 }}
-                                                    animate={{ height: 'auto', opacity: 1 }}
-                                                    exit={{ height: 0, opacity: 0 }}
-                                                    className="grid grid-cols-2 gap-3 overflow-hidden"
-                                                >
-                                                    {CUSTOM_FIELDS.map(field => (
-                                                        <div
-                                                            key={field.id}
-                                                            draggable
-                                                            onClick={() => handleSidebarItemClick(field)}
-                                                            onDragStart={(e) => handleDragStartSidebar(e, field)}
-                                                            className="border border-gray-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-indigo-600 hover:shadow-md transition-all bg-white group"
-                                                        >
-                                                            <div className="text-[#4F46E5] group-hover:scale-110 transition-transform">
-                                                                <field.icon size={22} strokeWidth={1.5} />
-                                                            </div>
-                                                            <span className="text-[12px] font-bold text-gray-700 text-center">{field.label}</span>
-                                                        </div>
-                                                    ))}
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
-                        )}
+                        </div>
+
                     </div>
-                </div>
-            </motion.div>
+                </>
             )}
         </div>
     );

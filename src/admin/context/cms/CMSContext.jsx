@@ -160,10 +160,10 @@ const DEFAULT_FOOTER_CONFIG = {
       ]
     }
   ],
-  appLinks: {
-    appStore: '',
-    googlePlay: ''
-  },
+  appLinks: [
+    { id: 'appStore', platform: 'App Store', url: '', image: '' },
+    { id: 'googlePlay', platform: 'Google Play', url: '', image: '' }
+  ],
   social: {
     facebook: '',
     instagram: '',
@@ -171,6 +171,12 @@ const DEFAULT_FOOTER_CONFIG = {
     pinterest: '',
     linkedin: '',
     wikipedia: ''
+  },
+  typography: {
+    fontFamily: 'Inter, sans-serif',
+    fontSize: '14px',
+    textColor: '#52525b',
+    backgroundColor: '#f4f5f6'
   }
 };
 
