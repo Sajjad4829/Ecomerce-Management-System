@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
-import { useInventory } from '../../../../context/inventory/InventoryContext';
 import { Search, Filter, Box } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useProducts } from '../../../../context/commerce/ProductContext';
 
 export default function CatalogInventoryPage() {
-  const { inventory } = useInventory();
+  const { products } = useProducts();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  const inventory = products.map(p => ({
+    id: p.id,
+    productId: p.id,
+    productName: p.name,
+    sku: p.sku || 'N/A',
+    warehouseName: 'Main Warehouse',
+    available: p.stock || 0,
+    reserved: 0,
+    status: (p.stock || 0) > 10 ? 'In Stock' : (p.stock || 0) > 0 ? 'Low Stock' : 'Out of Stock'
+  }));
 
   const filteredInventory = inventory.filter(item => {
     const matchesSearch = item.productName.toLowerCase().includes(searchTerm.toLowerCase()) || 

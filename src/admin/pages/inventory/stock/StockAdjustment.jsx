@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useInventory } from '../../../context/inventory/InventoryContext';
+import { useProducts } from '../../../context/commerce/ProductContext';
 import { validateStockAdjustment } from '../../../services/inventory/StockValidation';
 import { ArrowLeft, Save, AlertCircle } from 'lucide-react';
 
@@ -8,6 +9,7 @@ export default function StockAdjustment() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { inventory, warehouses, adjustStock } = useInventory();
+  const { products } = useProducts();
   
   const [formData, setFormData] = useState({
     productId: searchParams.get('product') || '',
@@ -38,19 +40,19 @@ export default function StockAdjustment() {
       return;
     }
 
+    // Use product from the global products list if not in inventory yet
+    const catalogProduct = products.find(p => p.id === formData.productId);
+
     const submissionData = {
       ...formData,
-      productName: selectedProduct?.productName || 'Custom Product',
-      sku: selectedProduct?.sku || 'CUSTOM-SKU',
+      productName: selectedProduct?.productName || catalogProduct?.name || 'Custom Product',
+      sku: selectedProduct?.sku || catalogProduct?.sku || 'CUSTOM-SKU',
       quantity: parseInt(formData.quantity, 10)
     };
 
     adjustStock(submissionData);
     navigate('/admin/inventory/movements');
   };
-
-  const uniqueProducts = Array.from(new Set(inventory.map(i => i.productId)))
-    .map(id => inventory.find(i => i.productId === id));
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -80,9 +82,9 @@ export default function StockAdjustment() {
                 className={`w-full p-2.5 bg-surface border ${errors.productId ? 'border-red-500' : 'border-neutral-200'} rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900`}
               >
                 <option value="">Select a product...</option>
-                {uniqueProducts.map(p => (
-                  <option key={p.productId} value={p.productId}>
-                    {p.productName} ({p.sku})
+                {products.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} ({p.sku})
                   </option>
                 ))}
               </select>

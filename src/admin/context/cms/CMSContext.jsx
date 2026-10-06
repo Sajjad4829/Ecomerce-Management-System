@@ -13,7 +13,7 @@
  *  - sections lib / blocks / menus / banners → static in-memory (no DB yet)
  */
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
-
+import { notificationService } from '../../services/notification/NotificationService';
 const CMSContext = createContext(null);
 
 // ── Static section library (read-only, no persistence needed) ─────────────────
@@ -137,33 +137,8 @@ const DEFAULT_FOOTER_CONFIG = {
     phone2: '',
     email: ''
   },
-  columns: [
-    {
-      title: 'NEED HELP?',
-      links: [
-        { label: 'Contact Us', url: '/contact' },
-        { label: 'FAQ', url: '/faq' },
-        { label: 'Showroom Locator', url: '/showroom' },
-        { label: 'Delivery Tracker', url: '/tracker' },
-        { label: 'Billing Terms & Conditions', url: '/billing' },
-      ]
-    },
-    {
-      title: 'MORE INFORMATION',
-      links: [
-        { label: 'Company Profile', url: '/profile' },
-        { label: 'Be Our Franchisee', url: '/franchisee' },
-        { label: 'HATIL Project Solution', url: '/project' },
-        { label: 'Catalogues', url: '/catalogues' },
-        { label: 'HATIL in News', url: '/news' },
-        { label: 'Our Team', url: '/team' },
-      ]
-    }
-  ],
-  appLinks: [
-    { id: 'appStore', platform: 'App Store', url: '', image: '' },
-    { id: 'googlePlay', platform: 'Google Play', url: '', image: '' }
-  ],
+  columns: [],
+  appLinks: [],
   social: {
     facebook: '',
     instagram: '',
@@ -315,6 +290,13 @@ export const CMSProvider = ({ children }) => {
         setSectionPreviewMap(next);
         return next;
       });
+      notificationService.createNotification({
+        type: 'CMS',
+        title: 'Section Library Updated',
+        message: `Template configuration for ${sectionType} was updated.`,
+        priority: 'Normal',
+        module: 'CMS'
+      });
     } catch (err) {
       console.error('CMSContext: failed to save library configuration', err);
       throw err;
@@ -423,6 +405,13 @@ export const CMSProvider = ({ children }) => {
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to update page'); }
     const updated = await res.json();
     setPages(prev => prev.map(p => p.id === pageId ? { ...p, ...updated } : p));
+    notificationService.createNotification({
+        type: 'CMS',
+        title: 'Page Updated',
+        message: `Page "${updated.title}" was successfully updated.`,
+        priority: 'Normal',
+        module: 'CMS'
+    });
     return updated;
   }, []);
 
@@ -490,6 +479,14 @@ export const CMSProvider = ({ children }) => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sections: sectionsToPublish }),
+      });
+      const pageName = pages.find(p => p.id === pageId)?.title || pageId;
+      notificationService.createNotification({
+        type: 'CMS',
+        title: 'Page Sections Published',
+        message: `Sections for page "${pageName}" were published.`,
+        priority: 'Normal',
+        module: 'CMS'
       });
     } catch (err) {
       console.error('CMSContext: publishPageSections failed', err);

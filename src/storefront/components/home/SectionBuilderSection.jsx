@@ -32,7 +32,6 @@ const FieldRenderer = ({ field }) => {
           <textarea rows={4} className={`${commonInputClass} resize-none`} placeholder={field.placeholder || field.label} />
         </div>
       );
-    case 'Text':
     case 'Description':
       return (
         <div 
@@ -162,22 +161,62 @@ const FieldRenderer = ({ field }) => {
       );
     case 'Image':
       if (field.imageUrl) {
-        const borderStyle = field.imageBorder ? `${field.imageBorder} ${field.imageBorderColor || ''}`.trim() : undefined;
-        const shadowStyle = field.imageBoxShadow ? `${field.imageBoxShadow} ${field.imageBoxShadowColor || ''}`.trim() : undefined;
+        // Shadow construction
+        let shadowStyle = undefined;
+        if (field.enableBoxShadow && field.shadowX !== undefined) {
+          const hex = field.shadowColor || '#000000';
+          const op = field.shadowOpacity !== undefined ? field.shadowOpacity / 100 : 0.1;
+          const r = parseInt(hex.slice(1, 3), 16) || 0;
+          const g = parseInt(hex.slice(3, 5), 16) || 0;
+          const b = parseInt(hex.slice(5, 7), 16) || 0;
+          const rgba = `rgba(${r}, ${g}, ${b}, ${op})`;
+          shadowStyle = `${field.shadowX} ${field.shadowY} ${field.shadowBlur} ${field.shadowSpread} ${rgba}`;
+        }
+
+        // Overlay construction
+        let overlayRgba = 'rgba(0,0,0,0.4)';
+        if (field.enableOverlay && field.overlayColor) {
+          const hex = field.overlayColor;
+          const op = field.overlayOpacity !== undefined ? field.overlayOpacity / 100 : 0.6;
+          const r = parseInt(hex.slice(1, 3), 16) || 0;
+          const g = parseInt(hex.slice(3, 5), 16) || 0;
+          const b = parseInt(hex.slice(5, 7), 16) || 0;
+          overlayRgba = `rgba(${r}, ${g}, ${b}, ${op})`;
+        }
+
         return (
-          <div className="flex flex-col gap-1.5 mb-5 w-full items-center">
+          <div className="flex flex-col mb-5 w-full items-center" style={{
+            marginTop: field.marginTop,
+            marginRight: field.marginRight,
+            marginBottom: field.marginBottom,
+            marginLeft: field.marginLeft,
+            paddingTop: field.paddingTop,
+            paddingRight: field.paddingRight,
+            paddingBottom: field.paddingBottom,
+            paddingLeft: field.paddingLeft,
+          }}>
             <div 
               className="relative overflow-hidden flex shrink-0 max-w-full"
               style={{
                 width: field.imageWidth ? (!isNaN(field.imageWidth) ? `${field.imageWidth}px` : field.imageWidth) : '100%',
                 height: field.imageHeight ? (!isNaN(field.imageHeight) ? `${field.imageHeight}px` : field.imageHeight) : 'auto',
-                border: borderStyle,
-                boxShadow: shadowStyle
+                maxWidth: field.imageMaxWidth ? (!isNaN(field.imageMaxWidth) ? `${field.imageMaxWidth}px` : field.imageMaxWidth) : undefined,
+                maxHeight: field.imageMaxHeight ? (!isNaN(field.imageMaxHeight) ? `${field.imageMaxHeight}px` : field.imageMaxHeight) : undefined,
+                borderTopLeftRadius: field.borderTopLeftRadius,
+                borderTopRightRadius: field.borderTopRightRadius,
+                borderBottomRightRadius: field.borderBottomRightRadius,
+                borderBottomLeftRadius: field.borderBottomLeftRadius,
+                boxShadow: shadowStyle,
+                opacity: field.opacity !== undefined ? field.opacity / 100 : 1
               }}
             >
-              <img src={field.imageUrl} alt={field.altText || field.label || 'Image'} className="w-full h-full" style={{ objectFit: field.objectFit || 'cover' }} />
+              <img src={field.imageUrl} alt={field.altText || field.label || field.imageTitle || 'Image'} title={field.imageTitle || ''} className="w-full h-full" style={{ 
+                objectFit: field.objectFit || 'cover',
+                objectPosition: field.objectPosition || 'center'
+              }} />
+              
               {field.enableOverlay && (
-                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-4 p-4 z-10">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-4 z-10" style={{ backgroundColor: overlayRgba }}>
                   {field.overlayText && (
                     <span 
                       className="font-bold text-center"

@@ -9,11 +9,13 @@ import CategoryPreview from '../../../components/commerce/categories/CategoryPre
 import { useCategories } from '../../../context/commerce/CategoryContext';
 import { useProducts } from '../../../context/commerce/ProductContext';
 import { useCMS } from '../../../context/cms/CMSContext';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
 
 export default function CategoryManager() {
   const navigate = useNavigate();
   const { categories, getCategoryTree, bulkUpdateStatus, bulkSetFeatured, bulkDelete, deleteCategory } = useCategories();
   const { products } = useProducts();
+  const { addToast } = useToast();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -112,12 +114,11 @@ export default function CategoryManager() {
               onEdit={(id) => navigate(`/admin/catalog/categories/${id}`)}
               onPreview={(c) => setPreviewCategory(c)}
               onDelete={async (id) => {
-                if (window.confirm("Are you sure you want to delete this category?")) {
-                  try {
-                    await deleteCategory(id, products);
-                  } catch (e) {
-                    alert(e.message);
-                  }
+                try {
+                  await deleteCategory(id, products);
+                  addToast({ type: 'success', message: 'Category deleted successfully' });
+                } catch (e) {
+                  addToast({ type: 'error', message: e.message });
                 }
               }}
             />
@@ -130,12 +131,11 @@ export default function CategoryManager() {
               onEdit={(id) => navigate(`/admin/catalog/categories/${id}`)}
               onPreview={(c) => setPreviewCategory(c)}
               onDelete={async (id) => {
-                if (window.confirm("Are you sure you want to delete this category?")) {
-                  try {
-                    await deleteCategory(id, products);
-                  } catch (e) {
-                    alert(e.message);
-                  }
+                try {
+                  await deleteCategory(id, products);
+                  addToast({ type: 'success', message: 'Category deleted successfully' });
+                } catch (e) {
+                  addToast({ type: 'error', message: e.message });
                 }
               }}
             />
@@ -147,20 +147,10 @@ export default function CategoryManager() {
       <BulkCatalogBar 
         selectedCount={selectedCategories.length} 
         onClear={() => setSelectedCategories([])} 
-        onAction={(action) => {
-          try {
-            if (action === 'delete') {
-              bulkDelete(selectedCategories, products);
-              setSelectedCategories([]);
-            } else if (action === 'publish') {
-              bulkUpdateStatus(selectedCategories, 'published');
-            } else if (action === 'draft') {
-              bulkUpdateStatus(selectedCategories, 'draft');
-            }
-          } catch (error) {
-            alert(error.message); // Will replace with toast later
-          }
-        }}
+        onPublish={() => { bulkUpdateStatus(selectedCategories, 'published'); addToast({ type: 'success', message: `Published ${selectedCategories.length} categories` }); setSelectedCategories([]); }}
+        onFeature={() => { bulkSetFeatured(selectedCategories, true); addToast({ type: 'success', message: `Featured ${selectedCategories.length} categories` }); setSelectedCategories([]); }}
+        onArchive={() => { bulkUpdateStatus(selectedCategories, 'draft'); addToast({ type: 'success', message: `Archived ${selectedCategories.length} categories` }); setSelectedCategories([]); }}
+        onDelete={() => { bulkDelete(selectedCategories, products); addToast({ type: 'success', message: `Deleted ${selectedCategories.length} categories` }); setSelectedCategories([]); }}
       />
 
       {/* Preview Drawer */}

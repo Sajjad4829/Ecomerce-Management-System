@@ -6,7 +6,7 @@
  * localStorage has been removed.
  */
 import React, { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react';
-
+import { notificationService } from '../../services/notification/NotificationService';
 const CategoryContext = createContext(null);
 
 export const useCategories = () => {
@@ -94,6 +94,13 @@ export function CategoryProvider({ children }) {
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to create category'); }
     const newCategory = await res.json();
     setCategories(prev => [...prev, newCategory]);
+    notificationService.createNotification({
+      type: 'Inventory',
+      title: 'Category Created',
+      message: `Category "${newCategory.name}" was successfully created.`,
+      priority: 'Normal',
+      module: 'Categories'
+    });
     return newCategory;
   }, []);
 
@@ -103,6 +110,13 @@ export function CategoryProvider({ children }) {
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to update category'); }
     const updatedCategory = await res.json();
     setCategories(prev => prev.map(c => c.id === id ? updatedCategory : c));
+    notificationService.createNotification({
+      type: 'Inventory',
+      title: 'Category Updated',
+      message: `Category "${updatedCategory.name}" was successfully updated.`,
+      priority: 'Normal',
+      module: 'Categories'
+    });
     return updatedCategory;
   }, []);
 
@@ -110,6 +124,13 @@ export function CategoryProvider({ children }) {
     const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to delete category'); }
     setCategories(prev => prev.filter(c => c.id !== id));
+    notificationService.createNotification({
+      type: 'Inventory',
+      title: 'Category Deleted',
+      message: `A category was deleted.`,
+      priority: 'Normal',
+      module: 'Categories'
+    });
     return true;
   }, []);
 

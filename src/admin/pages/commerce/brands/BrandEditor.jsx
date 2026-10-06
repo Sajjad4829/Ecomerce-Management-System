@@ -5,6 +5,7 @@ import { FiArrowLeft, FiSave, FiInfo, FiImage, FiSearch, FiGlobe, FiMonitor, FiT
 import { Rocket } from 'lucide-react';
 import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
+import { useBrands } from '../../../context/commerce/BrandContext';
 
 const STEPS = [
   { id: 'basic', label: 'Basic Info', number: '1', icon: FiInfo },
@@ -37,48 +38,71 @@ export default function BrandEditor() {
     brandStory: '',
     seoTitle: '',
     seoDescription: '',
-    logo: '',
-    banner: ''
+    logo: ''
   });
+
+  const { getBrandById, addBrand, updateBrand } = useBrands();
 
   useEffect(() => {
     if (!isNew) {
-      setFormData({
-        name: 'Aurelia Signature',
-        slug: 'aurelia-signature',
-        description: 'Our in-house premium collection featuring the finest materials.',
-        status: 'published',
-        featured: true,
-        website: 'https://aurelia.com',
-        country: 'Italy',
-        foundedYear: '2015',
-        brandStory: 'Born from a desire to create uncompromising luxury furniture...',
-        seoTitle: 'Aurelia Signature | Premium Furniture',
-        seoDescription: 'Discover Aurelia Signature.',
-        logo: '',
-        banner: ''
-      });
+      const brand = getBrandById(id);
+      if (brand) {
+        setFormData({
+          name: brand.name || '',
+          slug: brand.slug || '',
+          description: brand.description || '',
+          status: brand.status || 'draft',
+          featured: brand.featured || false,
+          website: brand.website || '',
+          country: brand.country || '',
+          foundedYear: brand.foundedYear || '',
+          brandStory: brand.brandStory || '',
+          seoTitle: brand.seoTitle || '',
+          seoDescription: brand.seoDescription || '',
+          logo: brand.logo || ''
+        });
+      }
     }
-  }, [id, isNew]);
+  }, [id, isNew, getBrandById]);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setHasUnsavedChanges(true);
   };
 
-  const saveBrand = (status) => {
+  const handleImageUpload = (field, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleChange(field, reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const saveBrand = async (status) => {
     setIsSaving(true);
-    setTimeout(() => {
+    try {
+      const payload = { ...formData, status };
+      if (isNew) {
+        await addBrand(payload);
+      } else {
+        await updateBrand(id, payload);
+      }
       setFormData(prev => ({ ...prev, status }));
-      setIsSaving(false);
       setHasUnsavedChanges(false);
       
       addToast({ type: 'success', message: `Brand ${status === 'draft' ? 'saved as draft' : 'published'} successfully` });
       
-      if (status === 'published') {
+      if (status === 'published' || isNew) {
         navigate('/admin/catalog/brands');
       }
-    }, 800);
+    } catch (err) {
+      addToast({ type: 'error', message: err.message || 'Failed to save brand' });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleSaveDraft = () => {
@@ -261,32 +285,21 @@ export default function BrandEditor() {
                   <p className="text-sm text-text-muted mb-6 ml-11">Visual assets used for the brand.</p>
 
                   <div className="space-y-6">
-                    <div className="flex gap-6 items-start">
-                      <div className="w-1/3">
+                    <div className="flex flex-col gap-6 items-start">
+                      <div className="w-full">
                         <label className="block text-xs font-bold text-text-primary mb-1.5">Brand Logo</label>
-                        <div className="border-2 border-dashed border-border rounded-xl bg-background p-6 flex flex-col items-center justify-center text-center hover:bg-stone-100 transition-all cursor-pointer aspect-square">
+                        <label className="border-2 border-dashed border-border rounded-xl bg-background p-6 flex flex-col items-center justify-center text-center hover:bg-stone-100 transition-all cursor-pointer min-h-[240px] relative block">
+                          <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload('logo', e)} />
                           {formData.logo ? (
-                            <img src={formData.logo} alt="Logo" className="max-w-full max-h-full object-contain" />
+                            <img src={formData.logo} alt="Logo" className="max-w-full max-h-full h-40 object-contain" />
                           ) : (
                             <>
-                              <FiImage size={24} className="text-text-muted mb-2" />
+                              <FiImage size={32} className="text-text-muted mb-3" />
                               <h3 className="text-sm font-bold text-text-primary">Upload Logo</h3>
+                              <p className="text-xs text-text-muted mt-1">Recommended size: 400x400px</p>
                             </>
                           )}
-                        </div>
-                      </div>
-                      <div className="flex-1">
-                        <label className="block text-xs font-bold text-text-primary mb-1.5">Brand Banner</label>
-                        <div className="border-2 border-dashed border-border rounded-xl bg-background p-6 flex flex-col items-center justify-center text-center hover:bg-stone-100 transition-all cursor-pointer h-full min-h-[160px]">
-                          {formData.banner ? (
-                            <img src={formData.banner} alt="Banner" className="max-w-full max-h-full object-cover rounded-lg" />
-                          ) : (
-                            <>
-                              <FiImage size={24} className="text-text-muted mb-2" />
-                              <h3 className="text-sm font-bold text-text-primary">Upload Banner</h3>
-                            </>
-                          )}
-                        </div>
+                        </label>
                       </div>
                     </div>
                   </div>
@@ -416,22 +429,13 @@ export default function BrandEditor() {
               }`}>
                 <div className="h-full overflow-y-auto p-8">
                   {/* Inline Brand Preview */}
-                  <div className="flex flex-col items-center max-w-2xl mx-auto space-y-8">
-                    {formData.banner ? (
-                      <div className="w-full h-48 rounded-2xl overflow-hidden shadow-sm relative">
-                        <img src={formData.banner} alt="Banner" className="w-full h-full object-cover" />
-                      </div>
-                    ) : (
-                      <div className="w-full h-48 bg-stone-200 rounded-2xl flex items-center justify-center text-text-muted font-serif">
-                        Banner Area
-                      </div>
-                    )}
+                  <div className="flex flex-col items-center max-w-2xl mx-auto space-y-8 mt-12">
                     
-                    <div className="relative -mt-20 z-10">
+                    <div className="relative z-10">
                       {formData.logo ? (
-                        <img src={formData.logo} alt="Logo" className="w-32 h-32 rounded-full border-4 border-surface shadow-lg bg-white object-contain p-2" />
+                        <img src={formData.logo} alt="Logo" className="w-40 h-40 rounded-full shadow-lg bg-white object-contain p-3" />
                       ) : (
-                        <div className="w-32 h-32 rounded-full border-4 border-surface shadow-lg bg-stone-100 flex items-center justify-center text-text-muted font-serif text-sm text-center">
+                        <div className="w-40 h-40 rounded-full shadow-lg bg-stone-100 flex items-center justify-center text-text-muted font-serif text-lg text-center">
                           Logo
                         </div>
                       )}

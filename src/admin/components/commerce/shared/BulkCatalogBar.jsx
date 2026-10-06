@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiTrash2, FiEye, FiArchive, FiStar } from 'react-icons/fi';
 
-export default function BulkCatalogBar({ selectedCount, onClear }) {
+export default function BulkCatalogBar({ selectedCount, onClear, onPublish, onFeature, onBestSeller, onArchive, onDelete }) {
   return (
     <AnimatePresence>
       {selectedCount > 0 && (
@@ -22,17 +22,22 @@ export default function BulkCatalogBar({ selectedCount, onClear }) {
           </div>
 
           <div className="flex items-center gap-1">
-            <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
+            <button onClick={onPublish} className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
               <FiEye size={14} /> Publish
             </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
+            <button onClick={onFeature} className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
               <FiStar size={14} /> Feature
             </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
+            {onBestSeller && (
+              <button onClick={onBestSeller} className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors text-emerald-400">
+                <FiStar size={14} /> Best Seller
+              </button>
+            )}
+            <button onClick={onArchive} className="flex items-center gap-2 px-3 py-1.5 hover:bg-primary-hover rounded-lg text-xs font-medium transition-colors">
               <FiArchive size={14} /> Archive
             </button>
             <div className="w-px h-4 bg-stone-700 mx-2" />
-            <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-red-900/30 text-red-400 rounded-lg text-xs font-medium transition-colors">
+            <button onClick={onDelete} className="flex items-center gap-2 px-3 py-1.5 hover:bg-red-900/30 text-red-400 rounded-lg text-xs font-medium transition-colors">
               <FiTrash2 size={14} /> Delete
             </button>
           </div>

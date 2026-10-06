@@ -14,7 +14,6 @@ const CATALOG_MODULES = [
 
   { id: 'collections', title: 'Collections', description: 'Curated groups of items (e.g., The Sanctuary Collection).', icon: FiGrid, count: 6 },
   { id: 'brands', title: 'Brands', description: 'Manage manufacturers, designers, and partner brands.', icon: FiTag, count: 12 },
-  { id: 'attributes', title: 'Attributes', description: 'Global specifications like Wood Finish, Fabric, or Dimensions.', icon: FiSliders, count: 42 },
   { id: 'inventory', title: 'Inventory', description: 'Stock levels, warehouse tracking, and availability states.', icon: FiArchive, count: 1840 },
   { id: 'warehouses', title: 'Warehouses', description: 'Manage physical locations, fulfillment centers, and stock hubs.', icon: FiBox, count: 4 },
   { id: 'pricing', title: 'Price Rules', description: 'Tiered pricing, trade discounts, and promotional MSRPs.', icon: FiDollarSign, count: 3 },

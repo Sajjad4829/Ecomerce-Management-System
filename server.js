@@ -185,6 +185,53 @@ app.delete('/api/categories/:id', async (req, res) => {
 });
 
 // =============================================================================
+// BRANDS API
+// =============================================================================
+
+app.get('/api/brands', async (req, res) => {
+  try {
+    const brands = await Brand.find({}).sort({ name: 1 }).lean();
+    res.json(brands);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/brands', async (req, res) => {
+  try {
+    const newBrand = new Brand({ ...req.body, id: req.body.id || `brand-${Date.now()}` });
+    await newBrand.save();
+    res.status(201).json(newBrand.toJSON());
+  } catch (error) {
+    if (error.name === 'ValidationError') return res.status(400).json({ error: Object.values(error.errors).map(e => e.message).join('; ') });
+    if (error.code === 11000) return res.status(409).json({ error: 'Brand with this ID or slug already exists.' });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/brands/:id', async (req, res) => {
+  try {
+    const updated = await Brand.findOneAndUpdate({ id: req.params.id }, { $set: req.body }, { returnDocument: 'after', runValidators: true }).lean();
+    if (!updated) return res.status(404).json({ error: 'Brand not found' });
+    res.json(updated);
+  } catch (error) {
+    if (error.name === 'ValidationError') return res.status(400).json({ error: Object.values(error.errors).map(e => e.message).join('; ') });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/brands/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Brand.findOneAndDelete({ id });
+    if (!deleted) return res.status(404).json({ error: 'Brand not found' });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// =============================================================================
 // NAVBAR API
 // =============================================================================
 

@@ -5,7 +5,7 @@ import {
     FiType, FiAlignLeft, FiDollarSign, FiMap, FiMapPin, FiMail,
     FiPhone, FiGlobe, FiImage, FiGrid, FiLayout, FiClock, FiCalendar, FiMessageSquare, FiHelpCircle,
     FiCheckSquare, FiCircle, FiUpload, FiMoreHorizontal, FiTrash2, FiSettings, FiPlay, FiCopy,
-    FiBold, FiItalic, FiUnderline, FiLink, FiList, FiCode, FiLoader
+    FiBold, FiItalic, FiUnderline, FiLink, FiList, FiCode, FiLoader, FiMaximize2, FiSquare
 } from 'react-icons/fi';
 import { cn } from '../../../../utils/cn';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
@@ -395,7 +395,35 @@ const GridProperties = ({ field, onChange, device, setDevice }) => {
     const respMode = device === 'tablet' ? 'Tablet' : device === 'mobile' ? 'Mobile' : '';
     
     const getProp = (key) => field[key + respMode];
-    const setProp = (key, val) => onChange({ [key + respMode]: val });
+    const setProp = (key, val) => {
+        const updates = { [key + respMode]: val };
+        
+        let cols = parseInt(key === 'columns' ? val : getProp('columns'), 10) || 3;
+        let rows = parseInt(key === 'rows' ? val : getProp('rows'), 10) || 2;
+        
+        if (key === 'columns' || key === 'rows') {
+            const num = cols * rows;
+            if (!isNaN(num) && num > 0) {
+                const currentFields = field.fields || [];
+                if (num > currentFields.length) {
+                    const newFields = [...currentFields];
+                    for (let i = currentFields.length; i < num; i++) {
+                        newFields.push({
+                            id: `c_${Date.now()}_wrapper_${Math.random().toString(36).substr(2, 5)}_${i}`,
+                            type: 'Container',
+                            label: 'Column Container',
+                            icon: 'FiLayout',
+                            fields: []
+                        });
+                    }
+                    updates.fields = newFields;
+                } else if (num < currentFields.length) {
+                    updates.fields = currentFields.slice(0, num);
+                }
+            }
+        }
+        onChange(updates);
+    };
 
     const parseDimension = (val, fallbackUnit = 'px') => {
         if (!val) return { number: '', unit: fallbackUnit };
@@ -570,7 +598,32 @@ const FlexProperties = ({ field, onChange, device, setDevice }) => {
     const respMode = device === 'tablet' ? 'Tablet' : device === 'mobile' ? 'Mobile' : '';
     
     const getProp = (key) => field[key + respMode];
-    const setProp = (key, val) => onChange({ [key + respMode]: val });
+    const setProp = (key, val) => {
+        const updates = { [key + respMode]: val };
+        
+        if (key === 'columns') {
+            const num = parseInt(val, 10);
+            if (!isNaN(num) && num > 0) {
+                const currentFields = field.fields || [];
+                if (num > currentFields.length) {
+                    const newFields = [...currentFields];
+                    for (let i = currentFields.length; i < num; i++) {
+                        newFields.push({
+                            id: `c_${Date.now()}_wrapper_${Math.random().toString(36).substr(2, 5)}_${i}`,
+                            type: 'Container',
+                            label: 'Column Container',
+                            icon: 'FiLayout',
+                            fields: []
+                        });
+                    }
+                    updates.fields = newFields;
+                } else if (num < currentFields.length) {
+                    updates.fields = currentFields.slice(0, num);
+                }
+            }
+        }
+        onChange(updates);
+    };
 
     const parseDimension = (val, fallbackUnit = 'px') => {
         if (!val) return { number: '', unit: fallbackUnit };
@@ -842,86 +895,289 @@ const TextProperties = ({ field, onChange }) => {
     );
 };
 
+const ImageAccordion = ({ id, title, icon: Icon, children, toggle = null, openSections, toggleSection }) => (
+    <div className="border border-[#eaecf0] rounded-xl bg-white mb-4 overflow-hidden shadow-sm">
+        <div 
+            className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+            onClick={() => toggleSection(id)}
+        >
+            <div className="flex items-center gap-3">
+                {Icon && <Icon className="text-[#344054]" size={18} strokeWidth={2.5} />}
+                <h4 className="text-[14px] font-bold text-[#101828]">{title}</h4>
+            </div>
+            <div className="flex items-center gap-3">
+                {toggle !== null && (
+                    <div onClick={e => e.stopPropagation()}>{toggle}</div>
+                )}
+                {openSections[id] ? <FiChevronUp className="text-[#98a2b3]" size={18} /> : <FiChevronDown className="text-[#98a2b3]" size={18} />}
+            </div>
+        </div>
+        {openSections[id] && (
+            <div className="p-4 pt-0 bg-white">
+                <div className="pt-4 border-t border-[#f2f4f7]">{children}</div>
+            </div>
+        )}
+    </div>
+);
+
+const ImageUnitInput = ({ label, prop, data, units = ['px', '%', 'vw', 'auto'], placeholder, hideLabel = false, handleDimChange }) => (
+    <div>
+        {!hideLabel && <label className="block text-[12px] font-medium text-[#344054] mb-1.5">{label}</label>}
+        <div className="flex bg-white border border-[#eaecf0] rounded-lg overflow-hidden focus-within:border-[#2f68fe] focus-within:ring-1 focus-within:ring-[#2f68fe] transition-all shadow-sm">
+            <input type="text" className="w-full px-3 py-2 bg-transparent text-[13px] outline-none text-[#101828]" placeholder={placeholder} value={data.number === 'auto' ? '' : data.number} onChange={(e) => handleDimChange(prop, e.target.value, data.unit)} />
+            <select className="bg-[#f9fafb] border-l border-[#eaecf0] px-2 py-2 text-[12px] outline-none text-[#667085] cursor-pointer" value={data.unit} onChange={(e) => {
+                handleDimChange(prop, data.number || placeholder, e.target.value);
+            }}>
+                {units.map(u => <option key={u} value={u}>{u}</option>)}
+            </select>
+        </div>
+    </div>
+);
+
+const ImageResponsiveToggle = ({ device, setDevice }) => (
+    <div className="flex bg-[#f2f4f7] p-1 rounded-lg mb-6 border border-[#eaecf0]">
+        <button onClick={() => setDevice('desktop')} className={`flex-1 flex items-center justify-center gap-2 py-2 text-[13px] font-semibold rounded-md transition-all ${device === 'desktop' ? 'bg-[#2f68fe] text-white shadow-sm' : 'text-[#667085] hover:text-[#344054]'}`}>
+            <FiMonitor size={14} /> Desktop
+        </button>
+        <button onClick={() => setDevice('tablet')} className={`flex-1 flex items-center justify-center gap-2 py-2 text-[13px] font-semibold rounded-md transition-all ${device === 'tablet' ? 'bg-[#2f68fe] text-white shadow-sm' : 'text-[#667085] hover:text-[#344054]'}`}>
+            <FiTablet size={14} /> Tablet
+        </button>
+        <button onClick={() => setDevice('mobile')} className={`flex-1 flex items-center justify-center gap-2 py-2 text-[13px] font-semibold rounded-md transition-all ${device === 'mobile' ? 'bg-[#2f68fe] text-white shadow-sm' : 'text-[#667085] hover:text-[#344054]'}`}>
+            <FiSmartphone size={14} /> Mobile
+        </button>
+    </div>
+);
+
 // --- Image Properties Component ---
-const ImageProperties = ({ field, onChange, handleImageUpload }) => {
+const ImageProperties = ({ field, onChange, handleImageUpload, device, setDevice }) => {
+    const [openSections, setOpenSections] = useState({
+        settings: true,
+        size: true,
+        objectFit: true,
+        borderRadius: true,
+        opacity: true,
+        textOverlay: true,
+        boxShadow: true,
+        spacing: true
+    });
+
+    const toggleSection = (key) => setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
+
+    const parseDimension = (val, fallbackUnit = 'px') => {
+        if (!val && val !== 0) return { number: '', unit: fallbackUnit };
+        const match = String(val).match(/^([-\d.]+)(px|%|vh|vw|rem|em|auto)?$/);
+        if (match) return { number: match[1], unit: match[2] || fallbackUnit };
+        return { number: val, unit: fallbackUnit };
+    };
+
+    const handleDimChange = (prop, value, unit) => {
+        if (value === 'auto') {
+            onChange({ [prop]: 'auto' });
+            return;
+        }
+        if (!value && value !== 0) {
+            onChange({ [prop]: '' });
+        } else {
+            onChange({ [prop]: value + unit });
+        }
+    };
+
+    const widthData = parseDimension(field.imageWidth, '%');
+    const heightData = parseDimension(field.imageHeight, 'px');
+    const maxWidthData = parseDimension(field.imageMaxWidth, 'px');
+    const maxHeightData = parseDimension(field.imageMaxHeight, 'px');
+
     return (
-        <div className="space-y-6">
-            <div className="space-y-4 pt-2">
-                <h4 className="text-[13px] font-bold text-gray-900 uppercase tracking-wider">Image Settings</h4>
-                <div>
-                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Upload Image</label>
-                    <input type="file" accept="image/*" className="w-full text-[12px]" onChange={handleImageUpload} />
-                </div>
-                <div>
-                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Or Image URL</label>
-                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.imageUrl || ''} onChange={(e) => onChange({ imageUrl: e.target.value })} placeholder="https://..." />
-                </div>
-                <div>
-                    <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Alt Text</label>
-                    <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.altText || ''} onChange={(e) => onChange({ altText: e.target.value })} />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-0 w-full font-sans -mt-4">
+            <ImageResponsiveToggle device={device} setDevice={setDevice} />
+
+            <ImageAccordion id="settings" title="Image Settings" icon={FiImage} openSections={openSections} toggleSection={toggleSection}>
+                <div className="space-y-4">
                     <div>
-                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Width</label>
-                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.imageWidth || ''} onChange={(e) => onChange({ imageWidth: e.target.value })} placeholder="100%" />
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Upload Image</label>
+                        <div className="w-full border border-dashed border-[#d0d5dd] rounded-xl bg-[#f9fafb] p-4 flex items-center gap-4">
+                            <div className="w-16 h-16 bg-[#eaecf0] rounded-lg flex items-center justify-center text-[#98a2b3] overflow-hidden relative">
+                                {field.imageUrl ? <img src={field.imageUrl} alt="" className="w-full h-full object-cover" /> : <FiImage size={24} />}
+                            </div>
+                            <div className="flex-1">
+                                <label className="inline-flex items-center gap-2 px-4 py-2 bg-[#2f68fe] text-white text-[13px] font-medium rounded-lg cursor-pointer hover:bg-[#2558d6] transition-colors shadow-sm">
+                                    <FiUpload size={14}/> Choose File
+                                    <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                                </label>
+                                <p className="text-[12px] text-[#98a2b3] mt-1.5">or drag and drop</p>
+                            </div>
+                        </div>
                     </div>
                     <div>
-                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Height</label>
-                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.imageHeight || ''} onChange={(e) => onChange({ imageHeight: e.target.value })} placeholder="auto" />
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Alt Text</label>
+                        <input type="text" className="w-full px-3 py-2 bg-white border border-[#eaecf0] rounded-lg text-[13px] focus:border-[#2f68fe] focus:ring-1 focus:ring-[#2f68fe] outline-none transition-all shadow-sm placeholder:text-[#98a2b3]" value={field.altText || ''} onChange={(e) => onChange({ altText: e.target.value })} placeholder="Describe the image for SEO and accessibility" />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Title</label>
+                        <input type="text" className="w-full px-3 py-2 bg-white border border-[#eaecf0] rounded-lg text-[13px] focus:border-[#2f68fe] focus:ring-1 focus:ring-[#2f68fe] outline-none transition-all shadow-sm placeholder:text-[#98a2b3]" value={field.imageTitle || ''} onChange={(e) => onChange({ imageTitle: e.target.value })} placeholder="Image title (optional)" />
                     </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+            </ImageAccordion>
+
+            <ImageAccordion id="size" title="Size" icon={FiMaximize2} openSections={openSections} toggleSection={toggleSection}>
+                <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <ImageUnitInput label="Width" prop="imageWidth" data={widthData} placeholder="100" handleDimChange={handleDimChange} />
+                        <ImageUnitInput label="Height" prop="imageHeight" data={heightData} placeholder="auto" handleDimChange={handleDimChange} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <ImageUnitInput label="Max Width" prop="imageMaxWidth" data={maxWidthData} placeholder="1200" handleDimChange={handleDimChange} />
+                        <ImageUnitInput label="Max Height" prop="imageMaxHeight" data={maxHeightData} placeholder="auto" handleDimChange={handleDimChange} />
+                    </div>
+                </div>
+            </ImageAccordion>
+
+            <ImageAccordion id="objectFit" title="Object Fit" icon={FiMonitor} openSections={openSections} toggleSection={toggleSection}>
+                <div className="space-y-4">
                     <div>
-                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Object Fit</label>
-                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.objectFit || 'cover'} onChange={(e) => onChange({ objectFit: e.target.value })}>
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Object Fit</label>
+                        <select className="w-full px-3 py-2 bg-white border border-[#eaecf0] rounded-lg text-[13px] focus:border-[#2f68fe] focus:ring-1 focus:ring-[#2f68fe] outline-none transition-all shadow-sm text-[#101828]" value={field.objectFit || 'cover'} onChange={(e) => onChange({ objectFit: e.target.value })}>
                             <option value="cover">Cover</option>
                             <option value="contain">Contain</option>
                             <option value="fill">Fill</option>
+                            <option value="scale-down">Scale Down</option>
                             <option value="none">None</option>
                         </select>
                     </div>
                     <div>
-                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Border Radius</label>
-                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.borderRadius || ''} onChange={(e) => onChange({ borderRadius: e.target.value })} placeholder="0px or 50%" />
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Object Position</label>
+                        <select className="w-full px-3 py-2 bg-white border border-[#eaecf0] rounded-lg text-[13px] focus:border-[#2f68fe] focus:ring-1 focus:ring-[#2f68fe] outline-none transition-all shadow-sm text-[#101828]" value={field.objectPosition || 'center'} onChange={(e) => onChange({ objectPosition: e.target.value })}>
+                            <option value="center">Center</option>
+                            <option value="top">Top</option>
+                            <option value="bottom">Bottom</option>
+                            <option value="left">Left</option>
+                            <option value="right">Right</option>
+                        </select>
                     </div>
                 </div>
-                <div className="pt-2 border-t border-gray-100 mt-2">
-                    <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer mb-3">
-                        <input type="checkbox" className="rounded text-[#5946ff] focus:ring-[#5946ff]" checked={field.enableOverlay || false} onChange={(e) => onChange({ enableOverlay: e.target.checked })} />
-                        Enable Overlay Text & Button
-                    </label>
-                    
-                    {field.enableOverlay && (
-                        <div className="space-y-3 pl-6 border-l-2 border-gray-100">
-                            <div>
-                                <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Overlay Text</label>
-                                <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.overlayText || ''} onChange={(e) => onChange({ overlayText: e.target.value })} placeholder="Enter text..." />
-                            </div>
-                            <div className="pt-2 border-t border-gray-100">
-                                <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer mb-3">
-                                    <input type="checkbox" className="rounded text-[#5946ff] focus:ring-[#5946ff]" checked={field.enableOverlayButton || false} onChange={(e) => onChange({ enableOverlayButton: e.target.checked })} />
-                                    Enable Overlay Button
-                                </label>
-                            </div>
-                            {field.enableOverlayButton && (
-                                <>
-                                    <div>
-                                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Button Text</label>
-                                        <input type="text" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.overlayButtonText || ''} onChange={(e) => onChange({ overlayButtonText: e.target.value })} placeholder="Click Here" />
-                                    </div>
-                                    <div>
-                                        <label className="block text-[12px] font-medium text-gray-600 mb-1.5">Button Style</label>
-                                        <select className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-[13px]" value={field.overlayButtonStyle || 'outline'} onChange={(e) => onChange({ overlayButtonStyle: e.target.value })}>
-                                            <option value="outline">Outline</option>
-                                            <option value="solid">Solid Background</option>
-                                        </select>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    )}
+            </ImageAccordion>
+
+            <ImageAccordion id="borderRadius" title="Border Radius" icon={FiSquare} openSections={openSections} toggleSection={toggleSection}>
+                <div className="grid grid-cols-4 gap-2">
+                    <ImageUnitInput label="Top Left" prop="borderTopLeftRadius" data={parseDimension(field.borderTopLeftRadius, 'px')} placeholder="0" units={['px','%']} handleDimChange={handleDimChange} />
+                    <ImageUnitInput label="Top Right" prop="borderTopRightRadius" data={parseDimension(field.borderTopRightRadius, 'px')} placeholder="0" units={['px','%']} handleDimChange={handleDimChange} />
+                    <ImageUnitInput label="Bottom Right" prop="borderBottomRightRadius" data={parseDimension(field.borderBottomRightRadius, 'px')} placeholder="0" units={['px','%']} handleDimChange={handleDimChange} />
+                    <ImageUnitInput label="Bottom Left" prop="borderBottomLeftRadius" data={parseDimension(field.borderBottomLeftRadius, 'px')} placeholder="0" units={['px','%']} handleDimChange={handleDimChange} />
                 </div>
-            </div>
+            </ImageAccordion>
+
+            <ImageAccordion id="opacity" title="Opacity" icon={FiEye} openSections={openSections} toggleSection={toggleSection}>
+                <div className="flex items-center gap-4">
+                    <input type="range" min="0" max="100" className="flex-1 h-1 bg-[#eaecf0] rounded-lg appearance-none cursor-pointer accent-[#2f68fe]" value={field.opacity !== undefined ? field.opacity : 100} onChange={(e) => onChange({ opacity: parseInt(e.target.value) })} />
+                    <div className="flex items-center bg-white border border-[#eaecf0] rounded-lg px-2 shadow-sm w-20">
+                        <input type="number" min="0" max="100" className="w-full py-1.5 bg-transparent text-[13px] outline-none text-center font-medium text-[#101828]" value={field.opacity !== undefined ? field.opacity : 100} onChange={(e) => onChange({ opacity: parseInt(e.target.value) })} />
+                        <span className="text-[#667085] text-[12px]">%</span>
+                    </div>
+                </div>
+            </ImageAccordion>
+
+            <ImageAccordion id="textOverlay" title="Text Overlay" icon={FiType} openSections={openSections} toggleSection={toggleSection} toggle={
+                <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" checked={field.enableOverlay || false} onChange={(e) => {
+                        onChange({ enableOverlay: e.target.checked });
+                        if(e.target.checked) setOpenSections(p => ({...p, textOverlay: true}));
+                    }} />
+                    <div className="w-10 h-5 bg-[#eaecf0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2f68fe]"></div>
+                </label>
+            }>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Text Overlay (Optional)</label>
+                        <input type="text" className="w-full px-3 py-2 bg-white border border-[#eaecf0] rounded-lg text-[13px] focus:border-[#2f68fe] focus:ring-1 focus:ring-[#2f68fe] outline-none transition-all shadow-sm placeholder:text-[#98a2b3]" value={field.overlayText || ''} onChange={(e) => onChange({ overlayText: e.target.value })} placeholder="Your overlay text here..." />
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Overlay Color</label>
+                        <div className="flex gap-3">
+                            <div className="flex-1 flex bg-white border border-[#eaecf0] rounded-lg overflow-hidden focus-within:border-[#2f68fe] focus-within:ring-1 focus-within:ring-[#2f68fe] shadow-sm">
+                                <div className="pl-2 py-1 flex items-center justify-center border-r border-[#eaecf0] bg-white">
+                                    <div className="w-6 h-6 rounded border border-[#eaecf0] overflow-hidden">
+                                        <input type="color" className="w-8 h-8 -m-1 cursor-pointer" value={field.overlayColor || '#000000'} onChange={(e) => onChange({ overlayColor: e.target.value })} />
+                                    </div>
+                                </div>
+                                <input type="text" className="flex-1 px-3 py-2 bg-transparent text-[13px] outline-none text-[#101828]" value={field.overlayColor || '#000000'} onChange={(e) => onChange({ overlayColor: e.target.value })} />
+                            </div>
+                            <div className="flex items-center bg-white border border-[#eaecf0] rounded-lg px-2 shadow-sm w-20 focus-within:border-[#2f68fe] focus-within:ring-1 focus-within:ring-[#2f68fe]">
+                                <input type="number" min="0" max="100" className="w-full py-2 bg-transparent text-[13px] outline-none text-center font-medium text-[#101828]" value={field.overlayOpacity !== undefined ? field.overlayOpacity : 60} onChange={(e) => onChange({ overlayOpacity: parseInt(e.target.value) })} />
+                                <span className="text-[#667085] text-[12px]">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ImageAccordion>
+
+            <ImageAccordion id="boxShadow" title="Box Shadow" icon={FiCopy} openSections={openSections} toggleSection={toggleSection} toggle={
+                <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" checked={field.enableBoxShadow || false} onChange={(e) => {
+                        onChange({ enableBoxShadow: e.target.checked });
+                        if(e.target.checked) setOpenSections(p => ({...p, boxShadow: true}));
+                    }} />
+                    <div className="w-10 h-5 bg-[#eaecf0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2f68fe]"></div>
+                </label>
+            }>
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                    <ImageUnitInput label="X Offset" prop="shadowX" data={parseDimension(field.shadowX, 'px')} placeholder="0" units={['px']} handleDimChange={handleDimChange} />
+                    <ImageUnitInput label="Y Offset" prop="shadowY" data={parseDimension(field.shadowY, 'px')} placeholder="4" units={['px']} handleDimChange={handleDimChange} />
+                    <ImageUnitInput label="Blur" prop="shadowBlur" data={parseDimension(field.shadowBlur, 'px')} placeholder="12" units={['px']} handleDimChange={handleDimChange} />
+                    <ImageUnitInput label="Spread" prop="shadowSpread" data={parseDimension(field.shadowSpread, 'px')} placeholder="0" units={['px']} handleDimChange={handleDimChange} />
+                </div>
+                <div>
+                    <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Shadow Color</label>
+                    <div className="flex gap-3">
+                        <div className="flex-1 flex bg-white border border-[#eaecf0] rounded-lg overflow-hidden focus-within:border-[#2f68fe] focus-within:ring-1 focus-within:ring-[#2f68fe] shadow-sm">
+                            <div className="pl-2 py-1 flex items-center justify-center border-r border-[#eaecf0] bg-white">
+                                <div className="w-6 h-6 rounded border border-[#eaecf0] overflow-hidden">
+                                    <input type="color" className="w-8 h-8 -m-1 cursor-pointer" value={field.shadowColor || '#000000'} onChange={(e) => onChange({ shadowColor: e.target.value })} />
+                                </div>
+                            </div>
+                            <input type="text" className="flex-1 px-3 py-2 bg-transparent text-[13px] outline-none text-[#101828]" value={field.shadowColor || '#000000'} onChange={(e) => onChange({ shadowColor: e.target.value })} />
+                        </div>
+                        <div className="flex items-center bg-white border border-[#eaecf0] rounded-lg px-2 shadow-sm w-20 focus-within:border-[#2f68fe] focus-within:ring-1 focus-within:ring-[#2f68fe]">
+                            <input type="number" min="0" max="100" className="w-full py-2 bg-transparent text-[13px] outline-none text-center font-medium text-[#101828]" value={field.shadowOpacity !== undefined ? field.shadowOpacity : 10} onChange={(e) => onChange({ shadowOpacity: parseInt(e.target.value) })} />
+                            <span className="text-[#667085] text-[12px]">%</span>
+                        </div>
+                    </div>
+                </div>
+            </ImageAccordion>
+
+            <ImageAccordion id="spacing" title="Spacing" icon={FiMaximize2} openSections={openSections} toggleSection={toggleSection}>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Margin</label>
+                        <div className="grid grid-cols-4 gap-2">
+                            <ImageUnitInput hideLabel prop="marginTop" data={parseDimension(field.marginTop, 'px')} placeholder="0" units={['px','%','vh']} handleDimChange={handleDimChange} />
+                            <ImageUnitInput hideLabel prop="marginRight" data={parseDimension(field.marginRight, 'px')} placeholder="0" units={['px','%','vw']} handleDimChange={handleDimChange} />
+                            <ImageUnitInput hideLabel prop="marginBottom" data={parseDimension(field.marginBottom, 'px')} placeholder="0" units={['px','%','vh']} handleDimChange={handleDimChange} />
+                            <ImageUnitInput hideLabel prop="marginLeft" data={parseDimension(field.marginLeft, 'px')} placeholder="0" units={['px','%','vw']} handleDimChange={handleDimChange} />
+                        </div>
+                        <div className="grid grid-cols-4 gap-2 mt-1">
+                            <span className="text-[10px] text-[#667085] text-left">Top</span>
+                            <span className="text-[10px] text-[#667085] text-left">Right</span>
+                            <span className="text-[10px] text-[#667085] text-left">Bottom</span>
+                            <span className="text-[10px] text-[#667085] text-left">Left</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[12px] font-medium text-[#344054] mb-1.5">Padding</label>
+                        <div className="grid grid-cols-4 gap-2">
+                            <ImageUnitInput hideLabel prop="paddingTop" data={parseDimension(field.paddingTop, 'px')} placeholder="0" units={['px','%','vh']} handleDimChange={handleDimChange} />
+                            <ImageUnitInput hideLabel prop="paddingRight" data={parseDimension(field.paddingRight, 'px')} placeholder="0" units={['px','%','vw']} handleDimChange={handleDimChange} />
+                            <ImageUnitInput hideLabel prop="paddingBottom" data={parseDimension(field.paddingBottom, 'px')} placeholder="0" units={['px','%','vh']} handleDimChange={handleDimChange} />
+                            <ImageUnitInput hideLabel prop="paddingLeft" data={parseDimension(field.paddingLeft, 'px')} placeholder="0" units={['px','%','vw']} handleDimChange={handleDimChange} />
+                        </div>
+                        <div className="grid grid-cols-4 gap-2 mt-1">
+                            <span className="text-[10px] text-[#667085] text-left">Top</span>
+                            <span className="text-[10px] text-[#667085] text-left">Right</span>
+                            <span className="text-[10px] text-[#667085] text-left">Bottom</span>
+                            <span className="text-[10px] text-[#667085] text-left">Left</span>
+                        </div>
+                    </div>
+                </div>
+            </ImageAccordion>
         </div>
     );
 };
@@ -1057,7 +1313,7 @@ const RecursiveFieldRenderer = ({
                 isContainer ? "min-h-[200px] border-2 border-[#6366F1] rounded-none p-4 flex-col gap-3" : 
                 (isGrid || isFlex) ? "p-0 border-0 shadow-none bg-transparent gap-3" :
                 isEmptySpace ? "min-h-[140px] border-dashed border-[#b6c6fa] bg-[#f8faff] rounded justify-center items-center shadow-none hover:bg-[#ebf0ff]" :
-                isImage ? "flex-col h-full overflow-hidden p-0" :
+                isImage ? "flex-col h-full overflow-hidden p-0 bg-transparent border-0 shadow-none" :
                 isDescription ? "rounded-lg p-0 flex-col gap-3 h-full" : 
                 isText ? "rounded-none p-3 flex-col h-full bg-transparent border-dashed" : 
                 isVideo ? "rounded-none p-0 flex-col overflow-hidden h-full" : 
@@ -1065,7 +1321,16 @@ const RecursiveFieldRenderer = ({
                 (!isContainer && !isGrid && !isFlex && !isImage && !isDescription && !isText && !isVideo && !isEmptySpace && field.bottomUnderline) ? "border-b-2 border-gray-200" : ""
             )}
             id={isContainer ? `editor-container-${field.id}` : undefined}
-            style={isImage ? { borderRadius: field.borderRadius || '0' } : {}}
+            style={isImage ? { 
+                borderTopLeftRadius: field.borderTopLeftRadius ? (!isNaN(field.borderTopLeftRadius) ? `${field.borderTopLeftRadius}px` : field.borderTopLeftRadius) : undefined,
+                borderTopRightRadius: field.borderTopRightRadius ? (!isNaN(field.borderTopRightRadius) ? `${field.borderTopRightRadius}px` : field.borderTopRightRadius) : undefined,
+                borderBottomRightRadius: field.borderBottomRightRadius ? (!isNaN(field.borderBottomRightRadius) ? `${field.borderBottomRightRadius}px` : field.borderBottomRightRadius) : undefined,
+                borderBottomLeftRadius: field.borderBottomLeftRadius ? (!isNaN(field.borderBottomLeftRadius) ? `${field.borderBottomLeftRadius}px` : field.borderBottomLeftRadius) : undefined,
+                marginTop: field.marginTop ? (!isNaN(field.marginTop) ? `${field.marginTop}px` : field.marginTop) : undefined,
+                marginRight: field.marginRight ? (!isNaN(field.marginRight) ? `${field.marginRight}px` : field.marginRight) : undefined,
+                marginBottom: field.marginBottom ? (!isNaN(field.marginBottom) ? `${field.marginBottom}px` : field.marginBottom) : undefined,
+                marginLeft: field.marginLeft ? (!isNaN(field.marginLeft) ? `${field.marginLeft}px` : field.marginLeft) : undefined,
+            } : {}}
             onClick={(e) => { e.stopPropagation(); setActiveFieldPath(path); }}
         >
             {isContainer && (() => {
@@ -1359,12 +1624,21 @@ const RecursiveFieldRenderer = ({
                 </div>
             ) : isImage ? (
                 <div 
-                    className={`flex-1 flex flex-col items-center justify-center relative group/image bg-center bg-no-repeat ${field.imageFit === 'contain' ? 'bg-contain' : 'bg-cover'}`}
+                    className={`flex-1 flex flex-col items-center justify-center relative group/image bg-no-repeat`}
                     style={{
                         ...(field.imageUrl ? { backgroundImage: `url(${field.imageUrl})` } : {}),
+                        backgroundSize: field.objectFit === 'contain' ? 'contain' : field.objectFit === 'fill' ? '100% 100%' : field.objectFit === 'none' ? 'auto' : field.objectFit === 'scale-down' ? 'contain' : 'cover',
+                        backgroundPosition: field.objectPosition || 'center',
                         width: field.imageWidth ? (!isNaN(field.imageWidth) ? `${field.imageWidth}px` : field.imageWidth) : '100%',
                         minHeight: field.imageHeight ? (!isNaN(field.imageHeight) ? `${field.imageHeight}px` : field.imageHeight) : '250px',
-                        boxShadow: field.imageBoxShadow ? `${field.imageBoxShadow} ${field.imageBoxShadowColor || ''}`.trim() : undefined
+                        maxWidth: field.imageMaxWidth ? (!isNaN(field.imageMaxWidth) ? `${field.imageMaxWidth}px` : field.imageMaxWidth) : undefined,
+                        maxHeight: field.imageMaxHeight ? (!isNaN(field.imageMaxHeight) ? `${field.imageMaxHeight}px` : field.imageMaxHeight) : undefined,
+                        opacity: field.opacity !== undefined ? field.opacity / 100 : 1,
+                        boxShadow: field.enableBoxShadow ? `${field.shadowX || '0px'} ${field.shadowY || '4px'} ${field.shadowBlur || '12px'} ${field.shadowSpread || '0px'} ${field.shadowColor || '#000000'}${Math.round((field.shadowOpacity !== undefined ? field.shadowOpacity : 10) / 100 * 255).toString(16).padStart(2, '0')}` : undefined,
+                        paddingTop: field.paddingTop ? (!isNaN(field.paddingTop) ? `${field.paddingTop}px` : field.paddingTop) : undefined,
+                        paddingRight: field.paddingRight ? (!isNaN(field.paddingRight) ? `${field.paddingRight}px` : field.paddingRight) : undefined,
+                        paddingBottom: field.paddingBottom ? (!isNaN(field.paddingBottom) ? `${field.paddingBottom}px` : field.paddingBottom) : undefined,
+                        paddingLeft: field.paddingLeft ? (!isNaN(field.paddingLeft) ? `${field.paddingLeft}px` : field.paddingLeft) : undefined,
                     }}
                 >
                     {/* Header Controls */}
@@ -1519,16 +1793,26 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
     const [device, setDevice] = useState('desktop');
     const [enablePreview, setEnablePreview] = useState(true);
 
-    const defaultLayout = [
-        {
-            id: 's_general', title: 'General Section', isExpanded: true, fields: []
-        }
-    ];
-
+    const defaultLayout = [];
+    
     // Layout structure: Array of objects { id, title, fields: [{ id, type, label, fields: [...] }] }
     const [layout, setLayout] = useState(() => {
         if (section?.content?.layout && section.content.layout.length > 0) {
-            return section.content.layout;
+            // Clean up potentially corrupted fields (e.g. from previous clearSectionContent bug)
+            const cleanFields = (fields) => {
+                if (!Array.isArray(fields)) return [];
+                return fields
+                    .filter(f => f.type && f.type !== '')
+                    .map(f => ({
+                        ...f,
+                        fields: f.fields ? cleanFields(f.fields) : []
+                    }));
+            };
+            
+            return section.content.layout.map(sec => ({
+                ...sec,
+                fields: cleanFields(sec.fields)
+            }));
         }
         return defaultLayout;
     });
@@ -1970,6 +2254,38 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
                                             device === 'tablet' ? "w-full max-w-[768px] shadow-2xl border border-gray-300 mx-auto" : 
                                             "w-full max-w-[375px] shadow-2xl border border-gray-300 mx-auto"
                                         )}>
+                                        {layout.length === 0 && (
+                                            <div className="w-full bg-white shadow-sm border border-gray-100 rounded-xl p-4 min-h-[400px] flex flex-col items-center justify-center text-center p-8 opacity-80"
+                                                 onDragOver={handleDragOver}
+                                                 onDrop={(e) => {
+                                                    // When dropped on empty canvas, we need to auto-create a section and put the field inside it.
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    if (!draggedItem) return;
+                                                    
+                                                    const newSection = {
+                                                        id: `s_${Date.now()}`,
+                                                        title: 'General Section',
+                                                        isExpanded: true,
+                                                        fields: [draggedItem.item]
+                                                    };
+                                                    setLayout([newSection]);
+                                                    setDraggedItem(null);
+                                                    setDragType(null);
+                                                 }}
+                                            >
+                                                <div className="w-16 h-16 bg-[#f4f2ff] rounded-full flex items-center justify-center text-[#5946ff] mb-4">
+                                                    <FiLayers size={24} strokeWidth={2.5} />
+                                                </div>
+                                                <h3 className="text-[17px] font-bold text-gray-900 mb-2">Drag & Drop Your Elements</h3>
+                                                <p className="text-[13px] text-gray-500 max-w-sm mb-6">Drag an element from the right sidebar to create your first section.</p>
+                                                <div className="pointer-events-auto">
+                                                    <button onClick={handleAddSection} className="px-5 py-2.5 bg-[#5946ff] text-white text-sm font-semibold rounded-full flex items-center gap-2 hover:bg-[#4a39e0] transition-colors shadow-sm">
+                                                        <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center"><FiPlus size={14} /></div> Add Section
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                         {layout.map((sec, secIdx) => (
                                             <div key={sec.id} className="w-full">
                                                 <div 
@@ -1984,11 +2300,6 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
                                                             </div>
                                                             <h3 className="text-[17px] font-bold text-gray-900 mb-2">Drag & Drop Your Elements</h3>
                                                             <p className="text-[13px] text-gray-500 max-w-sm mb-6">Choose elements from the right sidebar and drop them here to build your section.</p>
-                                                            <div className="pointer-events-auto">
-                                                                <button className="px-5 py-2.5 bg-[#5946ff] text-white text-sm font-semibold rounded-full flex items-center gap-2 hover:bg-[#4a39e0] transition-colors shadow-sm">
-                                                                    <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center"><FiPlus size={14} /></div> Add Element
-                                                                </button>
-                                                            </div>
                                                         </div>
                                                     ) : (
                                                         <div className="space-y-0 w-full relative z-10">
@@ -2042,7 +2353,7 @@ export default function SectionBuilderEditor({ section, pageName, onSave, onClos
                                                 ) : (field.type === 'Text' || field.type === 'Description') ? (
                                                     <TextProperties field={field} onChange={updateActiveField} />
                                                 ) : field.type === 'Image' ? (
-                                                    <ImageProperties field={field} onChange={updateActiveField} handleImageUpload={handleImageUpload} />
+                                                    <ImageProperties field={field} onChange={updateActiveField} handleImageUpload={handleImageUpload} device={device} setDevice={setDevice} />
                                                 ) : field.type === 'Video' ? (
                                                     <VideoProperties field={field} onChange={updateActiveField} />
                                                 ) : (

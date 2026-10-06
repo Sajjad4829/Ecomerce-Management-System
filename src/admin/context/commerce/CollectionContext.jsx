@@ -29,7 +29,13 @@ export function CollectionProvider({ children }) {
         const res = await fetch(API);
         if (!res.ok) throw new Error(`Failed to load collections: ${res.statusText}`);
         const data = await res.json();
-        setCollections(data);
+        const mappedData = data.map(col => ({
+          ...col,
+          status: ['Active', 'published'].includes(col.status) ? 'published' : (['Draft', 'draft'].includes(col.status) ? 'draft' : (['Archived', 'archived'].includes(col.status) ? 'archived' : 'draft')),
+          featured: col.featured || col.isFeatured || false,
+          bestSeller: col.bestSeller || col.isBestSeller || false
+        }));
+        setCollections(mappedData);
       } catch (err) {
         console.error('CollectionContext fetch error:', err);
         setError(err.message);
@@ -75,21 +81,47 @@ export function CollectionProvider({ children }) {
   // ── CRUD ───────────────────────────────────────────────────────────────────
 
   const addCollection = useCallback(async (collection) => {
-    const payload = { ...collection, id: `col-${Date.now()}`, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    const payload = { 
+      ...collection, 
+      status: ['published', 'Active'].includes(collection.status) ? 'published' : 'draft',
+      featured: collection.featured,
+      bestSeller: collection.bestSeller,
+      id: `col-${Date.now()}`, 
+      createdAt: new Date().toISOString(), 
+      updatedAt: new Date().toISOString() 
+    };
     const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to create collection'); }
-    const newCollection = await res.json();
-    setCollections(prev => [newCollection, ...prev]);
-    return newCollection;
+    const newCol = await res.json();
+    const mappedCol = {
+      ...newCol,
+      status: ['Active', 'published'].includes(newCol.status) ? 'published' : 'draft',
+      featured: newCol.featured || newCol.isFeatured || false,
+      bestSeller: newCol.bestSeller || newCol.isBestSeller || false
+    };
+    setCollections(prev => [mappedCol, ...prev]);
+    return mappedCol;
   }, []);
 
   const updateCollection = useCallback(async (id, updates) => {
-    const payload = { ...updates, updatedAt: new Date().toISOString() };
+    const payload = { 
+      ...updates, 
+      status: ['published', 'Active'].includes(updates.status) ? 'published' : 'draft',
+      featured: updates.featured !== undefined ? updates.featured : undefined,
+      bestSeller: updates.bestSeller !== undefined ? updates.bestSeller : undefined,
+      updatedAt: new Date().toISOString() 
+    };
     const res = await fetch(`${API}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to update collection'); }
     const updatedCollection = await res.json();
-    setCollections(prev => prev.map(c => c.id === id ? updatedCollection : c));
-    return updatedCollection;
+    const mappedCol = {
+      ...updatedCollection,
+      status: ['Active', 'published'].includes(updatedCollection.status) ? 'published' : (['Draft', 'draft'].includes(updatedCollection.status) ? 'draft' : (['Archived', 'archived'].includes(updatedCollection.status) ? 'archived' : 'published')),
+      featured: updatedCollection.featured || updatedCollection.isFeatured || false,
+      bestSeller: updatedCollection.bestSeller || updatedCollection.isBestSeller || false
+    };
+    setCollections(prev => prev.map(c => c.id === id ? mappedCol : c));
+    return mappedCol;
   }, []);
 
   const deleteCollection = useCallback(async (id) => {

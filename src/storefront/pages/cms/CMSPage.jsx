@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useCMS } from '../../../admin/context/cms/CMSContext';
+import { useCollections } from '../../../admin/context/commerce/CollectionContext';
 import SectionRenderer from '../../components/sections/SectionRenderer';
+import CollectionPageTemplate from '../../../components/commerce/collections/presentation/CollectionPageTemplate';
 
 export default function CMSPage() {
   const { slug } = useParams();
   const { pages, getPageSections, loadPageSections, pagesLoading } = useCMS();
+  const { collections } = useCollections();
   
   // Find page by slug. Need to prepend '/' since slugs in CMS are stored like '/about'
   let matchedPage = pages.find(p => {
@@ -53,10 +56,19 @@ export default function CMSPage() {
   }
 
   const sections = getPageSections(matchedPage.id) || [];
+  
+  // Find best seller collections to display on homepage
+  const isHomePage = !slug || slug === 'home' || slug === '';
+  const bestSellerCollections = collections.filter(c => c.bestSeller && c.status === 'published');
 
   return (
     <div className="bg-surface min-h-screen">
       <SectionRenderer sections={sections} />
+      
+      {/* Dynamically render Best Seller Collections at the bottom of the homepage */}
+      {isHomePage && bestSellerCollections.map(collection => (
+        <CollectionPageTemplate key={`bestseller-${collection.id}`} collection={collection} />
+      ))}
     </div>
   );
 }

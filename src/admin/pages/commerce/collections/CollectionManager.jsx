@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCollections } from '../../../context/commerce/CollectionContext';
-import { FiMoreVertical, FiEdit2, FiEye, FiCopy, FiTrash2, FiClock } from 'react-icons/fi';
+import { FiMoreVertical, FiEdit2, FiEye, FiCopy, FiTrash2, FiClock, FiStar } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import CatalogToolbar from '../../../components/commerce/shared/CatalogToolbar';
 import CatalogFilters from '../../../components/commerce/shared/CatalogFilters';
@@ -9,6 +9,7 @@ import BulkCatalogBar from '../../../components/commerce/shared/BulkCatalogBar';
 import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
 import CollectionPreview from '../../../components/commerce/collections/CollectionPreview';
 import CollectionGrid from '../../../components/commerce/collections/CollectionGrid';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
 
 export default function CollectionManager() {
   const navigate = useNavigate();
@@ -18,7 +19,8 @@ export default function CollectionManager() {
   const [selectedCollections, setSelectedCollections] = useState([]);
   const [previewCollection, setPreviewCollection] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
-  const { collections, duplicateCollection, deleteCollection, bulkDelete, bulkUpdateStatus } = useCollections();
+  const { addToast } = useToast();
+  const { collections, duplicateCollection, deleteCollection, bulkDelete, bulkUpdateStatus, updateCollection } = useCollections();
 
   const handleSelectAll = (checked) => {
     if (checked) setSelectedCollections(collections.map(c => c.id));
@@ -80,8 +82,14 @@ export default function CollectionManager() {
               selectedCollections={selectedCollections}
               onSelectAll={handleSelectAll}
               onSelectOne={handleSelectOne}
-              onDuplicate={duplicateCollection}
-              onDelete={deleteCollection}
+              onDuplicate={async (id) => {
+                await duplicateCollection(id);
+                addToast({ type: 'success', message: 'Collection duplicated successfully' });
+              }}
+              onDelete={async (id) => {
+                await deleteCollection(id);
+                addToast({ type: 'success', message: 'Collection deleted successfully' });
+              }}
               onPreview={setPreviewCollection}
             />
           ) : (
@@ -130,11 +138,16 @@ export default function CollectionManager() {
                               <img src={collection.image} alt={collection.name} className="w-full h-full object-cover" />
                             </div>
                             <div>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <p className="font-semibold text-text-primary">{collection.name}</p>
                                 {collection.featured && (
                                   <span className="px-1.5 py-0.5 rounded-sm bg-warning-soft text-amber-900 text-[9px] font-mono font-bold uppercase tracking-wider">
                                     Featured
+                                  </span>
+                                )}
+                                {collection.bestSeller && (
+                                  <span className="px-1.5 py-0.5 rounded-sm bg-success-soft text-emerald-900 text-[9px] font-mono font-bold uppercase tracking-wider">
+                                    Best Seller
                                   </span>
                                 )}
                               </div>
@@ -199,18 +212,30 @@ export default function CollectionManager() {
                                     <FiEye size={14} /> Live Preview
                                   </button>
                                   <button 
-                                    onClick={() => {
-                                      duplicateCollection(collection.id);
+                                    onClick={async () => {
+                                      await duplicateCollection(collection.id);
+                                      addToast({ type: 'success', message: 'Collection duplicated successfully' });
                                       setActiveMenu(null);
                                     }}
                                     className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-background flex items-center gap-2"
                                   >
                                     <FiCopy size={14} /> Duplicate
                                   </button>
+                                  <button 
+                                    onClick={async () => {
+                                      await updateCollection(collection.id, { bestSeller: !collection.bestSeller });
+                                      addToast({ type: 'success', message: `Collection ${collection.bestSeller ? 'removed from' : 'added to'} best sellers` });
+                                      setActiveMenu(null);
+                                    }}
+                                    className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-background flex items-center gap-2"
+                                  >
+                                    <FiStar size={14} /> {collection.bestSeller ? 'Remove Best Seller' : 'Mark Best Seller'}
+                                  </button>
                                   <div className="h-px bg-stone-100 my-1" />
                                   <button 
-                                    onClick={() => {
-                                      deleteCollection(collection.id);
+                                    onClick={async () => {
+                                      await deleteCollection(collection.id);
+                                      addToast({ type: 'success', message: 'Collection deleted successfully' });
                                       setActiveMenu(null);
                                     }}
                                     className="w-full text-left px-4 py-2 text-sm text-danger hover:bg-danger-soft flex items-center gap-2"
@@ -242,19 +267,30 @@ export default function CollectionManager() {
       <BulkCatalogBar 
         selectedCount={selectedCollections.length} 
         onClear={() => setSelectedCollections([])} 
-        onAction={(action) => {
-          if (action === 'delete') {
-            if (window.confirm(`Are you sure you want to delete ${selectedCollections.length} collections?`)) {
-              bulkDelete(selectedCollections);
-              setSelectedCollections([]);
-            }
-          } else if (action === 'publish') {
-            bulkUpdateStatus(selectedCollections, 'published');
-            setSelectedCollections([]);
-          } else if (action === 'draft') {
-            bulkUpdateStatus(selectedCollections, 'draft');
-            setSelectedCollections([]);
-          }
+        onPublish={() => {
+          bulkUpdateStatus(selectedCollections, 'published');
+          addToast({ type: 'success', message: `Published ${selectedCollections.length} collections` });
+          setSelectedCollections([]);
+        }}
+        onFeature={async () => {
+          await Promise.all(selectedCollections.map(id => updateCollection(id, { featured: true })));
+          addToast({ type: 'success', message: `Featured ${selectedCollections.length} collections` });
+          setSelectedCollections([]);
+        }}
+        onBestSeller={async () => {
+          await Promise.all(selectedCollections.map(id => updateCollection(id, { bestSeller: true })));
+          addToast({ type: 'success', message: `Marked ${selectedCollections.length} collections as best sellers` });
+          setSelectedCollections([]);
+        }}
+        onArchive={() => {
+          bulkUpdateStatus(selectedCollections, 'draft');
+          addToast({ type: 'success', message: `Archived ${selectedCollections.length} collections` });
+          setSelectedCollections([]);
+        }}
+        onDelete={() => {
+          bulkDelete(selectedCollections);
+          addToast({ type: 'success', message: `Deleted ${selectedCollections.length} collections` });
+          setSelectedCollections([]);
         }}
       />
 

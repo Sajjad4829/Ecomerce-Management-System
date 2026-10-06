@@ -1,4 +1,4 @@
-import { FiEdit2, FiEye, FiCopy, FiTrash2, FiClock } from 'react-icons/fi';
+import { FiEdit2, FiEye, FiCopy, FiTrash2, FiClock, FiStar } from 'react-icons/fi';
 import CatalogStatusBadge from '../shared/CatalogStatusBadge';
 
 export default function CollectionGrid({ 
@@ -62,6 +62,18 @@ export default function CollectionGrid({
                 <h3 className="font-serif font-bold text-lg text-text-primary group-hover:text-warning transition-colors">
                   {collection.name}
                 </h3>
+                <div className="flex gap-2 items-center mt-1">
+                  {collection.featured && (
+                    <span className="px-1.5 py-0.5 rounded-sm bg-warning-soft text-amber-900 text-[9px] font-mono font-bold uppercase tracking-wider">
+                      Featured
+                    </span>
+                  )}
+                  {collection.bestSeller && (
+                    <span className="px-1.5 py-0.5 rounded-sm bg-success-soft text-emerald-900 text-[9px] font-mono font-bold uppercase tracking-wider">
+                      Best Seller
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-text-muted font-mono mt-0.5">/{collection.slug}</p>
               </div>
             </div>

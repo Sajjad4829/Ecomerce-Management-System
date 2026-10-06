@@ -1,32 +1,17 @@
 import React, { createContext, useContext, useState, useMemo } from 'react';
 import { getStockStatus } from '../../services/inventory/StockValidation';
+import { notificationService } from '../../services/notification/NotificationService';
 
 const InventoryContext = createContext(null);
 
 export const InventoryProvider = ({ children }) => {
-  const [warehouses, setWarehouses] = useState([
-    { id: 'WH-1', code: 'MAIN-NY', name: 'New York Main Hub', location: 'New York, USA', contact: 'John Doe', email: 'ny@example.com', phone: '123-456-7890', capacity: 10000, used: 4500, status: 'Active' },
-    { id: 'WH-2', code: 'WEST-CA', name: 'California Distribution', location: 'Los Angeles, USA', contact: 'Jane Smith', email: 'ca@example.com', phone: '987-654-3210', capacity: 8000, used: 7200, status: 'Active' },
-    { id: 'WH-3', code: 'EURO-LDN', name: 'London Regional', location: 'London, UK', contact: 'Bob Johnson', email: 'ldn@example.com', phone: '555-555-5555', capacity: 5000, used: 1200, status: 'Inactive' }
-  ]);
+  const [warehouses, setWarehouses] = useState([]);
 
-  const [inventory, setInventory] = useState([
-    { id: 'INV-1', productId: 'prod-1', productName: 'Velvet Sofa', sku: 'SOFA-VEL-BLU', warehouseId: 'WH-1', warehouseName: 'New York Main Hub', available: 45, reserved: 5, incoming: 10, reorderLevel: 20 },
-    { id: 'INV-2', productId: 'prod-1', productName: 'Velvet Sofa', sku: 'SOFA-VEL-BLU', warehouseId: 'WH-2', warehouseName: 'California Distribution', available: 12, reserved: 0, incoming: 0, reorderLevel: 15 },
-    { id: 'INV-3', productId: 'prod-2', productName: 'Oak Dining Table', sku: 'TAB-OAK-LG', warehouseId: 'WH-1', warehouseName: 'New York Main Hub', available: 8, reserved: 2, incoming: 5, reorderLevel: 10 },
-    { id: 'INV-4', productId: 'prod-3', productName: 'Ceramic Vase', sku: 'VASE-CER-WHT', warehouseId: 'WH-3', warehouseName: 'London Regional', available: 0, reserved: 0, incoming: 50, reorderLevel: 20 },
-    { id: 'INV-5', productId: 'prod-4', productName: 'Throw Pillow', sku: 'PIL-COT-WHT', warehouseId: 'WH-1', warehouseName: 'New York Main Hub', available: 120, reserved: 10, incoming: 0, reorderLevel: 50 },
-  ]);
+  const [inventory, setInventory] = useState([]);
 
-  const [movements, setMovements] = useState([
-    { id: 'MOV-1001', productId: 'prod-1', productName: 'Velvet Sofa', sku: 'SOFA-VEL-BLU', warehouseId: 'WH-1', type: 'Purchase', quantity: 50, reason: 'Restock', user: 'System', date: '2024-05-01T10:00:00Z' },
-    { id: 'MOV-1002', productId: 'prod-1', productName: 'Velvet Sofa', sku: 'SOFA-VEL-BLU', warehouseId: 'WH-1', type: 'Sale', quantity: -5, reason: 'Order Fulfillment', user: 'Admin', date: '2024-05-12T14:30:00Z' },
-    { id: 'MOV-1003', productId: 'prod-3', productName: 'Ceramic Vase', sku: 'VASE-CER-WHT', warehouseId: 'WH-3', type: 'Adjustment', quantity: -2, reason: 'Damage', user: 'Warehouse Staff', date: '2024-05-14T09:15:00Z' },
-  ]);
+  const [movements, setMovements] = useState([]);
 
-  const [reservations, setReservations] = useState([
-    { id: 'RES-1001', orderId: 'ORD-5001', productId: 'prod-1', warehouseId: 'WH-1', quantity: 5, status: 'Active', date: '2024-05-12T14:30:00Z' }
-  ]);
+  const [reservations, setReservations] = useState([]);
 
   const getWarehouse = (id) => warehouses.find(w => w.id === id);
   const getProductInventory = (productId) => inventory.filter(i => i.productId === productId);
@@ -40,10 +25,24 @@ export const InventoryProvider = ({ children }) => {
       status: data.status || 'Active'
     };
     setWarehouses([...warehouses, newWarehouse]);
+    notificationService.createNotification({
+      type: 'Inventory',
+      title: 'Warehouse Added',
+      message: `Warehouse ${data.name || ''} has been added.`,
+      priority: 'Normal',
+      module: 'Inventory',
+    });
   };
 
   const updateWarehouse = (id, data) => {
     setWarehouses(warehouses.map(w => w.id === id ? { ...w, ...data } : w));
+    notificationService.createNotification({
+      type: 'Inventory',
+      title: 'Warehouse Updated',
+      message: `Warehouse details have been updated.`,
+      priority: 'Normal',
+      module: 'Inventory',
+    });
   };
 
   const deleteWarehouse = (id) => {
@@ -52,6 +51,13 @@ export const InventoryProvider = ({ children }) => {
       throw new Error("Cannot delete warehouse with active stock.");
     }
     setWarehouses(warehouses.filter(w => w.id !== id));
+    notificationService.createNotification({
+      type: 'Inventory',
+      title: 'Warehouse Deleted',
+      message: `A warehouse has been removed from the system.`,
+      priority: 'Normal',
+      module: 'Inventory',
+    });
   };
 
   const adjustStock = (data) => {
@@ -76,6 +82,14 @@ export const InventoryProvider = ({ children }) => {
       }
       return item;
     }));
+
+    notificationService.createNotification({
+      type: 'Inventory',
+      title: 'Stock Adjusted',
+      message: `Stock for ${data.productName || 'product'} has been adjusted by ${newMovement.quantity}.`,
+      priority: 'Normal',
+      module: 'Inventory',
+    });
   };
 
   const transferStock = (data) => {
@@ -142,6 +156,14 @@ export const InventoryProvider = ({ children }) => {
       }
 
       return updated;
+    });
+
+    notificationService.createNotification({
+      type: 'Inventory',
+      title: 'Stock Transferred',
+      message: `Transferred ${data.quantity} units of ${data.productName || 'product'}.`,
+      priority: 'Normal',
+      module: 'Inventory',
     });
   };
 

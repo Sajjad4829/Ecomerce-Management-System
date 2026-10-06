@@ -3,7 +3,7 @@ import { FiArrowRight } from 'react-icons/fi';
 import ProductCard from '../product/ProductCard';
 import { useProducts } from '../../../admin/context/commerce/ProductContext';
 
-export default function ProductGridSection({ data, title: propTitle, linkTo, ...settings }) {
+export default function ProductGridSection({ data, title: propTitle, linkTo, products: propProducts, ...settings }) {
   const { products: contextProducts } = useProducts();
   const content = data?.content || {};
   const title = content.title !== undefined ? content.title : (propTitle || "Featured Products");
@@ -24,7 +24,7 @@ export default function ProductGridSection({ data, title: propTitle, linkTo, ...
     return `grid gap-x-8 gap-y-12 grid-cols-${columns.mobile} sm:grid-cols-${columns.tablet} lg:grid-cols-${columns.desktop}`;
   };
 
-  const displayProducts = contextProducts?.slice(0, parseInt(columns.desktop, 10) || 4) || [];
+  const displayProducts = (propProducts || contextProducts)?.slice(0, parseInt(columns.desktop, 10) || 4) || [];
 
   if (displayProducts.length === 0) return null;
 

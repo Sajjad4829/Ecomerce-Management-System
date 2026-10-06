@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useBrands } from '../../../context/commerce/BrandContext';
 import { FiMoreVertical, FiEdit2, FiEye, FiCopy, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import CatalogToolbar from '../../../components/commerce/shared/CatalogToolbar';
@@ -7,6 +8,7 @@ import CatalogFilters from '../../../components/commerce/shared/CatalogFilters';
 import BulkCatalogBar from '../../../components/commerce/shared/BulkCatalogBar';
 import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatusBadge';
 import BrandPreview from '../../../components/commerce/brands/BrandPreview';
+import { useToast } from '../../../../components/ui/Toast/ToastContext';
 
 export default function BrandManager() {
   const navigate = useNavigate();
@@ -16,29 +18,9 @@ export default function BrandManager() {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [previewBrand, setPreviewBrand] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
+  const { addToast } = useToast();
 
-  const [brands, setBrands] = useState([
-    {
-      id: 'brand-1',
-      name: 'Aurelia Signature',
-      slug: 'aurelia-signature',
-      status: 'published',
-      featured: true,
-      productCount: 156,
-      updatedAt: '2026-08-08',
-      logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?auto=format&fit=crop&q=80&w=200',
-    },
-    {
-      id: 'brand-2',
-      name: 'Nordic Heritage',
-      slug: 'nordic-heritage',
-      status: 'published',
-      featured: false,
-      productCount: 34,
-      updatedAt: '2026-08-01',
-      logo: 'https://images.unsplash.com/photo-1599305090598-fe179d501227?auto=format&fit=crop&q=80&w=200',
-    }
-  ]);
+  const { brands, deleteBrand, updateBrand, loading } = useBrands();
 
   const handleSelectAll = (checked) => {
     if (checked) setSelectedBrands(brands.map(b => b.id));
@@ -129,7 +111,14 @@ export default function BrandManager() {
                             <FiEye size={12} /> Preview
                           </button>
                           <div className="h-px bg-stone-100 my-1" />
-                          <button className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
+                          <button 
+                            onClick={async () => {
+                              await deleteBrand(brand.id);
+                              addToast({ type: 'success', message: 'Brand deleted successfully' });
+                              setActiveMenu(null);
+                            }} 
+                            className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2"
+                          >
                             <FiTrash2 size={12} /> Delete
                           </button>
                         </motion.div>
@@ -236,7 +225,15 @@ export default function BrandManager() {
                                   <FiEye size={12} /> Preview
                                 </button>
                                 <div className="h-px bg-stone-100 my-1" />
-                                <button className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2">
+                                <button 
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    await deleteBrand(brand.id);
+                                    addToast({ type: 'success', message: 'Brand deleted successfully' });
+                                    setActiveMenu(null);
+                                  }} 
+                                  className="w-full text-left px-3 py-1.5 text-xs text-danger hover:bg-danger-soft flex items-center gap-2"
+                                >
                                   <FiTrash2 size={12} /> Delete
                                 </button>
                               </motion.div>
@@ -263,6 +260,26 @@ export default function BrandManager() {
       <BulkCatalogBar 
         selectedCount={selectedBrands.length} 
         onClear={() => setSelectedBrands([])} 
+        onPublish={async () => {
+          await Promise.all(selectedBrands.map(id => updateBrand(id, { status: 'active' })));
+          addToast({ type: 'success', message: `Published ${selectedBrands.length} brands successfully` });
+          setSelectedBrands([]);
+        }}
+        onFeature={async () => {
+          await Promise.all(selectedBrands.map(id => updateBrand(id, { featured: true })));
+          addToast({ type: 'success', message: `Featured ${selectedBrands.length} brands successfully` });
+          setSelectedBrands([]);
+        }}
+        onArchive={async () => {
+          await Promise.all(selectedBrands.map(id => updateBrand(id, { status: 'archived' })));
+          addToast({ type: 'success', message: `Archived ${selectedBrands.length} brands successfully` });
+          setSelectedBrands([]);
+        }}
+        onDelete={async () => {
+          await Promise.all(selectedBrands.map(id => deleteBrand(id)));
+          addToast({ type: 'success', message: `Deleted ${selectedBrands.length} brands successfully` });
+          setSelectedBrands([]);
+        }}
       />
 
       <BrandPreview 

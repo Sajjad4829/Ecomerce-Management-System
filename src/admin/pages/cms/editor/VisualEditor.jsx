@@ -119,7 +119,7 @@ export default function VisualEditor() {
     if (typeof content === 'object') {
       const cleared = {};
       for (const key in content) {
-        if (key === 'id') {
+        if (['id', 'type', 'baseType', 'name', 'category', 'icon', 'label'].includes(key)) {
           cleared[key] = content[key];
         } else if (typeof content[key] === 'string') {
           cleared[key] = '';

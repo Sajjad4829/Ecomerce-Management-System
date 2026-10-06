@@ -301,6 +301,12 @@ export function AnalyticsProvider({ children }) {
     getOverviewMetrics,
     getSalesMetrics,
     getBusinessInsights,
+    getRecentOrders: (limit = 5) => {
+      // Return the most recent orders based on date
+      return [...filteredData.currOrders]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, limit);
+    },
     getOrderMetrics: () => {
        const statusCount = {};
        filteredData.currOrders.forEach(o => {

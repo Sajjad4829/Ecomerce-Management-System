@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { auditService as realAuditService } from '../services/audit/AuditService';
+import { notificationService } from '../services/notification/NotificationService';
 
 const MOCK_ORDERS = [
   {
@@ -99,6 +100,14 @@ export function OrderProvider({ children }) {
           metadata: { oldStatus: o.status, newStatus, reason }
         });
 
+        notificationService.createNotification({
+          type: 'Orders',
+          title: 'Order Status Updated',
+          message: `Order ${id} status changed to ${newStatus}.`,
+          priority: newStatus === 'Cancelled' ? 'High' : 'Normal',
+          module: 'Orders',
+        });
+
         return {
           ...o,
           status: newStatus,
@@ -142,6 +151,14 @@ export function OrderProvider({ children }) {
           resourceName: o.id,
           severity: 'Medium',
           metadata: { oldStatus: o.fulfillmentStatus, newStatus, note }
+        });
+
+        notificationService.createNotification({
+          type: 'Orders',
+          title: 'Order Fulfillment Updated',
+          message: `Order ${id} fulfillment status changed to ${newStatus}.`,
+          priority: 'Normal',
+          module: 'Orders',
         });
 
         return {

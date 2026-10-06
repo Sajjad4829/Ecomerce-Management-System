@@ -24,12 +24,8 @@ export default function Footer() {
           {/* Column 1: Brand & Contact */}
           <div className="lg:col-span-2">
             <div className="mb-6">
-              {logoImage ? (
+              {logoImage && (
                 <img src={logoImage} alt="Logo" className="h-10 object-contain" />
-              ) : (
-                <div className="inline-block bg-red-600 text-white font-bold text-2xl tracking-widest px-4 py-2 uppercase">
-                  HATIL
-                </div>
               )}
             </div>
             

@@ -182,13 +182,16 @@ export default function SectionRenderer({ sections = [] }) {
 
         // Forward section data and the activeTheme to the child
         // Component will receive its settings usually via data or spreading
+        const isHeroOrNav = sectionType.includes('HERO') || sectionType.includes('HEADER') || sectionType === 'FOOTER';
+        
         return (
-          <TargetComponent 
-            key={normalizedSection.id || `section-${index}`} 
-            {...normalizedSection.settings} // Flatten settings so child props map correctly (e.g. title, subtitle)
-            data={normalizedSection} 
-            activeTheme={activeTheme} 
-          />
+          <div key={normalizedSection.id || `section-${index}`} className={isHeroOrNav ? '' : 'mt-[8px]'}>
+            <TargetComponent 
+              {...normalizedSection.settings} 
+              data={normalizedSection} 
+              activeTheme={activeTheme} 
+            />
+          </div>
         );
       })}
     </div>

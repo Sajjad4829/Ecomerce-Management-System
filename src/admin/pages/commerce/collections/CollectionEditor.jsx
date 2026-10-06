@@ -7,15 +7,15 @@ import CatalogStatusBadge from '../../../components/commerce/shared/CatalogStatu
 import CollectionRuleBuilder from '../../../components/commerce/collections/CollectionRuleBuilder';
 import ManualProductSelector from '../../../components/commerce/collections/ManualProductSelector';
 import { useCollections, generateSlug } from '../../../context/commerce/CollectionContext';
-import CollectionPageTemplate from '../../../../components/commerce/collections/presentation/CollectionPageTemplate';
+import { useProducts } from '../../../context/commerce/ProductContext';
+import CollectionPreview from '../../../components/commerce/collections/CollectionPreview';
 import { useToast } from '../../../../components/ui/Toast/ToastContext';
 
 const STEPS = [
   { id: 'basic', label: 'Basic Info', number: '1', icon: FiInfo },
-  { id: 'media', label: 'Media & Banner', number: '2', icon: FiImage },
-  { id: 'products', label: 'Products & Rules', number: '3', icon: FiLayers },
-  { id: 'schedule', label: 'Scheduling', number: '4', icon: FiCalendar },
-  { id: 'seo', label: 'SEO & Publishing', number: '5', icon: FiSearch }
+  { id: 'products', label: 'Products & Rules', number: '2', icon: FiLayers },
+  { id: 'schedule', label: 'Scheduling', number: '3', icon: FiCalendar },
+  { id: 'seo', label: 'SEO & Publishing', number: '4', icon: FiSearch }
 ];
 
 export default function CollectionEditor() {
@@ -24,12 +24,13 @@ export default function CollectionEditor() {
   const isNew = id === 'new' || !id;
 
   const { collections, updateCollection, addCollection } = useCollections();
+  const { products } = useProducts();
   const { addToast } = useToast();
   
   const [activeTab, setActiveTab] = useState('basic');
   const [isSaving, setIsSaving] = useState(false);
-  const [previewMode, setPreviewMode] = useState('desktop');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -38,6 +39,7 @@ export default function CollectionEditor() {
     type: 'manual', // manual or automatic
     status: 'draft',
     featured: false,
+    bestSeller: false,
     startDate: '',
     endDate: '',
     seoTitle: '',
@@ -60,6 +62,7 @@ export default function CollectionEditor() {
           type: existing.type || 'manual',
           status: existing.status || 'draft',
           featured: existing.featured || false,
+          bestSeller: existing.bestSeller || false,
           startDate: existing.startAt || '',
           endDate: existing.endAt || '',
           seoTitle: existing.seo?.metaTitle || '',
@@ -74,6 +77,37 @@ export default function CollectionEditor() {
     }
   }, [id, isNew, collections]);
 
+  const previewCollection = React.useMemo(() => {
+    let resolvedProducts = [];
+    if (formData.type === 'manual') {
+      resolvedProducts = products.filter(p => formData.productIds?.includes(p.id));
+    } else if (formData.type === 'automatic') {
+      resolvedProducts = products.filter(p => {
+        if (!formData.rules || formData.rules.length === 0) return false;
+        const matches = formData.rules.map(rule => {
+          const { field, operator, value } = rule;
+          let pv = p[field];
+          if (['price', 'stock'].includes(field)) pv = Number(pv);
+          switch (operator) {
+            case 'equals': return String(pv).toLowerCase() === String(value).toLowerCase();
+            case 'notEquals': return String(pv).toLowerCase() !== String(value).toLowerCase();
+            case 'contains': return String(pv).toLowerCase().includes(String(value).toLowerCase());
+            case 'greaterThan': return pv > Number(value);
+            case 'lessThan': return pv < Number(value);
+            default: return false;
+          }
+        });
+        return formData.matchMode === 'any' ? matches.some(m => m) : matches.every(m => m);
+      });
+    }
+
+    return {
+      ...formData,
+      id: isNew ? 'preview' : id,
+      resolvedProducts
+    };
+  }, [formData, products, isNew, id]);
+
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setHasUnsavedChanges(true);
@@ -81,7 +115,7 @@ export default function CollectionEditor() {
 
   const saveCollection = (status) => {
     setIsSaving(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       const dataToSave = {
         name: formData.name,
         slug: formData.slug || generateSlug(formData.name),
@@ -89,8 +123,9 @@ export default function CollectionEditor() {
         type: formData.type,
         status: status,
         featured: formData.featured,
-        startAt: formData.startDate,
-        endAt: formData.endDate,
+        bestSeller: formData.bestSeller,
+        startAt: formData.startDate || null,
+        endAt: formData.endDate || null,
         productIds: formData.productIds,
         rules: formData.rules,
         matchMode: formData.matchMode,
@@ -102,20 +137,24 @@ export default function CollectionEditor() {
         }
       };
 
-      if (isNew) {
-        addCollection(dataToSave);
-      } else {
-        updateCollection(id, dataToSave);
-      }
-      
-      setFormData(prev => ({ ...prev, status }));
-      setIsSaving(false);
-      setHasUnsavedChanges(false);
-      
-      addToast({ type: 'success', message: `Collection ${status === 'draft' ? 'saved as draft' : 'published'} successfully` });
-      
-      if (status === 'published') {
-        navigate('/admin/catalog/collections');
+      try {
+        if (isNew) {
+          await addCollection(dataToSave);
+        } else {
+          await updateCollection(id, dataToSave);
+        }
+        
+        setFormData(prev => ({ ...prev, status }));
+        setHasUnsavedChanges(false);
+        addToast({ type: 'success', message: `Collection ${status === 'draft' ? 'saved as draft' : 'published'} successfully` });
+        
+        if (status === 'published') {
+          navigate('/admin/catalog/collections');
+        }
+      } catch (err) {
+        addToast({ type: 'error', message: err.message || 'Failed to save collection' });
+      } finally {
+        setIsSaving(false);
       }
     }, 800);
   };
@@ -216,11 +255,11 @@ export default function CollectionEditor() {
         </div>
       </div>
 
-      {/* Main Content Two-Column */}
-      <div className="flex-1 overflow-hidden flex">
+      {/* Main Content Single Column */}
+      <div className="flex-1 overflow-y-auto px-8 py-6 no-scrollbar pb-32 flex justify-center">
         
-        {/* LEFT COLUMN: Form Cards (55%) */}
-        <div className="w-[55%] h-full overflow-y-auto px-8 py-6 no-scrollbar pb-32">
+        {/* Form Container */}
+        <div className="w-full max-w-4xl">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -287,67 +326,42 @@ export default function CollectionEditor() {
                         <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-border-hover after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                       </label>
                     </div>
-                  </div>
-                </div>
-              )}
 
-              {activeTab === 'media' && (
-                <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiImage size={16} /></div>
-                    <h2 className="text-lg font-bold text-text-primary">Collection Media</h2>
-                  </div>
-                  <p className="text-sm text-text-muted mb-6 ml-11">Visual assets used in grids and headers.</p>
-
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-xs font-bold text-text-primary mb-1.5">Hero / Banner Image URL</label>
-                      <div className="flex items-center gap-4">
-                        {formData.bannerImage ? (
-                          <img src={formData.bannerImage} alt="Banner" className="w-32 h-20 object-cover rounded-xl border border-border" />
-                        ) : (
-                          <div className="w-32 h-20 bg-background rounded-xl border border-border flex items-center justify-center">
-                            <FiImage className="text-text-muted" />
-                          </div>
-                        )}
-                        <input 
-                          type="text" 
-                          value={formData.bannerImage}
-                          onChange={(e) => handleChange('bannerImage', e.target.value)}
-                          placeholder="https://images.unsplash.com/..."
-                          className="flex-1 px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
-                        />
+                    <div className="pt-4 border-t border-border flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-bold text-text-primary">Best Seller Collection</p>
+                        <p className="text-xs text-text-muted">Highlight this collection as a Best Seller on the frontend.</p>
                       </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-text-primary mb-1.5">Thumbnail / Cover Image URL</label>
-                      <div className="flex items-center gap-4">
-                        {formData.image ? (
-                          <img src={formData.image} alt="Cover" className="w-20 h-20 object-cover rounded-xl border border-border" />
-                        ) : (
-                          <div className="w-20 h-20 bg-background rounded-xl border border-border flex items-center justify-center">
-                            <FiImage className="text-text-muted" />
-                          </div>
-                        )}
+                      <label className="relative inline-flex items-center cursor-pointer">
                         <input 
-                          type="text" 
-                          value={formData.image}
-                          onChange={(e) => handleChange('image', e.target.value)}
-                          placeholder="https://images.unsplash.com/..."
-                          className="flex-1 px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm text-text-primary placeholder-[#7C849F]"
+                          type="checkbox" 
+                          className="sr-only peer"
+                          checked={formData.bestSeller}
+                          onChange={(e) => handleChange('bestSeller', e.target.checked)}
                         />
-                      </div>
+                        <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-border-hover after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                      </label>
                     </div>
                   </div>
                 </div>
               )}
+
+
 
               {activeTab === 'products' && (
                 <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiLayers size={16} /></div>
-                    <h2 className="text-lg font-bold text-text-primary">Products & Rules</h2>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiLayers size={16} /></div>
+                      <h2 className="text-lg font-bold text-text-primary">Products & Rules</h2>
+                    </div>
+                    <button 
+                      onClick={() => setShowPreview(true)}
+                      className="mt-4 md:mt-0 px-4 py-2 bg-primary/10 text-primary font-semibold text-sm rounded-lg hover:bg-primary/20 transition-colors flex items-center gap-2"
+                    >
+                      <FiMonitor size={16} />
+                      Live Preview
+                    </button>
                   </div>
                   <p className="text-sm text-text-muted mb-6 ml-11">Define how products are added to this collection.</p>
 
@@ -471,42 +485,13 @@ export default function CollectionEditor() {
             </motion.div>
           </AnimatePresence>
         </div>
-
-        {/* RIGHT COLUMN: Live Preview (45%) */}
-        <div className="w-[45%] h-full flex flex-col relative pr-8 pb-6">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#4F46FF]/5 to-[#6D63FF]/5 rounded-[24px] pointer-events-none blur-3xl opacity-50" />
-          
-          <div className="relative flex-1 bg-surface rounded-[24px] shadow-[0_8px_32px_rgba(17,26,74,0.06)] border border-border flex flex-col overflow-hidden">
-            
-            <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-surface shrink-0 z-20">
-               <div className="flex items-center gap-2.5 px-3 py-1.5 bg-success-soft rounded-full">
-                 <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                 <span className="text-[11px] font-bold text-text-primary uppercase tracking-wide">Live Preview</span>
-               </div>
-               
-               <div className="flex items-center gap-1 bg-background p-1 rounded-lg">
-                 <button onClick={() => setPreviewMode('desktop')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'desktop' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Desktop View"><FiMonitor size={14} /></button>
-                 <button onClick={() => setPreviewMode('tablet')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'tablet' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Tablet View"><FiTablet size={14} /></button>
-                 <button onClick={() => setPreviewMode('mobile')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'mobile' ? 'bg-surface shadow-sm text-text-primary' : 'text-text-muted hover:text-text-primary'}`} title="Mobile View"><FiSmartphone size={14} /></button>
-               </div>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto bg-stone-100 flex justify-center no-scrollbar items-start pt-4 pb-12">
-              <div className={`bg-surface shadow-[0_8px_40px_rgba(0,0,0,0.08)] transition-all duration-300 ease-in-out border border-border overflow-hidden ${
-                previewMode === 'mobile' ? 'w-[375px] rounded-[32px] min-h-[812px]' : 
-                previewMode === 'tablet' ? 'w-[768px] rounded-2xl min-h-[1024px]' : 
-                'w-full h-full border-t-0 border-b-0 border-r-0'
-              }`}>
-                <div className="h-full overflow-y-auto no-scrollbar pointer-events-none">
-                  {/* We pass the formData as a collection to the template */}
-                  <CollectionPageTemplate collection={{ ...formData, id: isNew ? 'preview' : id }} />
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
       </div>
+      
+      <CollectionPreview 
+        collection={previewCollection} 
+        isOpen={showPreview} 
+        onClose={() => setShowPreview(false)} 
+      />
     </div>
   );
 }
