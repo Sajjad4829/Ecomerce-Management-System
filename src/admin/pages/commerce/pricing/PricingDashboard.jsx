@@ -4,17 +4,19 @@ import { FiPlus, FiSearch, FiFilter, FiDollarSign, FiClock, FiArchive, FiMoreVer
 import { Link } from 'react-router-dom';
 import CurrencySettings from '../../../components/commerce/pricing/CurrencySettings';
 import PricePreview from '../../../components/commerce/pricing/PricePreview';
+import { useSettings } from '../../../context/settings/SettingsContext';
 
 const MOCK_PRICE_RULES = [
   { id: '1', name: 'Summer Sale 2026', type: 'Collection Discount', target: 'The Sanctuary', amount: '20% OFF', status: 'active', startDate: '2026-06-01', endDate: '2026-08-31' },
   { id: '2', name: 'Trade Program Tier 1', type: 'Customer Group Pricing', target: 'Trade Customers', amount: '15% OFF', status: 'active', startDate: 'Always', endDate: 'Always' },
-  { id: '3', name: 'Black Friday Flash', type: 'Global Discount', target: 'All Products', amount: '$500 OFF', status: 'scheduled', startDate: '2026-11-25', endDate: '2026-11-30' },
+  { id: '3', name: 'Black Friday Flash', type: 'Global Discount', target: 'All Products', amount: '500 OFF', isFlatAmount: true, status: 'scheduled', startDate: '2026-11-25', endDate: '2026-11-30' },
   { id: '4', name: 'Clearance - Old Stock', type: 'Category Discount', target: 'Seating', amount: '30% OFF', status: 'draft', startDate: '-', endDate: '-' },
 ];
 
 export default function PricingDashboard() {
   const [activeTab, setActiveTab] = useState('rules'); // rules, currency, simulator
   const [ruleFilter, setRuleFilter] = useState('all');
+  const { getCurrencySymbol } = useSettings();
 
   return (
     <div className="space-y-8 pb-12">
@@ -148,7 +150,7 @@ export default function PricingDashboard() {
                       </td>
                       <td className="p-4">
                         <span className="inline-flex items-center px-2 py-1 bg-success-soft text-success text-xs font-bold rounded">
-                          {rule.amount}
+                          {rule.isFlatAmount ? `${getCurrencySymbol()}${rule.amount}` : rule.amount}
                         </span>
                       </td>
                       <td className="p-4">

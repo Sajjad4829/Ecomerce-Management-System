@@ -1,3 +1,4 @@
+import { formatCurrency } from '../../utils/formatCurrency';
 import { useCommerce } from '../../context/CommerceContext';
 import { useCheckout } from '../../context/CheckoutContext';
 import CouponInput from '../cart/CouponInput';
@@ -33,7 +34,7 @@ export default function OrderSummary() {
                 )}
               </div>
               <div className="text-sm font-bold text-[#1A1A1A]">
-                ${(item.unitPrice * item.quantity).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                {formatCurrency((item.unitPrice * item.quantity))}
               </div>
             </div>
           );
@@ -47,26 +48,26 @@ export default function OrderSummary() {
       <div className="space-y-3 mb-6 pb-6 border-b border-black/10 text-sm">
         <div className="flex justify-between items-center text-gray-600">
           <span>Subtotal</span>
-          <span className="font-medium text-[#1A1A1A]">${totals.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+          <span className="font-medium text-[#1A1A1A]">{formatCurrency(totals.subtotal)}</span>
         </div>
         
         {totals.discount > 0 && (
           <div className="flex justify-between items-center text-green-600">
             <span>Discount</span>
-            <span>-${totals.discount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+            <span>-{formatCurrency(totals.discount)}</span>
           </div>
         )}
 
         <div className="flex justify-between items-center text-gray-600">
           <span>Shipping</span>
           <span className="font-medium text-[#1A1A1A]">
-            {totals.shipping === 0 ? 'Calculated at next step' : `$${totals.shipping.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+            {totals.shipping === 0 ? 'Calculated at next step' : `${formatCurrency(totals.shipping)}`}
           </span>
         </div>
         
         <div className="flex justify-between items-center text-gray-600">
           <span>Estimated Taxes</span>
-          <span className="font-medium text-[#1A1A1A]">${totals.tax.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+          <span className="font-medium text-[#1A1A1A]">{formatCurrency(totals.tax)}</span>
         </div>
       </div>
 
@@ -74,7 +75,7 @@ export default function OrderSummary() {
         <span className="text-base font-bold text-[#1A1A1A]">Total</span>
         <div className="text-right">
           <span className="text-sm text-gray-500 mr-2">USD</span>
-          <span className="text-3xl font-bold text-[#1A1A1A]">${totals.grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+          <span className="text-3xl font-bold text-[#1A1A1A]">{formatCurrency(totals.grandTotal)}</span>
         </div>
       </div>
     </div>

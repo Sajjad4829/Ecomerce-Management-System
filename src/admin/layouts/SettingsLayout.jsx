@@ -7,7 +7,8 @@ const navCategories = [
   {
     name: 'Appearance',
     items: [
-      { label: 'Dashboard Theme', path: '/admin/settings/appearance', icon: FiLayout }
+      { label: 'Dashboard Theme', path: '/admin/settings/appearance', icon: FiLayout },
+      { label: 'Theme Settings', path: '/admin/theme', icon: FiLayout }
     ]
   },
   {

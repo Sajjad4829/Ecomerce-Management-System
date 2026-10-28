@@ -8,6 +8,7 @@ import {
 import { Crown } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { PermissionGate } from '../../auth/components/PermissionGate';
+import { useSettings } from '../context/settings/SettingsContext';
 
 const MENU_ITEMS = [
   { label: 'Dashboard', icon: FiHome, path: '/admin' },
@@ -152,6 +153,7 @@ const SubMenuItem = ({ item, isOpen }) => {
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   const location = useLocation();
+  const { settings } = useSettings();
 
   return (
     <aside
@@ -163,20 +165,28 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       {/* Logo Area */}
       <div className="flex items-center justify-between h-20 px-6 border-b border-white/10 shrink-0">
         <div className={cn("flex items-center gap-3 overflow-hidden", !isOpen && "lg:hidden")}>
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
-            <FiShoppingBag className="text-white text-lg" />
-          </div>
+          {settings.dashboard_logo ? (
+            <img src={settings.dashboard_logo} alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-white" />
+          ) : (
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
+              <FiShoppingBag className="text-white text-lg" />
+            </div>
+          )}
           <span className="text-white text-lg font-bold whitespace-nowrap">
-            ShopEase
+            {settings.dashboard_name || 'ShopEase'}
           </span>
         </div>
 
         {/* Only show logo in collapsed state on desktop */}
         {!isOpen && (
           <div className="hidden lg:flex w-full items-center justify-center">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
-              <FiShoppingBag className="text-white text-lg" />
-            </div>
+            {settings.dashboard_logo ? (
+              <img src={settings.dashboard_logo} alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-white" />
+            ) : (
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
+                <FiShoppingBag className="text-white text-lg" />
+              </div>
+            )}
           </div>
         )}
       </div>

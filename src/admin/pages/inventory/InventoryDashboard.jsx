@@ -9,8 +9,10 @@ export default function InventoryDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
 
   const filteredInventory = inventory.filter(item => {
-    const matchesSearch = item.productName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          item.sku.toLowerCase().includes(searchTerm.toLowerCase());
+    const pName = item.productName || '';
+    const pSku = item.sku || '';
+    const matchesSearch = pName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          pSku.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
     return matchesSearch && matchesStatus;
   });

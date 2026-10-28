@@ -1,3 +1,4 @@
+import { formatCurrency } from '../../utils/formatCurrency';
 import { useCommerce } from '../../context/CommerceContext';
 import CouponInput from './CouponInput';
 import { FiArrowRight } from 'react-icons/fi';
@@ -24,32 +25,32 @@ export default function CartTotals() {
       <div className="space-y-4 mb-6 pb-6 border-b border-black/10">
         <div className="flex justify-between items-center text-sm">
           <span className="text-gray-600">Subtotal</span>
-          <span className="font-medium text-[#1A1A1A]">${cartSubtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+          <span className="font-medium text-[#1A1A1A]">{formatCurrency(cartSubtotal)}</span>
         </div>
         
         {discount > 0 && (
           <div className="flex justify-between items-center text-sm text-green-600">
             <span>Discount</span>
-            <span>-${discount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+            <span>-{formatCurrency(discount)}</span>
           </div>
         )}
 
         <div className="flex justify-between items-center text-sm">
           <span className="text-gray-600">Shipping</span>
           <span className="font-medium text-[#1A1A1A]">
-            {shipping === 0 ? 'Free' : `$${shipping.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+            {shipping === 0 ? 'Free' : `${formatCurrency(shipping)}`}
           </span>
         </div>
         
         <div className="flex justify-between items-center text-sm">
           <span className="text-gray-600">Estimated Tax</span>
-          <span className="font-medium text-[#1A1A1A]">${tax.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+          <span className="font-medium text-[#1A1A1A]">{formatCurrency(tax)}</span>
         </div>
       </div>
 
       <div className="flex justify-between items-end mb-8">
         <span className="text-base font-bold text-[#1A1A1A]">Total</span>
-        <span className="text-3xl font-bold text-[#1A1A1A]">${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+        <span className="text-3xl font-bold text-[#1A1A1A]">{formatCurrency(total)}</span>
       </div>
 
       <Link to="/checkout" className="w-full h-14 bg-[#1A1A1A] text-white text-sm font-bold tracking-widest uppercase hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-black/10">

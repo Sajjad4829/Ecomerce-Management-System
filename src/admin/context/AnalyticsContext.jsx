@@ -13,7 +13,8 @@ export const formatCurrency = (value, currency = 'USD') => {
   try {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value);
   } catch (e) {
-    return `$${value.toFixed(2)}`;
+    const symbol = currency === 'BDT' ? '৳' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : '$';
+    return `${symbol}${Number(value).toFixed(2)}`;
   }
 };
 
@@ -149,8 +150,9 @@ export function AnalyticsProvider({ children }) {
 
     const currCarts = (abandonedCarts || []).filter(c => isWithinInterval(c.createdAt, currentDates.start, currentDates.end));
 
-    // Guess base currency from txns
-    const baseCurrency = transactions.length > 0 ? transactions[0].currency || 'USD' : 'USD';
+    // Guess base currency from settings, then txns
+    const savedSettings = JSON.parse(localStorage.getItem('app_settings') || '{}');
+    const baseCurrency = savedSettings.currency || (transactions.length > 0 ? transactions[0].currency || 'USD' : 'USD');
 
     return { currOrders, prevOrders, currTxns, prevTxns, currCarts, currentDates, prevDates, baseCurrency };
   }, [orders, transactions, customers, products, abandonedCarts, dateRange, comparisonRange, filters]);

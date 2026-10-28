@@ -1,5 +1,6 @@
+import { formatCurrency } from '../../utils/formatCurrency';
 import { Fragment } from 'react';
-import { FiX, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
+import { FiX, FiShoppingCart, FiShoppingBag } from 'react-icons/fi';
 import { useCommerce } from '../../context/CommerceContext';
 import CartItem from './CartItem';
 import { Link } from 'react-router-dom';
@@ -19,42 +20,39 @@ export default function CartDrawer() {
       />
       
       {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-300">
         
         {/* Header */}
-        <div className="px-6 py-4 flex items-center justify-between border-b border-black/5 shrink-0">
-          <h2 className="text-xl font-serif font-bold text-[#1A1A1A] flex items-center gap-2">
-            <FiShoppingBag /> Your Cart
+        <div className="px-4 py-4 flex items-center justify-between border-b border-gray-200 shrink-0">
+          <h2 className="text-[20px] font-normal text-[#1A1A1A]">
+            Your Cart ({cartItems.length})
           </h2>
           <button 
             onClick={closeCartDrawer}
-            className="p-2 text-gray-500 hover:text-black transition-colors rounded-full hover:bg-gray-100"
+            className="w-8 h-8 bg-[#ED1C24] hover:bg-[#D3161D] text-white flex items-center justify-center transition-colors"
           >
-            <FiX size={20} />
+            <FiX size={24} />
           </button>
         </div>
 
         {/* Cart Items Area */}
-        <div className="flex-1 overflow-y-auto px-6">
+        <div className="flex-1 overflow-y-auto p-4">
           {cartItems.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center">
-              <div className="w-20 h-20 bg-[#F7F5F2] rounded-full flex items-center justify-center mb-6">
-                <FiShoppingBag size={32} className="text-gray-400" />
+              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                <FiShoppingBag size={28} className="text-gray-400" />
               </div>
-              <h3 className="text-xl font-serif font-bold text-[#1A1A1A] mb-2">Your Cart is Empty</h3>
-              <p className="text-sm text-gray-500 mb-8 max-w-xs mx-auto">
-                Discover something beautiful for your space.
-              </p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Your Cart is Empty</h3>
               <Link 
                 to="/shop"
                 onClick={closeCartDrawer}
-                className="px-8 py-3 bg-[#1A1A1A] text-white text-sm font-bold tracking-widest uppercase hover:bg-black transition-colors"
+                className="px-6 py-2.5 bg-[#ED1C24] text-white text-sm font-medium hover:bg-[#D3161D] transition-colors"
               >
                 Continue Shopping
               </Link>
             </div>
           ) : (
-            <div className="py-2">
+            <div className="flex flex-col gap-2">
               {cartItems.map(item => (
                 <CartItem key={item.id} item={item} />
               ))}
@@ -64,34 +62,20 @@ export default function CartDrawer() {
 
         {/* Footer */}
         {cartItems.length > 0 && (
-          <div className="border-t border-black/5 p-6 bg-[#F7F5F2] shrink-0">
-            <div className="flex justify-between items-end mb-6">
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Subtotal</p>
-                <p className="text-xs text-gray-400">Shipping & taxes calculated at checkout</p>
-              </div>
-              <p className="text-2xl font-bold text-[#1A1A1A]">
-                ${cartSubtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          <div className="p-4 bg-white shrink-0 border-t border-gray-200">
+            <div className="mb-4">
+              <p className="text-center text-[16px] font-bold text-[#1A1A1A]">
+                Total: {formatCurrency(cartSubtotal)}
               </p>
             </div>
             
-            <div className="grid gap-3">
-              <Link 
-                to="/checkout"
-                onClick={closeCartDrawer}
-                className="w-full py-4 bg-[#1A1A1A] text-white text-sm font-bold tracking-widest uppercase hover:bg-black transition-colors flex items-center justify-center gap-2"
-              >
-                Checkout <FiArrowRight size={16} />
-              </Link>
-              
-              <Link 
-                to="/cart"
-                onClick={closeCartDrawer}
-                className="w-full py-3 bg-white border border-black/10 text-[#1A1A1A] text-sm font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center"
-              >
-                View Cart
-              </Link>
-            </div>
+            <Link 
+              to="/cart"
+              onClick={closeCartDrawer}
+              className="w-full py-2.5 bg-white border border-[#ED1C24] text-[#ED1C24] text-[15px] font-medium hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+            >
+              View Cart <FiShoppingCart size={18} />
+            </Link>
           </div>
         )}
       </div>

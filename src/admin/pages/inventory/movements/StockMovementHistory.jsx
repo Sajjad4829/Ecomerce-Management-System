@@ -35,17 +35,26 @@ export default function StockMovementHistory() {
     return 'text-neutral-600 bg-neutral-100 border-neutral-200';
   };
 
-  const getWarehouseName = (id) => warehouses.find(w => w.id === id)?.name || id;
+  const getWarehouseName = (id) => {
+    if (!id) return null;
+    const match = warehouses.find(w => String(w.id) === String(id) || String(w._id) === String(id));
+    return match ? match.name : id;
+  };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
+    if (!dateString) return 'N/A';
+    try {
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(date);
+    } catch(e) {
+      return 'Invalid Date';
+    }
   };
 
   return (
@@ -113,9 +122,9 @@ export default function StockMovementHistory() {
                 </tr>
               ) : (
                 filteredMovements.map((movement) => (
-                  <tr key={movement.id} className="hover:bg-neutral-50/50 transition-colors">
+                  <tr key={movement.id || movement._id} className="hover:bg-neutral-50/50 transition-colors">
                     <td className="px-6 py-4 text-neutral-600">
-                      {formatDate(movement.date)}
+                      {formatDate(movement.createdAt || movement.date)}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
@@ -138,8 +147,19 @@ export default function StockMovementHistory() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="inline-flex items-center gap-1.5 text-neutral-700 bg-neutral-100 px-2.5 py-1 rounded-md text-xs font-medium border border-neutral-200/60">
-                        {getWarehouseName(movement.warehouseId)}
+                      <div className="inline-flex flex-col gap-1">
+                        <div className="inline-flex items-center gap-1.5 text-neutral-700 bg-neutral-100 px-2.5 py-1 rounded-md text-xs font-medium border border-neutral-200/60 w-fit capitalize">
+                          {movement.warehouseName || 
+                           getWarehouseName(movement.warehouseId) || 
+                           (movement.type === 'Transfer' && movement.quantity > 0 ? getWarehouseName(movement.toWarehouseId) : null) ||
+                           (movement.type === 'Transfer' && movement.quantity < 0 ? getWarehouseName(movement.fromWarehouseId) : null) ||
+                           'Unknown Warehouse'}
+                        </div>
+                        {(movement.warehouseLocation || getWarehouseName(movement.warehouseId) !== movement.warehouseId) && (
+                          <div className="text-xs text-neutral-500">
+                            {movement.warehouseLocation || 'Main Facility'}
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">

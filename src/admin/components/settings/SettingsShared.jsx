@@ -67,3 +67,42 @@ export const SettingsToggle = ({ checked, onChange, label, description }) => (
     </div>
   </label>
 );
+
+export const SettingsImageUpload = ({ value, onChange, placeholderIcon = <div className="text-text-muted" />, label = 'Upload Image' }) => {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onChange(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-4">
+      <div className="w-16 h-16 bg-stone-100 border border-border rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+        {value ? (
+          <img src={value} alt="Preview" className="w-full h-full object-contain bg-white" />
+        ) : (
+          placeholderIcon
+        )}
+      </div>
+      <label className="cursor-pointer px-4 py-2 bg-stone-100 text-text-secondary text-sm font-medium rounded-lg hover:bg-stone-200 transition-colors inline-block text-center border border-transparent hover:border-border">
+        {value ? 'Change Image' : label}
+        <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+      </label>
+      {value && (
+        <button 
+          onClick={() => onChange('')} 
+          className="text-xs text-danger hover:underline font-medium"
+          type="button"
+        >
+          Remove
+        </button>
+      )}
+    </div>
+  );
+};
+

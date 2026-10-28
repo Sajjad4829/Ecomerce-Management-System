@@ -43,7 +43,16 @@ export function AuthProvider({ children }) {
   });
   const [user, setUser] = useState(() => {
     const storedAuth = localStorage.getItem('mock_auth_type');
-    if (storedAuth === 'admin') return MOCK_ADMIN_USER;
+    let settings = {
+      admin_username: 'admin@example.com',
+      admin_name: 'Admin User'
+    };
+    try {
+      const saved = localStorage.getItem('app_settings');
+      if (saved) settings = { ...settings, ...JSON.parse(saved) };
+    } catch (e) {}
+
+    if (storedAuth === 'admin') return { ...MOCK_ADMIN_USER, name: settings.admin_name, email: settings.admin_username };
     if (storedAuth === 'customer') return MOCK_CUSTOMER_USER;
     return null;
   });
@@ -52,9 +61,19 @@ export function AuthProvider({ children }) {
     setSessionStatus('loading');
     await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API
 
+    let settings = {
+      admin_username: 'admin@example.com',
+      admin_password: 'pass123',
+      admin_name: 'Admin User'
+    };
+    try {
+      const saved = localStorage.getItem('app_settings');
+      if (saved) settings = { ...settings, ...JSON.parse(saved) };
+    } catch (e) {}
+
     if (type === 'admin') {
-      if (email === 'admin@example.com' && password === 'pass123') {
-        setUser(MOCK_ADMIN_USER);
+      if (email === settings.admin_username && password === settings.admin_password) {
+        setUser({ ...MOCK_ADMIN_USER, name: settings.admin_name, email: settings.admin_username });
         localStorage.setItem('mock_auth_type', 'admin');
         setSessionStatus('authenticated');
         return { success: true };

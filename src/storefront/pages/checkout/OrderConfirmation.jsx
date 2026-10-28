@@ -1,3 +1,4 @@
+import { formatCurrency } from '../../utils/formatCurrency';
 import { useLocation, Link, Navigate, useParams } from 'react-router-dom';
 import { FiCheckCircle, FiPackage, FiDownload, FiArrowRight } from 'react-icons/fi';
 
@@ -99,7 +100,7 @@ export default function OrderConfirmation() {
                     )}
                   </div>
                   <div className="text-sm font-bold text-[#1A1A1A]">
-                    ${(item.unitPrice * item.quantity).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {formatCurrency((item.unitPrice * item.quantity))}
                   </div>
                 </div>
                );
@@ -110,20 +111,20 @@ export default function OrderConfirmation() {
             <div className="space-y-3 mb-4 pb-4 border-b border-black/5">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
-                <span>${payload.totals.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                <span>{formatCurrency(payload.totals.subtotal)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span>${payload.totals.shipping.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                <span>{formatCurrency(payload.totals.shipping)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Taxes</span>
-                <span>${payload.totals.tax.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                <span>{formatCurrency(payload.totals.tax)}</span>
               </div>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-base font-bold text-[#1A1A1A]">Total</span>
-              <span className="text-2xl font-bold text-[#1A1A1A]">${payload.totals.grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+              <span className="text-2xl font-bold text-[#1A1A1A]">{formatCurrency(payload.totals.grandTotal)}</span>
             </div>
           </div>
 

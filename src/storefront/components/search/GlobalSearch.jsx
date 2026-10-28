@@ -1,3 +1,4 @@
+import { formatCurrency } from '../../utils/formatCurrency';
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiX } from 'react-icons/fi';
@@ -143,7 +144,7 @@ export default function GlobalSearch({ placeholder = "Search", className = "", i
                         </div>
                         <div className="flex flex-col justify-center">
                           <p className="text-[14px] text-[#1c2b36] mb-0.5 line-clamp-1">{product.name}</p>
-                          <p className="text-[12px] text-[#6c757d]">Starts from {(product.price || 0).toLocaleString()} BDT</p>
+                          <p className="text-[12px] text-[#6c757d]">Starts from {formatCurrency((product.price || 0))}</p>
                         </div>
                       </a>
                     ))}
@@ -230,7 +231,7 @@ export default function GlobalSearch({ placeholder = "Search", className = "", i
                       </div>
                       <div className="flex flex-col justify-center">
                         <p className="text-[14px] text-[#1c2b36] mb-0.5 line-clamp-1">{product.name}</p>
-                        <p className="text-[12px] text-[#6c757d]">Starts from {(product.price || 0).toLocaleString()} BDT</p>
+                        <p className="text-[12px] text-[#6c757d]">Starts from {formatCurrency((product.price || 0))}</p>
                       </div>
                     </a>
                   ))}

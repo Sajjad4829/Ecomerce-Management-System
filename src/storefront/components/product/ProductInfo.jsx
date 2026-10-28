@@ -1,3 +1,4 @@
+import { formatCurrency } from '../../utils/formatCurrency';
 import React from 'react';
 import { FiStar } from 'react-icons/fi';
 
@@ -22,12 +23,12 @@ export default function ProductInfo({ product, ratingData, selectedVariants, act
         </p>
         <div className="flex items-end gap-3">
           <span className="text-xl font-bold text-gray-800">
-            {activePrice.toLocaleString('en-US', { minimumFractionDigits: 0 })} BDT
+            {formatCurrency(activePrice)}
           </span>
           {isSale && (
             <>
               <span className="text-sm text-gray-400 line-through mb-0.5">
-                {activeComparePrice.toLocaleString('en-US', { minimumFractionDigits: 0 })} BDT
+                {formatCurrency(activeComparePrice)}
               </span>
               <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-sm tracking-wide uppercase">
                 {discountPercent}% OFF

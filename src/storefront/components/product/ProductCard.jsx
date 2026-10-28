@@ -4,6 +4,7 @@ import { FiShoppingCart, FiHeart } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import { useReviews } from '../../../admin/context/ReviewContext';
 import { useStorefrontTheme } from '../../context/StorefrontThemeContext';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCommerce();
@@ -15,7 +16,7 @@ export default function ProductCard({ product }) {
   
   // Calculate EMI mock logic
   const emi = Math.round(price / 12); 
-  const formattedPrice = new Intl.NumberFormat('en-US').format(price);
+  
 
   const handleQuickAdd = (e) => {
     e.preventDefault();
@@ -41,9 +42,9 @@ export default function ProductCard({ product }) {
         
         <div className="flex flex-col items-center gap-1 w-full">
           <span className="text-[#334155] text-[12px] sm:text-[13px]">Starts from</span>
-          <span className="text-[#1c2b39] text-[15px]">{formattedPrice} BDT</span>
+          <span className="text-[#1c2b39] text-[15px]">{formatCurrency(price)}</span>
           <span className="bg-[#ed1c24] text-white text-[12px] px-2 py-1 mt-0.5 whitespace-nowrap">
-            EMI {emi} BDT
+            EMI {formatCurrency(emi)}
           </span>
         </div>
       </div>
@@ -63,8 +64,8 @@ export default function ProductCard({ product }) {
             </Link>
             <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-2">
               <span className="text-stone-500 text-[13px] sm:text-[14px]">Starts from</span>
-              <span className="font-medium text-slate-700 text-[14px] sm:text-[15px]">{formattedPrice} BDT</span>
-              <span className="bg-[#e11d48] text-white text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded whitespace-nowrap">EMI {emi} BDT</span>
+              <span className="font-medium text-slate-700 text-[14px] sm:text-[15px]">{formatCurrency(price)}</span>
+              <span className="bg-[#e11d48] text-white text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded whitespace-nowrap">EMI {formatCurrency(emi)}</span>
             </div>
           </div>
         </div>
@@ -86,8 +87,8 @@ export default function ProductCard({ product }) {
             </Link>
             <div className="flex flex-wrap items-center gap-1.5 w-full">
                <span className="text-stone-500 text-[11px] whitespace-nowrap">Starts from</span>
-               <span className="font-semibold text-[#0f172a] text-[13px] whitespace-nowrap">{formattedPrice} BDT</span>
-               <span className="bg-[#e11d48] text-white text-[9px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0">EMI {emi} BDT</span>
+               <span className="font-semibold text-[#0f172a] text-[13px] whitespace-nowrap">{formatCurrency(price)}</span>
+               <span className="bg-[#e11d48] text-white text-[9px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0">EMI {formatCurrency(emi)}</span>
             </div>
           </div>
         </div>
@@ -114,7 +115,7 @@ export default function ProductCard({ product }) {
                 <span className="text-stone-500 ml-0.5 text-[11px]">({ratingData.count})</span>
               </div>
             )}
-            <div className="text-[#c53030] font-bold text-[16px] mt-2">৳ {formattedPrice}</div>
+            <div className="text-[#c53030] font-bold text-[16px] mt-2">{formatCurrency(price)}</div>
             <div className="flex flex-wrap items-center gap-2 mt-3">
               <button onClick={handleQuickAdd} className="bg-[#6b46c1] hover:bg-[#553c9a] text-white text-[12px] font-medium py-1.5 px-3 rounded-md flex items-center gap-1.5 transition-colors z-10">
                 <FiShoppingCart size={12} className="w-3.5 h-3.5" /> <span className="whitespace-nowrap hidden lg:inline">Add to Cart</span>

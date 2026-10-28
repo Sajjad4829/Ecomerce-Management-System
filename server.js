@@ -20,6 +20,9 @@ import CMSPage from './lib/models/CMSPage.js';
 import CMSConfig from './lib/models/CMSConfig.js';
 import SectionConfiguration from './lib/models/SectionConfiguration.js';
 import MediaAsset from './lib/models/MediaAsset.js';
+import Warehouse from './lib/models/Warehouse.js';
+import Inventory from './lib/models/Inventory.js';
+import InventoryMovement from './lib/models/InventoryMovement.js';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
@@ -310,11 +313,26 @@ app.get('/api/products', async (req, res) => {
     if (search) filter.$text = { $search: search };
 
     const skip = (Number(page) - 1) * Number(limit);
-    const [products, total] = await Promise.all([
+    const [products, total, allInventory] = await Promise.all([
       Product.find(filter).sort({ createdAt: -1 }).skip(skip).limit(Number(limit)).lean(),
-      Product.countDocuments(filter)
+      Product.countDocuments(filter),
+      Inventory.find({}).lean()
     ]);
-    res.json({ products, total, page: Number(page), limit: Number(limit) });
+
+    // Build a map: productId -> real available stock from warehouse inventory
+    const stockMap = {};
+    allInventory.forEach(inv => {
+      if (!stockMap[inv.productId]) stockMap[inv.productId] = 0;
+      stockMap[inv.productId] += Math.max(0, inv.availableQuantity || 0);
+    });
+
+    // Override product.stock with real warehouse total so storefront is always accurate
+    const enrichedProducts = products.map(p => ({
+      ...p,
+      stock: stockMap[p.id] !== undefined ? stockMap[p.id] : (p.stock || 0)
+    }));
+
+    res.json({ products: enrichedProducts, total, page: Number(page), limit: Number(limit) });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -324,7 +342,18 @@ app.get('/api/products/:id', async (req, res) => {
   try {
     const product = await Product.findOne({ id: req.params.id }).lean();
     if (!product) return res.status(404).json({ error: 'Product not found' });
-    res.json(product);
+    
+    const inventory = await Inventory.find({ productId: product.id }).lean();
+    let totalStock = 0;
+    let reservedStock = 0;
+    let availableStock = 0;
+    inventory.forEach(inv => {
+      totalStock += ((inv.availableQuantity || 0) + (inv.reservedQuantity || 0));
+      reservedStock += (inv.reservedQuantity || 0);
+      availableStock += (inv.availableQuantity || 0);
+    });
+
+    res.json({ ...product, inventorySummary: { totalStock, reservedStock, availableStock, warehouses: inventory } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -334,6 +363,19 @@ app.post('/api/products', async (req, res) => {
   try {
     const newProduct = new Product({ ...req.body, id: req.body.id || `prod-${Date.now()}` });
     await newProduct.save();
+
+    // Create an initial unassigned inventory record
+    const newInventory = new Inventory({
+      productId: newProduct.id,
+      sku: newProduct.sku,
+      warehouseId: 'unassigned', // Will be updated or created in warehouse flow
+      availableQuantity: 0,
+      reservedQuantity: 0,
+      reorderLevel: 0,
+      status: 'Not Stocked'
+    });
+    await newInventory.save();
+
     res.status(201).json(newProduct.toJSON());
   } catch (error) {
     if (error.name === 'ValidationError') return res.status(400).json({ error: Object.values(error.errors).map(e => e.message).join('; ') });
@@ -1103,6 +1145,214 @@ app.delete('/api/media/:id', async (req, res) => {
 
     await MediaAsset.findOneAndDelete({ id: req.params.id });
     res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// =============================================================================
+// INVENTORY & WAREHOUSES API
+// =============================================================================
+
+app.get('/api/warehouses', async (req, res) => {
+  try {
+    const warehouses = await Warehouse.find({}).sort({ createdAt: -1 }).lean();
+    res.json(warehouses);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/warehouses', async (req, res) => {
+  try {
+    const newWarehouse = new Warehouse({ ...req.body, id: req.body.id || `wh-${Date.now()}` });
+    await newWarehouse.save();
+    res.status(201).json(newWarehouse.toJSON());
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/warehouses/:id', async (req, res) => {
+  try {
+    const updated = await Warehouse.findOneAndUpdate({ id: req.params.id }, { $set: req.body }, { returnDocument: 'after' }).lean();
+    if (!updated) return res.status(404).json({ error: 'Warehouse not found' });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/warehouses/:id', async (req, res) => {
+  try {
+    const hasInventory = await Inventory.exists({ warehouseId: req.params.id, availableQuantity: { $gt: 0 } });
+    if (hasInventory) {
+      return res.status(400).json({ error: 'Cannot delete warehouse with active stock' });
+    }
+    await Warehouse.findOneAndDelete({ id: req.params.id });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/inventory', async (req, res) => {
+  try {
+    const inventory = await Inventory.find({}).lean();
+    const products = await Product.find({}, 'id name sku').lean();
+    const warehouses = await Warehouse.find({}, 'id name').lean();
+    
+    const productMap = products.reduce((acc, p) => ({...acc, [p.id]: p}), {});
+    const warehouseMap = warehouses.reduce((acc, w) => ({...acc, [w.id]: w.name}), {});
+
+    const enrichedInventory = inventory.map(inv => ({
+      ...inv,
+      productName: productMap[inv.productId]?.name || 'Unknown Product',
+      sku: inv.sku || productMap[inv.productId]?.sku || 'UNKNOWN',
+      warehouseName: warehouseMap[inv.warehouseId] || inv.warehouseId
+    }));
+    
+    res.json(enrichedInventory);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/inventory/movements', async (req, res) => {
+  try {
+    const movements = await InventoryMovement.find({}).sort({ createdAt: -1 }).lean();
+    res.json(movements);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+const calculateStatus = (available, reorderLevel) => {
+  if (available <= 0) return 'Out of Stock';
+  if (available <= (reorderLevel || 0)) return 'Low Stock';
+  return 'In Stock';
+};
+
+app.post('/api/inventory/assign', async (req, res) => {
+  try {
+    const { productId, sku, warehouseId, openingStock, reorderLevel } = req.body;
+    let inv = await Inventory.findOne({ productId, warehouseId });
+    if (!inv) {
+      inv = new Inventory({
+        productId, sku, warehouseId,
+        availableQuantity: openingStock || 0,
+        reorderLevel: reorderLevel || 0,
+        status: calculateStatus(openingStock || 0, reorderLevel)
+      });
+      await inv.save();
+      
+      await Inventory.deleteMany({ productId, warehouseId: 'unassigned' });
+
+      if (openingStock > 0) {
+        await InventoryMovement.create({
+          productId, sku,
+          type: 'Initial',
+          quantity: openingStock,
+          warehouseId,
+          reason: 'Initial assignment'
+        });
+      }
+    } else {
+      if (reorderLevel !== undefined) {
+        inv.reorderLevel = reorderLevel;
+        inv.status = calculateStatus(inv.availableQuantity, inv.reorderLevel);
+        await inv.save();
+      }
+    }
+    res.json(inv);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/inventory/adjust', async (req, res) => {
+  try {
+    const { productId, warehouseId, quantity, reason, type } = req.body;
+    let inv = await Inventory.findOne({ productId, warehouseId });
+    
+    const adjustment = Number(quantity);
+    
+    if (!inv) {
+      // Create it if it doesn't exist — floor at 0
+      const product = await Product.findOne({ id: productId });
+      const initialQty = Math.max(0, adjustment);
+      inv = new Inventory({
+        productId,
+        sku: product ? product.sku : 'UNKNOWN',
+        warehouseId,
+        availableQuantity: initialQty,
+        reorderLevel: 0,
+        status: calculateStatus(initialQty, 0)
+      });
+    } else {
+      // Floor at 0 — a warehouse can never have negative stock
+      inv.availableQuantity = Math.max(0, inv.availableQuantity + adjustment);
+      inv.status = calculateStatus(inv.availableQuantity, inv.reorderLevel);
+    }
+    
+    await inv.save();
+
+    const movement = new InventoryMovement({
+      productId, sku: inv.sku,
+      type: type || 'Adjustment',
+      quantity: adjustment,
+      reason,
+      warehouseId
+    });
+    await movement.save();
+
+    res.json({ inventory: inv, movement });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/inventory/transfer', async (req, res) => {
+  try {
+    const { productId, sourceWarehouseId, destinationWarehouseId, quantity, reason } = req.body;
+    const qty = Number(quantity);
+    
+    if (qty <= 0) return res.status(400).json({ error: 'Quantity must be positive' });
+
+    const sourceInv = await Inventory.findOne({ productId, warehouseId: sourceWarehouseId });
+    if (!sourceInv || sourceInv.availableQuantity < qty) {
+      return res.status(400).json({ error: 'Insufficient stock in source warehouse' });
+    }
+
+    let destInv = await Inventory.findOne({ productId, warehouseId: destinationWarehouseId });
+    if (!destInv) {
+      destInv = new Inventory({
+        productId, sku: sourceInv.sku, warehouseId: destinationWarehouseId,
+        availableQuantity: 0, reorderLevel: sourceInv.reorderLevel
+      });
+    }
+
+    sourceInv.availableQuantity -= qty;
+    sourceInv.status = calculateStatus(sourceInv.availableQuantity, sourceInv.reorderLevel);
+    await sourceInv.save();
+
+    destInv.availableQuantity += qty;
+    destInv.status = calculateStatus(destInv.availableQuantity, destInv.reorderLevel);
+    await destInv.save();
+
+    const movementOut = new InventoryMovement({
+      productId, sku: sourceInv.sku, type: 'Transfer',
+      quantity: -qty, reason: reason || 'Transfer out',
+      fromWarehouseId: sourceWarehouseId, toWarehouseId: destinationWarehouseId
+    });
+    const movementIn = new InventoryMovement({
+      productId, sku: destInv.sku, type: 'Transfer',
+      quantity: qty, reason: reason || 'Transfer in',
+      fromWarehouseId: sourceWarehouseId, toWarehouseId: destinationWarehouseId
+    });
+    await Promise.all([movementOut.save(), movementIn.save()]);
+
+    res.json({ sourceInventory: sourceInv, destinationInventory: destInv });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

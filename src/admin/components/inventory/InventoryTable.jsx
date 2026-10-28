@@ -32,11 +32,13 @@ export default function InventoryTable({ inventory }) {
           <tbody className="divide-y divide-neutral-200">
             {inventory.map((item) => (
               <tr key={item.id} className="hover:bg-neutral-50 transition-colors">
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 whitespace-nowrap">
                   <div className="font-medium text-neutral-900">{item.productName}</div>
-                  <div className="text-xs text-neutral-500">{item.sku}</div>
+                  {item.sku !== item.productName && (
+                    <div className="text-xs text-neutral-500">{item.sku}</div>
+                  )}
                 </td>
-                <td className="px-6 py-4 text-neutral-600">
+                <td className="px-6 py-4 text-neutral-600 whitespace-nowrap capitalize">
                   {item.warehouseName}
                 </td>
                 <td className="px-6 py-4 text-right font-medium text-neutral-900">
@@ -49,7 +51,7 @@ export default function InventoryTable({ inventory }) {
                   {item.reorderLevel}
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wider ${getStatusStyle(item.status)}`}>
+                  <span className={`whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wider ${getStatusStyle(item.status)}`}>
                     {item.status}
                   </span>
                 </td>

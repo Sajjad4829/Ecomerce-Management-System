@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { FiHeart, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
+import { formatCurrency } from '../../utils/formatCurrency';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { FiHeart, FiMinus, FiPlus, FiShoppingCart, FiCheckCircle } from 'react-icons/fi';
 import { useCommerce } from '../../context/CommerceContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -7,11 +8,53 @@ export default function ProductActions({ product, selectedVariants, activePrice 
   const { addToCart, toggleWishlist, isInWishlist } = useCommerce();
   const [quantity, setQuantity] = useState(1);
   const [showSticky, setShowSticky] = useState(false);
+  const [toast, setToast] = useState(null);
+  const toastTimerRef = useRef(null);
 
-  const isOutOfStock = product.stock <= 0;
+  // ── Real-time available stock from inventory API ──────────────────────────
+  // product.stock is a stale denormalized field that is NOT updated when
+  // warehouse inventory is adjusted. We fetch live available stock here so
+  // the quantity selector always reflects the true warehouse quantity.
+  const [inventoryStock, setInventoryStock] = useState(null); // null = loading
+
+  const fetchInventoryStock = useCallback(async () => {
+    if (!product?.id) return;
+    try {
+      const res = await fetch('/api/inventory');
+      if (res.ok) {
+        const data = await res.json();
+        const rows = Array.isArray(data) ? data : (data.inventory || data.items || []);
+        // Sum available quantity across all warehouses for this product
+        const totalAvailable = rows
+          .filter(row => String(row.productId) === String(product.id))
+          .reduce((sum, row) => sum + Math.max(0, row.availableQuantity ?? row.available ?? 0), 0);
+        setInventoryStock(totalAvailable);
+      } else {
+        // API unavailable — fall back to product.stock
+        setInventoryStock(null);
+      }
+    } catch {
+      // Network error — fall back to product.stock
+      setInventoryStock(null);
+    }
+  }, [product?.id]);
+
+  useEffect(() => { fetchInventoryStock(); }, [fetchInventoryStock]);
+
+  // Use live inventory stock when available; fall back to product.stock field
+  const stock = inventoryStock !== null ? inventoryStock : (product.stock ?? 0);
+  const isOutOfStock = stock <= 0;
   
   // No need for local isWishlisted state since we have isInWishlist
   const isWishlisted = isInWishlist(product.id);
+
+  // Clamp quantity down if real stock turns out to be lower than selected
+  useEffect(() => {
+    if (stock > 0 && quantity > stock) {
+      setQuantity(stock);
+    }
+  }, [stock]);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,16 +69,28 @@ export default function ProductActions({ product, selectedVariants, activePrice 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Cleanup timer on unmount
+  useEffect(() => () => clearTimeout(toastTimerRef.current), []);
+
+  const showToastNotification = (name) => {
+    setToast(name);
+    clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 1500);
+  };
+
   const handleQuantityChange = (delta) => {
+    if (isOutOfStock) return;
     const newQuantity = quantity + delta;
-    if (newQuantity >= 1 && newQuantity <= (product.stock || 1)) {
+    if (newQuantity >= 1 && newQuantity <= stock) {
       setQuantity(newQuantity);
     }
   };
 
   const handleAddToCart = () => {
-    if (isOutOfStock) return;
+    // Block if stock is 0, negative, null, or undefined
+    if (!product || stock < 1) return;
     addToCart(product, selectedVariants, quantity);
+    showToastNotification(product.name);
   };
 
   const handleBuyNow = () => {
@@ -48,54 +103,97 @@ export default function ProductActions({ product, selectedVariants, activePrice 
     toggleWishlist(product);
   };
 
-  const formattedPrice = activePrice.toLocaleString('en-US', { minimumFractionDigits: 0 }) + ' BDT';
+  const formattedPrice = formatCurrency(activePrice);
 
   return (
     <>
+      {/* Add-to-Cart Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="cart-toast"
+            initial={{ opacity: 0, y: -16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="fixed top-4 right-4 z-[9999] flex items-center gap-2.5 bg-white border border-gray-200 shadow-lg rounded-full pl-3 pr-5 py-2.5 max-w-xs"
+            style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.10)' }}
+          >
+            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-green-500 flex-shrink-0">
+              <FiCheckCircle size={13} className="text-white" />
+            </span>
+            <span className="text-[13px] text-gray-800 truncate">
+              <span className="font-semibold text-gray-900">{toast}</span>
+              <span className="text-gray-500"> added to cart</span>
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="flex flex-col gap-4 mt-4">
         {/* Quantity Selector */}
         <div className="flex items-center gap-6 mb-2">
           <span className="text-[15px] text-gray-700 font-medium">Quantity</span>
-          <div className="flex items-center border border-gray-200 h-10 w-32 bg-white">
-            <button 
-              onClick={() => handleQuantityChange(-1)}
-              disabled={quantity <= 1 || isOutOfStock}
-              className="text-gray-400 hover:text-gray-700 disabled:opacity-30 transition-colors w-10 h-full flex justify-center items-center"
-            >
-              <FiMinus size={14} />
-            </button>
-            <span className="flex-1 text-[14px] font-medium text-gray-800 text-center">{quantity}</span>
-            <button 
-              onClick={() => handleQuantityChange(1)}
-              disabled={quantity >= product.stock || isOutOfStock}
-              className="text-gray-400 hover:text-gray-700 disabled:opacity-30 transition-colors w-10 h-full flex justify-center items-center"
-            >
-              <FiPlus size={14} />
-            </button>
-          </div>
+          {isOutOfStock ? (
+            /* Show badge when stock is 0 or negative */
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-200 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+              <span className="text-[12px] font-semibold text-red-600 tracking-wide">Out of Stock</span>
+            </span>
+          ) : (
+            <div className="flex items-center border border-gray-200 h-10 w-32 bg-white">
+              <button
+                onClick={() => handleQuantityChange(-1)}
+                disabled={quantity <= 1}
+                className="text-gray-400 hover:text-gray-700 disabled:opacity-30 transition-colors w-10 h-full flex justify-center items-center"
+              >
+                <FiMinus size={14} />
+              </button>
+              <span className="flex-1 text-[14px] font-medium text-gray-800 text-center">{quantity}</span>
+              <button
+                onClick={() => handleQuantityChange(1)}
+                disabled={quantity >= stock}
+                className="text-gray-400 hover:text-gray-700 disabled:opacity-30 transition-colors w-10 h-full flex justify-center items-center"
+              >
+                <FiPlus size={14} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Add to Cart Button */}
-        <button 
+        <button
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className="w-full flex h-[56px] rounded-lg overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full flex h-[56px] rounded-lg overflow-hidden cursor-pointer disabled:cursor-not-allowed transition-colors"
         >
-          {/* Left Side: Price (Darker Red) */}
-          <div className="w-[45%] flex flex-col items-center justify-center bg-[#D3161D] text-white p-2 border-r border-[#E61B23]">
+          {/* Left Side: Price */}
+          <div className={`w-[45%] flex flex-col items-center justify-center p-2 border-r transition-colors ${
+            isOutOfStock
+              ? 'bg-gray-300 border-gray-300'
+              : 'bg-[#D3161D] border-[#E61B23]'
+          } text-white`}>
             <span className="text-[16px] font-bold leading-tight">{formattedPrice}</span>
-            <span className="text-[11px] font-normal opacity-80">{formattedPrice.replace(' BDT', '')} BDT x {quantity}</span>
+            <span className="text-[11px] font-normal opacity-80">
+              {isOutOfStock ? 'Unavailable' : `${formattedPrice} x ${quantity}`}
+            </span>
           </div>
-          {/* Right Side: Action (Brighter Red) */}
-          <div className="w-[55%] flex items-center justify-center gap-2 bg-[#ED1C24] hover:bg-[#D3161D] text-white p-2 transition-colors">
+          {/* Right Side: Action */}
+          <div className={`w-[55%] flex items-center justify-center gap-2 p-2 text-white transition-colors ${
+            isOutOfStock
+              ? 'bg-gray-400'
+              : 'bg-[#ED1C24] hover:bg-[#D3161D]'
+          }`}>
             <FiShoppingCart size={18} />
-            <span className="text-[15px] font-medium">{isOutOfStock ? 'Out of Stock' : 'Add to Cart'}</span>
+            <span className="text-[15px] font-medium">
+              {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+            </span>
           </div>
         </button>
 
         {/* EMI Button */}
         <button className="w-full h-[50px] bg-[#FDEAEB] text-[#ED1C24] font-bold text-[15px] rounded-lg hover:bg-[#F9D6D6] transition-colors">
-          EMI {Math.round(activePrice / 12).toLocaleString('en-US')} BDT
+          EMI {formatCurrency(Math.round(activePrice / 12))}
         </button>
 
         {/* Small Accordions */}

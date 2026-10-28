@@ -314,6 +314,7 @@ import {
 
 import InventoryLayout from './admin/layouts/InventoryLayout';
 import InventoryDashboard from './admin/pages/inventory/InventoryDashboard';
+import ProductInventoryDetail from './admin/pages/inventory/ProductInventoryDetail';
 import WarehouseCenter from './admin/pages/inventory/warehouses/WarehouseCenter';
 import StockAdjustment from './admin/pages/inventory/stock/StockAdjustment';
 import StockTransfer from './admin/pages/inventory/stock/StockTransfer';
@@ -335,7 +336,6 @@ import StockMovementHistory from './admin/pages/inventory/movements/StockMovemen
 import { PageVersions } from './admin/pages/cms/CMSPages';
 
 import {
-  ProductInventoryDetail,
   WarehouseCreator,
   WarehouseDetail,
   StockMovementDetail,
@@ -350,6 +350,7 @@ import { ShippingProvider } from './admin/context/shipping/ShippingContext';
 
 import CheckoutPage from './storefront/pages/checkout/CheckoutPage';
 import OrderConfirmation from './storefront/pages/checkout/OrderConfirmation';
+import SSLCommerzGateway from './storefront/pages/checkout/SSLCommerzGateway';
 
 import OrderHistory from './storefront/pages/account/OrderHistory';
 import TrackOrder from './storefront/pages/tracking/TrackOrder';
@@ -554,6 +555,8 @@ export default function App() {
                                                           <Route index element={<CMSPage />} />
                                                           <Route path="/cart" element={<CartPage />} />
                                                           <Route path="/checkout" element={<CheckoutPage />} />
+                                                          <Route path="/payment/sslcommerz" element={<SSLCommerzGateway />} />
+                                                          <Route path="/payment-gateway" element={<SSLCommerzGateway />} />
                                                           <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
                                                           <Route path="/tracking" element={<TrackOrder />} />
                                                           <Route path="/wishlist" element={<WishlistPage />} />

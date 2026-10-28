@@ -1,3 +1,4 @@
+import { formatCurrency } from '../../utils/formatCurrency';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 import { useCommerce } from '../../context/CommerceContext';
 import { Link } from 'react-router-dom';
@@ -35,7 +36,7 @@ export default function WishlistItem({ item }) {
               )}
             </div>
             <p className="text-lg font-bold text-[#1A1A1A]">
-              ${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              {formatCurrency(price)}
             </p>
           </div>
           <p className="text-xs text-gray-400 mt-4">

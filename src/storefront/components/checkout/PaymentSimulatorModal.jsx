@@ -1,3 +1,4 @@
+import { formatCurrency } from '../../utils/formatCurrency';
 import React from 'react';
 import { FiCreditCard, FiCheckCircle, FiXCircle, FiLock } from 'react-icons/fi';
 
@@ -34,7 +35,7 @@ export default function PaymentSimulatorModal({ isOpen, onClose, onSuccess, onFa
             <div className="flex justify-between text-gray-500 pt-2 border-t border-black/5 mt-2">
               <span>Amount to Pay:</span>
               <span className="text-xl font-bold text-[#1A1A1A]">
-                ${payload?.totals?.grandTotal?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                {formatCurrency(payload?.totals?.grandTotal)}
               </span>
             </div>
           </div>

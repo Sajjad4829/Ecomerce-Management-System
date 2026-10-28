@@ -2,17 +2,26 @@ import { createContext, useState, useContext, useEffect, useMemo } from 'react';
 
 export const CommerceContext = createContext(null);
 
-const getMinimalProduct = (product) => ({
-  id: product.id,
-  name: product.name,
-  slug: product.slug,
-  price: product.price,
-  compareAtPrice: product.compareAtPrice,
-  image: product.image,
-  images: product.images,
-  gallery: product.gallery,
-  stock: product.stock,
-});
+const getMinimalProduct = (product) => {
+  let fallbackImage = product.image;
+  if (!fallbackImage && product.gallery && product.gallery.length > 0) {
+    fallbackImage = product.gallery[0];
+  }
+  if (!fallbackImage && product.images && product.images.length > 0) {
+    fallbackImage = product.images[0]?.url || product.images[0];
+  }
+
+  return {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    price: product.price,
+    compareAtPrice: product.compareAtPrice,
+    image: fallbackImage,
+    stock: product.stock,
+    material: product.material,
+  };
+};
 
 export function CommerceProvider({ children }) {
   const [cartItems, setCartItems] = useState(() => {
@@ -74,17 +83,23 @@ export function CommerceProvider({ children }) {
       let activePrice = product.price;
       let activeComparePrice = product.compareAtPrice;
       let variantImage = null;
+      let minimalSelectedVariants = null;
 
       if (selectedVariants && Object.keys(selectedVariants).length > 0) {
         // Sort keys to ensure deterministic ID
         const keys = Object.keys(selectedVariants).sort();
         generatedVariantId = keys.map(k => `${k}:${selectedVariants[k]?.id || selectedVariants[k]?.name}`).join('|');
+        minimalSelectedVariants = {};
 
-        // Calculate active price
-        Object.values(selectedVariants).forEach(option => {
+        // Calculate active price and minimal variants
+        Object.entries(selectedVariants).forEach(([type, option]) => {
+          minimalSelectedVariants[type] = {
+            id: option?.id,
+            name: option?.name
+          };
           const img = (option && option.images && option.images.length > 0) ? option.images[0] : (option && option.image);
           if (img) {
-            variantImage = img;
+            variantImage = typeof img === 'object' ? img.url || null : img;
           }
           if (option && option.price) {
             activePrice = option.price;
@@ -114,7 +129,7 @@ export function CommerceProvider({ children }) {
         productId: product.id,
         variantId: generatedVariantId,
         product: getMinimalProduct(product),
-        selectedVariants,
+        selectedVariants: minimalSelectedVariants || selectedVariants,
         variantImage,
         quantity: Math.min(quantity, maxStock),
         unitPrice: activePrice,
@@ -122,7 +137,6 @@ export function CommerceProvider({ children }) {
         availability: product.stock > 0 ? 'In Stock' : 'Out of Stock'
       }];
     });
-    openCartDrawer();
   };
 
   const removeFromCart = (itemId) => {

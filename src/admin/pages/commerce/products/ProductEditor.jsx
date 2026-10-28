@@ -25,7 +25,7 @@ const STEPS = [
   { id: 'basic', label: 'Basic Info', number: '1', icon: FiInfo },
   { id: 'media', label: 'Media & Gallery', number: '2', icon: FiImage },
   { id: 'variants', label: 'Attributes', number: '3', icon: FiBox },
-  { id: 'pricing', label: 'Pricing & Stock', number: '4', icon: FiDollarSign },
+  { id: 'pricing', label: 'Pricing', number: '4', icon: FiDollarSign },
   { id: 'seo', label: 'SEO & Publishing', number: '5', icon: FiSearch }
 ];
 
@@ -656,9 +656,9 @@ export default function ProductEditor() {
                 <div className="bg-surface rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.02)] p-6 md:p-8">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="p-2 bg-[#111A4A] text-white rounded-lg"><FiDollarSign size={16} /></div>
-                    <h2 className="text-lg font-bold text-text-primary">Pricing & Stock</h2>
+                    <h2 className="text-lg font-bold text-text-primary">Pricing</h2>
                   </div>
-                  <p className="text-sm text-text-muted mb-6 ml-11">Manage product pricing and availability</p>
+                  <p className="text-sm text-text-muted mb-6 ml-11">Manage product pricing</p>
                   
                   <div className="space-y-6">
                      <div className="grid grid-cols-2 gap-5">
@@ -700,16 +700,52 @@ export default function ProductEditor() {
                           />
                         </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-text-primary mb-1.5">Stock Quantity</label>
-                        <input 
-                          type="number" 
-                          value={formData.inventory.totalStock || ''}
-                          onChange={(e) => handleChange('inventory', 'totalStock', Number(e.target.value))}
-                          className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary text-sm font-semibold text-text-primary"
-                        />
-                      </div>
                     </div>
+                  </div>
+
+                  <hr className="my-8 border-border" />
+
+                  <div className="space-y-4">
+                    <h3 className="text-base font-bold text-text-primary">Inventory Summary</h3>
+                    {formData.inventorySummary && formData.inventorySummary.warehouses && formData.inventorySummary.warehouses.length > 0 && formData.inventorySummary.warehouses[0].warehouseId !== 'unassigned' ? (
+                      <div className="bg-background rounded-xl p-5 border border-border">
+                        <div className="grid grid-cols-3 gap-4 mb-4">
+                          <div>
+                            <div className="text-xs text-text-muted mb-1">Current Stock</div>
+                            <div className="text-lg font-bold text-text-primary">{formData.inventorySummary.totalStock}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-text-muted mb-1">Reserved</div>
+                            <div className="text-lg font-bold text-orange-600">{formData.inventorySummary.reservedStock}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-text-muted mb-1">Available</div>
+                            <div className="text-lg font-bold text-green-600">{formData.inventorySummary.availableStock}</div>
+                          </div>
+                        </div>
+                        <div className="space-y-2 mt-4 pt-4 border-t border-border">
+                          <div className="text-xs font-bold text-text-muted mb-2">Warehouses:</div>
+                          {formData.inventorySummary.warehouses.map(wh => (
+                            <div key={wh._id || wh.id} className="flex justify-between text-sm">
+                              <span className="text-text-primary">{wh.warehouseId}</span>
+                              <span className="font-medium text-text-primary">{wh.availableQuantity}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-background rounded-xl p-5 border border-border">
+                        <div className="text-sm text-text-primary font-medium mb-1">Inventory Status</div>
+                        <div className="text-sm text-text-muted">Current Stock: Not Assigned</div>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => navigate('/admin/inventory/products/' + (id || formData._id || formData.id))}
+                      disabled={isNew && !formData._id && !formData.id}
+                      className="mt-4 text-sm text-primary font-medium hover:text-primary-hover flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Manage Inventory <FiChevronRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               )}

@@ -61,9 +61,9 @@ export default function WarehouseCenter() {
 
   const filteredWarehouses = useMemo(() => {
     return warehouses.filter(w => 
-      w.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      w.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      w.location.toLowerCase().includes(searchTerm.toLowerCase())
+      (w.name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+      (w.code || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (w.location || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [warehouses, searchTerm]);
 
@@ -71,9 +71,9 @@ export default function WarehouseCenter() {
     const active = warehouses.filter(w => w.status === 'Active').length;
     const inactive = warehouses.length - active;
     
-    // Total Stock Units overall
-    const totalStock = inventory.reduce((sum, item) => sum + item.available, 0);
-    // Rough mock for inventory value (assuming $50 average per unit for demo purposes)
+    // Total Stock Units overall (clamped to 0)
+    const totalStock = Math.max(0, inventory.reduce((sum, item) => sum + item.available, 0));
+    // Rough mock for inventory value
     const inventoryValue = totalStock * 50; 
 
     return { total: warehouses.length, active, inactive, totalStock, inventoryValue };
@@ -82,7 +82,8 @@ export default function WarehouseCenter() {
   const getWarehouseStats = (warehouseId) => {
     const warehouseInventory = inventory.filter(i => i.warehouseId === warehouseId);
     const uniqueProducts = new Set(warehouseInventory.map(i => i.productId)).size;
-    const stockUnits = warehouseInventory.reduce((sum, item) => sum + item.available, 0);
+    const rawStockUnits = warehouseInventory.reduce((sum, item) => sum + item.available, 0);
+    const stockUnits = Math.max(0, rawStockUnits);
     const value = stockUnits * 50; // Mock value
     return { uniqueProducts, stockUnits, value };
   };
